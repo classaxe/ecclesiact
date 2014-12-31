@@ -1,0 +1,5 @@
+  1.0.1 (2013-11-12)
+    1) Reduced queries_per_day to be 100 less than Google's daily limit to keep
+       us within their upper limit
+  1.0.0 (2013-11-11)
+    Initial release
