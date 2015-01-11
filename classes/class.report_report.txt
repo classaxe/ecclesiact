@@ -1,3 +1,6 @@
+  1.0.28 (2014-06-22)
+    1) Report_Report::draw() added support for operations of types 'set_email_opt_in' and
+       'set_email_opt_out'
   1.0.27 (2014-02-20)
     1) Report_Report::draw() now precaches report column features if any toolbars
        are shown to reduce subsequent requests for cached information

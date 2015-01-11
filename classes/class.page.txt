@@ -1,3 +1,8 @@
+  1.0.117 (2014-08-09)
+    1) Page cloning now allows use of reserved names and language codes BUT ONLY when
+       the page itself is not a root-level page.
+    2) Page cloning now allows for naming a page with the same name as another page on the
+       same site if the copied page has a different parent than the other one.
   1.0.116 (2014-06-22)
     1) Added support in Page::draw_detail() for automatic substitution of 'email-opt-in'
        and 'email-opt-out'

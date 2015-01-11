@@ -1,3 +1,6 @@
+  1.0.104 (2014-03-27)
+    1) Community_Member::_draw_object_map_html_get_data() now uses fields passed
+       to it to determine which address to display
   1.0.103 (2014-03-23)
     1) Community_Member::get_events_upcoming() now includes optional category
   1.0.102 (2014-02-19)

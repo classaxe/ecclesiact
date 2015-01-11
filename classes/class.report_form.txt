@@ -1,3 +1,5 @@
+  1.0.59 (2014-02-19)
+    1) Removed direct setting of lat / lon fields in Report_Form::_prepare_fields()
   1.0.58 (2014-01-28)
     1) Eliminated all support for formwizard
   1.0.57 (2014-01-04)

@@ -1,3 +1,6 @@
+  1.0.30 (2012-11-28)
+    1) System::_get_akismet_key_status() and System::_get_bugtracker_status()
+       both changed references of parent::get_version() to System::get_item_version()
   1.0.29 (2012-11-26)
     1) Added support in System_Edit::_do_save() for `qbwc_export_orders_billing_addr`
        `and qbwc_export_orders_product_desc`

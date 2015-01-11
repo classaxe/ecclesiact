@@ -1,3 +1,6 @@
+  1.0.84 (2014-06-22)
+    1) New features added to Report::REPORT_FEATURES for email CASL compliance:
+         selected_set_email_opt_in and selected_set_email_opt_out
   1.0.83 (2014-02-20)
     1) New class constant Report::REPORT_FEATURES for more efficient testing
        of features through use of caching to eliminate repeated lookups

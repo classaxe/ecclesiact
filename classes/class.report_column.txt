@@ -1,3 +1,6 @@
+  1.0.125 (2014-06-22)
+    1) Report_Column::draw_selector_with_selected() now includes support for Email Opt-in
+       and Opt-Out
   1.0.124 (2014-03-26)
     1) Report_Column::draw_form_field() for 'fieldset_map_loc_lat_lon' now uses
        form_field_special just like the report field counterpart, and also allows

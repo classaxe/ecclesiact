@@ -1,3 +1,5 @@
+  1.0.86 (2014-06-22)
+    1) Added support for page creation defaults for 'email-opt-in' and 'email-opt-out'
   1.0.85 (2014-03-29)
     1) HTML::_draw_toolbar_type_report() now sets communityID when adding new posting, if
        available

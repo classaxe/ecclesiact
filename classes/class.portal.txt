@@ -1,3 +1,5 @@
+  1.0.32 (2014-02-13)
+    1) Portal::portal_upgrade() updated to handle geocode_cache decoding
   1.0.31 (2014-01-21)
     1) Portal::parse_request() now has extra helper functions to simplify code
     2) Portal::_parse_request_date_prefix() now renamed _parse_request_posting()

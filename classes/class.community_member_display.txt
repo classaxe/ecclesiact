@@ -1,3 +1,6 @@
+  1.0.37 (2014-12-26)
+    1) Changes to ensure that 404 headers are sent when either comminity or member doesn't
+       exist.
   1.0.36 (2014-03-27)
     1) All postings panels now pass community_URL to invoked objects so that
        shared items can be properly linked in methods

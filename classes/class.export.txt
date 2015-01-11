@@ -1,3 +1,8 @@
+  1.0.23 (2012-12-03)
+    1) Export::excel() now uses time() not mktime() as per strict standards
+  1.0.22 (2012-11-28)
+    1) Export::excel() now uses System::get_item_version() not
+       System::get_version() as before
   1.0.21 (2012-08-18)
     1) Added Export::draw() to alow this code to be moved out of codebase
        and modified -

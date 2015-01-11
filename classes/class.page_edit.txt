@@ -1,3 +1,6 @@
+  1.0.15 (2013-10-04)
+    1) Tweak to allow content to be passed in as an initial parameter when creating
+       a new blank page
   1.0.14 (2012-11-10)
     1) Changes to reference Community selector SQL as a class not a module
   1.0.13 (2012-10-10)
