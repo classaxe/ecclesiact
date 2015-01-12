@@ -1,3 +1,5 @@
+  1.0.41 (2014-04-18)
+    1) Added support for ckeditor plugins
   1.0.40 (2014-02-07)
     1) Removed support for monitoring of former sajax2 library files
   1.0.39 (2014-01-28)

@@ -1,3 +1,5 @@
+  2.0.81 (2014-01-29)
+    1) Tweak to older version history include file description
   2.0.80 (2014-01-27)
     1) Added support for spectrum colour picker js and css
     2) Removed support for prototype.js

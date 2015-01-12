@@ -1,3 +1,5 @@
+  1.0.16 (2014-04-18)
+    1) FileSystem::get_file_version() and FileSystem::get_line() now declared as static
   1.0.15 (2012-10-10)
     1) Small changes to JS produced by FileSystem::draw_dir_tree() to conform
        to XHTML Strict

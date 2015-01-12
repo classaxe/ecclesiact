@@ -1,9 +1,9 @@
 <?php
-define("VERSION","2.0.81");
+define("VERSION","2.0.82");
 /*
 Version History:
-  2.0.81 (2014-01-29)
-    1) Tweak to older version history include file description
+  2.0.82 (2015-01-11)
+    1) Now has Unix-style line endings
 
   (Older version history in img.txt)
 */

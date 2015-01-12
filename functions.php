@@ -1,9 +1,9 @@
 <?php
-define ("FUNCTIONS_VERSION","1.0.14");
+define ("FUNCTIONS_VERSION","1.0.15");
 /*
 Version History:
-  1.0.14 (2012-11-29)
-    1) mem() now uses System::get_item_version() not System::get_version() as before
+  1.0.15 (2015-01-11)
+    1) Now uses Unix line endings
 
   (Older version history in functions.txt)
 */
