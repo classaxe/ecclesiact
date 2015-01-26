@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.0");
+define("CODEBASE_VERSION", "3.1.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,140 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.0.2356 (2015-01-11)
+3.1.1.2357 (2015-01-26)
 Summary:
-  1) Now PSR-2 compliant, except for mixing of symbols and side effects (fail)
-  2) Changes constant option_separator to OPTION_SEPARATOR for PSR-2
-  3) Export icons now include actual URL as href in links (simpler now too)
-  4) Fixed print form functionality (was broken)
-  5) Contact Form in Community module now gives link to member profile in subject
-     and copies sender if they are an admin, and BCCs info@churchesInYourTown.ca
-  6) Fixed Community Export to have no sql errors
+  (Provide top-level summary here)
 
 Final Checksums:
-  Classes     CS:76dcb57d
+  Classes     CS:55ee00e0
   Database    CS:65c4e281
-  Libraries   CS:897a742
+  Libraries   CS:55d60075
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.0     (2015-01-11)
+  codebase.php                                                                                   3.1.1     (2015-01-26)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.115   (2015-01-01)
-    1) Community::_on_action_community_setup_home_page() now uses global constant for option_separator tags
-    2) Fixed community export - was deleting community membership records early and duplicating some postings
-    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
-  classes/class.community_member.php                                                             1.0.105   (2015-01-01)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Community_Member::set_up_member_page_vars()
-    2) Class Constants DASHBOARD_WIDTH and DASHBOARD_HEIGHT now uppercase (PSR-2 requirement)
-    3) Bug fix for Dashboard - get_partner_selector_sql() - following changes to address fields a while ago
-    4) Updated editable fields in Dashboard - many have changed since this last worked
-    5) Removed avatar support for community members - now multiple images are held in a gallery
-    6) Now PSR-2 Compliant (except for const FIELDS length warning)
-  classes/class.community_member_display.php                                                     1.0.38    (2015-01-04)
-    1) Changes to Contact form:
-         a) Now includes website link in subject line
-         b) Now BCCs messages to info@churchesInYourTown.ca
-         c) Now CCs sent message to sender if they have logged in and have editor privileges
-    2) Now PSR-2 Compliant
-  classes/class.component_base.php                                                               1.0.18    (2015-01-02)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in various CP parsing methods
-    2) Now PSR-2 Compliant
-  classes/class.component_customiser_button.php                                                  1.0.1     (2015-01-02)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Component_Customiser_Button::save()
-    2) Now PSR-2 Compliant
-  classes/class.export.php                                                                       1.0.24    (2015-01-04)
-    1) Now always sets show_fields to true whe exporting sql results
-    2) Now conforms to PSR-2
-  classes/class.filesystem.php                                                                   1.0.17    (2015-01-11)
-    1) Changes to FileSystem::get_file_changes() to deal with unix-style line endings in classes
-    2) Now PSR-2 Compliant
-  classes/class.html.php                                                                         1.0.87    (2015-01-02)
-    1) Class constants Community_Member::DASHBOARD_WIDTH and Community_Member::DASHBOARD_HEIGHT now uppercase
-    2) Removed JS that sets window.status - this hasn't been supported in browsers for a long time now
-    3) Fixed component icon for reports that use one
-    4) Now PSR-2 Compliant
-  classes/class.page.php                                                                         1.0.118   (2015-01-01)
-    1) Now uses globals contant for option_separator tag in Page::prepare_html_head() JS code
-    2) Fixed print form functionality - broken for a while I suspect
-    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
-  classes/class.page_edit.php                                                                    1.0.16    (2015-01-03)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Page_Edit::draw() for saving
-    2) Removed 'yellow fever' correction cde - not needed with new CK Editor code
-    3) Now PSR-2 Compliant
-  classes/class.page_vars.php                                                                    1.0.24    (2015-01-02)
-    1) Added provision to ban msnbot and bingbot if load is too high
-    2) Now Page_Vars::_get_vars_for_mode() sets ID for details, export, print_form and report
-    3) Now PSR-2 Compliant
-  classes/class.person_merge_profiles.php                                                        1.0.4     (2015-01-11)
-    1) Changed references from System::tables to System::TABLES
-    2) Now PSR-2 Compliant
-  classes/class.portal.php                                                                       1.0.33    (2015-01-04)
-    1) Portal::_parse_request_mode_prefix() for export now sets targetID and show_fields if
-       path includes these as slashed path parameters
-    2) Now PSR-2 Compliant
-  classes/class.record.php                                                                       1.0.87    (2015-01-01)
-    1) Record::get_validation_fields() now looks first for class constant called FIELDS, then fields as before
-    2) Now PSR-2 Compliant
-  classes/class.report.php                                                                       1.0.85    (2015-01-04)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Report::draw_form_view()
-    2) Now PSR-2 Compliant
-  classes/class.report_column.php                                                                1.0.126   (2014-12-31)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Report_Column::draw_form_field() for option_list
-    2) Now PSR-2 Compliant
-  classes/class.report_form.php                                                                  1.0.60    (2015-01-06)
-    1) Report_Form::_do_update() now uses correct object to perform update and validates fields where possible
-    2) Now uses OPTION_SEPARATOR constant not option_separator in Report_Form::_prepare_field() for 'option_list'
-    3) Now PSR-2 Compliant
-  classes/class.report_report.php                                                                1.0.29    (2015-01-10)
-    1) Now PSR-2 Compliant
-  classes/class.system.php                                                                       1.0.157   (2015-01-10)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in System::set_parameters_for_instance()
-    2) Now PSR-2 Compliant
-  classes/class.system_edit.php                                                                  1.0.31    (2014-12-31)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in System_Edit::_do_save()
-  classes/class.system_export.php                                                                1.0.18    (2015-01-10)
-    1) Changed references from System::tables to System::TABLES
-  classes/class.system_health.php                                                                1.0.42    (2015-01-11)
-    1) Now PSR-2 Compliant, and wraps changelog lines at 120 characters
-  db_connect.php                                                                                 1.0.2     (2014-12-30)
-    1) Now conforms to PSR-2
-  functions.php                                                                                  1.0.15    (2015-01-11)
-    1) Now uses Unix line endings
-  img.php                                                                                        2.0.82    (2015-01-11)
-    1) Now has Unix-style line endings
+  classes/class.xml_sitemap.php                                                                  1.0.3     (2015-01-26)
+    1) Disallowed robotys from indexing UserFiles File, Media and Video subfolders
 
-2355.sql
+2357.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.1.0
-  classes/  (22 files changed)
-    class.community.php                               1.0.115   CS:f6bd48bb
-    class.community_member.php                        1.0.105   CS:b030494a
-    class.community_member_display.php                1.0.38    CS:da56ca75
-    class.component_base.php                          1.0.18    CS:f3dbf8a1
-    class.component_customiser_button.php             1.0.1     CS:c75aa230
-    class.export.php                                  1.0.24    CS:cd0e34d3
-    class.filesystem.php                              1.0.17    CS:d1d9f63c
-    class.html.php                                    1.0.87    CS:523cd126
-    class.page.php                                    1.0.118   CS:2656006d
-    class.page_edit.php                               1.0.16    CS:5f9cf6ad
-    class.page_vars.php                               1.0.25    CS:bbef9c00
-    class.person_merge_profiles.php                   1.0.4     CS:b4881893
-    class.portal.php                                  1.0.33    CS:b2e8638
-    class.record.php                                  1.0.87    CS:a244a68c
-    class.report.php                                  1.0.85    CS:639f4def
-    class.report_column.php                           1.0.126   CS:488dbd35
-    class.report_form.php                             1.0.60    CS:7f043c77
-    class.report_report.php                           1.0.29    CS:480532e8
-    class.system.php                                  1.0.157   CS:43744fab
-    class.system_edit.php                             1.0.31    CS:807f4b19
-    class.system_export.php                           1.0.18    CS:4a0f0d44
-    class.system_health.php                           1.0.42    CS:f4d3377b
-  db_connect.php                                      1.0.2     CS:d3b1a448
-  functions.php                                       1.0.15    CS:807e8ee9
-  img.php                                             2.0.82    CS:c542707b
+  codebase.php                                        3.1.1
+  classes/  (1 file changed)
+    class.xml_sitemap.php                             1.0.3     CS:65c476c0
+
 
 
 
