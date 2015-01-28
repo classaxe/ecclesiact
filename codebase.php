@@ -18,10 +18,11 @@ define(
 --------------------------------------------------------------------------------
 3.1.1.2357 (2015-01-26)
 Summary:
-  (Provide top-level summary here)
+  1) Changes to auto-generated robots.txt endpoint to prevent bots from harvesting File, Media and Video assets in
+     UserFiles folder
 
 Final Checksums:
-  Classes     CS:55ee00e0
+  Classes     CS:8fbd3b10
   Database    CS:65c4e281
   Libraries   CS:55d60075
   Reports     CS:e9d991db
@@ -30,7 +31,8 @@ Code Changes:
   codebase.php                                                                                   3.1.1     (2015-01-26)
     1) Updated version information
   classes/class.xml_sitemap.php                                                                  1.0.3     (2015-01-26)
-    1) Disallowed robotys from indexing UserFiles File, Media and Video subfolders
+    1) Disallowed robots from indexing UserFiles File, Media and Video subfolders
+    2) Now PSR-2 Compliant
 
 2357.sql
   1) Set version information
@@ -38,7 +40,8 @@ Code Changes:
 Promote:
   codebase.php                                        3.1.1
   classes/  (1 file changed)
-    class.xml_sitemap.php                             1.0.3     CS:65c476c0
+    class.xml_sitemap.php                             1.0.3     CS:16d04f4f
+
 
 
 
