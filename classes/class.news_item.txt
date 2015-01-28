@@ -1,3 +1,5 @@
+  1.0.22 (2013-09-20)
+    1) Added support for categories in detail and listings view
   1.0.21 (2013-07-31)
     1) Added support for thumbnails in detail and listings view
   1.0.20 (2013-06-07)

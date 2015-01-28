@@ -1,9 +1,10 @@
 <?php
-define('VERSION_NEWS_ITEM','1.0.22');
+define('VERSION_NEWS_ITEM','1.0.23');
 /*
 Version History:
-  1.0.22 (2013-09-20)
-    1) Added support for categories in detail and listings view
+  1.0.23 (2015-01-28)
+    1) Previously cloning a News Item required a new name to be given (which wasn't used)
+       Now the clone is nameless.
 
   (Older version history in class.news_item.txt)
 */
@@ -19,7 +20,7 @@ class News_Item extends Posting {
       array(
         'command_for_delete' =>     'news_delete',
         'report' =>                 'news-items',
-        'report_rename' =>          true,
+        'report_rename' =>          false,
         'report_rename_label' =>    'new title',
         'icon_delete' =>            '[ICON]13 13 4447 Delete this News Item[/ICON]',
         'icon_edit' =>              '[ICON]15 15 41 Edit this News Item[/ICON]',
@@ -81,6 +82,7 @@ class News_Item extends Posting {
       'title_show' =>               array('match' => 'enum|0,1',        'default' => '1',               'hint' => '0|1')
     );
   }
+
   public function get_version(){
     return VERSION_NEWS_ITEM;
   }

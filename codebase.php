@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.1");
+define("CODEBASE_VERSION", "3.1.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,31 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.1.2357 (2015-01-26)
+3.1.2.2358 (2015-01-28)
 Summary:
-  1) Changes to auto-generated robots.txt endpoint to prevent bots from harvesting File, Media and Video assets in
-     UserFiles folder
+  1) Random News now has control over title and content and places these in divs
+     Also implemented context editing of news item being displayed. 
+  2) Cloning of News items no longer prompts for new name - it wasn't used anyway!
 
 Final Checksums:
-  Classes     CS:8fbd3b10
+  Classes     CS:e0884fb4
   Database    CS:65c4e281
-  Libraries   CS:55d60075
+  Libraries   CS:b214e92c
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.1     (2015-01-26)
+  codebase.php                                                                                   3.1.2     (2015-01-28)
     1) Updated version information
-  classes/class.xml_sitemap.php                                                                  1.0.3     (2015-01-26)
-    1) Disallowed robots from indexing UserFiles File, Media and Video subfolders
-    2) Now PSR-2 Compliant
+  classes/class.component_random_news.php                                                        1.0.1     (2015-01-28)
+    1) Now has parameters to show content and title and CM editing of news item currently being displayed
+  classes/class.news_item.php                                                                    1.0.23    (2015-01-28)
+    1) Previously cloning a News Item required a new name to be given (which wasn't used)
+       Now the clone is nameless.
 
-2357.sql
-  1) Set version information
+2358.sql
+  1) Update ECL tag 'Random_News'
+  2) Set version information
 
 Promote:
-  codebase.php                                        3.1.1
-  classes/  (1 file changed)
-    class.xml_sitemap.php                             1.0.3     CS:16d04f4f
+  codebase.php                                        3.1.2
+  classes/  (2 files changed)
+    class.component_random_news.php                   1.0.1     CS:bcd10ab5
+    class.news_item.php                               1.0.23    CS:c174339f
 
 
 
