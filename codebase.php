@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.2");
+define("CODEBASE_VERSION", "3.1.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,240 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.2.2358 (2015-01-28)
+3.1.3.2359 (2015-02-02)
 Summary:
-  1) Random News now has control over title and content and places these in divs
-     Also implemented context editing of news item being displayed. 
-  2) Cloning of News items no longer prompts for new name - it wasn't used anyway!
+  1) Bug fix for paging controls in Gallery_Album::BL_contained_items() and Podcast_Album::BL_contained_items()
+     Was broken since changes were made to argument renaming of 'paging_controls' to 'results_paging'
+  2) Multiple changes throughout to standardise internal arguments for limit and order_by
+  3) PSR-2 compliance changes for all affected php class files
+  4) Changes to JS files to apply Unix-style line endings
+  5) Changes to other PHP library files (fedex, getid3 and quickbooks) to have unix-style line endings
+  6) Changes to style sheet files to have unix-style line endings
 
 Final Checksums:
-  Classes     CS:e0884fb4
+  Classes     CS:e437a26d
   Database    CS:65c4e281
-  Libraries   CS:b214e92c
+  Libraries   CS:9958f778
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.2     (2015-01-28)
+  codebase.php                                                                                   3.1.3     (2015-02-02)
     1) Updated version information
-  classes/class.component_random_news.php                                                        1.0.1     (2015-01-28)
-    1) Now has parameters to show content and title and CM editing of news item currently being displayed
-  classes/class.news_item.php                                                                    1.0.23    (2015-01-28)
-    1) Previously cloning a News Item required a new name to be given (which wasn't used)
-       Now the clone is nameless.
+  classes/class.community_member_resource.php                                                    1.0.5     (2015-01-31)
+    1) Community_Member_Resource::_draw_rss() bug fix - now includes member name in RSS feed title
+    2) Community_Member_Resource::_draw_rss() removed redundant 'limit' argument - this is handled by RSS class itself
+    3) Community_Member_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
+    4) Now PSR-2 Compliant
+  classes/class.community_resource.php                                                           1.0.2     (2015-01-31)
+    1) Community_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
+    2) Community_Resource::_draw_rss() - some internal changes to correct misleading variable names
+       and make 'help' text title more conformant to other RSS help wording
+    3) Now PSR-2 Compliant
+  classes/class.component_articles_rotator.php                                                   1.0.7     (2015-01-31)
+    1) Changes to internally used parameters in Component_Articles_Rotator::draw():
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_collection_viewer.php                                                  1.0.49    (2015-01-31)
+    1) Changes to internally used parameters in Component_Collection_Viewer::_load_podcast_albums():
+         Old: order_by
+         New: results_order
+    2) Changes to internally used parameters in Component_Collection_Viewer::_load_podcasts():
+         Old: order_by
+         New: results_order
+    3) Now PSR-2 Compliant
+  classes/class.component_events_map.php                                                         1.0.2     (2015-01-31)
+    1) Changes to internally used parameters in Component_Events_Map::_setup_load_event_IDs():
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_gallery_fader.php                                                      1.0.42    (2015-01-31)
+    1) Changes to internally used parameters in Component_Gallery_Fader::_setup_load_records():
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_gallery_thumbnails.php                                                 1.0.35    (2014-01-31)
+    1) Changes to internally used parameters in Component_Gallery_Thumbnails::_setup_load_images():
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_wow_slider.php                                                         1.0.8     (2014-01-31)
+    1) Changes to internally used parameters in Component_WOW_Slider::_setup_load_records():
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.displayable_item.php                                                             1.0.151   (2014-01-31)
+    1) Changes to internally used parameters in Displayable_Item::_draw_listings_load_records():
+         Old: limit,            order_by
+         New: results_limit,    results_order
+    2) Now PSR-2 Compliant
+  classes/class.gallery_album.php                                                                1.0.33    (2015-01-31)
+    1) Changes to internally used parameters in Gallery_Album::BL_contained_items():
+         Old: filter_limit,  paging_controls
+         New: results_limit, results_paging
+    2) Now PSR-2 Compliant
+  classes/class.podcast.php                                                                      1.0.45    (2015-02-01)
+    1) Changed call in Podcast::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    2) Now PSR-2 Compliant
+  classes/class.podcast_album.php                                                                1.0.17    (2015-02-01)
+    1) Changes to internally used parameters in Podcast_Album::BL_contained_items():
+         Old: filter_limit,  paging_controls
+         New: results_limit, results_paging
+    2) Now PSR-2 Compliant
+  classes/class.posting.php                                                                      1.0.119   (2015-02-01)
+    1) Renamed methods in Posting class
+         from Posting::_get_records_sort_records_using_filter_order_by()
+         to   Posting::_get_records_sort_records_using_results_order()
+    2) Changed call in Posting::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    3) Internal changes in Posting::get_records() to handle renamed parameters for consistency with other classes:
+         Old: 'order_by',       'limit'
+         New: 'results_order',  'results_limit'
+    4) Class constant Posting::fields renamed to Posting::FIELDS
+    5) Now PSR-2 Compliant
+  classes/class.posting_contained.php                                                            1.0.242   (2015-02-01)
+    1) Changed call in Posting_Contained::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    2) Changed call in Posting_Contained::_get_records_sort_records_by_sequence()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    3) Changes internal arguments for Posting_Contained::get_records_matching()
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    4) Changes to internal arguments for Posting_Contained::_draw_listings_load_records()
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    5) Now PSR-2 Compliant
+  classes/class.product.php                                                                      1.0.77    (2015-02-01)
+    1) Changes to Product::get_records() to rename some expected arguments to conform to other classes:
+         Old: order_by,      limit
+         New: results_order, results_limit
+    2) Class constant Product::fields renamed to Product::FIELDS
+    2) Now PSR-2 Compliant
+  classes/class.remote.php                                                                       1.0.11    (2015-01-31)
+    1) Changes to Remote::get_items() to use newer argument parameters to retrieve records:
+         Old: limit
+         New: results_limit
+    2) Now PSR-2 Compliant
+  classes/class.rss.php                                                                          1.0.29    (2015-01-31)
+    1) Changes to RSS::_serve_get_records() to rename internal arguments for getting records:
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Changes to RSS::_serve_setup() to rename internal arguments for getting records:
+         Old: limit
+         New: results_limit
+    3) Moved RSS_Help into its own class file
+    4) Now PSR-2 Compliant
+  classes/class.rss_help.php                                                                     1.0.0     (2015-02-01)
+    1) Initial release - split from RSS class file
+  classes/class.system_health.php                                                                1.0.43    (2015-02-01)
+    1) System_Health::_get_config_libraries_array() bug fix for file name of /js/spectrum.min.js
+       (was /js/spectrum.min.css)
+  fedex/rate.php                                                                                 1.0.6     (2015-02-02)
+    1) Now with unix-style line endings
+  getid3/getid3.php                                                                              1.8.3b    (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/ckeditor.js                                                                        4.4.5c    (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/config.js                                                                          1.0.23    (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/audio/plugin.js                                                            1.0.4     (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/ecl/plugin.js                                                              1.0.10    (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/more/plugin.js                                                             1.0.3     (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/video/plugin.js                                                            1.0.4     (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/youtube/plugin.js                                                          1.0.4     (2015-02-02)
+    1) Now with unix-style line endings
+  js/ckeditor/plugins/zonebreak/plugin.js                                                        1.0.2     (2015-02-02)
+    1) Now with unix-style line endings
+  js/ecc.js                                                                                      1.0.9     (2015-02-02)
+    1) Now with unix-style line endings
+  js/functions.js                                                                                1.0.267   (2015-02-02)
+    1) Now with unix-style line endings
+  js/member.js                                                                                   1.0.142   (2015-02-02)
+    1) Now with unix-style line endings
+  js/jdplayer/mediaelement-and-player.min.js                                                     2.13.1c   (2015-02-02)
+    1) Now with unix-style line endings
+  js/jquery.min.js                                                                               1.11.0b   (2015-02-02)
+    1) Now with unix-style line endings
+  js/jquery-ui.min.js                                                                            1.10.4b   (2015-02-02)
+    1) Now with unix-style line endings
+  js/rss_reader.js                                                                               1.0.2     (2015-02-02)
+    1) Now with unix-style line endings
+  js/spectrum.min.js                                                                             1.2.0.b   (2014-01-28)
+    1) (MF) Tweaked to add in a usable standard palette and trackable version code
+  js/treeview.js                                                                                 4.3.e     (2015-02-02)
+    1) Now with unix-style line endings
+  style/breadcrumbs.css                                                                          1.0.2     (2015-02-02)
+    1) Now with unix-style line endings
+  style/default.css                                                                              1.0.166   (2015-02-02)
+    1) Now with unix-style line endings
+  style/community.css                                                                            1.0.3     (2015-02-02)
+    1) Now with unix-style line endings
+  style/labels.css                                                                               1.0.44    (2015-02-02)
+    1) Now with unix-style line endings
+  style/spectrum.min.css                                                                         1.2.0.c   (2015-02-02)
+    1) Now with unix-style line endings
+  style/pie.htc                                                                                  1.0.0.b   (2015-02-02)
+    1) Now with unix-style line endings
 
-2358.sql
-  1) Update ECL tag 'Random_News'
-  2) Set version information
+2359.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.1.2
-  classes/  (2 files changed)
-    class.component_random_news.php                   1.0.1     CS:bcd10ab5
-    class.news_item.php                               1.0.23    CS:c174339f
-
-
-
-
+  codebase.php                                        3.1.3
+  classes/  (19 files changed)
+    class.community_member_resource.php               1.0.5     CS:5032d50f
+    class.community_resource.php                      1.0.2     CS:2a684966
+    class.component_articles_rotator.php              1.0.7     CS:e0255d33
+    class.component_collection_viewer.php             1.0.49    CS:a90e61d3
+    class.component_events_map.php                    1.0.2     CS:a0545aa
+    class.component_gallery_fader.php                 1.0.42    CS:c2c6e515
+    class.component_gallery_thumbnails.php            1.0.35    CS:bd0507a2
+    class.component_wow_slider.php                    1.0.8     CS:5638edd8
+    class.displayable_item.php                        1.0.151   CS:3433da7b
+    class.gallery_album.php                           1.0.33    CS:3a28ae75
+    class.podcast.php                                 1.0.45    CS:d7426e90
+    class.podcast_album.php                           1.0.17    CS:d991afaa
+    class.posting.php                                 1.0.119   CS:347c0109
+    class.posting_contained.php                       1.0.242   CS:a55270de
+    class.product.php                                 1.0.77    CS:477f15c3
+    class.remote.php                                  1.0.11    CS:e3dfb723
+    class.rss.php                                     1.0.29    CS:fa407af2
+    class.rss_help.php                                1.0.0     CS:258670ec
+    class.system_health.php                           1.0.43    CS:2b4f34b8
+  fedex/rate.php                                      1.0.6     CS:f776de9a
+  getid3/getid3.php                                   1.8.3b    CS:4905aad0
+  js/ckeditor/ckeditor.js                             4.4.5c    CS:246afab2
+  js/ckeditor/config.js                               1.0.23    CS:f838a546
+  js/ckeditor/plugins/audio/plugin.js                 1.0.4     CS:2741ed91
+  js/ckeditor/plugins/ecl/plugin.js                   1.0.10    CS:7a3004c8
+  js/ckeditor/plugins/more/plugin.js                  1.0.3     CS:f8a47aed
+  js/ckeditor/plugins/video/plugin.js                 1.0.4     CS:e4fbc59
+  js/ckeditor/plugins/youtube/plugin.js               1.0.4     CS:6198442f
+  js/ckeditor/plugins/zonebreak/plugin.js             1.0.2     CS:6fc05eb3
+  js/ecc.js                                           1.0.9     CS:e48831a4
+  js/functions.js                                     1.1.267   CS:bb063dd6
+  js/member.js                                        1.0.142   CS:5206732b
+  js/jdplayer/mediaelement-and-player.min.js          2.13.1.c  CS:4b4ede46
+  js/jquery.min.js                                    1.11.0b   CS:3f7a8cb1
+  js/jquery-ui.min.js                                 1.10.4b   CS:a7636a32
+  js/rss_reader.js                                    1.0.2     CS:6d8fd7f3
+  js/spectrum.min.js                                  1.2.0.b   CS:62a09b61
+  js/treeview.js                                      4.3.e     CS:599ade11
+  style/breadcrumbs.css                               1.0.2     CS:8630e5a3
+  style/default.css                                   1.0.166   CS:4ef977fb
+  style/community.css                                 1.0.3     CS:3868cec9
+  style/labels.css                                    1.0.44    CS:de8adf5d
+  style/spectrum.min.css                              1.2.0.c   CS:481a359a
+  style/pie.htc                                       1.0.0.b   CS:7b7e50a2
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,3 +1,6 @@
+  1.0.76 (2014-04-16)
+    1) Product::draw_push_products() now sets safeID before drawing listings -
+       prevents warning for unset safe_ID property
   1.0.75 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.74 (2013-12-18)

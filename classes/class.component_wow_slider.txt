@@ -1,3 +1,5 @@
+  1.0.7 (2014-01-28)
+    1) Properly indented JS onload code in Component_WOW_Slider::_draw_js()
   1.0.6 (2013-11-08)
     1) New CP to cause fader to hide if the path was extended -
        use this on pages where there's also a photo album and you want to hide

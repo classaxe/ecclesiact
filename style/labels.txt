@@ -1,3 +1,5 @@
+  1.0.43 (2014-12-29)
+    1) Added label CYAN-privacy-about
   1.0.42 (2014-06-22)
     1) Moved label GREEN-email-recipient
     2) Added label GREEN-email-opt-in

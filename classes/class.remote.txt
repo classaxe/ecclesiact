@@ -1,3 +1,8 @@
+  1.0.10 (2012-07-16)
+    1) Minor code formatting tweaks
+  1.0.9 (2012-07-14)
+    1) Remote::get_items() now exists early if attempt to look up a local site failed
+    2) Remote::get_items() now uses array of arguments for $Obj::get_records()
   1.0.8 (2011-05-09)
     1) Remote::get_items() now uses long-form posting types
   1.0.7 (2011-02-04)

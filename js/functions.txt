@@ -1,3 +1,5 @@
+  1.0.266 (2014-11-27)
+    1) Changes to video switcher code to prevent related videos showing afterwards
   1.0.265 (2014-11-16)
     1) Added customise_colours() function to provide dialog for choosing colours
   1.0.264 (2014-07-20)

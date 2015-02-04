@@ -1,9 +1,9 @@
-// 1.1.266
+// 1.1.267
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.266 (2014-11-27)
-    1) Changes to video switcher code to prevent related videos showing afterwards
+  1.0.267 (2015-02-02)
+    1) Now with unix-style line endings
 
   (Older version history in functions.txt)
 */

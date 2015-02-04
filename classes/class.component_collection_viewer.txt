@@ -1,3 +1,5 @@
+  1.0.48 (2014-03-21)
+    1) Now reports if an invalid author or album is selected and issues a 404
   1.0.47 (2014-01-28)
     1) Newline and ; after JS in Component_Collection_Viewer::_draw_navigation()
   1.0.46 (2013-11-12)

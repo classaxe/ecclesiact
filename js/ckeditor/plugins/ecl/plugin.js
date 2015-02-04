@@ -1,31 +1,12 @@
-// 1.0.9
+// 1.0.10
 /* First line must show version number - update as builds change
 
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 
 Version History:
-  1.0.9 (2014-04-18)
-    1) Completely rewritten for CKEditor 4.3.4
-    2) Fixed monospaced tag selector dropdown options font for firefox
-  1.0.8 (2011-05-11)
-    1) Changes to force IE9 to use Firefox safe code for the FCK_ECLTags.Redraw()
-       function - the window.performance variable is the test for IE9
-  1.0.7 (2010-11-19)
-    1) Removed switch case for safari / opera - now handled by caller
-    2) Sets dialog for firefox and IE differently
-  1.0.6 (2009-03-16)
-    1) Unknown changes
-  1.0.5 (2009-03-09)
-    1) Unknown changes
-  1.0.4 (2008-11-25)
-    1) Unknown changes
-  1.0.3 (2008-??-??)
-    1) Unknown release
-  1.0.2 (2008-04-22)
-    1) Big changes to fck_ecl.html - all JS now direct from server
-  1.0.1 (2007-11-21)
-    1) Fix for firefox
+  1.0.10 (2015-02-02)
+    1) Now with unix-style line endings
 
 */
 

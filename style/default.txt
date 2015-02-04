@@ -1,3 +1,5 @@
+  1.0.164 (2014-08-09)
+    1) Changes to CSS for google map to make size consistent when listing is shown or not
   1.0.164 (2014-04-05)
     1) Added CSS for styling ECL tag dropdown in CKEditor panel
   1.0.163 (2014-01-28)

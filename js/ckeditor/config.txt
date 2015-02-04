@@ -1,3 +1,5 @@
+  1.0.22 (2014-12-29)
+    1) Added 'About' for Contacts and Users 'About' statements where the feature is enabled
   1.0.21 (2014-05-19)
     1) Now adds fonts and colour settings for postings if the 'Postings-allow-fonts-and-sizes'
        feature is enabled

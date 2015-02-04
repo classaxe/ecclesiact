@@ -1,3 +1,8 @@
+  1.0.118 (2014-10-26)
+    1) Change to Posting::_get_records_sort_records_using_filter_order_by() when sorting
+       by date (with implicity title subsort) to also reverse title order when showing in
+       decending order, allowing multiple postings in a day to be sub-sorted by the title
+       correctly when the order is decending - was fixed to ascending order
   1.0.117 (2014-02-24)
     1) New method Posting::on_schedule_update_pending()
     2) Posting::get_record() now only checks type of record for child classes

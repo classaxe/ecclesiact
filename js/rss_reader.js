@@ -1,7 +1,9 @@
-// 1.0.1
+// 1.0.2
 
 /*
 Version History:
+  1.0.2 (2015-02-02)
+    1) Now with unix-style line endings
   1.0.1 (2010-05-10)
     1) Changes to conform to LINT
   1.0.0 (2010-03-14)

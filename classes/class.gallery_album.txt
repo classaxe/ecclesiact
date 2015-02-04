@@ -1,3 +1,6 @@
+  1.0.32 (2013-06-21)
+    1) Tweak to setting of default_enclosure_base_folder in constructor to handle
+       instantiation where BASE_PATH is not yet defined.
   1.0.31 (2013-06-07)
     1) Changed the following CPs for listings mode:
          Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'

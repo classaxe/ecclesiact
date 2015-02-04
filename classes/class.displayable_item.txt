@@ -1,3 +1,5 @@
+  1.0.150 (2014-03-29)
+    1) Displayable_Item::_draw_listings_draw_add_icon() now sets communityID if present
   1.0.149 (2014-03-27)
     1) Displayable_Item::_draw_object_map_html_setup() now stores request vars
        that specify fields to use as info sources in the map

@@ -1,3 +1,8 @@
+  1.0.16 (2013-06-07)
+    1) Internal changes in support of CP changes to replace the following
+       deprecated parameters with their new equivalents:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
   1.0.15 (2013-05-17)
     1) Added cp for listings mode for 'filter_important'
   1.0.14 (2013-03-30)

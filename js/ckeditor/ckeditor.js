@@ -1,10 +1,12 @@
-// 4.4.5b
+// 4.4.5c
 /* First line must show version number - update as builds change
 
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 
 Version History:
+  4.4.5c (2015-02-02)
+    1) Now with unix-style line endings
   4.4.5b (2014-12-29)
     1) Removed UTF8 BOM identifier from file
   4.4.5 (2014-09-25)

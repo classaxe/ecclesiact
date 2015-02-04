@@ -1,5 +1,5 @@
 <?php
-define("GETID3_VERSION", "1.8.3");
+define("GETID3_VERSION", "1.8.3b");
 define('GETID3_FREAD_BUFFER_SIZE', 16384); // read buffer size in bytes
 define('GETID3_HELPERAPPSDIR', 'c:/shared/getid3/helperapps');
 
@@ -15,6 +15,8 @@ define('GETID3_HELPERAPPSDIR', 'c:/shared/getid3/helperapps');
 
 /*
 Version History:
+  1.8.3b (2015-02-02)
+    1) Now with unix-style line endings
   1.8.3 (2011-01-25)
     1) New version of library installed
     2) Moved version code to top for system health check validation

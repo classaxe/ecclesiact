@@ -1,3 +1,5 @@
+  1.0.42 (2015-01-11)
+    1) Now PSR-2 Compliant, and wraps changelog lines at 120 characters
   1.0.41 (2014-04-18)
     1) Added support for ckeditor plugins
   1.0.40 (2014-02-07)

@@ -1,20 +1,13 @@
-// 1.0.3
+// 1.0.4
 /* First line must show version number - update as builds change
 
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 
 Version History:
-  1.0.3 (2014-04-18)
-    1) Completely rewritten for CKEditor 4.3.4
-  1.0.2 (2011-05-11)
-    1) Changes to force IE9 to use Firefox safe code for the FCK_ECLTags.Redraw()
-       function - the window.performance variable is the test for IE9
-  1.0.1 (2010-11-19)
-    1) Removed switch case for safari / opera - now handled by caller
-    2) Sets dialog for firefox and IE differently
-  1.0.0 (2009-03-16)
-    1) Initial release for FCK Editor 2.5.b
+  1.0.4 (2015-02-02)
+    1) Now with unix-style line endings
+
 */
 
 'use strict';

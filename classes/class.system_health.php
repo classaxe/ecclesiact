@@ -1,10 +1,11 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.42');
+define('VERSION_SYSTEM_HEALTH', '1.0.43');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.42 (2015-01-11)
-    1) Now PSR-2 Compliant, and wraps changelog lines at 120 characters
+  1.0.43 (2015-02-01)
+    1) System_Health::_get_config_libraries_array() bug fix for file name of /js/spectrum.min.js
+       (was /js/spectrum.min.css)
 
   (Older version history in class.system_health.txt)
 */
@@ -140,7 +141,7 @@ class System_Health extends System
                     $changed_files_list.=
                          "  "
                         .pad($changed_file, 95)
-                        .pad($history_version_arr[0],10)
+                        .pad($history_version_arr[0], 10)
                         .$history_version_arr[1]
                         ."\n"
                         ."    1) Updated version information\n";
@@ -151,23 +152,22 @@ class System_Health extends System
                   // Do Nothing
                     break;
                 default:
-                    if (substr($changed_file,0,4)==='www/'){
-                        $path = "./".substr($changed_file,4);
+                    if (substr($changed_file, 0, 4)==='www/') {
+                        $path = "./".substr($changed_file, 4);
                         if (!file_exists($path)) {
-                            $path = "../".substr($changed_file,4);
+                            $path = "../".substr($changed_file, 4);
                         }
-                    }
-                    else {
+                    } else {
                         $path = SYS_SHARED.$changed_file;
                     }
                     $history = $ObjFS->get_file_changes($path);
                     $history_arr =          explode("\n", trim($history));
                     $history_version_arr =  explode(' ', trim(array_shift($history_arr)));
-                    $history =              implode("\n",$history_arr);
+                    $history =              implode("\n", $history_arr);
                     $changed_files_list.=
                         "  "
-                        .pad(trim($changed_file),95)
-                        .pad($history_version_arr[0],10)
+                        .pad(trim($changed_file), 95)
+                        .pad($history_version_arr[0], 10)
                         .$history_version_arr[1]
                         ."\n"
                         .$history
@@ -1140,7 +1140,7 @@ class System_Health extends System
             array('/js/jquery.min.js','js_jquery'),
             array('/js/jquery-ui.min.js','js_jquery_ui'),
             array('/js/rss_reader.js','js_rssreader'),
-            array('/js/spectrum.min.css','js_spectrum'),
+            array('/js/spectrum.min.js','js_spectrum'),
             array('/js/treeview.js','js_treeview'),
             array('/style/breadcrumbs.css','css_breadcrumbs'),
             array('/style/default.css','css'),

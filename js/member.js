@@ -1,11 +1,9 @@
-// 1.0.141
+// 1.0.142
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.141 (2014-07-20)
-    1) Function gallery_album_sortable_setup() now checks that images can be seen before
-       attempting to attach listener events to them -
-       This odd situation can occur if the component is placed in HTML comment tags
+  1.0.142 (2015-02-02)
+    1) Now with unix-style line endings
 
   (Older version history in member.txt)
 */

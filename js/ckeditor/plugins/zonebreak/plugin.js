@@ -1,14 +1,13 @@
-// 1.0.1
+// 1.0.2
 /* First line must show version number - update as builds change
 
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 
 Version History:
-  1.0.1 (2014-04-18)
-    1) Completely rewritten for CKEditor 4.3.4
-  1.0.0 (2012-12-10)
-    1) Initial release
+  1.0.2 (2015-02-02)
+    1) Now with unix-style line endings
+
 */
 
 'use strict';

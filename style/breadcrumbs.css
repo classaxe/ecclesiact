@@ -1,5 +1,8 @@
-/* 1.0.1
+/* 1.0.2
+
 Version History:
+  1.0.2 (2015-02-02)
+    1) Now with unix-style line endings
   1.0.1 (2011-06-23)
     1) Fixes for IE8 (inline-block and height) and IE6+7 (*display and zoom hacks)
   1.0.0 (2011-06-21)

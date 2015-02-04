@@ -1,9 +1,9 @@
-// 1.0.22
+// 1.0.23
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.22 (2014-12-29)
-    1) Added 'About' for Contacts and Users 'About' statements where the feature is enabled
+  1.0.23 (2015-02-02)
+    1) Now with unix-style line endings
 
   (Older version history in config.txt)
 

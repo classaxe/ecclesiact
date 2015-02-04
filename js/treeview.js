@@ -1,6 +1,8 @@
-// 4.3.d
+// 4.3.e
 /*
 Version History:
+  4.3.e (2015-02-02)
+    1) Now with unix-style line endings
   4.3.d (2012-03-03)
     1) First version controlled release with additional bracketting
   4.3.c (2010-05-10)

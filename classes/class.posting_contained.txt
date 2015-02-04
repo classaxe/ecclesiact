@@ -1,3 +1,6 @@
+  1.0.241 (2013-12-18)
+    1) Moved Posting_Contained::get_ID_by_path() into Posting as
+       Posting::get_ID_by_path()
   1.0.23 (2013-06-07)
     1) Internal changes in support of CP changes to replace the following
        deprecated parameters with their new equivalents:

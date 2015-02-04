@@ -1,3 +1,24 @@
+  1.0.24 (2013-06-14)
+    1) Changes to listings CPs following recent standardisation of filter and
+       results parameters
+  1.0.23 (2012-11-10)
+    1) TREB::_manage_insert_available() now sets enabled flag
+    2) Tweak to TREB::_manage_delete_unavailable() to exit cleanly if nothing to
+       delete
+  1.0.22 (2012-09-09)
+    1) Replaced escape_string() calls with non-DB specific ones
+  1.0.21 (2012-01-18)
+    1) Added new method TREB::on_action_set_path()
+    2) Installer and uninstaller sql now in separate files for quicker loading
+       and editing of code
+  1.0.20 (2011-10-19)
+    1) Change to BL_map() to use img/width/image-path mode for resizing map icon
+  1.0.19 (2011-06-17)
+    1) Moved call to _set_path_prefix() up and added note that this is needed
+       to override path_prefix set in parent context, i.e. gallery-image
+  1.0.18 (2011-06-03)
+    1) Moved guts of inline downloader into TREB::do_download()
+    2) Added TREB::do_download_for_cron()
   1.0.17 (2011-05-12)
     1) Added new Treb_Component class to allow virtual tour to wrap
        Component_Gallery_Thumbnails component to virtualise paths for tours
