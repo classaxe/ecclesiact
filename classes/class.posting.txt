@@ -1,3 +1,15 @@
+  1.0.119 (2015-02-01)
+    1) Renamed methods in Posting class
+         from Posting::_get_records_sort_records_using_filter_order_by()
+         to   Posting::_get_records_sort_records_using_results_order()
+    2) Changed call in Posting::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    3) Internal changes in Posting::get_records() to handle renamed parameters for consistency with other classes:
+         Old: 'order_by',       'limit'
+         New: 'results_order',  'results_limit'
+    4) Class constant Posting::fields renamed to Posting::FIELDS
+    5) Now PSR-2 Compliant
   1.0.118 (2014-10-26)
     1) Change to Posting::_get_records_sort_records_using_filter_order_by() when sorting
        by date (with implicity title subsort) to also reverse title order when showing in

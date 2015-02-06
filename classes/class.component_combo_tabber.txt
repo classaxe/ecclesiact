@@ -1,3 +1,7 @@
+  1.0.8 (2014-04-26)
+    1) Events, Podcasts and News panels were not respecting the results limit settings
+       passed to them by unified component parameters in this implementation -
+       The passed CP names have now been corrected
   1.0.7 (2014-01-28)
     1) Added ; and newline and indent after js_onload code in
        Component_Combo_Tabber::_draw_section_tabs()

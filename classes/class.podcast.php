@@ -1,12 +1,9 @@
 <?php
-define('VERSION_PODCAST', '1.0.45');
+define('VERSION_PODCAST', '1.0.46');
 /*
 Version History:
-  1.0.45 (2015-02-01)
-    1) Changed call in Podcast::_get_records_sort_records()
-         from $this->_get_records_sort_records_using_filter_order_by()
-         to   $this->_get_records_sort_records_using_results_order()
-    2) Now PSR-2 Compliant
+  1.0.46 (2015-02-06)
+    1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
 
   (Older version history in class.podcast.txt)
 */
@@ -292,9 +289,9 @@ class Podcast extends Posting_Contained
                 'hint' =>       '0..n'
             ),
             'results_order' =>            array(
-                'match' =>      'enum|date,date_a,title',
+                'match' =>      'enum|date,date_a,date_d_title_a,name,title',
                 'default' =>    'date',
-                'hint' =>       'date|date_a|atitle'
+                'hint' =>       'date|date_a|date_d_title_a|name|title'
             ),
             'results_paging' =>           array(
                 'match' =>      'enum|0,1,2',

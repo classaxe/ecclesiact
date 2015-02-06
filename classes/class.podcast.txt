@@ -1,3 +1,8 @@
+  1.0.45 (2015-02-01)
+    1) Changed call in Podcast::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    2) Now PSR-2 Compliant
   1.0.44 (2014-10-26)
     1) Changes to CPs for results order to allow for date_a
   1.0.43 (2014-05-19)

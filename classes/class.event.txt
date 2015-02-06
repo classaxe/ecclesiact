@@ -1,3 +1,9 @@
+  1.0.103 (2014-06-07)
+    1) Changes to these block layout tags to enable manual setting for time and date format:
+       BL_date($format=false)
+       BL_date_heading_if_changed($format=false)
+       BL_event_times($timeFormatCode=false)
+    2) New BL tag  BL_filter_date_range($format=false)
   1.0.102 (2014-03-26)
     1) Event::_draw_object_map_html_setup() now uses correct report for child object
        to edit field

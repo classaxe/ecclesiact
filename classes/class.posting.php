@@ -1,19 +1,10 @@
 <?php
-define("VERSION_POSTING", "1.0.119");
+define("VERSION_POSTING", "1.0.120");
 /*
 Version History:
-  1.0.119 (2015-02-01)
-    1) Renamed methods in Posting class
-         from Posting::_get_records_sort_records_using_filter_order_by()
-         to   Posting::_get_records_sort_records_using_results_order()
-    2) Changed call in Posting::_get_records_sort_records()
-         from $this->_get_records_sort_records_using_filter_order_by()
-         to   $this->_get_records_sort_records_using_results_order()
-    3) Internal changes in Posting::get_records() to handle renamed parameters for consistency with other classes:
-         Old: 'order_by',       'limit'
-         New: 'results_order',  'results_limit'
-    4) Class constant Posting::fields renamed to Posting::FIELDS
-    5) Now PSR-2 Compliant
+  1.0.120 (2015-02-06)
+    1) Posting::_get_records_sort_records_using_results_order() now allows for sorting by
+       date_d_name_a and date_d_title_a
 
   (Older version history in class.posting.txt)
 */
@@ -1079,7 +1070,7 @@ class Posting extends Displayable_Item
                 }
                 $date_field = (is_a($this, 'Event') ? 'effective_date_start' :'date');
                 $order_arr = array(
-                    array($date_field,$order_direction),
+                    array($date_field, $order_direction),
                     array('systemTitle', 'a'),
                     array('effective_time_start', 'a'),
                     array('effective_time_end', 'a'),
@@ -1090,9 +1081,27 @@ class Posting extends Displayable_Item
                 $order_direction =  'a';
                 $date_field = 'date';
                 $order_arr = array(
-                    array($date_field,$order_direction),
+                    array($date_field, $order_direction),
                     array('systemTitle', 'a'),
                     array('effective_time_start', 'a'),
+                    array('effective_time_end', 'a'),
+                    array('title', 'a')
+                );
+                break;
+            case 'date_d_name_a':
+                $order_arr = array(
+                    array('date', 'd'),
+                    array('systemTitle', 'd'),
+                    array('effective_time_start', 'd'),
+                    array('effective_time_end', 'a'),
+                    array('name', 'a')
+                );
+                break;
+            case 'date_d_title_a':
+                $order_arr = array(
+                    array('date', 'd'),
+                    array('systemTitle', 'd'),
+                    array('effective_time_start', 'd'),
                     array('effective_time_end', 'a'),
                     array('title', 'a')
                 );

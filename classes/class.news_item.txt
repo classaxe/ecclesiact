@@ -1,3 +1,6 @@
+  1.0.23 (2015-01-28)
+    1) Previously cloning a News Item required a new name to be given (which wasn't used)
+       Now the clone is nameless.
   1.0.22 (2013-09-20)
     1) Added support for categories in detail and listings view
   1.0.21 (2013-07-31)

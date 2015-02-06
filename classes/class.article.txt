@@ -1,3 +1,5 @@
+  1.0.37 (2013-07-31)
+    1) Provided default sizes for thumbnail images in listings and details mode
   1.0.36 (2013-06-07)
     1) Changed the following CPs for listings mode:
          Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
