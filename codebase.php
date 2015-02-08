@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.4");
+define("CODEBASE_VERSION", "3.1.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,50 +16,31 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.4.2360 (2015-02-06)
+3.1.5.2361 (2015-02-08)
 Summary:
-  1) Added ability for Articles, Events, News and Podcasts to be ordered by date_d_name_a or date_d_title_a
-  2) Component_Combo_Tabber now allows for control of sorting of events, news and podcasts (for DCC)
+  1) New version of CK Editor which includes pluigins missing from last version
+     Thanks to Cecil A for the bug report indicating this error
 
 Final Checksums:
   Classes     CS:f69838b
   Database    CS:65c4e281
-  Libraries   CS:9958f778
+  Libraries   CS:886ec9ef
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.3     (2015-02-06)
+  codebase.php                                                                                   3.1.5     (2015-02-08)
     1) Updated version information
-  classes/class.article.php                                                                      1.0.38    (2015-02-06)
-    1) CP for listings 'results_order' now allows for date_a, date_d_name_a and date_d_title_a
-    2) Now PSR-2 Compliant
-  classes/class.component_combo_tabber.php                                                       1.0.9     (2015-02-06)
-    1) Events, Podcasts and News panels may now have their orders specified
-    2) Now PSR-2 Compliant
-  classes/class.event.php                                                                        1.0.104   (2015-02-06)
-    1) New CP for listings - results_order - previously not possible to change display order
-    2) Now PSR-2 Compliant
-  classes/class.news_item.php                                                                    1.0.24    (2015-02-06)
-    1) New CP for listings - results_order - previously not possible to change display order
-    2) Now PSR-2 Compliant
-  classes/class.podcast.php                                                                      1.0.46    (2015-02-06)
-    1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
-  classes/class.posting.php                                                                      1.0.120   (2015-02-06)
-    1) Posting::_get_records_sort_records_using_results_order() now allows for sorting by
-       date_d_name_a and date_d_title_a
+  js/ckeditor/ckeditor.js                                                                        4.4.7     (2015-02-08)
+    1) Latest version, including plugins that were missing from last build
+       Use this path to get next version of ckeditor.js with all required plugins:
+         http://ckeditor.com/builder/download/0a65b3bcdcd34789da36844fa1d0eb27
 
-2360.sql
+2361.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.1.3
-  classes/  (6 files changed)
-    class.article.php                                 1.0.38    CS:678d9943
-    class.component_combo_tabber.php                  1.0.9     CS:c3f7b3d8
-    class.event.php                                   1.0.104   CS:a7167a41
-    class.news_item.php                               1.0.24    CS:815f6fc9
-    class.podcast.php                                 1.0.46    CS:eecbea38
-    class.posting.php                                 1.0.120   CS:448078e9
+  codebase.php                                        3.1.5
+  js/ckeditor/ckeditor.js                             4.4.7     CS:ae0530cf
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
