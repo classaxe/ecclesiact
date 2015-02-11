@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.5");
+define("CODEBASE_VERSION", "3.1.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,31 +16,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.5.2361 (2015-02-08)
+3.1.6.2362 (2015-02-11)
 Summary:
-  1) New version of CK Editor which includes pluigins missing from last version
-     Thanks to Cecil A for the bug report indicating this error
+  1) Fix to reduce net traffic for sites using the Collection Viewer component -
+     Now extending the access path to select a specific sermon either for album or author
+     will produce a 404 when the specified podcast wasn't found.
+     This should dramatically reduce server load and network traffic.
 
 Final Checksums:
-  Classes     CS:f69838b
+  Classes     CS:83daf9d0
   Database    CS:65c4e281
-  Libraries   CS:886ec9ef
+  Libraries   CS:5ffaa0ff
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.5     (2015-02-08)
+  codebase.php                                                                                   3.1.6     (2015-02-11)
     1) Updated version information
-  js/ckeditor/ckeditor.js                                                                        4.4.7     (2015-02-08)
-    1) Latest version, including plugins that were missing from last build
-       Use this path to get next version of ckeditor.js with all required plugins:
-         http://ckeditor.com/builder/download/0a65b3bcdcd34789da36844fa1d0eb27
+  classes/class.component_collection_viewer.php                                                  1.0.50    (2015-02-11)
+    1) Now serves 404 when visitor attempts to select an invalid podcast.
+       This should dramatically reduce network traffic by search bots following invalid search paths.
+       Examples:
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared (valid)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-preparedxxxxx (now 404)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared/xxx (now 404)
+    2) Previously selecting a selected podcast for a given author failed to highlight the selected podcast.
+       This now works correctly.
+       Example:
+          http://www.makingjesusknown.com/sermons/speaker/bruce-smith/freedom-gods-call-for-you
 
-2361.sql
+2362.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.1.5
-  js/ckeditor/ckeditor.js                             4.4.7     CS:ae0530cf
+  codebase.php                                        3.1.6
+  classes/  (1 file changed)
+    class.component_collection_viewer.php             1.0.50    CS:bc06b2d6
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

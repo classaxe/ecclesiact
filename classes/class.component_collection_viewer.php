@@ -1,15 +1,18 @@
 <?php
-define("VERSION_COMPONENT_COLLECTION_VIEWER", "1.0.49");
+define("VERSION_COMPONENT_COLLECTION_VIEWER", "1.0.50");
 /*
 Version History:
-  1.0.49 (2015-01-31)
-    1) Changes to internally used parameters in Component_Collection_Viewer::_load_podcast_albums():
-         Old: order_by
-         New: results_order
-    2) Changes to internally used parameters in Component_Collection_Viewer::_load_podcasts():
-         Old: order_by
-         New: results_order
-    3) Now PSR-2 Compliant
+  1.0.50 (2015-02-11)
+    1) Now serves 404 when visitor attempts to select an invalid podcast.
+       This should dramatically reduce network traffic by search bots following invalid search paths.
+       Examples:
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared (valid)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-preparedxxxxx (now 404)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared/xxx (now 404)
+    2) Previously selecting a selected podcast for a given author failed to highlight the selected podcast.
+       This now works correctly.
+       Example:
+          http://www.makingjesusknown.com/sermons/speaker/bruce-smith/freedom-gods-call-for-you
 
   (Older version history in class.component_collection_viewer.txt)
 */
@@ -658,6 +661,9 @@ class Component_Collection_Viewer extends Component_Base
         } elseif ($this->_selected_author!='' && $this->_selected_author_label===false) {
             $html.= "<b>Error:</b><br />No such author as ".$this->_selected_author;
             header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
+        } elseif ($this->_selected_podcast && !$this->_podcast_selected) {
+            $html.= "<b>Error:</b><br />No such podcast as ".$this->_selected_podcast;
+            header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
         } elseif ($this->_selected_author!='' || $this->_selected_album!='') {
             $html.= $Obj_Podcast->convert_Block_Layout(
                 $this->_Obj_Block_Layout->record['listings_group_header']
@@ -962,15 +968,36 @@ class Component_Collection_Viewer extends Component_Base
 
     protected function _load_podcast_selected()
     {
-        foreach ($this->_podcasts as $record) {
-            if (
-                $this->_selected_album_ID==$record['parentID'] &&
-                trim(strToLower($record['name']))==trim(strToLower($this->_selected_podcast))
-            ) {
-                $this->_podcast_selected = $record;
-                break;
+        if (!$this->_selected_podcast) {
+            return;
+        }
+        $matched = false;
+        if ($this->_selected_album_ID) {
+            foreach ($this->_podcasts as $record) {
+                if (
+                    $this->_selected_album_ID==$record['parentID'] &&
+                    trim(strToLower($record['name']))==trim(strToLower($this->_selected_podcast))
+                ) {
+                    $this->_podcast_selected = $record;
+                    $matched = true;
+                    break;
+                }
             }
         }
+        if ($this->_selected_author) {
+            foreach ($this->_podcasts as $record) {
+                if (trim(strToLower($record['name']))==trim(strToLower($this->_selected_podcast))) {
+                    $this->_podcast_selected = $record;
+                    $matched = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$matched) {
+            $this->_podcast_selected = false;
+        }
+
     }
 
     protected function _load_podcasts()
@@ -1298,6 +1325,9 @@ class Component_Collection_Viewer extends Component_Base
         }
         if (isset($bits[1])) {
             $this->_selected_podcast = $bits[1];
+        }
+        if (isset($bits[2])) {
+            $this->_selected_podcast = implode('/', array_slice($bits, 1));
         }
     }
 
