@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.6");
+define("CODEBASE_VERSION", "3.1.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,70 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.6.2362 (2015-02-11)
+3.1.7.2363 (2015-02-14)
 Summary:
-  1) Fix to reduce net traffic for sites using the Collection Viewer component -
-     Now extending the access path to select a specific sermon either for album or author
-     will produce a 404 when the specified podcast wasn't found.
-     This should dramatically reduce server load and network traffic.
+  1) Simplified HTML error page shown by Collection Viewer when an invalid resource access is attempted.
+  2) CKEditor plugins More and Zonebreak no longer specify language file to load (caused 404 errors)
+  3) Tiny HTML tag attribute tweak in report forms
+  4) Split out components within Module Church into their own classes
+  5) Updated Reftagger API calls in newly separated Component_Bible_Links component
 
 Final Checksums:
-  Classes     CS:83daf9d0
+  Classes     CS:efe94ad
   Database    CS:65c4e281
-  Libraries   CS:5ffaa0ff
+  Libraries   CS:c2887239
   Reports     CS:e9d991db
 
 Code Changes:
-  codebase.php                                                                                   3.1.6     (2015-02-11)
+  codebase.php                                                                                   3.1.7     (2015-02-14)
     1) Updated version information
-  classes/class.component_collection_viewer.php                                                  1.0.50    (2015-02-11)
-    1) Now serves 404 when visitor attempts to select an invalid podcast.
-       This should dramatically reduce network traffic by search bots following invalid search paths.
-       Examples:
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared (valid)
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-preparedxxxxx (now 404)
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared/xxx (now 404)
-    2) Previously selecting a selected podcast for a given author failed to highlight the selected podcast.
-       This now works correctly.
-       Example:
-          http://www.makingjesusknown.com/sermons/speaker/bruce-smith/freedom-gods-call-for-you
+  classes/class.component_bible_links.php                                                        1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+    2) Updated API code for Reftagger calls to use newer API
+  classes/class.component_collection_viewer.php                                                  1.0.51    (2015-02-12)
+    1) Now outputs bare-bones HTML page when displaying 404 - resource not found
+  classes/class.component_daily_bible_verse.php                                                  1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+  classes/class.component_prayer_request.php                                                     1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+  classes/class.page.php                                                                         1.0.119   (2015-02-14)
+    1) Change to Page::prepare_html_head() now that Component_Bible_Links::draw() was moved from a module to
+       its own class
+  classes/class.prayer_request.php                                                               1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+  classes/class.report_form.php                                                                  1.0.61    (2015-02-14)
+    1) HTML tweak for Report_Form::_draw_form_field() to correctly space tag attributes
+  js/ckeditor/plugins/more/plugin.js                                                             1.0.4     (2015-02-14)
+    1) No longer specifies language file - neither needed nor provided
+  js/ckeditor/plugins/zonebreak/plugin.js                                                        1.0.3     (2015-02-14)
+    1) No longer specifies language file - neither needed nor provided
+  modules/module.church.php                                                                      1.0.17    (2015-02-14)
+    1) Moved Church_Component::bible_links() into its own class
+    2) Moved Church_Component::component_prayer_request() into its own class
+    3) Moved component_daily_bible_verse() into its own class
+    4) Removed Church::bible_Links() - not needed
+    5) Removed discrete function import_pr() - was one time use, no longer needed
+    6) Now PSR-2 compliant
 
-2362.sql
-  1) Set version information
+2363.sql
+  1) Updates to prayer request form and report following primary object change from Church to Prayer_Request
+  2) Changed ECL tag component_form_prayer_request to use new component for prayer requests form
+  3) Set version information
 
 Promote:
-  codebase.php                                        3.1.6
-  classes/  (1 file changed)
-    class.component_collection_viewer.php             1.0.50    CS:bc06b2d6
+  codebase.php                                        3.1.7
+  classes/  (7 files changed)
+    class.component_bible_links.php                   1.0.0     CS:85ef4878
+    class.component_collection_viewer.php             1.0.51    CS:4ffad4bb
+    class.component_daily_bible_verse.php             1.0.0     CS:2589d4ed
+    class.component_prayer_request.php                1.0.0     CS:8dcf2893
+    class.page.php                                    1.0.119   CS:423390a4
+    class.prayer_request.php                          1.0.0     CS:a982dc25
+    class.report_form.php                             1.0.61    CS:be675cd5
+  js/ckeditor/plugins/more/plugin.js                  1.0.4     CS:f2b6d5fe
+  js/ckeditor/plugins/zonebreak/plugin.js             1.0.3     CS:d499229d
+  modules/module.church.php                           1.0.17
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1344,7 +1373,7 @@ function draw_hide_show($div, $text, $expanded = 1)
     .$text."</h3>"
     ."</div>"
     ."<div id=\"".$div."_region\""
-    .($expanded ? "" : "style=\"display:none;width:100%; margin:auto;\" ")
+    .($expanded ? "" : " style=\"display:none;width:100%; margin:auto;\"")
     .">";
 }
 

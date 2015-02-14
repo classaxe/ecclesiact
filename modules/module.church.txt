@@ -1,3 +1,19 @@
+  1.0.16 (2012-09-09)
+    1) Changes to Church::install() and Church::uninstall() to avoid native DB access
+  1.0.15 (2012-09-07)
+    1) Changes to Church_Component::bible_links() to use https for script download
+       if site is secure
+  1.0.14 (2012-03-14)
+    1) Moved sql for installer and uninstaller into external sql files
+  1.0.13 (2011-12-29)
+    1) Constructor now calls Component_Base::registerMethod(), not
+       Component::registerMethod() which eliminates a needless invokation
+  1.0.12 (2011-08-22)
+    1) Refreshed installer sql for reports 'module.church.prayer-requests-report',
+       'module.church.prayer_requests_icon' and 'module.church.prayer-request-form'
+  1.0.11 (2011-07-17)
+    1) Changed one reference from Component::function_name() to
+       Component_Base::function_name()
   1.0.10 (2011-01-27)
     1) Replaced deprecated function add() for insert() in function
        Church_Component::prayer_request() and function import_pr() for good measure

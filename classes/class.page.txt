@@ -1,3 +1,7 @@
+  1.0.118 (2015-01-01)
+    1) Now uses globals contant for option_separator tag in Page::prepare_html_head() JS code
+    2) Fixed print form functionality - broken for a while I suspect
+    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
   1.0.117 (2014-08-09)
     1) Page cloning now allows use of reserved names and language codes BUT ONLY when
        the page itself is not a root-level page.

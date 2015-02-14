@@ -1,12 +1,12 @@
-// 1.0.2
+// 1.0.3
 /* First line must show version number - update as builds change
 
 Copyright (c) 2003-2014, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 
 Version History:
-  1.0.2 (2015-02-02)
-    1) Now with unix-style line endings
+  1.0.3 (2015-02-14)
+    1) No longer specifies language file - neither needed nor provided
 
 */
 
@@ -16,7 +16,6 @@ Version History:
   CKEDITOR.plugins.add(
     'zonebreak', {
     requires: 'fakeobjects',
-    lang: 'en',
     icons: 'zonebreak',
     hidpi: true,
     init: function( editor ){

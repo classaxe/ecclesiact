@@ -1,12 +1,10 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.60");
+define("VERSION_REPORT_FORM", "1.0.61");
 
 /*
 Version History:
-  1.0.60 (2015-01-06)
-    1) Report_Form::_do_update() now uses correct object to perform update and validates fields where possible
-    2) Now uses OPTION_SEPARATOR constant not option_separator in Report_Form::_prepare_field() for 'option_list'
-    3) Now PSR-2 Compliant
+  1.0.61 (2015-02-14)
+    1) HTML tweak for Report_Form::_draw_form_field() to correctly space tag attributes
 
   (Older version history in class.report_form.txt)
 */
@@ -249,7 +247,7 @@ class Report_Form extends Report
                 } else {
                     $this->_html.=
                          "<table cellpadding='2' cellspacing='0'"
-                        ."style='width:100%;border:0;border-collapse:collapse;'>\n";
+                        ." style='width:100%;border:0;border-collapse:collapse;'>\n";
                 }
                 $this->_tab_last_shown = $reportTab;
             }

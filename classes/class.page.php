@@ -1,11 +1,10 @@
 <?php
-define('VERSION_PAGE', '1.0.118');
+define('VERSION_PAGE', '1.0.119');
 /*
 Version History:
-  1.0.118 (2015-01-01)
-    1) Now uses globals contant for option_separator tag in Page::prepare_html_head() JS code
-    2) Fixed print form functionality - broken for a while I suspect
-    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
+  1.0.119 (2015-02-14)
+    1) Change to Page::prepare_html_head() now that Component_Bible_Links::draw() was moved from a module to
+       its own class
 
   (Older version history in class.page.txt)
 */
@@ -2077,7 +2076,8 @@ class Page extends Displayable_Item
             $mode!='details' &&
             $mode!='report'
         ) {
-            $this->push_content('body', Base::use_module('church')->bible_links());
+            $Obj_CBL = new Component_Bible_Links;
+            $this->push_content('body', $Obj_CBL->draw());
         }
     }
 

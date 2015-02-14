@@ -1,18 +1,9 @@
 <?php
-define("VERSION_COMPONENT_COLLECTION_VIEWER", "1.0.50");
+define("VERSION_COMPONENT_COLLECTION_VIEWER", "1.0.51");
 /*
 Version History:
-  1.0.50 (2015-02-11)
-    1) Now serves 404 when visitor attempts to select an invalid podcast.
-       This should dramatically reduce network traffic by search bots following invalid search paths.
-       Examples:
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared (valid)
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-preparedxxxxx (now 404)
-          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared/xxx (now 404)
-    2) Previously selecting a selected podcast for a given author failed to highlight the selected podcast.
-       This now works correctly.
-       Example:
-          http://www.makingjesusknown.com/sermons/speaker/bruce-smith/freedom-gods-call-for-you
+  1.0.51 (2015-02-12)
+    1) Now outputs bare-bones HTML page when displaying 404 - resource not found
 
   (Older version history in class.component_collection_viewer.txt)
 */
@@ -462,6 +453,21 @@ class Component_Collection_Viewer extends Component_Base
         $this->_load_data();
     }
 
+    protected function _draw_404($message)
+    {
+        header("Status: 404 Not Found", true, 404);
+        print
+             "<html>\n"
+            ."<head>\n"
+            ."<title>404 Page not found</title>\n"
+            ."</head>\n"
+            ."<body>\n"
+            ."<h1>404 Page not found</h1>\n"
+            ."<p>".$message."</p>\n"
+            ."</body>\n"
+            ."</html>";
+    }
+
     protected function _draw_admin_uploader()
     {
         if (
@@ -656,15 +662,18 @@ class Component_Collection_Viewer extends Component_Base
             ''
         );
         if ($this->_selected_album!='' && $this->_selected_album_label===false) {
-            $html.= "<b>Error:</b><br />No such album as ".$this->_selected_album;
-            header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
-        } elseif ($this->_selected_author!='' && $this->_selected_author_label===false) {
-            $html.= "<b>Error:</b><br />No such author as ".$this->_selected_author;
-            header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
-        } elseif ($this->_selected_podcast && !$this->_podcast_selected) {
-            $html.= "<b>Error:</b><br />No such podcast as ".$this->_selected_podcast;
-            header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
-        } elseif ($this->_selected_author!='' || $this->_selected_album!='') {
+            $this->_draw_404('<b>Error:</b><br />No such album as '.$this->_selected_album);
+            die();
+        }
+        if ($this->_selected_author!='' && $this->_selected_author_label===false) {
+            $this->_draw_404('<b>Error:</b><br />No such author as '.$this->_selected_author);
+            die();
+        }
+        if ($this->_selected_podcast && !$this->_podcast_selected) {
+            $this->_draw_404('<b>Error:</b><br />No such podcast as '.$this->_selected_podcast);
+            die();
+        }
+        if ($this->_selected_author!='' || $this->_selected_album!='') {
             $html.= $Obj_Podcast->convert_Block_Layout(
                 $this->_Obj_Block_Layout->record['listings_group_header']
             );

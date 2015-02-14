@@ -1,3 +1,14 @@
+  1.0.50 (2015-02-11)
+    1) Now serves 404 when visitor attempts to select an invalid podcast.
+       This should dramatically reduce network traffic by search bots following invalid search paths.
+       Examples:
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared (valid)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-preparedxxxxx (now 404)
+          http://www.makingjesusknown.com/sermons/series/1-peter/fiery-trials-be-prepared/xxx (now 404)
+    2) Previously selecting a selected podcast for a given author failed to highlight the selected podcast.
+       This now works correctly.
+       Example:
+          http://www.makingjesusknown.com/sermons/speaker/bruce-smith/freedom-gods-call-for-you
   1.0.49 (2015-01-31)
     1) Changes to internally used parameters in Component_Collection_Viewer::_load_podcast_albums():
          Old: order_by
