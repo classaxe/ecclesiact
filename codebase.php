@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.1.7");
+define("CODEBASE_VERSION", "3.2.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,70 +16,37 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.1.7.2363 (2015-02-14)
+3.2.0.2364 (2015-02-17)
 Summary:
-  1) Simplified HTML error page shown by Collection Viewer when an invalid resource access is attempted.
-  2) CKEditor plugins More and Zonebreak no longer specify language file to load (caused 404 errors)
-  3) Tiny HTML tag attribute tweak in report forms
-  4) Split out components within Module Church into their own classes
-  5) Updated Reftagger API calls in newly separated Component_Bible_Links component
+  1) Users may now be associated with a community where 'Community' feature is enabled
+  2) Contacts may now be associated with community and community member where 'Community' feature is enabled
 
 Final Checksums:
-  Classes     CS:efe94ad
-  Database    CS:65c4e281
-  Libraries   CS:c2887239
-  Reports     CS:e9d991db
+  Classes     CS:ff53189c
+  Database    CS:48ba81d8
+  Libraries   CS:850e6291
+  Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.1.7     (2015-02-14)
+  codebase.php                                                                                   3.2.0     (2015-02-17)
     1) Updated version information
-  classes/class.component_bible_links.php                                                        1.0.0     (2015-02-14)
-    1) Initial release - Moved from Church Module
-    2) Updated API code for Reftagger calls to use newer API
-  classes/class.component_collection_viewer.php                                                  1.0.51    (2015-02-12)
-    1) Now outputs bare-bones HTML page when displaying 404 - resource not found
-  classes/class.component_daily_bible_verse.php                                                  1.0.0     (2015-02-14)
-    1) Initial release - Moved from Church Module
-  classes/class.component_prayer_request.php                                                     1.0.0     (2015-02-14)
-    1) Initial release - Moved from Church Module
-  classes/class.page.php                                                                         1.0.119   (2015-02-14)
-    1) Change to Page::prepare_html_head() now that Component_Bible_Links::draw() was moved from a module to
-       its own class
-  classes/class.prayer_request.php                                                               1.0.0     (2015-02-14)
-    1) Initial release - Moved from Church Module
-  classes/class.report_form.php                                                                  1.0.61    (2015-02-14)
-    1) HTML tweak for Report_Form::_draw_form_field() to correctly space tag attributes
-  js/ckeditor/plugins/more/plugin.js                                                             1.0.4     (2015-02-14)
-    1) No longer specifies language file - neither needed nor provided
-  js/ckeditor/plugins/zonebreak/plugin.js                                                        1.0.3     (2015-02-14)
-    1) No longer specifies language file - neither needed nor provided
-  modules/module.church.php                                                                      1.0.17    (2015-02-14)
-    1) Moved Church_Component::bible_links() into its own class
-    2) Moved Church_Component::component_prayer_request() into its own class
-    3) Moved component_daily_bible_verse() into its own class
-    4) Removed Church::bible_Links() - not needed
-    5) Removed discrete function import_pr() - was one time use, no longer needed
-    6) Now PSR-2 compliant
+  classes/class.person.php                                                                       1.0.122   (2015-02-17)
+    1) Added support for communityId field in FIELDS list
+    2) Now PSR-2 Compliant
+  classes/class.record.php                                                                       1.0.88    (2015-02-17)
+    1) Typo for error message in Record::update() for warning about validating without fields
 
-2363.sql
-  1) Updates to prayer request form and report following primary object change from Church to Prayer_Request
-  2) Changed ECL tag component_form_prayer_request to use new component for prayer requests form
-  3) Set version information
+2364.sql
+  1) New field `communityID` and accompanying index for `person` table
+  2) Added Community to Users report / form
+  3) Added Community and Member to Contacts report / form
+  4) Set version information
 
 Promote:
-  codebase.php                                        3.1.7
-  classes/  (7 files changed)
-    class.component_bible_links.php                   1.0.0     CS:85ef4878
-    class.component_collection_viewer.php             1.0.51    CS:4ffad4bb
-    class.component_daily_bible_verse.php             1.0.0     CS:2589d4ed
-    class.component_prayer_request.php                1.0.0     CS:8dcf2893
-    class.page.php                                    1.0.119   CS:423390a4
-    class.prayer_request.php                          1.0.0     CS:a982dc25
-    class.report_form.php                             1.0.61    CS:be675cd5
-  js/ckeditor/plugins/more/plugin.js                  1.0.4     CS:f2b6d5fe
-  js/ckeditor/plugins/zonebreak/plugin.js             1.0.3     CS:d499229d
-  modules/module.church.php                           1.0.17
-
+  codebase.php                                        3.2.0
+  classes/  (2 files changed)
+    class.person.php                                  1.0.122   CS:72abe6b4
+    class.record.php                                  1.0.88    CS:68e16407
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

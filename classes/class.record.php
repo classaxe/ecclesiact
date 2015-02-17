@@ -1,10 +1,9 @@
 <?php
-define('VERSION_RECORD', '1.0.87');
+define('VERSION_RECORD', '1.0.88');
 /*
 Version History:
-  1.0.87 (2015-01-01)
-    1) Record::get_validation_fields() now looks first for class constant called FIELDS, then fields as before
-    2) Now PSR-2 Compliant
+  1.0.88 (2015-02-17)
+    1) Typo for error message in Record::update() for warning about validating without fields
 
   (Older version history in class.record.txt)
 */
@@ -2345,7 +2344,8 @@ class Record extends Portal
                     __CLASS__.'::'.__FUNCTION__.'()',
                     'validate',
                     "Object: ".$this->_get_object_name()."\n"
-                    ."When validating you must set a static $fields property (table: ".$this->_get_table_name().")"
+                    ."When validating you must set a FIELDS constant for the associated object "
+                    ."(table: ".$this->_get_table_name().")"
                 );
                 print __CLASS__.'::'.__FUNCTION__.'() When validating you must set static $fields property';
                 return false;

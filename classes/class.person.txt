@@ -1,3 +1,6 @@
+  1.0.121 (2014-12-29)
+    1) Added support for LinkedIn BL tags
+    2) Added support for about field and privacy controls for it, along with BL_about tag
   1.0.120 (2014-09-21)
     1) New fields `about`, `AGooglePlus`, `ALinkedIn`, `WGooglePlus` and `WLinkedIn`
   1.0.119 (2014-08-17)

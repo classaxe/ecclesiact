@@ -1,3 +1,6 @@
+  1.0.87 (2015-01-01)
+    1) Record::get_validation_fields() now looks first for class constant called FIELDS, then fields as before
+    2) Now PSR-2 Compliant
   1.0.86 (2014-02-17)
     1) New method Record::get_validation_fields() that looks for table validation
        fields first as class constant, then static variable, then member variable
