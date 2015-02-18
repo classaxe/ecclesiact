@@ -1,10 +1,17 @@
 <?php
-define('VERSION_PERSON', '1.0.122');
+define('VERSION_PERSON', '1.0.123');
 /*
 Version History:
-  1.0.122 (2015-02-17)
-    1) Added support for communityId field in FIELDS list
-    2) Now PSR-2 Compliant
+  1.0.123 (2015-02-17)
+    1) Added support in Person::load_profile_fields() for new community-based fields:
+         Community_Name
+         Community_Title
+         Community_URL
+         Community_Member_ID
+         Community_Member_Name
+         Community_Member_Title
+         Community_Member_Image
+         Community_Member_URL
 
   (Older version history in class.person.txt)
 */
@@ -2104,13 +2111,32 @@ class Person extends Displayable_Item
         component_result_set('PUsername', $record['PUsername']);
         component_result_set('NTitle', $record['NTitle']);
         component_result_set('WCompany', $record['WCompany']);
+        component_result_set('Community_Name', '');
+        component_result_set('Community_Title', '');
+        component_result_set('Community_URL', '');
+        component_result_set('Community_Member_ID', '');
         component_result_set('Community_Member_Name', '');
         component_result_set('Community_Member_Title', '');
+        component_result_set('Community_Member_Image', '');
+        component_result_set('Community_Member_URL', '');
+        if ($record['communityID'] && class_exists('Community')) {
+            $Obj_C = new Community($record['communityID']);
+            $Obj_C->load();
+            component_result_set('Community_Name', $Obj_C->record['name']);
+            component_result_set('Community_Title', $Obj_C->record['title']);
+            component_result_set('Community_URL', $Obj_C->record['URL_external']);
+        }
         if ($record['memberID'] && class_exists('Community_Member')) {
             $Obj_CM = new Community_Member($record['memberID']);
             $Obj_CM->load();
+            component_result_set('Community_Member_ID', $Obj_CM->record['ID']);
             component_result_set('Community_Member_Name', $Obj_CM->record['name']);
             component_result_set('Community_Member_Title', $Obj_CM->record['title']);
+            component_result_set('Community_Member_Image', $Obj_CM->record['featured_image']);
+            component_result_set(
+                'Community_Member_URL',
+                component_result('Community_URL').'/'.$Obj_CM->record['name']
+            );
         }
     }
 

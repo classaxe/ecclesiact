@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.0");
+define("CODEBASE_VERSION", "3.2.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,37 +16,63 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.0.2364 (2015-02-17)
+3.2.1.2365 (2015-02-17)
 Summary:
-  1) Users may now be associated with a community where 'Community' feature is enabled
-  2) Contacts may now be associated with community and community member where 'Community' feature is enabled
+  1) New Email ECL tags for community members to show:
+     * Community_Name
+     * Community_Title
+     * Community_URL
+     * Community_Member_ID
+     * Community_Member_Name
+     * Community_Member_Title
+     * Community_Member_Image
+     * Community_Member_URL
+  2) Changes to Community Member Summary to allow viewing of all data for a member (including email and contact
+     details) if a 'token' containing the ID of the record in question is also passed.
 
 Final Checksums:
-  Classes     CS:ff53189c
+  Classes     CS:8bbceb42
   Database    CS:48ba81d8
-  Libraries   CS:850e6291
+  Libraries   CS:c87dba61
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.0     (2015-02-17)
+  codebase.php                                                                                   3.2.1     (2015-02-17)
     1) Updated version information
-  classes/class.person.php                                                                       1.0.122   (2015-02-17)
-    1) Added support for communityId field in FIELDS list
-    2) Now PSR-2 Compliant
-  classes/class.record.php                                                                       1.0.88    (2015-02-17)
-    1) Typo for error message in Record::update() for warning about validating without fields
+  classes/class.community_member_summary.php                                                     1.0.18    (2015-02-17)
+    1) Updated Community_Member_Summary::_draw_page_header() with new phone number
+    2) Now presents all fields (including ones normally only visible to administrator) provided that an HTTP
+       variable called 'token' is provided which contains the ID of the community record in question
+    3) Now PSR-2 Compliant
+  classes/class.person.php                                                                       1.0.123   (2015-02-17)
+    1) Added support in Person::load_profile_fields() for new community-based fields:
+         Community_Name
+         Community_Title
+         Community_URL
+         Community_Member_ID
+         Community_Member_Name
+         Community_Member_Title
+         Community_Member_Image
+         Community_Member_URL
 
-2364.sql
-  1) New field `communityID` and accompanying index for `person` table
-  2) Added Community to Users report / form
-  3) Added Community and Member to Contacts report / form
-  4) Set version information
+2365.sql
+  1) New ECL tags for community member emailing:
+       field_community_member_id
+       field_community_member_image
+       field_community_member_name
+       field_community_member_title
+       field_community_member_url
+       field_community_name
+       field_community_title
+       field_community_url
+  2) Set version information
 
 Promote:
-  codebase.php                                        3.2.0
+  codebase.php                                        3.2.1
   classes/  (2 files changed)
-    class.person.php                                  1.0.122   CS:72abe6b4
-    class.record.php                                  1.0.88    CS:68e16407
+    class.community_member_summary.php                1.0.18    CS:819f4135
+    class.person.php                                  1.0.123   CS:a48f27e5
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

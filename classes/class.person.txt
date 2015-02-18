@@ -1,3 +1,6 @@
+  1.0.122 (2015-02-17)
+    1) Added support for communityId field in FIELDS list
+    2) Now PSR-2 Compliant
   1.0.121 (2014-12-29)
     1) Added support for LinkedIn BL tags
     2) Added support for about field and privacy controls for it, along with BL_about tag
