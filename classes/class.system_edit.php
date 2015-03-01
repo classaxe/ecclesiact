@@ -1,12 +1,13 @@
 <?php
-define('VERSION_SYSTEM_EDIT', '1.0.31');
+define('VERSION_SYSTEM_EDIT', '1.0.32');
 
 /*
 Version History:
-  1.0.31 (2014-12-31)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in System_Edit::_do_save()
+  1.0.32 (2015-03-01)
+    1) Call to System_Health::get_config() is now System_Health::getConfig()
+    2) System_Edit::get_version() now System_Edit::getVersion()
+    3) Now closer to full PSR-2 compliant
 
-  (Older version history in class.system_edit.txt)
 */
 class System_Edit extends System
 {
@@ -20,39 +21,39 @@ class System_Edit extends System
     private $_selected_section;
     private $_submode;
 
-    private function _do_initial_actions()
+    private function _doInitialActions()
     {
         switch ($this->_submode) {
             case "delete_file":
-                $this->_do_delete_files();
+                $this->_doDeleteFiles();
                 break;
             case "delete_scheme":
-                $this->_do_delete_colourscheme();
+                $this->_doDeleteColourscheme();
                 break;
             case "load_scheme":
-                $this->_do_load_colourscheme();
+                $this->_doLoadColourscheme();
                 break;
             case "save_scheme":
-                $this->_do_save_colourscheme();
+                $this->_doSaveColourscheme();
                 break;
         }
       // Check again incase submode changed
         switch ($this->_submode) {
             case 'save':
             case 'save_and_close':
-                $this->_do_save();
+                $this->_doSave();
                 break;
         }
     }
 
-    private function _do_delete_colourscheme()
+    private function _doDeleteColourscheme()
     {
         $Obj_CS = new Colour_Scheme($this->_colour_schemeID);
         $Obj_CS->delete();
         do_log(0, __CLASS__.'::'.__FUNCTION__.'()', 'delete_scheme', 'Deleted colour scheme '.$this->_colour_schemeID);
     }
 
-    private function _do_delete_files()
+    private function _doDeleteFiles()
     {
         $Obj_FS = new FileSystem;
         foreach ($_REQUEST as $key => $value) {
@@ -60,7 +61,7 @@ class System_Edit extends System
         }
     }
 
-    private function _do_load_colourscheme()
+    private function _doLoadColourscheme()
     {
         if ($this->_colour_schemeID!="") {
             $Obj_CS = new Colour_Scheme($this->_colour_schemeID);
@@ -75,57 +76,56 @@ class System_Edit extends System
         do_log(0, __CLASS__.'::'.__FUNCTION__.'()', 'load_scheme', 'Loaded colour scheme '.$this->_colour_schemeID);
     }
 
-    private function _do_save()
+    private function _doSave()
     {
         global $system_vars;
         $this->_posting_prefix_old =    $this->get_field('posting_prefix');
-        $data =
-        array(
-        'adminEmail'=>                  addslashes(get_var('adminEmail')),
-        'adminName'=>                   addslashes(get_var('adminName')),
-        'akismet_api_key'=>             addslashes(get_var('akismet_api_key')),
-        'bounce_email'=>                addslashes(get_var('bounce_email')),
-        'bugs_password' =>              addslashes(get_var('bugs_password')),
-        'bugs_username' =>              addslashes(get_var('bugs_username')),
-        'bugs_url' =>                   addslashes(get_var('bugs_url')),
-        'cal_border'=>                  strToUpper(get_var('cal_border')),
-        'cal_current'=>                 strToUpper(get_var('cal_current')),
-        'cal_current_we'=>              strToUpper(get_var('cal_current_we')),
-        'cal_days'=>                    strToUpper(get_var('cal_days')),
-        'cal_event'=>                   strToUpper(get_var('cal_event')),
-        'cal_head'=>                    strToUpper(get_var('cal_head')),
-        'cal_then'=>                    strToUpper(get_var('cal_then')),
-        'cal_then_we'=>                 strToUpper(get_var('cal_then_we')),
-        'cal_today'=>                   strToUpper(get_var('cal_today')),
-        'colour1'=>                     strToUpper(get_var('colour1')),
-        'colour2'=>                     strToUpper(get_var('colour2')),
-        'colour3'=>                     strToUpper(get_var('colour3')),
-        'colour4'=>                     strToUpper(get_var('colour4')),
-        'component_parameters'=>        addslashes(
-            implode(OPTION_SEPARATOR, explode("\r\n", get_var('component_parameters')))
-        ),
-        'defaultBgColor'=>              strToUpper(get_var('defaultBgColor')),
-        'defaultDateFormat'=>           addslashes(get_var('defaultDateFormat')),
-        'defaultLayoutID'=>             addslashes(get_var('defaultLayoutID')),
-        'defaultTimeFormat'=>           sanitize('range', get_var('defaultTimeFormat'), 0, 3, 0),
-        'defaultThemeID'=>              addslashes(get_var('defaultThemeID')),
-        'favicon'=>                     addslashes(get_var('favicon')),
-        'google_analytics_key'=>        addslashes(get_var('google_analytics_key')),
-        'notify_email'=>                addslashes(get_var('notify_email')),
-        'notify_triggers'=>             addslashes(get_var('notify_triggers')),
-        'piwik_id'=>                    addslashes(get_var('piwik_id')),
-        'piwik_token'=>                 addslashes(get_var('piwik_token')),
-        'piwik_user'=>                  addslashes(get_var('piwik_user')),
-        'style'=>                       addslashes(get_var('style')),
-        'system_cancellation_days'=>    addslashes(get_var('system_cancellation_days')),
-        'system_signup'=>               addslashes(get_var('system_signup')),
-        'table_border'=>                strToUpper(get_var('table_border')),
-        'table_data'=>                  strToUpper(get_var('table_data')),
-        'table_header'=>                strToUpper(get_var('table_header')),
-        'text_heading'=>                strToUpper(get_var('text_heading')),
-        'textEnglish'=>                 addslashes(get_var('textEnglish')),
-        'timezone'=>                    addslashes(get_var('timezone')),
-        'URL'=>                         addslashes(get_var('URL'))
+        $data = array(
+            'adminEmail'=>                  addslashes(get_var('adminEmail')),
+            'adminName'=>                   addslashes(get_var('adminName')),
+            'akismet_api_key'=>             addslashes(get_var('akismet_api_key')),
+            'bounce_email'=>                addslashes(get_var('bounce_email')),
+            'bugs_password' =>              addslashes(get_var('bugs_password')),
+            'bugs_username' =>              addslashes(get_var('bugs_username')),
+            'bugs_url' =>                   addslashes(get_var('bugs_url')),
+            'cal_border'=>                  strToUpper(get_var('cal_border')),
+            'cal_current'=>                 strToUpper(get_var('cal_current')),
+            'cal_current_we'=>              strToUpper(get_var('cal_current_we')),
+            'cal_days'=>                    strToUpper(get_var('cal_days')),
+            'cal_event'=>                   strToUpper(get_var('cal_event')),
+            'cal_head'=>                    strToUpper(get_var('cal_head')),
+            'cal_then'=>                    strToUpper(get_var('cal_then')),
+            'cal_then_we'=>                 strToUpper(get_var('cal_then_we')),
+            'cal_today'=>                   strToUpper(get_var('cal_today')),
+            'colour1'=>                     strToUpper(get_var('colour1')),
+            'colour2'=>                     strToUpper(get_var('colour2')),
+            'colour3'=>                     strToUpper(get_var('colour3')),
+            'colour4'=>                     strToUpper(get_var('colour4')),
+            'component_parameters'=>        addslashes(
+                implode(OPTION_SEPARATOR, explode("\r\n", get_var('component_parameters')))
+            ),
+            'defaultBgColor'=>              strToUpper(get_var('defaultBgColor')),
+            'defaultDateFormat'=>           addslashes(get_var('defaultDateFormat')),
+            'defaultLayoutID'=>             addslashes(get_var('defaultLayoutID')),
+            'defaultTimeFormat'=>           sanitize('range', get_var('defaultTimeFormat'), 0, 3, 0),
+            'defaultThemeID'=>              addslashes(get_var('defaultThemeID')),
+            'favicon'=>                     addslashes(get_var('favicon')),
+            'google_analytics_key'=>        addslashes(get_var('google_analytics_key')),
+            'notify_email'=>                addslashes(get_var('notify_email')),
+            'notify_triggers'=>             addslashes(get_var('notify_triggers')),
+            'piwik_id'=>                    addslashes(get_var('piwik_id')),
+            'piwik_token'=>                 addslashes(get_var('piwik_token')),
+            'piwik_user'=>                  addslashes(get_var('piwik_user')),
+            'style'=>                       addslashes(get_var('style')),
+            'system_cancellation_days'=>    addslashes(get_var('system_cancellation_days')),
+            'system_signup'=>               addslashes(get_var('system_signup')),
+            'table_border'=>                strToUpper(get_var('table_border')),
+            'table_data'=>                  strToUpper(get_var('table_data')),
+            'table_header'=>                strToUpper(get_var('table_header')),
+            'text_heading'=>                strToUpper(get_var('text_heading')),
+            'textEnglish'=>                 addslashes(get_var('textEnglish')),
+            'timezone'=>                    addslashes(get_var('timezone')),
+            'URL'=>                         addslashes(get_var('URL'))
         );
     //  Assign checksum and version by system creating target
         if ($this->_get_ID()=="") {
@@ -208,7 +208,7 @@ class System_Edit extends System
         }
     }
 
-    private function _do_save_colourscheme()
+    private function _doSaveColourscheme()
     {
         if (!$targetValue=get_var('targetValue')) {
             return;
@@ -251,30 +251,30 @@ class System_Edit extends System
         $this->_msg =               "";
         $this->_height =            475;
         $this->_width =             800;
-        $this->_do_initial_actions();
-        $this->_draw_js();
+        $this->_doInitialActions();
+        $this->_drawJs();
         if ($this->_submode=='save_and_close' && $this->_msg=='') {
             return $this->_html;
         }
-        $this->_setup_colour_schemeID();
-        $this->_setup_section_tabs();
+        $this->_setupColourSchemeID();
+        $this->_setupSectionTabs();
         $this->load();
-        $this->_draw_css();
+        $this->_drawCss();
         $this->_html.=
          draw_form_header("Site Settings", "_help_admin_sites", 0)
         ."<div style='background:#f0f0ff;width:".$this->_width."px;height:".$this->_height."px;'>\n"
         .draw_form_field('ID', $this->_get_ID(), 'hidden')."\n"
         .HTML::draw_section_tabs($this->_section_tabs_arr, 'system', $this->_selected_section);
-        $this->_draw_section_general();
-        $this->_draw_section_colours();
-        $this->_draw_section_css();
-        $this->_draw_section_parameters();
-        $this->_draw_section_membership_rules();
-        $this->_draw_section_advanced();
-        $this->_draw_section_notes();
-        $this->_draw_section_logs();
-        $this->_draw_section_features();
-        $this->_draw_section_status();
+        $this->_drawSectionGeneral();
+        $this->_drawSectionColours();
+        $this->_drawSectionCss();
+        $this->_drawSectionParameters();
+        $this->_drawSectionMembershipRules();
+        $this->_drawSectionAdvanced();
+        $this->_drawSectionNotes();
+        $this->_drawSectionLogs();
+        $this->_drawSectionFeatures();
+        $this->_drawSectionStatus();
         $this->_html.=
              "<div style='clear:both;text-align:center;margin:0.25em 0 0 0;'>"
             ."<input type='button' id='close_btn' value='Close' onclick=\"window.close()\""
@@ -292,7 +292,7 @@ class System_Edit extends System
         return $this->_html;
     }
 
-    private function _draw_css()
+    private function _drawCss()
     {
         $base_path = ($this->record['ID']==SYS_ID ? "/" : trim($this->record['URL'], '/')."/");
         Page::push_content(
@@ -314,7 +314,7 @@ class System_Edit extends System
         );
     }
 
-    private function _draw_js()
+    private function _drawJs()
     {
         switch ($this->_submode) {
             case '':
@@ -346,7 +346,7 @@ class System_Edit extends System
         }
     }
 
-    private function _draw_section_advanced()
+    private function _drawSectionAdvanced()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -706,7 +706,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _draw_section_css()
+    private function _drawSectionCss()
     {
         $this->_html.=
              draw_section_tab_div('style', $this->_selected_section)
@@ -731,7 +731,7 @@ class System_Edit extends System
             ."</div>\n";
     }
 
-    private function _draw_section_colours()
+    private function _drawSectionColours()
     {
         $this->_html.=
          draw_section_tab_div('colours', $this->_selected_section)
@@ -866,7 +866,7 @@ class System_Edit extends System
         ."</div>";
     }
 
-    private function _draw_section_features()
+    private function _drawSectionFeatures()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -914,7 +914,7 @@ class System_Edit extends System
 
     }
 
-    private function _draw_section_general()
+    private function _drawSectionGeneral()
     {
         $this->_html.=
              draw_section_tab_div('general', $this->_selected_section)
@@ -1108,7 +1108,7 @@ class System_Edit extends System
                 "100px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_get_akismet_key_status()."</div>\n"
+            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_getAkismetKeyStatus()."</div>\n"
             ."    <div class='clr_b'></div>\n"
             ."    <div class='lbl' style='width:170px'><b>Bug Tracker</b></div>"
             ."    <div class='val' style='width:200px;'>"
@@ -1144,7 +1144,7 @@ class System_Edit extends System
                 "45px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_get_bugtracker_status()."</div>\n"
+            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_getBugtrackerStatus()."</div>\n"
             ."    <div class='clr_b'></div>\n"
             ."    <div class='lbl' style='width:170px'><b>Piwik ID</b></div>\n"
             ."    <div class='val' style='width:200px;'>"
@@ -1241,7 +1241,7 @@ class System_Edit extends System
             ."</div>\n";
     }
 
-    private function _draw_section_logs()
+    private function _drawSectionLogs()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -1272,7 +1272,7 @@ class System_Edit extends System
     }
 
 
-    private function _draw_section_membership_rules()
+    private function _drawSectionMembershipRules()
     {
         if (!$this->_isMASTERADMIN || System::has_feature('Membership-Renewal')) {
             return;
@@ -1309,7 +1309,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _draw_section_notes()
+    private function _drawSectionNotes()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -1335,7 +1335,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _draw_section_parameters()
+    private function _drawSectionParameters()
     {
         $this->_html.=
              draw_section_tab_div('parameters', $this->_selected_section)
@@ -1360,11 +1360,11 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _draw_section_status()
+    private function _drawSectionStatus()
     {
         $remote_url = get_var('remote_url', 'http://');
         $Obj_System_Health = new System_Health($this->_get_ID());
-        $config = $Obj_System_Health->get_config();
+        $config = $Obj_System_Health->getConfig();
         $config2 = false;
         if ($remote_url!="" && $remote_url!="http://") {
             $Obj =      new Remote($remote_url);
@@ -1404,7 +1404,7 @@ class System_Edit extends System
         ."</div>\n";
     }
 
-    private function _get_akismet_key_status()
+    private function _getAkismetKeyStatus()
     {
         $status = System::get_item_version('akismet_key_status');
         return
@@ -1415,7 +1415,7 @@ class System_Edit extends System
         );
     }
 
-    private function _get_bugtracker_status()
+    private function _getBugtrackerStatus()
     {
         $status = System::get_item_version('bugtracker_status');
         return
@@ -1426,16 +1426,15 @@ class System_Edit extends System
         );
     }
 
-    private function _setup_colour_schemeID()
+    private function _setupColourSchemeID()
     {
         $this->_colour_schemeID =       Colour_Scheme::get_match($this->_get_ID());
     }
 
-    private function _setup_section_tabs()
+    private function _setupSectionTabs()
     {
         if ($this->_isMASTERADMIN) {
-            $this->_section_tabs_arr =
-            array(
+            $this->_section_tabs_arr = array(
                 array('ID' => 'general',    'label' => 'General'),
                 array('ID' => 'colours',    'label' => 'Colours'),
                 array('ID' => 'style',      'label' => 'CSS Style'),
@@ -1448,11 +1447,12 @@ class System_Edit extends System
                 array('ID' => 'status',     'label' => 'Status')
             );
         } else {
-            $this->_section_tabs_arr = array();
-            $this->_section_tabs_arr[] = array('ID'=>'general','label'=>'General');
-            $this->_section_tabs_arr[] = array('ID'=>'colours', 'label'=>'Colours');
-            $this->_section_tabs_arr[] = array('ID'=>'style', 'label'=>'Style');
-            $this->_section_tabs_arr[] = array('ID'=>'parameters', 'label'=>'Parameters');
+            $this->_section_tabs_arr = array(
+                array('ID' => 'general',    'label' => 'General'),
+                array('ID' => 'colours',    'label' => 'Colours'),
+                array('ID' => 'style',      'label' => 'Style'),
+                array('ID' => 'parameters', 'label' => 'Parameters')
+            );
             if ($this->_isMASTERADMIN || System::has_feature('Membership-Renewal')) {
                 $this->_section_tabs_arr[] = array('ID'=>'membership', 'label'=>'Membership');
             }
@@ -1460,7 +1460,7 @@ class System_Edit extends System
         }
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_SYSTEM_EDIT;
     }

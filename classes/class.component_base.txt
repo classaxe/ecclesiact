@@ -1,3 +1,6 @@
+  1.0.18 (2015-01-02)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in various CP parsing methods
+    2) Now PSR-2 Compliant
   1.0.17 (2014-05-19)
     1) Tweak to Component_Base::get_safe_ID() to deal with posibility that an instance-name
        might actually contain spaces (e.g. TUC homepage 'combo_tabber:front page')

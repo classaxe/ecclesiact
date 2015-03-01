@@ -1,16 +1,15 @@
 <?php
-define("VERSION_COMPONENT_WOW_SLIDER", "1.0.8");
+namespace Component;
+
+define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.9");
 /*
 Version History:
-  1.0.8 (2014-01-31)
-    1) Changes to internally used parameters in Component_WOW_Slider::_setup_load_records():
-         Old: filter_limit,  filter_order_by
-         New: results_limit, results_order
-    2) Now PSR-2 Compliant
+  1.0.9 (2015-03-01)
+    1) Now uses namespaces
+    2) Moved optional anchor for associated links inside Block Layout context Div to confrm to XHTML strict
 
-  (Older version history in class.component_wow_slider.txt)
 */
-class Component_WOW_Slider extends Component_Base
+class WOWSlider extends Base
 {
     protected $_first_image = array();
     protected $_first_idx =   0;
@@ -139,17 +138,17 @@ class Component_WOW_Slider extends Component_Base
             ),
             'secCaption' =>                 array(
                 'match' =>      'range|0,n',
-            'default'=>'0.5',
+                'default'=>'0.5',
                 'hint' =>       'Decimal time in seconds for fade'
             ),
             'secFade' =>                    array(
                 'match' =>      'range|0,n',
-            'default'=>'1',
+                'default'=>'1',
                 'hint' =>       'Decimal time in seconds for fade'
             ),
             'secShow' =>                    array(
                 'match' =>      'range|0,n',
-            'default'=>'4',
+                'default'=>'4',
                 'hint' =>       'Decimal time in seconds for show'
             ),
             'title' =>                      array(
@@ -225,7 +224,7 @@ class Component_WOW_Slider extends Component_Base
     {
         global $page_vars;
         $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&amp;targetValue='.$this->_safe_ID;
-        Page::push_content(
+        \Page::push_content(
             'head_top',
             "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$url."\" />"
         );
@@ -497,7 +496,7 @@ class Component_WOW_Slider extends Component_Base
 
     protected function _draw_images()
     {
-        $Obj_GI = new Gallery_Image;
+        $Obj_GI = new \Gallery_Image;
         $Obj_GI->_set('_current_user_rights', $this->_get('_current_user_rights'));
         $Obj_GI->_set('_safe_ID', $this->_get('_safe_ID'));
         $Obj_GI->_set('_context_menu_ID', 'gallery_image');
@@ -510,6 +509,7 @@ class Component_WOW_Slider extends Component_Base
             $Obj_GI->load($image);
             $this->_html.=
                  "    <li>"
+                .$Obj_GI->convert_Block_Layout("[BL]context_selection_start[/BL]")
                 .($image['url'] ?
                      "<a href=\"".$image['url']."\""
                     .($image['url_popup'] ? " rel='external'" : '')
@@ -517,7 +517,6 @@ class Component_WOW_Slider extends Component_Base
                   :
                     ""
                  )
-                .$Obj_GI->convert_Block_Layout("[BL]context_selection_start[/BL]")
                 ."<img"
                 ." id=\"".$this->_safe_ID."_".$i."\""
                 ." src=\"".htmlentities($image['image'])."\""
@@ -526,8 +525,8 @@ class Component_WOW_Slider extends Component_Base
                 ." width=\"".$image['image_w']."\""
                 .($this->_cp['title_show']=='1' ? " title=\"".$image['title']."\"" : '')
                 ."/>"
-                .$Obj_GI->convert_Block_Layout("[BL]context_selection_end[/BL]")
                 .($image['url'] ? "</a>" : "")
+                .$Obj_GI->convert_Block_Layout("[BL]context_selection_end[/BL]")
                 .($this->_cp['caption_show']=='1' ? $image['caption'] : '')
                 ."</li>\n";
         }
@@ -562,12 +561,12 @@ class Component_WOW_Slider extends Component_Base
 
     protected function _draw_js()
     {
-        Page::push_content(
+        \Page::push_content(
             "javascript_top",
             "<script type=\"text/javascript\" src=\"".BASE_PATH."lib/ws/common/wowslider.js\"></script>\n"
             ."<script type=\"text/javascript\" src=\"/lib/ws/effects/".$this->_cp['effect']."\"></script>\n"
         );
-        Page::push_content(
+        \Page::push_content(
             "javascript_onload",
             "  jQuery('#".$this->_safe_ID."').wowSlider({\n"
             ."    autoPlay:         true,\n"
@@ -605,7 +604,7 @@ class Component_WOW_Slider extends Component_Base
 
     protected function _draw_status()
     {
-        $this->_html.=      HTML::draw_status($this->_safe_ID.'_status', $this->_msg);
+        $this->_html.=      \HTML::draw_status($this->_safe_ID.'_status', $this->_msg);
     }
 
     protected function _render()
@@ -643,7 +642,7 @@ class Component_WOW_Slider extends Component_Base
 
     protected function _setup_load_records()
     {
-        $Obj =              new Gallery_Image;
+        $Obj =              new \Gallery_Image;
         $args =     array(
             'filter_category_list' =>
                 $this->_cp['filter_category_list'],
@@ -680,7 +679,7 @@ class Component_WOW_Slider extends Component_Base
         foreach ($this->_records as $record) {
             $_ID =        $record['ID'];
             $_category =  $record['category'];
-            $_caption =   Language::convert_tags($record['content']);
+            $_caption =   \Language::convert_tags($record['content']);
             $_enabled =   $record['enabled'];
             $_image =
                  trim($record['systemURL'], '/')
@@ -740,6 +739,6 @@ class Component_WOW_Slider extends Component_Base
 
     public function get_version()
     {
-        return VERSION_COMPONENT_WOW_SLIDER;
+        return VERSION_NS_COMPONENT_WOW_SLIDER;
     }
 }

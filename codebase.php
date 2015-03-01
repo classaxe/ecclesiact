@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.1");
+define("CODEBASE_VERSION", "3.2.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,62 +16,66 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.1.2365 (2015-02-17)
+3.2.2.2366 (2015-03-01)
 Summary:
-  1) New Email ECL tags for community members to show:
-     * Community_Name
-     * Community_Title
-     * Community_URL
-     * Community_Member_ID
-     * Community_Member_Name
-     * Community_Member_Title
-     * Community_Member_Image
-     * Community_Member_URL
-  2) Changes to Community Member Summary to allow viewing of all data for a member (including email and contact
-     details) if a 'token' containing the ID of the record in question is also passed.
+  1) Started implementing namespaces - changes to autoloader to support this
+  2) Started removing 'class.' prefix from class files and converting names to camel case (for PSR-2)
+  3) Added Fax number to Member Summary sheet
+  4) Fix for wow-slider linked images when used with context-menu selectors
+  5) Fix for Email Unsubscribe - wasn't showing messages sent to subscriber correctly
 
 Final Checksums:
-  Classes     CS:8bbceb42
+  Classes     CS:a08db2d0
   Database    CS:48ba81d8
-  Libraries   CS:c87dba61
+  Libraries   CS:1fe9d371
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.1     (2015-02-17)
-    1) Updated version information
-  classes/class.community_member_summary.php                                                     1.0.18    (2015-02-17)
-    1) Updated Community_Member_Summary::_draw_page_header() with new phone number
-    2) Now presents all fields (including ones normally only visible to administrator) provided that an HTTP
-       variable called 'token' is provided which contains the ID of the community record in question
-    3) Now PSR-2 Compliant
-  classes/class.person.php                                                                       1.0.123   (2015-02-17)
-    1) Added support in Person::load_profile_fields() for new community-based fields:
-         Community_Name
-         Community_Title
-         Community_URL
-         Community_Member_ID
-         Community_Member_Name
-         Community_Member_Title
-         Community_Member_Image
-         Community_Member_URL
+  codebase.php                                                                                   3.2.2     (2015-03-01)
+    1) Updated autoloader to support namespaces
+    2) Updated version information
+  classes/class.community_member_summary.php                                                     1.0.19    (2015-02-20)
+    1) Added new Fax number
+  classes/class.component_base.php                                                               1.0.19    (2015-03-01)
+    1) Now reduced to a stub file that simply extends Component\Base
+       This file will eventuall;y be removed.
+  classes/class.mail_queue_item.php                                                              1.0.16    (2015-03-01)
+    1) Bug fix for viewing message list - needed personID to get list of messages sent
+    2) New method viewMessagesForPerson
+    3) Renamed const fields to FIELDS
+    4) Now PSR-2 Compliant
+  classes/class.system.php                                                                       1.0.158   (2015-03-01)
+    1) Calls to System_Health methods now CamelCase
+  classes/class.system_edit.php                                                                  1.0.32    (2015-03-01)
+    1) Call to System_Health::get_config() is now System_Health::getConfig()
+    2) System_Edit::get_version() now System_Edit::getVersion()
+    3) Now closer to full PSR-2 compliant
+  classes/class.system_health.php                                                                1.0.44    (2015-03-01)
+    1) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
 
-2365.sql
-  1) New ECL tags for community member emailing:
-       field_community_member_id
-       field_community_member_image
-       field_community_member_name
-       field_community_member_title
-       field_community_member_url
-       field_community_name
-       field_community_title
-       field_community_url
-  2) Set version information
+2366.sql
+  1) Updated ECL tag for wow_slider to use namespaced class reference
+  2) Updated ECL tag for component_email_unsubscribe to use namespaced class reference
+  3) Set version information
 
 Promote:
-  codebase.php                                        3.2.1
-  classes/  (2 files changed)
-    class.community_member_summary.php                1.0.18    CS:819f4135
-    class.person.php                                  1.0.123   CS:a48f27e5
+  codebase.php                                        3.2.2
+  classes/  (6 files changed)
+    class.community_member_summary.php                1.0.19    CS:bbae7abf
+    class.component_base.php                          1.0.0     CS:196c2340
+    class.mail_queue_item.php                         1.0.16    CS:a820f1bb
+    class.system.php                                  1.0.158   CS:7299ae36
+    class.system_edit.php                             1.0.32    CS:98c5e182
+    class.system_health.php                           1.0.44    CS:f3325f92
+
+
+
+
+
+
+  3) Change 'Survey Returned' to 'Last Verified' on Community Member form
+  4) Allow #easter to be used in place of #special on special events tab in community sites
+
 
 
   Bug:
@@ -309,17 +313,17 @@ if (file_exists($custom_file)) {
 }
 
 // This is called whenever system trys to create a non existant class of the given name
-function __autoload($class_name)
+function __autoload($className)
 {
-    return portal_autoload($class_name);
+    return portal_autoload($className);
 }
 
-function portal_autoload($class_name)
+function portal_autoload($className)
 {
-    if (class_exists($class_name)) {
+    if (class_exists($className)) {
         return;
     }
-    $class_php = 'class.'.strToLower($class_name).'.php';
+    $class_php = 'class.'.strToLower($className).'.php';
     $include_file = SYS_CLASSES.$class_php;
     if (file_exists($include_file)) {
         require_once($include_file);
@@ -332,7 +336,16 @@ function portal_autoload($class_name)
         includes_monitor($include_file);
         return;
     }
+    $class_php = strToLower($className).'.php';
+
+    $include_file = SYS_CLASSES.$class_php;
+    if (file_exists($include_file)) {
+        require_once($include_file);
+        includes_monitor($include_file);
+        return;
+    }
 }
+
 
 spl_autoload_register('portal_autoload');
 

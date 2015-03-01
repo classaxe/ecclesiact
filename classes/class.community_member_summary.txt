@@ -1,3 +1,8 @@
+  1.0.18 (2015-02-17)
+    1) Updated Community_Member_Summary::_draw_page_header() with new phone number
+    2) Now presents all fields (including ones normally only visible to administrator) provided that an HTTP
+       variable called 'token' is provided which contains the ID of the community record in question
+    3) Now PSR-2 Compliant
   1.0.17 (2013-10-28)
     1) Changes to support up to 8 contact names / email adreses in contact form
   1.0.16 (2013-10-09)

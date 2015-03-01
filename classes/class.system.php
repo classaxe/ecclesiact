@@ -1,11 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.157');
+define('VERSION_SYSTEM', '1.0.158');
 
 /*
 Version History:
-  1.0.157 (2015-01-10)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in System::set_parameters_for_instance()
-    2) Now PSR-2 Compliant
+  1.0.158 (2015-03-01)
+    1) Calls to System_Health methods now CamelCase
 
   (Older version history in class.system.txt)
 */
@@ -674,7 +673,7 @@ class System extends Record
     public function get_config()
     {
         $Obj_System_Health = new System_Health($this->_get_ID());
-        return $Obj_System_Health->get_config();
+        return $Obj_System_Health->getConfig();
     }
 
     public function get_display_title($withSystem = false)
@@ -891,7 +890,7 @@ class System extends Record
                 System::$cache_version[$what] = "";
                 $checksums = array();
                 $Obj_System_Health = new System_Health($system_vars['ID']);
-                $Obj_System_Health->_get_config_tables($checksums);
+                $Obj_System_Health->_getConfigTables($checksums);
       //        y($checksums);die;
                 foreach ($checksums as $checksum) {
                     if ($checksum['title']=='db_cs_actual') {
@@ -922,7 +921,7 @@ class System extends Record
             case "classes_cs_actual":
                 $_cs_arr = array();
                 $Obj = new System_Health($system_vars['ID']);
-                $Obj->_get_config_classes($_cs_arr);
+                $Obj->_getConfigClasses($_cs_arr);
                 foreach ($_cs_arr as $_cs) {
                     if ($_cs['title'] == 'classes_cs_actual') {
                         System::$cache_version[$what] = ($_cs['content']);

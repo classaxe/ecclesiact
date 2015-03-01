@@ -1,3 +1,6 @@
+  1.0.157 (2015-01-10)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in System::set_parameters_for_instance()
+    2) Now PSR-2 Compliant
   1.0.156 (2014-11-16)
     1) Added support for command 'customise_colours' for setting colour presets
   1.0.155 (2014-04-18)

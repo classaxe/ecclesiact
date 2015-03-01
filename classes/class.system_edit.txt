@@ -1,3 +1,5 @@
+  1.0.31 (2014-12-31)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in System_Edit::_do_save()
   1.0.30 (2012-11-28)
     1) System::_get_akismet_key_status() and System::_get_bugtracker_status()
        both changed references of parent::get_version() to System::get_item_version()

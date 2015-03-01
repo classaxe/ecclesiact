@@ -1,3 +1,5 @@
+  1.0.15 (2014-08-17)
+    1) Message list now hidden unless viewer clicks 'Click here' link to display all messages
   1.0.14 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.13 (2013-10-03)

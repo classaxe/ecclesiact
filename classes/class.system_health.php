@@ -1,11 +1,10 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.43');
+define('VERSION_SYSTEM_HEALTH', '1.0.44');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.43 (2015-02-01)
-    1) System_Health::_get_config_libraries_array() bug fix for file name of /js/spectrum.min.js
-       (was /js/spectrum.min.css)
+  1.0.44 (2015-03-01)
+    1) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
 
   (Older version history in class.system_health.txt)
 */
@@ -18,17 +17,17 @@ class System_Health extends System
             return "System details not known.";
         }
         return
-             $this->_draw_system_table($config_arr, $ID)
-            .$this->_draw_classes_table($config_arr)
-            .$this->_draw_db_table($config_arr)
-            .$this->_draw_libraries_table($config_arr)
-            .$this->_draw_reports_table($config_arr);
+             $this->_drawSystemTable($config_arr, $ID)
+            .$this->_drawClassesTable($config_arr)
+            .$this->_drawDBTable($config_arr)
+            .$this->_drawLibrariesTable($config_arr)
+            .$this->_drawReportsTable($config_arr);
     }
 
-    private function _draw_button_code_documentation($config_arr, $ID)
+    private function _drawButtonCodeDocumentation($config_arr, $ID)
     {
         $value = "";
-        $cs_arr = $this->_get_config_classes_expected(System::get_item_version('classes_detail'));
+        $cs_arr = $this->_getConfigClassesExpected(System::get_item_version('classes_detail'));
         $classes_changed = 0;
         $libraries_checksum =       System::get_item_version('libraries_cs_actual');
         $reports_checksum =         System::get_item_version('reports_cs_actual');
@@ -94,7 +93,7 @@ class System_Health extends System
                 }
             }
         }
-        $libraries_array = $this->_get_config_libraries_array();
+        $libraries_array = $this->_getConfigLibrariesArray();
         foreach ($libraries_array as $entry) {
             $changed = false;
             foreach ($config_arr as $config) {
@@ -202,7 +201,7 @@ class System_Health extends System
             ."  2) Insert SQL changes where indicated')\" />";
     }
 
-    private function _draw_button_sql_build_info($config_arr, $ID)
+    private function _drawButtonSQLBuildInfo($config_arr, $ID)
     {
         global $db;
         $db_version =           "";
@@ -257,7 +256,7 @@ class System_Health extends System
             }
         }
         $libraries_checksum =       System::get_item_version('libraries_cs_actual');
-        $libraries_detail_arr =     $this->_get_config_libraries_detail_array();
+        $libraries_detail_arr =     $this->_getConfigLibrariesDetailArray();
         foreach ($config_arr as $config) {
             if ($config['category']=='tables') {
                 if (
@@ -307,7 +306,7 @@ class System_Health extends System
         ;
     }
 
-    private function _draw_db_table($config_arr)
+    private function _drawDBTable($config_arr)
     {
         $count = 0;
         foreach ($config_arr as $config) {
@@ -350,22 +349,22 @@ class System_Health extends System
         foreach ($config_arr as $config) {
             if ($config['category']=='tables' && $config['title']!='db_cs_actual') {
                 if (substr($config['title'], 0, 16)=='checksum_module_') {
-                    $out.= $this->_draw_db_row_checksum_module($config);
+                    $out.= $this->_drawDBRowChecksumModule($config);
                 } else {
-                    $out.= $this->_draw_db_row_checksum_table($config, $url, $db_name, $final_cs_fail);
+                    $out.= $this->_drawDBRowChecksumTable($config, $url, $db_name, $final_cs_fail);
                 }
             }
         }
         foreach ($config_arr as $config) {
             if ($config['category']=='tables' && $config['title']=='db_cs_actual') {
-                $out.= $this->_draw_db_row_checksum_final($config, $db_cs_target);
+                $out.= $this->_drawDBRowChecksumFinal($config, $db_cs_target);
             }
         }
         $out.= "</table><br />";
         return $out;
     }
 
-    private function _draw_db_row_checksum_final($config, $checksum_final)
+    private function _drawDBRowChecksumFinal($config, $checksum_final)
     {
         return
              "  <tr>\n"
@@ -376,7 +375,7 @@ class System_Health extends System
             ."'>".$checksum_final."</span></b></td>\n"
             ."  </tr>\n";
     }
-    private function _draw_db_row_checksum_module($config)
+    private function _drawDBRowChecksumModule($config)
     {
         $name = substr($config['title'], 16);
         return
@@ -386,7 +385,7 @@ class System_Health extends System
             ."  </tr>\n";
 
     }
-    private function _draw_db_row_checksum_table($config, $url, $db_name, $final_cs_fail)
+    private function _drawDBRowChecksumTable($config, $url, $db_name, $final_cs_fail)
     {
         $custom =   substr($config['title'], 0, 4)=='cus_';
         $module =   substr($config['title'], 0, 7)=='module_';
@@ -398,7 +397,7 @@ class System_Health extends System
             $cs_table =    "DB".substr($cs_table, strlen($db_name));
         }
         $suffix =   ($config['title']==$table ? "" : substr($config['title'], strlen($table)));
-        $cs_arr =   $this->_get_config_tables_expected(System::get_item_version('db_detail'));
+        $cs_arr =   $this->_getConfigTablesExpected(System::get_item_version('db_detail'));
 
         $expected_cs =  (isset($cs_arr[$cs_table]) ? $cs_arr[$cs_table] : '2342424');
         $customised =   (strpos($config['title'], "Real CS"));
@@ -458,7 +457,7 @@ class System_Health extends System
             ."</tr>\n";
     }
 
-    private function _draw_classes_table($config_arr)
+    private function _drawClassesTable($config_arr)
     {
         global $system_vars;
         $classes_cs_actual =   false;
@@ -477,7 +476,7 @@ class System_Health extends System
                 $count++;
             }
         }
-        $cs_arr = $this->_get_config_classes_expected(System::get_item_version('classes_detail'));
+        $cs_arr = $this->_getConfigClassesExpected(System::get_item_version('classes_detail'));
         $out =
              "<a id='Classes'></a><b>Classes (".$count.")</b>\n"
             ."<table class='report' cellpadding='0' cellspacing='0'>\n"
@@ -558,9 +557,9 @@ class System_Health extends System
         return $out;
     }
 
-    private function _draw_libraries_table($config_arr)
+    private function _drawLibrariesTable($config_arr)
     {
-        $libraries = $this->_get_config_libraries_array();
+        $libraries = $this->_getConfigLibrariesArray();
         $out =
              "<div><a id='Libraries'></a><b>Libraries</b></div>\n"
             ."<table class='report' cellpadding='0' cellspacing='0'>\n"
@@ -570,7 +569,7 @@ class System_Health extends System
             ."    <th style='width:80px'>Checksum</th>\n"
             ."  </tr>\n";
         foreach ($libraries as $library) {
-            $out.= $this->_draw_libraries_table_row($config_arr, $library);
+            $out.= $this->_drawLibrariesTableRow($config_arr, $library);
         }
         $out.=
              "</table>\n"
@@ -578,7 +577,7 @@ class System_Health extends System
         return $out;
     }
 
-    private function _draw_libraries_table_row($config_arr, $entry)
+    private function _drawLibrariesTableRow($config_arr, $entry)
     {
         $libraries_detail = '';
         foreach ($config_arr as $config) {
@@ -651,7 +650,7 @@ class System_Health extends System
             ."</tr>\n";
     }
 
-    private function _draw_reports_table($config_arr)
+    private function _drawReportsTable($config_arr)
     {
         global $system_vars;
         $reports_cs_actual =   false;
@@ -670,7 +669,7 @@ class System_Health extends System
                 $count++;
             }
         }
-        $cs_arr = $this->_get_config_reports_expected(System::get_item_version('reports_detail'));
+        $cs_arr = $this->_getConfigReportsExpected(System::get_item_version('reports_detail'));
         $out =
              "<a id='Reports'></a><b>Reports (".$count.")</b>\n"
             ."<table class='report' cellpadding='0' cellspacing='0'>\n"
@@ -733,36 +732,36 @@ class System_Health extends System
         return $out;
     }
 
-    private function _draw_system_table($config_arr, $ID)
+    private function _drawSystemTable($config_arr, $ID)
     {
         return
              "<div class='fl'><a id='Summary'></a><b>Summary</b></div>\n"
-            .$this->_draw_button_sql_build_info($config_arr, $ID)
-            .$this->_draw_button_code_documentation($config_arr, $ID)
+            .$this->_drawButtonSQLBuildInfo($config_arr, $ID)
+            .$this->_drawButtonCodeDocumentation($config_arr, $ID)
             ."<div class='clr_b'></div>"
             ."<table class='report' cellpadding='0' cellspacing='0'>\n"
             ."  <tr class='head'>\n"
             ."    <th style='width:120px'>Parameter</th>\n"
             ."    <th style='width:245px'>Value</th>\n"
             ."  </tr>\n"
-            .$this->_draw_system_table_row($config_arr, "URL", 'URL')
-            .$this->_draw_system_table_row($config_arr, "Title", 'title')
-            .$this->_draw_system_table_row($config_arr, "Build Version", 'build_version')
-            .$this->_draw_system_table_row($config_arr, "Classes Status", 'classes_cs_status')
-            .$this->_draw_system_table_row($config_arr, "Classes Checksum", 'classes_cs_target')
-            .$this->_draw_system_table_row($config_arr, "DB Status", 'db_cs_status')
-            .$this->_draw_system_table_row($config_arr, "DB Checksum", 'db_cs_target')
-            .$this->_draw_system_table_row($config_arr, "Libraries Status", 'libraries_cs_status')
-            .$this->_draw_system_table_row($config_arr, "Libraries Checksum", 'libraries_cs_target')
-            .$this->_draw_system_table_row($config_arr, "Reports Status", 'reports_cs_status')
-            .$this->_draw_system_table_row($config_arr, "Reports Checksum", 'reports_cs_target')
-            .$this->_draw_system_table_row($config_arr, "Akismet Key", 'akismet_key_status')
-            .$this->_draw_system_table_row($config_arr, "Bugtracker", 'bugtracker_status')
-            .$this->_draw_system_table_row($config_arr, "Google Maps Key", 'google_key_status')
-            .$this->_draw_system_table_row($config_arr, "Heartbeat Status", 'heartbeat_status')
-            .$this->_draw_system_table_row($config_arr, "config.php Status", 'config_status')
-            .$this->_draw_system_table_row($config_arr, "htaccess Status", 'htaccess_status')
-            .$this->_draw_system_table_row($config_arr, "Last User Access", 'last_loggedin_access')
+            .$this->_drawSystemTableRow($config_arr, "URL", 'URL')
+            .$this->_drawSystemTableRow($config_arr, "Title", 'title')
+            .$this->_drawSystemTableRow($config_arr, "Build Version", 'build_version')
+            .$this->_drawSystemTableRow($config_arr, "Classes Status", 'classes_cs_status')
+            .$this->_drawSystemTableRow($config_arr, "Classes Checksum", 'classes_cs_target')
+            .$this->_drawSystemTableRow($config_arr, "DB Status", 'db_cs_status')
+            .$this->_drawSystemTableRow($config_arr, "DB Checksum", 'db_cs_target')
+            .$this->_drawSystemTableRow($config_arr, "Libraries Status", 'libraries_cs_status')
+            .$this->_drawSystemTableRow($config_arr, "Libraries Checksum", 'libraries_cs_target')
+            .$this->_drawSystemTableRow($config_arr, "Reports Status", 'reports_cs_status')
+            .$this->_drawSystemTableRow($config_arr, "Reports Checksum", 'reports_cs_target')
+            .$this->_drawSystemTableRow($config_arr, "Akismet Key", 'akismet_key_status')
+            .$this->_drawSystemTableRow($config_arr, "Bugtracker", 'bugtracker_status')
+            .$this->_drawSystemTableRow($config_arr, "Google Maps Key", 'google_key_status')
+            .$this->_drawSystemTableRow($config_arr, "Heartbeat Status", 'heartbeat_status')
+            .$this->_drawSystemTableRow($config_arr, "config.php Status", 'config_status')
+            .$this->_drawSystemTableRow($config_arr, "htaccess Status", 'htaccess_status')
+            .$this->_drawSystemTableRow($config_arr, "Last User Access", 'last_loggedin_access')
             ."</table>\n"
             ."<br />\n"
             ."<div><a id='ServerConfig'></a><b>Server Config</b></div> \n"
@@ -771,10 +770,10 @@ class System_Health extends System
             ."    <th style='width:120px'>Parameter</th>\n"
             ."    <th style='width:245px'>Value</th>\n"
             ."  </tr>\n"
-            .$this->_draw_system_table_row($config_arr, 'Web Server', 'http_software')
-            .$this->_draw_system_table_row($config_arr, 'Server Name', 'server_name')
-            .$this->_draw_system_table_row($config_arr, 'PHP Version', 'php_version')
-            .$this->_draw_system_table_row($config_arr, 'MySQL Version', 'mysql_version')
+            .$this->_drawSystemTableRow($config_arr, 'Web Server', 'http_software')
+            .$this->_drawSystemTableRow($config_arr, 'Server Name', 'server_name')
+            .$this->_drawSystemTableRow($config_arr, 'PHP Version', 'php_version')
+            .$this->_drawSystemTableRow($config_arr, 'MySQL Version', 'mysql_version')
             ."</table>\n"
             ."<br />\n"
             ."<div><a id='SiteConfig'></a><b>Site Config</b></div>\n"
@@ -783,19 +782,19 @@ class System_Health extends System
             ."    <th style='width:120px'>Parameter</th>\n"
             ."    <th style='width:245px'>Value</th>\n"
             ."  </tr>\n"
-            .$this->_draw_system_table_row($config_arr, 'System ID', 'systemID')
-            .$this->_draw_system_table_row($config_arr, 'System Family', 'system_family')
-            .$this->_draw_system_table_row($config_arr, 'Codebase Version', 'codebase_version')
-            .$this->_draw_system_table_row($config_arr, 'DB Version', 'db_version')
-            .$this->_draw_system_table_row($config_arr, 'System Version', 'system_version')
-            .$this->_draw_system_table_row($config_arr, 'Custom code', 'custom_version')
-            .$this->_draw_system_table_row($config_arr, 'DB Name', 'db_name')
-            .$this->_draw_system_table_row($config_arr, 'Document Root', 'document_root')
+            .$this->_drawSystemTableRow($config_arr, 'System ID', 'systemID')
+            .$this->_drawSystemTableRow($config_arr, 'System Family', 'system_family')
+            .$this->_drawSystemTableRow($config_arr, 'Codebase Version', 'codebase_version')
+            .$this->_drawSystemTableRow($config_arr, 'DB Version', 'db_version')
+            .$this->_drawSystemTableRow($config_arr, 'System Version', 'system_version')
+            .$this->_drawSystemTableRow($config_arr, 'Custom code', 'custom_version')
+            .$this->_drawSystemTableRow($config_arr, 'DB Name', 'db_name')
+            .$this->_drawSystemTableRow($config_arr, 'Document Root', 'document_root')
             ."</table>\n"
             ."<br />\n";
     }
 
-    private function _draw_system_table_row($config_arr, $label, $entry)
+    private function _drawSystemTableRow($config_arr, $label, $entry)
     {
         $out = '';
         $classes_cs_actual =        "";
@@ -959,20 +958,20 @@ class System_Health extends System
         return $out;
     }
 
-    public function get_config()
+    public function getConfig()
     {
         $out = array();
-        $this->_get_config_libraries($out);
-        $this->_get_config_classes($out);
-        $this->_get_config_reports($out);
-        $this->_get_config_tables($out);
+        $this->_getConfigLibraries($out);
+        $this->_getConfigClasses($out);
+        $this->_getConfigReports($out);
+        $this->_getConfigTables($out);
         $array_to_insert = array();
-        $this->_get_config_system($array_to_insert, $out);
+        $this->_getConfigSystem($array_to_insert, $out);
         return array_merge($array_to_insert, $out);
     }
 
 
-    protected function _get_config_classes(&$out)
+    protected function _getConfigClasses(&$out)
     {
         $all_items = safe_glob(SYS_CLASSES.'*.php');
         $entries = array();
@@ -986,30 +985,28 @@ class System_Health extends System
                 $ext =              array_pop($ext_arr);
                 $class =            array_pop($ext_arr);
                 $Obj =              new $class;
-                $version =          $Obj->get_version();
+                $version =          (method_exists($Obj, 'getVersion') ? $Obj->getVersion() : $Obj->get_version());
                 $file =             file_get_contents(SYS_CLASSES.$entry);
                 $size =             number_format(strlen($file));
 
                 $file_normalised =  preg_replace("/\r\n/", "\n", $file);
                 $crc32 =            dechex(crc32($file_normalised));
 
-                $out[] =
-                array(
-                'category'=>'classes',
-                'title'=>$entry,
-                'content'=>$version."|".$size."|".$crc32
+                $out[] = array(
+                    'category' =>   'classes',
+                    'title' =>      $entry,
+                    'content' =>    $version."|".$size."|".$crc32
                 );
                 $final.=$entry."|".$crc32;
             }
         }
-        $out[] =
-        array(
-        'category'=>'classes',
-        'title'=>'classes_cs_actual',
-        'content'=>dechex(crc32($final))
+        $out[] = array(
+            'category' =>   'classes',
+            'title' =>      'classes_cs_actual',
+            'content' =>    dechex(crc32($final))
         );
     }
-    private function _get_config_classes_expected($csv)
+    private function _getConfigClassesExpected($csv)
     {
         $_cs_all =  explode(', ', $csv);
         $cs_arr =   array();
@@ -1029,7 +1026,7 @@ class System_Health extends System
         return $cs_arr;
     }
 
-    private function _get_config_libraries(&$out)
+    private function _getConfigLibraries(&$out)
     {
         $entries =
         array(
@@ -1113,7 +1110,7 @@ class System_Health extends System
         }
     }
 
-    private function _get_config_libraries_array()
+    private function _getConfigLibrariesArray()
     {
         return array(
             array('/codebase.php','codebase'),
@@ -1153,10 +1150,10 @@ class System_Health extends System
         );
     }
 
-    protected function _get_config_libraries_detail_array()
+    protected function _getConfigLibrariesDetailArray()
     {
-        $keys = $this->_get_config_libraries_array();
-        $this->_get_config_libraries($libraries);
+        $keys = $this->_getConfigLibrariesArray();
+        $this->_getConfigLibraries($libraries);
         foreach ($keys as $key) {
             $path =       $key[0];
             $entry =      $key[1];
@@ -1175,7 +1172,7 @@ class System_Health extends System
         return $out;
     }
 
-    private function _get_config_reports(&$out)
+    private function _getConfigReports(&$out)
     {
         $Obj_Report_Config = new Report_Config;
         $reports =              $Obj_Report_Config->get_overview_global();
@@ -1203,7 +1200,7 @@ class System_Health extends System
         );
     }
 
-    private function _get_config_reports_expected($csv)
+    private function _getConfigReportsExpected($csv)
     {
         $_cs_all =  explode(', ', $csv);
         $cs_arr =   array();
@@ -1222,7 +1219,7 @@ class System_Health extends System
         return $cs_arr;
     }
 
-    private function _get_config_system(&$out, $initial)
+    private function _getConfigSystem(&$out, $initial)
     {
         $record = $this->get_record();
         $access = $this->get_last_loggedin_access();
@@ -1249,11 +1246,11 @@ class System_Health extends System
          :
             'Fail'
         );
-        System::$cache_version['config_status'] =       $this->_get_config_system_config_check();
-        System::$cache_version['heartbeat_status'] =    $this->_get_config_system_heartbeat_check();
-        System::$cache_version['htaccess_status'] =     $this->_get_config_system_htaccess_check();
-        System::$cache_version['config_status'] =       $this->_get_config_system_config_check();
-        $lib_arr = $this->_get_config_libraries_detail_array();
+        System::$cache_version['config_status'] =       $this->_getConfigSystemConfigCheck();
+        System::$cache_version['heartbeat_status'] =    $this->_getConfigSystemHeartbeatCheck();
+        System::$cache_version['htaccess_status'] =     $this->_getConfigSystemHtaccessCheck();
+        System::$cache_version['config_status'] =       $this->_getConfigSystemConfigCheck();
+        $lib_arr = $this->_getConfigLibrariesDetailArray();
         System::$cache_version['libraries_cs_actual'] =  dechex(crc32(implode(',', $lib_arr)));
         System::$cache_version['libraries_cs_status'] =
         (System::$cache_version['libraries_cs_actual']==System::get_item_version('libraries_cs_target') ?
@@ -1324,7 +1321,7 @@ class System_Health extends System
         }
     }
 
-    private function _get_config_system_config_check()
+    private function _getConfigSystemConfigCheck()
     {
         $content = @file_get_contents('./config.php');
         $match =    preg_match("/\\\$dsn/i", $content, $matches);
@@ -1342,7 +1339,7 @@ class System_Health extends System
         return 'Pass';
     }
 
-    private function _get_config_system_heartbeat_check()
+    private function _getConfigSystemHeartbeatCheck()
     {
         $last_heartbeat = $this->get_field('cron_job_heartbeat_last_run');
         if ($last_heartbeat=='0000-00-00 00:00:00') {
@@ -1366,7 +1363,7 @@ class System_Health extends System
         return "Pass";
     }
 
-    private function _get_config_system_htaccess_check()
+    private function _getConfigSystemHtaccessCheck()
     {
         if (!file_exists('./.htaccess')) {
             return "Fail: .htaccess is missing";
@@ -1418,7 +1415,7 @@ class System_Health extends System
         return 'Pass';
     }
 
-    protected function _get_config_tables(&$out)
+    protected function _getConfigTables(&$out)
     {
         global $db;
         $sql =    "SHOW TABLES FROM `$db`";
@@ -1490,7 +1487,7 @@ class System_Health extends System
         }
     }
 
-    private function _get_config_tables_expected($csv)
+    private function _getConfigTablesExpected($csv)
     {
         $_cs_all =  explode(', ', $csv);
         $cs_arr =   array();
@@ -1505,7 +1502,7 @@ class System_Health extends System
         return $cs_arr;
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_SYSTEM_HEALTH;
     }

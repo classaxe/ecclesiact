@@ -1,16 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.18');
+define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.19');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.18 (2015-02-17)
-    1) Updated Community_Member_Summary::_draw_page_header() with new phone number
-    2) Now presents all fields (including ones normally only visible to administrator) provided that an HTTP
-       variable called 'token' is provided which contains the ID of the community record in question
-    3) Now PSR-2 Compliant
+  1.0.19 (2015-02-20)
+    1) Added new Fax number
 
   (Older version history in class.community_member_summary.txt)
 */
@@ -369,7 +366,8 @@ class Community_Member_Summary extends Community_Member
             ." href=\"mailto:info@ChurchesInYourTown.ca?subject="
             .str_replace(' ', '%20', $c_arr[1].' - '.$this->_record['title']." - Member Checklist")
             ."\">info@ChurchesInYourTown.ca</a>\n"
-            ."Phone: <b>(289)-819-0603</b>\n"
+            ."<b>Phone:</b> (289) 819 0603<br />\n"
+            ."<b>Fax:</b> (289) 348 0476\n"
             ."<span style='display:block;height:0.5em'>&nbsp;</span>\n<span style='font-style:normal'>"
             .format_date(get_timestamp(), 'l j\<\s\u\p\>S\</\s\u\p\> M Y')
             ."</span></address>\n"
