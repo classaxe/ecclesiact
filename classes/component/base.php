@@ -10,6 +10,7 @@ Version History:
          base::_draw_control_panel()    ->      Base::drawControlPanel()
          base::_draw_status()           ->      Base::drawStatus()
          base::_get_safe_ID()           ->      base::getSafeID()
+    3) Fully PSR-2 Compliant EXCEPT for backward-compatable stubbed method names 
 
 */
 
@@ -43,6 +44,7 @@ class Base extends \Record
         );
     }
 
+    // Deprecated method names for backward compatability
     protected function _draw_control_panel($extra_break = false)
     {
         self::drawControlPanel($extra_break);
@@ -50,10 +52,64 @@ class Base extends \Record
 
     protected function _draw_section_container_close()
     {
-        $this->_html.= "</div>\n";
+        $this->drawSectionContainerClose();
     }
 
     protected function _draw_section_container_open()
+    {
+        $this->drawSectionContainerOpen();
+    }
+
+    protected function _draw_status()
+    {
+        $this->drawStatus();
+    }
+
+    protected function _setup($instance, $args, $disable_params)
+    {
+        $this->setup($instance, $args, $disable_params);
+    }
+
+    protected function _setup_load_block_layout($blockLayoutName)
+    {
+        return self::setupLoadBlockLayout($blockLayoutName);
+    }
+
+    protected function _setup_load_parameters()
+    {
+        $this->setupLoadParameters();
+    }
+
+    protected function _setup_load_user_groups()
+    {
+        $this->setupLoadUserGroups();
+    }
+
+    protected function _setup_load_user_rights()
+    {
+        $this->setupLoadUserRights();
+    }
+
+    public static function get_help($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
+    {
+        self::getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults);
+    }
+
+    public static function get_safe_ID($ident, $instance = '')
+    {
+        return self::getSafeID($ident, $instance);
+    }
+
+    // End of deprecated method names
+
+
+
+    protected function drawSectionContainerClose()
+    {
+        $this->_html.= "</div>\n";
+    }
+
+    protected function drawSectionContainerOpen()
     {
         \Page::push_content(
             'javascript_onload',
@@ -62,14 +118,9 @@ class Base extends \Record
         $this->_html.= "<div id='".$this->_safe_ID."_container' style='position:relative;'>\n";
     }
 
-    protected function _draw_status()
-    {
-        self::drawStatus();
-    }
-
     protected function drawControlPanel($extra_break = false)
     {
-        $html = self::get_help(
+        $html = self::getHelp(
             $this->_ident,
             $this->_instance,
             $this->_disable_params,
@@ -87,7 +138,7 @@ class Base extends \Record
         $this->_html.=      \HTML::draw_status($this->_safe_ID, $this->_msg);
     }
 
-    public static function get_help($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
+    public static function getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
     {
         if (get_var('component_help')!=1 || $force_values) {
             return;
@@ -317,18 +368,13 @@ class Base extends \Record
         );
     }
 
-    public static function get_safe_ID($ident, $instance = '')
-    {
-        return self::getSafeID($ident, $instance);
-    }
-
     public function help($name, $params, $instance = '')
     {
         global $page_vars, $system_vars;
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
+        $isSYSADMIN =       get_person_permission("SYSADMIN");
         $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =        get_person_permission("SYSEDITOR");
+        $isSYSEDITOR =      get_person_permission("SYSEDITOR");
         $userIsAdmin =      ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN);
         if (!$userIsAdmin) {
             return "";
@@ -386,17 +432,16 @@ class Base extends \Record
                 $cp_defaults[] = '';
             }
         }
-        $cp_args =
-        array(
-        'id' =>         $ID_safe_name,
-        'ident' =>      ($instance=='*' || $instance=='' ? '' : $instance.":").$name,
-        'headings' =>   array('Parameter','Default','Site','Layout',$page_vars['object_type']),
-        'params' =>     $cp_params,
-        'hints' =>      $cp_hints,
-        'defaults' =>   $cp_defaults,
-        'site' =>       $cp_site,
-        'layout' =>     $cp_layout,
-        'item' =>       $cp_item
+        $cp_args = array(
+            'id' =>         $ID_safe_name,
+            'ident' =>      ($instance=='*' || $instance=='' ? '' : $instance.":").$name,
+            'headings' =>   array('Parameter','Default','Site','Layout',$page_vars['object_type']),
+            'params' =>     $cp_params,
+            'hints' =>      $cp_hints,
+            'defaults' =>   $cp_defaults,
+            'site' =>       $cp_site,
+            'layout' =>     $cp_layout,
+            'item' =>       $cp_item
         );
         if ($ID_safe_name==0) {
             \Page::push_content(
@@ -409,31 +454,33 @@ class Base extends \Record
             "cp_params[".$ID_safe_name."] = ".json_encode($cp_args).";\n"
         );
         $out =
-        "<div class='cp_icon' title='Click to adjust settings for\n".$name."'>\n"
-        ."<a href='#'"
-        ." onmouseover=\"this.parentNode.getElementsByTagName('span')[0].style.display='';\" "
-        ." onmouseout=\"this.parentNode.getElementsByTagName('span')[0].style.display='none';\" "
-        ." onclick='cp_popup();var a=new cp_matrix(\"cp_config\",cp_params[\"".$ID_safe_name."\"]);return false;'>"
-        ."<img src='".BASE_PATH."img/spacer' class='icon' alt='' />"
-        ."<span style='display:none;' class='cp_icon_description'>"
-        .($instance=='*' || $instance=='' ? '' : "<span class='instance'>"
-        .$instance.":</span>")
-        ."<span class='ident'>".$name."</span>\n"
-        ."</span></a></div>";
+             "<div class='cp_icon' title='Click to adjust settings for\n".$name."'>\n"
+            ."<a href='#'"
+            ." onmouseover=\"this.parentNode.getElementsByTagName('span')[0].style.display='';\" "
+            ." onmouseout=\"this.parentNode.getElementsByTagName('span')[0].style.display='none';\" "
+            ." onclick='cp_popup();var a=new cp_matrix(\"cp_config\",cp_params[\"".$ID_safe_name."\"]);return false;'>"
+            ."<img src='".BASE_PATH."img/spacer' class='icon' alt='' />"
+            ."<span style='display:none;' class='cp_icon_description'>"
+            .($instance=='*' || $instance=='' ? '' : "<span class='instance'>"
+            .$instance.":</span>")
+            ."<span class='ident'>".$name."</span>\n"
+            ."</span></a></div>";
         return $out;
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
         $this->_instance =          $instance;
         $this->_args =              $args;
         $this->_disable_params =    $disable_params;
         $this->_safe_ID =           self::getSafeID($this->_ident, $this->_instance);
         $this->_js_safe_ID =        get_js_safe_ID($this->_safe_ID);
-        $this->_setup_load_parameters();
+        $this->setupLoadParameters();
     }
 
-    protected function _setup_load_block_layout($blockLayoutName)
+
+
+    protected function setupLoadBlockLayout($blockLayoutName)
     {
         $Obj_BlockLayout =  new \Block_Layout;
         if (!$blockLayoutID = $Obj_BlockLayout->get_ID_by_name($blockLayoutName)) {
@@ -444,7 +491,7 @@ class Base extends \Record
         return $Obj_BlockLayout;
     }
 
-    protected function _setup_load_parameters()
+    protected function setupLoadParameters()
     {
         $cp_settings =
         self::get_parameter_defaults_and_values(
@@ -458,7 +505,7 @@ class Base extends \Record
         $this->_cp_defaults =   $cp_settings['defaults'];
     }
 
-    protected function _setup_load_user_groups()
+    protected function setupLoadUserGroups()
     {
         $this->_current_user_groups = Person::get_group_permissions();
         if (!$this->_current_user_groups) {
@@ -474,7 +521,7 @@ class Base extends \Record
         $this->_current_user_groups_access_csv = implode(',', array_unique($groups));
     }
 
-    protected function _setup_load_user_rights()
+    protected function setupLoadUserRights()
     {
         $isPUBLIC =         \Person::get_permission("PUBLIC");
         $isMASTERADMIN =    \Person::get_permission("MASTERADMIN");
@@ -506,23 +553,23 @@ class Base extends \Record
     public function set_parameters($values)
     {
         global $system_vars, $page_vars;
-        $settings = (json_decode(urldecode($values)));
+        $settings =     (json_decode(urldecode($values)));
         $Obj_System =   new \System(SYS_ID);
         $change_arr =   $settings->site;
         $original_arr = explode(OPTION_SEPARATOR, $system_vars['component_parameters']);
-        $merged_arr =   $this->_set_parameters_merge($original_arr, $change_arr);
+        $merged_arr =   $this->setParametersMerge($original_arr, $change_arr);
         $Obj_System->set_field('component_parameters', addslashes(implode(OPTION_SEPARATOR, $merged_arr)));
         $Obj_Layout =   new \Layout($page_vars['layout']['ID']);
         $change_arr =   $settings->layout;
         $original_arr = explode(OPTION_SEPARATOR, $page_vars['layout_component_parameters']);
-        $merged_arr =   $this->_set_parameters_merge($original_arr, $change_arr);
+        $merged_arr =   $this->setParametersMerge($original_arr, $change_arr);
         $Obj_Layout->set_field('component_parameters', addslashes(implode(OPTION_SEPARATOR, $merged_arr)));
         $object_type =  "\\".$page_vars['object_type'];
         $Obj =          new $object_type;
         $Obj->_set_ID($page_vars['ID']);
         $change_arr =   $settings->item;
         $original_arr = explode(OPTION_SEPARATOR, $page_vars['component_parameters']);
-        $merged_arr =   $this->_set_parameters_merge($original_arr, $change_arr);
+        $merged_arr =   $this->setParametersMerge($original_arr, $change_arr);
         $Obj->set_field('component_parameters', addslashes(implode(OPTION_SEPARATOR, $merged_arr)));
         \Page::push_content(
             'javascript_onload',
@@ -531,7 +578,7 @@ class Base extends \Record
         );
     }
 
-    private function _set_parameters_merge($original_arr, $change_arr)
+    private function setParametersMerge($original_arr, $change_arr)
     {
         $original_indexed = array();
         foreach ($original_arr as $entry) {

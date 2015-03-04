@@ -4,9 +4,10 @@ namespace Component;
 define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.9");
 /*
 Version History:
-  1.0.9 (2015-03-01)
-    1) Now uses namespaces
+  1.0.9 (2015-03-02)
+    1) Moved from Component_WOW_Slider and reworked to use namespaces
     2) Moved optional anchor for associated links inside Block Layout context Div to confrm to XHTML strict
+    3) Fully PSR-2 compliant
 
 */
 class WOWSlider extends Base
@@ -202,25 +203,25 @@ class WOWSlider extends Base
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
         global $page_vars;
-        $this->_setup($instance, $args, $disable_params);
-        $this->_draw_control_panel($this->_cp['hide_if_path_extended'] ? 1 : 0);
-        $this->_draw_status();
+        $this->setup($instance, $args, $disable_params);
+        $this->drawControlPanel($this->_cp['hide_if_path_extended'] ? 1 : 0);
+        $this->drawStatus();
         if (!count($this->_records)) {
             $this->_html.="(No images to show)";
-            return $this->_render();
+            return $this->render();
         }
         if ($this->_cp['hide_if_path_extended'] && $page_vars['path_extension']!='') {
             return $this->_html;
         }
-        $this->_draw_css_include();
-        $this->_draw_js();
-        $this->_draw_images();
-        $this->_draw_image_bullets();
+        $this->drawCssInclude();
+        $this->drawJs();
+        $this->drawImages();
+        $this->drawImageBullets();
         $this->_html.= "  <div class=\"ws_shadow\"></div>\n";
-        return $this->_render();
+        return $this->render();
     }
 
-    protected function _draw_css_include()
+    protected function drawCssInclude()
     {
         global $page_vars;
         $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&amp;targetValue='.$this->_safe_ID;
@@ -230,7 +231,7 @@ class WOWSlider extends Base
         );
     }
 
-    protected function _draw_css()
+    protected function drawCss()
     {
         $zindex = 10;
         header("Content-type: text/css", true);
@@ -494,7 +495,7 @@ class WOWSlider extends Base
              ."}";
     }
 
-    protected function _draw_images()
+    protected function drawImages()
     {
         $Obj_GI = new \Gallery_Image;
         $Obj_GI->_set('_current_user_rights', $this->_get('_current_user_rights'));
@@ -535,7 +536,7 @@ class WOWSlider extends Base
         ."  </div>\n";
     }
 
-    protected function _draw_image_bullets()
+    protected function drawImageBullets()
     {
         if (!$this->_cp['bullets_show']) {
             return;
@@ -559,7 +560,7 @@ class WOWSlider extends Base
             ."  </div>\n";
     }
 
-    protected function _draw_js()
+    protected function drawJs()
     {
         \Page::push_content(
             "javascript_top",
@@ -602,12 +603,7 @@ class WOWSlider extends Base
         );
     }
 
-    protected function _draw_status()
-    {
-        $this->_html.=      \HTML::draw_status($this->_safe_ID.'_status', $this->_msg);
-    }
-
-    protected function _render()
+    protected function render()
     {
         return
              "<div id=\"".$this->_safe_ID."\">\n"
@@ -615,32 +611,32 @@ class WOWSlider extends Base
             ."</div>\n";
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
-        parent::_setup($instance, $args, $disable_params);
-        $this->_setup_load_user_rights();
-        $this->_setup_do_submode();
-        $this->_setup_load_records();
-        $this->_setup_images();
+        parent::setup($instance, $args, $disable_params);
+        $this->setupLoadUserRights();
+        $this->setupDoSubmode();
+        $this->setupLoadRecords();
+        $this->setupImages();
     }
 
-    protected function _setup_do_submode()
+    protected function setupDoSubmode()
     {
         if ($this->_isAdmin && get_var('source')==$this->_safe_ID) {
-            $Obj = new Gallery_Image;
+            $Obj = new \Gallery_Image;
             $this->_msg = $Obj->do_submode();
         }
         switch(get_var('submode')){
             case 'css':
                 if (get_var('targetValue')==$this->_safe_ID) {
-                    $this->_draw_css();
+                    $this->drawCss();
                     die;
                 }
                 break;
         }
     }
 
-    protected function _setup_load_records()
+    protected function setupLoadRecords()
     {
         $Obj =              new \Gallery_Image;
         $args =     array(
@@ -674,7 +670,7 @@ class WOWSlider extends Base
         }
     }
 
-    protected function _setup_images()
+    protected function setupImages()
     {
         foreach ($this->_records as $record) {
             $_ID =        $record['ID'];
@@ -737,7 +733,7 @@ class WOWSlider extends Base
         }
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_NS_COMPONENT_WOW_SLIDER;
     }

@@ -5,8 +5,9 @@ define("VERSION_NS_COMPONENT_EMAILUNSUBSCRIBE", "1.0.1");
 /*
 Version History:
   1.0.1 (2015-03-01)
-    1) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
-    2) Now uses namespace and is fully PSR-2 compliant
+    1) Moved from Component_Email_Unsubscribe and reworked to use namespaces
+    2) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
+    3) Fully PSR-2 compliant
 
 */
 class EmailUnsubscribe extends Base

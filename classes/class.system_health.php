@@ -3,8 +3,9 @@ define('VERSION_SYSTEM_HEALTH', '1.0.44');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.44 (2015-03-01)
-    1) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
+  1.0.44 (2015-03-03)
+    1) Now able to look for and report on namespaced classes in subfolders of classes folder
+    2) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
 
   (Older version history in class.system_health.txt)
 */
@@ -490,11 +491,14 @@ class System_Health extends System
             if ($config['category']=='classes' && $config['title']!='classes_cs_actual') {
             // Regular entries
                 $title =        $config['title'];
-                $class_arr =    explode('.', $title);
                 $content_arr =  explode('|', $config['content']);
                 $title =        $config['title'];
                 $title_arr =    explode('.', $title);
-                $class =        $title_arr[1];
+                $class =        str_replace(
+                    array('.php', 'class.', '/'),
+                    array('', '', '\\'),
+                    $title
+                );
                 $version =      $content_arr[0];
                 $size =         $content_arr[1];
                 $actual =       $content_arr[2];
@@ -509,12 +513,12 @@ class System_Health extends System
                 );
                 $correct =      $actual == $expected_arr['expected_cs'];
                 if ($actual == $expected_arr['expected_cs']) {
-                    $out.= "  <tr class='unchanged' title='No changes'>\n";
+                    $out.= "  <tr class='unchanged' title='".$title." - No changes'>\n";
                 } elseif ($expected_arr['expected_version']=='0') {
-                    $out.= "  <tr class='good' title='New addition for this build'>\n";
+                    $out.= "  <tr class='good' title='".$title." - New addition for this build'>\n";
                 } elseif ($version!=$expected_arr['expected_version']) {
                     $out.=
-                         "  <tr class='good' title='Changed, new version number supplied -\n"
+                         "  <tr class='good' title='".$title."- Changed, new version number supplied -\n"
                         ."Previous version:".$expected_arr['expected_version'].","
                         ." size:".number_format($expected_arr['expected_size']).","
                         ." checksum:".$expected_arr['expected_cs']
@@ -522,7 +526,7 @@ class System_Health extends System
                         .">\n";
                 } else {
                     $out.=
-                         "  <tr class='bad' title='Changed but NO new version number supplied -\n"
+                         "  <tr class='bad' title='".$title."- Changed but NO new version number supplied -\n"
                         ."Previous version:".$expected_arr['expected_version'].","
                         ." size:".number_format($expected_arr['expected_size']).","
                         ." checksum:".$expected_arr['expected_cs']
@@ -530,7 +534,7 @@ class System_Health extends System
                         .">\n";
                 }
                 $out.=
-                    "    <th>".$class."</th>\n"
+                     "    <th>".$class."</th>\n"
                     ."    <td>".$version."</td>\n"
                     ."    <td class='num'>".$size."</td>\n"
                     ."    <td class='cs'>".$actual."</td>\n"
@@ -973,32 +977,30 @@ class System_Health extends System
 
     protected function _getConfigClasses(&$out)
     {
-        $all_items = safe_glob(SYS_CLASSES.'*.php');
         $entries = array();
         $final = "";
+        $all_items = scan_Dir(SYS_CLASSES, '*.php');
         foreach ($all_items as $item) {
-            $entries[] = $item;
+            $entries[] = substr($item, strlen(SYS_CLASSES));
         }
         foreach ($entries as $entry) {
-            $ext_arr =    explode(".", $entry);
-            if (count($ext_arr)==3) {
-                $ext =              array_pop($ext_arr);
-                $class =            array_pop($ext_arr);
-                $Obj =              new $class;
-                $version =          (method_exists($Obj, 'getVersion') ? $Obj->getVersion() : $Obj->get_version());
-                $file =             file_get_contents(SYS_CLASSES.$entry);
-                $size =             number_format(strlen($file));
+            $ext_arr =          explode(".", $entry);
+            $ext =              array_pop($ext_arr);
+            $class =            str_replace('/', '\\', array_pop($ext_arr));
+            $Obj =              new $class;
+            $version =          (method_exists($Obj, 'getVersion') ? $Obj->getVersion() : $Obj->get_version());
+            $file =             file_get_contents(SYS_CLASSES.$entry);
+            $size =             number_format(strlen($file));
 
-                $file_normalised =  preg_replace("/\r\n/", "\n", $file);
-                $crc32 =            dechex(crc32($file_normalised));
+            $file_normalised =  preg_replace("/\r\n/", "\n", $file);
+            $crc32 =            dechex(crc32($file_normalised));
 
-                $out[] = array(
-                    'category' =>   'classes',
-                    'title' =>      $entry,
-                    'content' =>    $version."|".$size."|".$crc32
-                );
-                $final.=$entry."|".$crc32;
-            }
+            $out[] = array(
+                'category' =>   'classes',
+                'title' =>      $entry,
+                'content' =>    $version."|".$size."|".$crc32
+            );
+            $final.=$entry."|".$crc32;
         }
         $out[] = array(
             'category' =>   'classes',
@@ -1006,6 +1008,7 @@ class System_Health extends System
             'content' =>    dechex(crc32($final))
         );
     }
+
     private function _getConfigClassesExpected($csv)
     {
         $_cs_all =  explode(', ', $csv);
