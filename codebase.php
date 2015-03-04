@@ -357,14 +357,14 @@ function portal_autoload($className)
         includes_monitor($include_file);
         return;
     }
-    $class_php = strToLower($className).'.php';
-
+    $class_php = str_replace('\\', DIRECTORY_SEPARATOR, strToLower($className).'.php');
     $include_file = SYS_CLASSES.$class_php;
     if (file_exists($include_file)) {
         require_once($include_file);
         includes_monitor($include_file);
         return;
     }
+    print 'looking for '.$include_file;
 }
 
 
