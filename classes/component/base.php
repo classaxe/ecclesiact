@@ -1,16 +1,13 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_BASE", "1.0.0");
+define("VERSION_NS_COMPONENT_BASE", "1.0.1");
 /*
 Version History:
-  1.0.0 (2015-03-01)
-    1) Moved from Component_Base and reworked to use namespaces
-    2) Aliases for PSR-2 and backward-compliant function calls:
-         base::_draw_control_panel()    ->      Base::drawControlPanel()
-         base::_draw_status()           ->      Base::drawStatus()
-         base::_get_safe_ID()           ->      base::getSafeID()
-    3) Fully PSR-2 Compliant EXCEPT for backward-compatable stubbed method names 
+  1.0.1 (2015-03-04)
+    1) Changes to static method calls from self:: to static:: to support overriding
+    2) Bug fix - deprecated get_help() method wasn't returning content
+    3) Added Base::getJSSafeID() method
 
 */
 
@@ -47,7 +44,7 @@ class Base extends \Record
     // Deprecated method names for backward compatability
     protected function _draw_control_panel($extra_break = false)
     {
-        self::drawControlPanel($extra_break);
+        $this->drawControlPanel($extra_break);
     }
 
     protected function _draw_section_container_close()
@@ -72,7 +69,7 @@ class Base extends \Record
 
     protected function _setup_load_block_layout($blockLayoutName)
     {
-        return self::setupLoadBlockLayout($blockLayoutName);
+        return $this->setupLoadBlockLayout($blockLayoutName);
     }
 
     protected function _setup_load_parameters()
@@ -92,12 +89,12 @@ class Base extends \Record
 
     public static function get_help($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
     {
-        self::getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults);
+        return static::getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults);
     }
 
     public static function get_safe_ID($ident, $instance = '')
     {
-        return self::getSafeID($ident, $instance);
+        return static::getSafeID($ident, $instance);
     }
 
     // End of deprecated method names
@@ -120,7 +117,7 @@ class Base extends \Record
 
     protected function drawControlPanel($extra_break = false)
     {
-        $html = self::getHelp(
+        $html = static::getHelp(
             $this->_ident,
             $this->_instance,
             $this->_disable_params,
@@ -152,7 +149,7 @@ class Base extends \Record
             .'{'.$cp_defaults[$_param].'}';
         }
         return
-            self::help(
+            static::help(
                 $ident,
                 implode('[;]', $_params_arr),
                 $instance
@@ -192,7 +189,7 @@ class Base extends \Record
         $presets = array()
     ) {
         // Most current system, usually invoked via:
-        // self::_setup_load_parameters()
+        // static::_setup_load_parameters()
         $result = array(
             'defaults' =>   array(),
             'parameters' => array()
@@ -207,9 +204,9 @@ class Base extends \Record
                  $result['defaults'][$_param];
             } else {
                 $result['parameters'][$_param] =
-                self::get_parameter_for_instance(
+                static::get_parameter_for_instance(
                     $instance,
-                    self::get_parameters(),
+                    static::get_parameters(),
                     $ident.".".$_param,
                     $result['defaults'][$_param]
                 );
@@ -359,6 +356,11 @@ class Base extends \Record
             );
     }
 
+    public static function getJSSafeID($ident, $instance = '')
+    {
+        return get_js_safe_ID(static::getSafeID($ident, $instance));
+    }
+
     public static function getSafeID($ident, $instance = '')
     {
         return str_replace(
@@ -379,8 +381,8 @@ class Base extends \Record
         if (!$userIsAdmin) {
             return "";
         }
-        $parameters =   self::get_parameters();
-        $ID_safe_name = self::$help_div_id++;
+        $parameters =   static::get_parameters();
+        $ID_safe_name = static::$help_div_id++;
         $param_arr =    explode("[;]", $params);
         $cp_params =    array();
         $cp_defaults =  array();
@@ -392,21 +394,21 @@ class Base extends \Record
             $temp = preg_split('/=/', $param);
             $cp_params[] =    (substr($temp[0], 0, strLen($name))==$name ? substr($temp[0], strLen($name)) : $temp[0]);
             $cp_site[] =
-                self::get_parameter_for_instance(
+                static::get_parameter_for_instance(
                     $instance,
                     $system_vars['component_parameters'],
                     $temp[0],
                     ''
                 );
             $cp_layout[] =
-                self::get_parameter_for_instance(
+                static::get_parameter_for_instance(
                     $instance,
                     $page_vars['layout_component_parameters'],
                     $temp[0],
                     ''
                 );
             $cp_item[] =
-                self::get_parameter_for_instance(
+                static::get_parameter_for_instance(
                     $instance,
                     $page_vars['component_parameters'],
                     $temp[0],
@@ -473,8 +475,8 @@ class Base extends \Record
         $this->_instance =          $instance;
         $this->_args =              $args;
         $this->_disable_params =    $disable_params;
-        $this->_safe_ID =           self::getSafeID($this->_ident, $this->_instance);
-        $this->_js_safe_ID =        get_js_safe_ID($this->_safe_ID);
+        $this->_safe_ID =           static::getSafeID($this->_ident, $this->_instance);
+        $this->_js_safe_ID =        static::getJsSafeID($this->_ident, $this->_instance);
         $this->setupLoadParameters();
     }
 
@@ -493,8 +495,7 @@ class Base extends \Record
 
     protected function setupLoadParameters()
     {
-        $cp_settings =
-        self::get_parameter_defaults_and_values(
+        $cp_settings = static::get_parameter_defaults_and_values(
             $this->_ident,
             $this->_instance,
             $this->_disable_params,

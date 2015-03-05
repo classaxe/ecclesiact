@@ -1,3 +1,9 @@
+  1.0.38 (2015-01-04)
+    1) Changes to Contact form:
+         a) Now includes website link in subject line
+         b) Now BCCs messages to info@churchesInYourTown.ca
+         c) Now CCs sent message to sender if they have logged in and have editor privileges
+    2) Now PSR-2 Compliant
   1.0.37 (2014-12-26)
     1) Changes to ensure that 404 headers are sent when either comminity or member doesn't
        exist.

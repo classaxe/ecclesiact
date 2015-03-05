@@ -1,3 +1,14 @@
+  1.0.0 (2015-03-01)
+    1) Moved from Component_Base and reworked to use namespaces
+    2) Aliases for PSR-2 and backward-compliant function calls:
+         base::_draw_control_panel()    ->      Base::drawControlPanel()
+         base::_draw_status()           ->      Base::drawStatus()
+         base::_get_safe_ID()           ->      base::getSafeID()
+    3) Fully PSR-2 Compliant EXCEPT for backward-compatable stubbed method names
+    
+--------------------------------
+Moved and left a stub at old location with old versioning sequence
+--------------------------------
   1.0.11 (2012-11-31)
     1) Base::use_module() now declared to be static
   1.0.10 (2012-07-24)

@@ -1,17 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.38');
+define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.39');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.38 (2015-01-04)
-    1) Changes to Contact form:
-         a) Now includes website link in subject line
-         b) Now BCCs messages to info@churchesInYourTown.ca
-         c) Now CCs sent message to sender if they have logged in and have editor privileges
-    2) Now PSR-2 Compliant
+  1.0.39 (2015-03-03)
+    1) Bug fix following move of Component_WOW_Slider to namespace
 
   (Older version history in class.community_member_display.txt)
 */
@@ -1167,7 +1163,7 @@ class Community_Member_Display extends Community_Member
 
     protected function _draw_profile_image_slideshow()
     {
-        $Obj_WS =   new Component_WOW_Slider;
+        $Obj_WS =   new Component\WOWSlider;
         $path =     '//communities/'.$this->_community_record['name'].'/members/'.$this->_record['name'].'/profile';
         $args = array(
             'bullets_margin_top' =>       $this->_cp['profile_photo_height']-40,

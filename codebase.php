@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.2");
+define("CODEBASE_VERSION", "3.2.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,83 +16,37 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.2.2366 (2015-03-03)
+3.2.3.2367 (2015-03-04)
 Summary:
-  1) Started implementing namespaces - changes to autoloader to support this
-  2) Started removing 'class.' prefix from class files and converting names to camel case (for PSR-2)
-  3) Added Fax number to Member Summary sheet
-  4) Fix for wow-slider linked images when used with context-menu selectors
-  5) Fix for Email Unsubscribe - wasn't showing messages sent to subscriber correctly
+  1) Bug fix for community member display now that the WOW slider component is namespaced
+  2) Changes to component\base to use static inmstead of self for static function calls
+  3) Bug fix - component control panel was missing for components using deprecated get_help() method
 
 Final Checksums:
-  Classes     CS:aa8765f9
+  Classes     CS:aaffa6ab
   Database    CS:48ba81d8
-  Libraries   CS:1fe9d371
+  Libraries   CS:529a0b81
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.2     (2015-03-03)
+  codebase.php                                                                                   3.2.3     (2015-03-04)
     1) Updated version information
-  classes/class.community_member_summary.php                                                     1.0.19    (2015-02-20)
-    1) Added new Fax number
-  classes/class.component_base.php                                                               1.0.19    (2015-03-01)
-    1) Now reduced to a stub file that simply extends Component\Base
-       This file will eventuall;y be removed.
-  classes/class.mail_queue_item.php                                                              1.0.16    (2015-03-01)
-    1) Bug fix for viewing message list - needed personID to get list of messages sent
-    2) New method viewMessagesForPerson
-    3) Renamed const fields to FIELDS
-    4) Now PSR-2 Compliant
-  classes/class.system.php                                                                       1.0.158   (2015-03-01)
-    1) Calls to System_Health methods now CamelCase
-  classes/class.system_edit.php                                                                  1.0.32    (2015-03-01)
-    1) Call to System_Health::get_config() is now System_Health::getConfig()
-    2) System_Edit::get_version() now System_Edit::getVersion()
-    3) Now closer to full PSR-2 compliant
-  classes/class.system_health.php                                                                1.0.44    (2015-03-03)
-    1) Now able to look for and report on namespaced classes in subfolders of classes folder
-    2) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
-  classes/component/base.php                                                                     1.0.0     (2015-03-01)
-    1) Moved from Component_Base and reworked to use namespaces
-    2) Aliases for PSR-2 and backward-compliant function calls:
-         base::_draw_control_panel()    ->      Base::drawControlPanel()
-         base::_draw_status()           ->      Base::drawStatus()
-         base::_get_safe_ID()           ->      base::getSafeID()
-    3) Fully PSR-2 Compliant EXCEPT for backward-compatable stubbed method names
-  classes/component/emailunsubscribe.php                                                         1.0.1     (2015-03-01)
-    1) Moved from Component_Email_Unsubscribe and reworked to use namespaces
-    2) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
-    3) Fully PSR-2 compliant
-  classes/component/wowslider.php                                                                1.0.9     (2015-03-02)
-    1) Moved from Component_WOW_Slider and reworked to use namespaces
-    2) Moved optional anchor for associated links inside Block Layout context Div to confrm to XHTML strict
-    3) Fully PSR-2 compliant
+  classes/class.community_member_display.php                                                     1.0.39    (2015-03-03)
+    1) Bug fix following move of Component_WOW_Slider to namespace
+  classes/component/base.php                                                                     1.0.1     (2015-03-04)
+    1) Changes to static method calls from self:: to static:: to support overriding
+    2) Bug fix - deprecated get_help() method wasn't returning content
+    3) Added Base::getJSSafeID() method
 
-2366.sql
-  1) Updated ECL tag for wow_slider to use namespaced class reference
-  2) Updated ECL tag for component_email_unsubscribe to use namespaced class reference
-  3) Set version information
-
-
-Delete:
-   classes/ (2 files deleted)
-     class.component_email_unsubscribe.php
-     class.component_wow_slider.php
+2367.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.2.2
-  classes/  (9 files changed)
-    class.community_member_summary.php                1.0.19    CS:bbae7abf
-    class.component_base.php                          1.0.0     CS:196c2340
-    class.mail_queue_item.php                         1.0.16    CS:a820f1bb
-    class.system.php                                  1.0.158   CS:7299ae36
-    class.system_edit.php                             1.0.32    CS:98c5e182
-    class.system_health.php                           1.0.44    CS:728e087f
-    component/base.php                                1.0.0     CS:16d56312
-    component/emailunsubscribe.php                    1.0.1     CS:4daecaa7
-    component/wowslider.php                           1.0.9     CS:4a19f6d5
-
-
+  codebase.php                                        3.2.3
+  classes/  (2 files changed)
+    class.community_member_display.php                1.0.39    CS:5b146ea2
+    component/base.php                                1.0.1     CS:ceeb0f6f
+    
 
   3) Change 'Survey Returned' to 'Last Verified' on Community Member form
   4) Allow #easter to be used in place of #special on special events tab in community sites
@@ -364,7 +318,7 @@ function portal_autoload($className)
         includes_monitor($include_file);
         return;
     }
-    print 'looking for '.$include_file;
+//    print 'looking for '.$include_file;
 }
 
 
@@ -2504,6 +2458,7 @@ function scan_Dir($dir, $pattern) {
         closedir($handle);
     }
     chdir($current_dir);
+    sort($arrfiles);
     return $arrfiles;
 }
 
