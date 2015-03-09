@@ -1,10 +1,10 @@
 <?php
-define("VERSION_COMPONENT_COMBO_TABBER", "1.0.9");
+define("VERSION_COMPONENT_COMBO_TABBER", "1.0.10");
 /*
 Version History:
-  1.0.9 (2015-02-06)
-    1) Events, Podcasts and News panels may now have their orders specified
-    2) Now PSR-2 Compliant
+  1.0.10 (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
+    2) Was potentially guity of 'magic-this' passing - corrected that now :-)
 
   (Older version history in class.component_combo_tabber.txt)
 */
@@ -236,7 +236,8 @@ class Component_Combo_Tabber extends Component_Base
             'show' =>               'events',
             'width' =>              $this->_cp['box_width']
         );
-        $this->_html.= Component_Calendar_Small::draw($args, true);
+        $Obj = new Component\CalendarSmall;
+        $this->_html.= $Obj->draw($args, true);
     }
 
     protected function _draw_events()

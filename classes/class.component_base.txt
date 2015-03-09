@@ -1,3 +1,6 @@
+  1.0.19 (2015-03-01)
+    1) Now reduced to a stub file that simply extends Component\Base
+       This file will eventuall;y be removed.
   1.0.18 (2015-01-02)
     1) Now uses OPTION_SEPARATOR constant not option_separator in various CP parsing methods
     2) Now PSR-2 Compliant

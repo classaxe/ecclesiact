@@ -1,0 +1,15 @@
+  1.0.5 (2013-05-10)
+    1) Tweak to Component_Activity_Tabber::_setup_load_tabs() for when there are
+       no records to set tabs for
+  1.0.4 (2013-05-09)
+    1) Changes to make tabs select on last opened one if a post has occured
+    2) Rendering now occurs within named container div
+  1.0.3 (2012-09-16)
+    1) Huge changes to use Block Layouts, be much more configurable and to allow
+       context menu editing
+  1.0.2 (2012-07-13)
+    1) Bug fix - constructor function incorrectly named
+  1.0.1 (2012-01-23)
+    1) Upgrades to use properties and control panel method from Component_Base
+  1.0.0 (2011-12-30)
+    1) Initial release - moved from Component class

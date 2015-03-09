@@ -1,0 +1,3 @@
+  1.0.0 (2012-11-15)
+    1) New release - needed now that community is included as a class and not
+       permanently loaded as a module

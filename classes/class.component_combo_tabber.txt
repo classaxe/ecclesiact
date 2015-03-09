@@ -1,3 +1,6 @@
+  1.0.9 (2015-02-06)
+    1) Events, Podcasts and News panels may now have their orders specified
+    2) Now PSR-2 Compliant
   1.0.8 (2014-04-26)
     1) Events, Podcasts and News panels were not respecting the results limit settings
        passed to them by unified component parameters in this implementation -

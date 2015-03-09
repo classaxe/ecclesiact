@@ -1,14 +1,17 @@
 <?php
-define("VERSION_COMPONENT_DAILY_BIBLE_VERSE", "1.0.0");
+namespace Component;
+
+define('VERSION_NS_COMPONENT_DAILY_BIBLE_VERSE', '1.0.1');
 /*
 Version History:
-  1.0.0 (2015-02-14)
-    1) Initial release - Moved from Church Module
+  1.0.1 (2015-03-04)
+    1) Moved from Component_Daily_Bible_Verse and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
 
 */
 
 
-class Component_Daily_Bible_Verse extends Component_Base
+class DailyBibleVerse extends Base
 {
     public function __construct()
     {
@@ -25,8 +28,8 @@ class Component_Daily_Bible_Verse extends Component_Base
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        $this->_setup($instance, $args, $disable_params);
-        $this->_draw_control_panel(true);
+        $this->setup($instance, $args, $disable_params);
+        $this->drawControlPanel(true);
         $this->_html.=
              "<div id='daily_bible_verse'>Loading from christnotes.org... please wait</div>"
             ."<script type=\"text/javascript\">\n"
@@ -48,8 +51,8 @@ class Component_Daily_Bible_Verse extends Component_Base
         return $this->_html;
     }
 
-    public function get_version()
+    public function getVersion()
     {
-        return VERSION_COMPONENT_DAILY_BIBLE_VERSE;
+        return VERSION_NS_COMPONENT_DAILY_BIBLE_VERSE;
     }
 }

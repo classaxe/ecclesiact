@@ -1,3 +1,5 @@
+  1.0.51 (2015-02-12)
+    1) Now outputs bare-bones HTML page when displaying 404 - resource not found
   1.0.50 (2015-02-11)
     1) Now serves 404 when visitor attempts to select an invalid podcast.
        This should dramatically reduce network traffic by search bots following invalid search paths.

@@ -1,10 +1,11 @@
 <?php
-define('VERSION_SYSTEM', '1.0.158');
+define('VERSION_SYSTEM', '1.0.159');
 
 /*
 Version History:
-  1.0.158 (2015-03-01)
-    1) Calls to System_Health methods now CamelCase
+  1.0.159 (2015-03-08)
+    1)  System::do_commands() for command 'set_parameters' now uses \Component\Base->setParameters() instead of
+        Component_Base->set_parameters() as before
 
   (Older version history in class.system.txt)
 */
@@ -430,8 +431,8 @@ class System extends Record
                     $Obj->set(get_var('targetValue'));
                     break;
                 case "set_parameters":
-                    $Obj = new Component_Base;
-                    $Obj->set_parameters(get_var('targetValue'));
+                    $Obj = new \Component\Base;
+                    $Obj->setParameters(get_var('targetValue'));
                     break;
                 case "ssi":
                     $Obj = new User;

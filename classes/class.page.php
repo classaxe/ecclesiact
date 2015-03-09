@@ -1,10 +1,10 @@
 <?php
-define('VERSION_PAGE', '1.0.119');
+define('VERSION_PAGE', '1.0.120');
 /*
 Version History:
-  1.0.119 (2015-02-14)
-    1) Change to Page::prepare_html_head() now that Component_Bible_Links::draw() was moved from a module to
-       its own class
+  1.0.120 (2015-03-04)
+    1) Change to Page::prepare_html_head() now Component_Bible_Links::draw() is \Component\BibleLinks::draw()
+    2) Added pushContent() as alias for now deprecated push_content()
 
   (Older version history in class.page.txt)
 */
@@ -1734,7 +1734,7 @@ class Page extends Displayable_Item
         print $out;
     }
 
-    public static function push_content($part, $code)
+    public static function pushContent($part, $code)
     {
       // Parts list:
       /*
@@ -1754,6 +1754,12 @@ class Page extends Displayable_Item
         html_bottom
       */
         Page::$content[$part][] = $code;
+    }
+
+
+    public static function push_content($part, $code)
+    {
+        static::pushContent($part, $code);
     }
 
     public function prepare_html_foot()
@@ -2076,7 +2082,7 @@ class Page extends Displayable_Item
             $mode!='details' &&
             $mode!='report'
         ) {
-            $Obj_CBL = new Component_Bible_Links;
+            $Obj_CBL = new \Component\BibleLinks;
             $this->push_content('body', $Obj_CBL->draw());
         }
     }

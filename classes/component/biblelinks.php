@@ -1,14 +1,16 @@
 <?php
-define("VERSION_COMPONENT_BIBLE_LINKS", "1.0.0");
+namespace Component;
+
+define('VERSION_NS_COMPONENT_BIBLE_LINKS', '1.0.1');
 /*
 Version History:
-  1.0.0 (2015-02-14)
-    1) Initial release - Moved from Church Module
-    2) Updated API code for Reftagger calls to use newer API
+  1.0.1 (2015-03-04)
+    1) Moved from Component_Bible_Links and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
 
 */
 
-class Component_Bible_Links extends Component_Base
+class BibleLinks extends Base
 {
     public function __construct()
     {
@@ -36,9 +38,9 @@ class Component_Bible_Links extends Component_Base
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        $this->_setup($instance, $args, $disable_params);
-        $this->_draw_control_panel(true);
-        Page::push_content(
+        $this->setup($instance, $args, $disable_params);
+        $this->drawControlPanel(true);
+        \Page::push_content(
             'style',
             "a.rtBibleRef       { text-decoration: none; "
             .($this->_cp['link_bold'] ? "font-weight: bold; " : "")
@@ -46,7 +48,7 @@ class Component_Bible_Links extends Component_Base
             ."}\n"
             ."a.lbsBibleRef:hover { text-decoration: underline; }\n"
         );
-        Page::push_content(
+        \Page::push_content(
             "body_bottom",
             "<script type=\"text/javascript\">\n"
             ."var refTagger = {\n"
@@ -67,8 +69,8 @@ class Component_Bible_Links extends Component_Base
         return $this->_html;
     }
 
-    public function get_version()
+    public function getVersion()
     {
-        return VERSION_COMPONENT_BIBLE_LINKS;
+        return VERSION_NS_COMPONENT_BIBLE_LINKS;
     }
 }

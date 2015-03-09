@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.3");
+define("CODEBASE_VERSION", "3.2.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,37 +16,98 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.3.2367 (2015-03-04)
+3.2.4.2368 (2015-03-08)
 Summary:
-  1) Bug fix for community member display now that the WOW slider component is namespaced
-  2) Changes to component\base to use static inmstead of self for static function calls
-  3) Bug fix - component control panel was missing for components using deprecated get_help() method
+  1) More components converted to use namespaces and be more fully PSR-2 conformant
 
 Final Checksums:
-  Classes     CS:aaffa6ab
+  Classes     CS:a4ccb70d
   Database    CS:48ba81d8
-  Libraries   CS:529a0b81
+  Libraries   CS:6bb00710
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.3     (2015-03-04)
+  codebase.php                                                                                   3.2.4     (2015-03-08)
     1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.39    (2015-03-03)
-    1) Bug fix following move of Component_WOW_Slider to namespace
-  classes/component/base.php                                                                     1.0.1     (2015-03-04)
-    1) Changes to static method calls from self:: to static:: to support overriding
-    2) Bug fix - deprecated get_help() method wasn't returning content
-    3) Added Base::getJSSafeID() method
+  classes/class.community_resource.php                                                           1.0.3     (2015-03-07)
+    1) Renamed internal methods to camel case format
+    2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
+  classes/class.component_base.php                                                               1.0.20    (2015-03-07)
+    1) Moved deprecated support methods out of \Component\Base into here
+  classes/class.component_combo_tabber.php                                                       1.0.10    (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
+    2) Was potentially guity of 'magic-this' passing - corrected that now :-)
+  classes/class.page.php                                                                         1.0.120   (2015-03-04)
+    1) Change to Page::prepare_html_head() now Component_Bible_Links::draw() is \Component\BibleLinks::draw()
+    2) Added pushContent() as alias for now deprecated push_content()
+  classes/class.system.php                                                                       1.0.159   (2015-03-08)
+    1)  System::do_commands() for command 'set_parameters' now uses \Component\Base->setParameters() instead of
+        Component_Base->set_parameters() as before
+  classes/class.system_edit.php                                                                  1.0.33    (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
+  classes/component/activitytabber.php                                                           1.0.6     (2015-03-04)
+    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/adminpersonlookup.php                                                        1.0.5     (2015-03-08)
+    1) Moved here from class.component_admin_person_lookup.php and reworked for namespaces
+  classes/component/articlesrotator.php                                                          1.0.8     (2015-03-07)
+    1) Moved from Component_Articles_Rotator and reworked to use namespaces
+    2) Now has up-to-date constructor-based setup
+    3) Greatly simplified code by splitting into smaller helper classes
+  classes/component/base.php                                                                     1.0.2     (2015-04-07)
+    1) Moved backward deprecated non-camel-cased backward compatability methods out into old component_base class
+       This class is now FULLY PSR-2 compliant - erm, except for property naming of course.
+  classes/component/biblelinks.php                                                               1.0.1     (2015-03-04)
+    1) Moved from Component_Bible_Links and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/breadcrumbs.php                                                              1.0.5     (2015-03-08)
+    1) Moved from class.component_breadcrumbs.php and reworked to use namespaces
+    2) Now with much more modern component setup
+  classes/component/calendarsmall.php                                                            1.0.4     (2014-03-08)
+    1) Moved in here from class.component_calendar_small.php
+  classes/component/collectionviewer.php                                                         1.0.52    (2015-03-07)
+    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
+  classes/component/communitycollectionviewer.php                                                1.0.1     (2015-03-07)
+    1) Now namespaced and PSR-2 compliant
+  classes/component/dailybibleverse.php                                                          1.0.1     (2015-03-04)
+    1) Moved from Component_Daily_Bible_Verse and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
 
-2367.sql
+2368.sql
   1) Set version information
 
+Delete:
+  classes/ (9 php files deleted, plus their version histories)
+    classes/class.community_component_collection_viewer.*
+    classes/class.component_activity_tabber.*
+    classes/class.component_admin_person_lookup.*
+    classes/class.component_articles_rotator.*
+    classes/class.component_bible_links.*
+    classes/class.component_breadcrumbs.*
+    classes/class.component_calendar_small.*
+    classes/class.component_collection_viewer.*
+    classes/class.component_daily_bible_verse.*
+
 Promote:
-  codebase.php                                        3.2.3
-  classes/  (2 files changed)
-    class.community_member_display.php                1.0.39    CS:5b146ea2
-    component/base.php                                1.0.1     CS:ceeb0f6f
-    
+  codebase.php                                        3.2.4
+  classes/  (16 files changed)
+    class.community_resource.php                      1.0.3     CS:6d0234f3
+    class.component_base.php                          1.0.20    CS:9a7b3462
+    class.component_combo_tabber.php                  1.0.20    CS:749ed472
+    class.page.php                                    1.0.120   CS:258a2fc1
+    class.system.php                                  1.0.159   CS:9b0276f3
+    class.system_edit.php                             1.0.33    CS:1c0b861d
+    component/activitytabber.php                      1.0.6     CS:366aeb7c
+    component/adminpersonlookup.php                   1.0.5     CS:f967491e
+    component/articlesrotator.php                     1.0.8     CS:86e66b90
+    component/base.php                                1.0.2     CS:1368cacc
+    component/biblelinks.php                          1.0.1     CS:d36bdaa4
+    component/breadcrumbs.php                         1.0.5     CS:e1322822
+    component/calendarsmall.php                       1.0.4     CS:1417236b
+    component/collectionviewer.php                    1.0.52    CS:44261cc
+    component/communitycollectionviewer.php           1.0.1     CS:9fe81687
+    component/dailybibleverse.php                     1.0.1     CS:b8719bb1
+
 
   3) Change 'Survey Returned' to 'Last Verified' on Community Member form
   4) Allow #easter to be used in place of #special on special events tab in community sites

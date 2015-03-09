@@ -1,3 +1,5 @@
+  1.0.158 (2015-03-01)
+    1) Calls to System_Health methods now CamelCase
   1.0.157 (2015-01-10)
     1) Now uses OPTION_SEPARATOR constant not option_separator in System::set_parameters_for_instance()
     2) Now PSR-2 Compliant

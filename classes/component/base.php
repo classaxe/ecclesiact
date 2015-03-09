@@ -1,13 +1,12 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_BASE", "1.0.1");
+define("VERSION_NS_COMPONENT_BASE", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-03-04)
-    1) Changes to static method calls from self:: to static:: to support overriding
-    2) Bug fix - deprecated get_help() method wasn't returning content
-    3) Added Base::getJSSafeID() method
+  1.0.2 (2015-04-07)
+    1) Moved backward deprecated non-camel-cased backward compatability methods out into old component_base class
+       This class is now FULLY PSR-2 compliant - erm, except for property naming of course.
 
 */
 
@@ -27,7 +26,8 @@ class Base extends \Record
     protected $_html =            '';
     protected $_js =              '';
     protected $_msg =             '';
-    protected $_Obj_Block_Layout = false;
+    protected $_Obj_Block_Layout = false;   // Deprecated
+    protected $_ObjBlockLayout = false;
 
     public function __construct($ID = "")
     {
@@ -40,66 +40,6 @@ class Base extends \Record
             )
         );
     }
-
-    // Deprecated method names for backward compatability
-    protected function _draw_control_panel($extra_break = false)
-    {
-        $this->drawControlPanel($extra_break);
-    }
-
-    protected function _draw_section_container_close()
-    {
-        $this->drawSectionContainerClose();
-    }
-
-    protected function _draw_section_container_open()
-    {
-        $this->drawSectionContainerOpen();
-    }
-
-    protected function _draw_status()
-    {
-        $this->drawStatus();
-    }
-
-    protected function _setup($instance, $args, $disable_params)
-    {
-        $this->setup($instance, $args, $disable_params);
-    }
-
-    protected function _setup_load_block_layout($blockLayoutName)
-    {
-        return $this->setupLoadBlockLayout($blockLayoutName);
-    }
-
-    protected function _setup_load_parameters()
-    {
-        $this->setupLoadParameters();
-    }
-
-    protected function _setup_load_user_groups()
-    {
-        $this->setupLoadUserGroups();
-    }
-
-    protected function _setup_load_user_rights()
-    {
-        $this->setupLoadUserRights();
-    }
-
-    public static function get_help($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
-    {
-        return static::getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults);
-    }
-
-    public static function get_safe_ID($ident, $instance = '')
-    {
-        return static::getSafeID($ident, $instance);
-    }
-
-    // End of deprecated method names
-
-
 
     protected function drawSectionContainerClose()
     {
@@ -156,32 +96,7 @@ class Base extends \Record
             );
     }
 
-    public function get_parameter($parameters, $key, $default = false)
-    {
-      // Deprecated - use get_parameter_for_instance() for independent addressing
-        if ($parameters==="") {
-            return $default;
-        }
-        $arr = explode(OPTION_SEPARATOR, $parameters);
-        for ($i=0; $i<count($arr); $i++) {
-            $row = trim($arr[$i]);
-            if ($row==="?") {
-                return $row;
-            }
-            $pair = explode("=", $row);
-            if (strToUpper($key)===strToUpper($pair[0])) {
-                array_shift($pair);
-                $result = implode("=", $pair);
-                if ($default && $result=='') {
-                    return $default;
-                }
-                return $result;
-            }
-        }
-        return $default;
-    }
-
-    public static function get_parameter_defaults_and_values(
+    public static function getParameterDefaultsAndValues(
         $ident,
         $instance,
         $force_values,
@@ -204,9 +119,9 @@ class Base extends \Record
                  $result['defaults'][$_param];
             } else {
                 $result['parameters'][$_param] =
-                static::get_parameter_for_instance(
+                static::getParameterForInstance(
                     $instance,
-                    static::get_parameters(),
+                    static::getParameters(),
                     $ident.".".$_param,
                     $result['defaults'][$_param]
                 );
@@ -276,7 +191,7 @@ class Base extends \Record
         return $result;
     }
 
-    public function get_parameter_for_instance($instance, $parameter_csv, $key, $default = false)
+    public static function getParameterForInstance($instance, $parameter_csv, $key, $default = false)
     {
         if ($parameter_csv==="") {
             return $default;
@@ -310,7 +225,7 @@ class Base extends \Record
     }
 
 
-    public static function get_parameters($page = false, $systemID = SYS_ID)
+    public static function getParameters($page = false, $systemID = SYS_ID)
     {
         global $system_vars,$page_vars;
         switch ($page) {
@@ -381,7 +296,7 @@ class Base extends \Record
         if (!$userIsAdmin) {
             return "";
         }
-        $parameters =   static::get_parameters();
+        $parameters =   static::getParameters();
         $ID_safe_name = static::$help_div_id++;
         $param_arr =    explode("[;]", $params);
         $cp_params =    array();
@@ -394,21 +309,21 @@ class Base extends \Record
             $temp = preg_split('/=/', $param);
             $cp_params[] =    (substr($temp[0], 0, strLen($name))==$name ? substr($temp[0], strLen($name)) : $temp[0]);
             $cp_site[] =
-                static::get_parameter_for_instance(
+                static::getParameterForInstance(
                     $instance,
                     $system_vars['component_parameters'],
                     $temp[0],
                     ''
                 );
             $cp_layout[] =
-                static::get_parameter_for_instance(
+                static::getParameterForInstance(
                     $instance,
                     $page_vars['layout_component_parameters'],
                     $temp[0],
                     ''
                 );
             $cp_item[] =
-                static::get_parameter_for_instance(
+                static::getParameterForInstance(
                     $instance,
                     $page_vars['component_parameters'],
                     $temp[0],
@@ -495,7 +410,7 @@ class Base extends \Record
 
     protected function setupLoadParameters()
     {
-        $cp_settings = static::get_parameter_defaults_and_values(
+        $cp_settings = static::getParameterDefaultsAndValues(
             $this->_ident,
             $this->_instance,
             $this->_disable_params,
@@ -508,7 +423,7 @@ class Base extends \Record
 
     protected function setupLoadUserGroups()
     {
-        $this->_current_user_groups = Person::get_group_permissions();
+        $this->_current_user_groups = \Person::get_group_permissions();
         if (!$this->_current_user_groups) {
             return;
         }
@@ -551,7 +466,7 @@ class Base extends \Record
             ($this->_current_user_rights['canEdit'] || $isUSERADMIN ? 1 :0);
     }
 
-    public function set_parameters($values)
+    public function setParameters($values)
     {
         global $system_vars, $page_vars;
         $settings =     (json_decode(urldecode($values)));

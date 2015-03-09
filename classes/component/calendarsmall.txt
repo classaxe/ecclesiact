@@ -1,3 +1,5 @@
+  1.0.3 (2014-01-28)
+    1) Extra newline after JS code in Component_Calendar_Small::draw()
   1.0.2 (2012-07-15)
     1) Component_Calendar_Small::draw() now has value of '' given for memberID if
        not given

@@ -1,13 +1,14 @@
 <?php
-define("VERSION_COMPONENT_COLLECTION_VIEWER", "1.0.51");
+namespace Component;
+
+define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.52');
 /*
 Version History:
-  1.0.51 (2015-02-12)
-    1) Now outputs bare-bones HTML page when displaying 404 - resource not found
+  1.0.52 (2015-03-07)
+    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
 
-  (Older version history in class.component_collection_viewer.txt)
 */
-class Component_Collection_Viewer extends Component_Base
+class CollectionViewer extends Base
 {
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
@@ -383,16 +384,16 @@ class Component_Collection_Viewer extends Component_Base
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        $this->_setup($instance, $args, $disable_params);
-        $this->_do_submode();
-        $this->_draw_css();
-        $this->_draw_control_panel(true);
+        $this->setup($instance, $args, $disable_params);
+        $this->doSubmode();
+        $this->drawCss();
+        $this->drawControlPanel(true);
         $this->_html.=
          "<table style='width:100%'>\n"
         ."  <tr>\n"
         ."    <td style='vertical-align:top;width:".$this->_cp['controls_width']."px'>";
-        $this->_draw_admin_uploader();
-        $this->_draw_navigation();
+        $this->drawAdminUploader();
+        $this->drawNavigation();
         $this->_html.="</td><td style='vertical-align:top'>";
         $count = $this->_Obj_JL->get_uploaded_count();
         if (!$this->_Obj_Block_Layout) {
@@ -405,18 +406,18 @@ class Component_Collection_Viewer extends Component_Base
             $this->_msg = "<b>Success:</b> Uploaded ".$count." item".($count==1 ? '' : 's');
             $this->_Obj_JL->clear_status();
         }
-        $this->_draw_status();
-        $this->_draw_podcasts();
+        $this->drawStatus();
+        $this->drawPodcasts();
         $this->_html.="</td></tr></table>";
-        return $this->_render();
+        return $this->render();
     }
 
-    private function _add_podcast()
+    private function addPodcast()
     {
         if ($this->_isAdmin) {
             $path = $this->_selected_album_default_folder;
             mkdirs('.'.$path, 0777);
-            $Obj_Uploader = new Uploader("media", $path);
+            $Obj_Uploader = new \Uploader("media", $path);
             $result = $Obj_Uploader->do_upload();
         } else {
             $result = array('status'=>'403', 'message'=>'Unauthorised');
@@ -426,7 +427,7 @@ class Component_Collection_Viewer extends Component_Base
               // In progress - do nothing
                 break;
             case '200':
-                $this->_podcast_add($result);
+                $this->podcastAdd($result);
                 break;
             default:
                 header("HTTP/1.0 200 ".$result['message'], $result['status']);
@@ -436,7 +437,7 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    private function _do_submode()
+    private function doSubmode()
     {
         if (!get_var('submode')) {
             return;
@@ -445,15 +446,15 @@ class Component_Collection_Viewer extends Component_Base
             return;
         }
         if ($this->_Obj_JL->isUploading()) {
-            $this->_add_podcast();
+            $this->addPodcast();
             die();
         }
-        $Obj = new Podcast;
+        $Obj = new \Podcast;
         $this->_msg = $Obj->do_submode();
-        $this->_load_data();
+        $this->setupLoadData();
     }
 
-    protected function _draw_404($message)
+    protected function draw404($message)
     {
         header("Status: 404 Not Found", true, 404);
         print
@@ -468,7 +469,7 @@ class Component_Collection_Viewer extends Component_Base
             ."</html>";
     }
 
-    protected function _draw_admin_uploader()
+    protected function drawAdminUploader()
     {
         if (
             !$this->_current_user_rights['canEdit'] ||
@@ -478,11 +479,11 @@ class Component_Collection_Viewer extends Component_Base
             return;
         }
         $this->_Obj_JL->setup_code();
-        Page::push_content('javascript', $this->_Obj_JL->get_js());
+        \Page::push_content('javascript', $this->_Obj_JL->get_js());
         $this->_html.=  $this->_Obj_JL->get_html();
     }
 
-    protected function _draw_css()
+    protected function drawCss()
     {
         $this->_css =
              "#".$this->_safe_ID." .collection_viewer_content {\n"
@@ -533,19 +534,19 @@ class Component_Collection_Viewer extends Component_Base
             ."}";
     }
 
-    protected function _draw_navigation()
+    protected function drawNavigation()
     {
         if (!$this->_cp['controls_albums_show'] && !$this->_cp['controls_authors_show']) {
             return;
         }
         $this->_html.= "<div class='collection_viewer_nav' id=\"".$this->_safe_ID."_nav\">\n";
-        $this->_draw_navigation_podcast_albums();
-        $this->_draw_navigation_podcast_authors();
+        $this->drawNavigationPodcastAlbums();
+        $this->drawNavigationPodcastAuthors();
         $this->_html.= "</div>\n";
-        Page::push_content('javascript_onload', "list_set_onclick_items('".$this->_safe_ID."_nav');\n");
+        \Page::push_content('javascript_onload', "list_set_onclick_items('".$this->_safe_ID."_nav');\n");
     }
 
-    protected function _draw_navigation_podcast_albums()
+    protected function drawNavigationPodcastAlbums()
     {
         if (!$this->_cp['controls_albums_show']=='1') {
             return;
@@ -568,18 +569,18 @@ class Component_Collection_Viewer extends Component_Base
             $this->_html.=
                 "  <li class='collection_viewer_nav_label'>".$this->_cp['controls_important_heading']."</li>\n";
             foreach ($important as $record) {
-                $this->_draw_navigation_podcast_album($record);
+                $this->drawNavigationPodcastAlbum($record);
             }
         }
         $this->_html.=
             "  <li class='collection_viewer_nav_label'>".$this->_cp['controls_albums_heading']."</li>\n";
         foreach ($regular as $record) {
-            $this->_draw_navigation_podcast_album($record);
+            $this->drawNavigationPodcastAlbum($record);
         }
         $this->_html.= "</ul>\n";
     }
 
-    protected function _draw_navigation_podcast_album($record)
+    protected function drawNavigationPodcastAlbum($record)
     {
         if (!$this->_current_user_rights['canEdit'] && $record['count']==0) {
             return;
@@ -614,7 +615,7 @@ class Component_Collection_Viewer extends Component_Base
             ."</li>\n";
     }
 
-    protected function _draw_navigation_podcast_authors()
+    protected function drawNavigationPodcastAuthors()
     {
         if (!$this->_cp['controls_authors_show']=='1') {
             return;
@@ -639,12 +640,12 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    protected function _draw_podcasts()
+    protected function drawPodcasts()
     {
         if (!$this->_Obj_Block_Layout) {
             return;
         }
-        $Obj_Podcast = new Podcast;
+        $Obj_Podcast = new \Podcast;
         $args = array(
         '_cp' =>                          $this->_cp,
         '_paging_controls_current_pos' => $this->_paging_controls_current_pos,
@@ -655,22 +656,22 @@ class Component_Collection_Viewer extends Component_Base
         '_safe_ID' =>                     $this->_safe_ID
         );
         $Obj_Podcast->_set_multiple($args);
-        $html = $this->_draw_podcast_selected();
+        $html = $this->drawPodcastSelected();
         $html.= (isset($this->_Obj_Block_Layout->record['listings_panel_header']) ?
             $Obj_Podcast->convert_Block_Layout($this->_Obj_Block_Layout->record['listings_panel_header'])
          :
             ''
         );
         if ($this->_selected_album!='' && $this->_selected_album_label===false) {
-            $this->_draw_404('<b>Error:</b><br />No such album as '.$this->_selected_album);
+            $this->draw404('<b>Error:</b><br />No such album as '.$this->_selected_album);
             die();
         }
         if ($this->_selected_author!='' && $this->_selected_author_label===false) {
-            $this->_draw_404('<b>Error:</b><br />No such author as '.$this->_selected_author);
+            $this->draw404('<b>Error:</b><br />No such author as '.$this->_selected_author);
             die();
         }
         if ($this->_selected_podcast && !$this->_podcast_selected) {
-            $this->_draw_404('<b>Error:</b><br />No such podcast as '.$this->_selected_podcast);
+            $this->draw404('<b>Error:</b><br />No such podcast as '.$this->_selected_podcast);
             die();
         }
         if ($this->_selected_author!='' || $this->_selected_album!='') {
@@ -722,7 +723,7 @@ class Component_Collection_Viewer extends Component_Base
                         'js' =>   $this->_js,
                         'html' => convert_safe_to_php($html)
                     );
-                    $Obj_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+                    $Obj_json = new \Services_JSON(SERVICES_JSON_LOOSE_TYPE);
                     // so we get an assoc array as output instead of some weird object
                     header('Content-Type: application/json');
                     print $Obj_json->encode($out);
@@ -746,12 +747,12 @@ class Component_Collection_Viewer extends Component_Base
                 .")"
                 ."</h1>";
             if ($this->_selected_album_ID!='') {
-                $Obj_Album_type =   $Obj_Podcast->_get_container_object_type();
+                $Obj_Album_type =   '\\'.$Obj_Podcast->_get_container_object_type();
                 $Obj_Album =        new $Obj_Album_type($this->_selected_album_ID);
                 $Obj_Album->_set('_context_menu_ID', 'podcastalbum');
                 $Obj_Album->_set('_current_user_rights', $Obj_Podcast->_get('_current_user_rights'));
                 $Obj_Album->load();
-                $Obj_BlockLayout =  new Block_Layout;
+                $Obj_BlockLayout =  new \Block_Layout;
                 $layoutName =       $this->_cp['block_layout_albums'];
                 $blockLayoutID =    $Obj_BlockLayout->get_ID_by_name($layoutName);
                 if (!$blockLayoutID) {
@@ -764,8 +765,8 @@ class Component_Collection_Viewer extends Component_Base
                 $Obj_BlockLayout->_set_ID($blockLayoutID);
                 $Obj_Album->_set('_block_layout', $Obj_BlockLayout->load());
                 $Obj_BlockLayout->draw_css_include('detail');
-                if (System::has_feature('Activity-Tracking')) {
-                    $Obj_Activity = new Activity;
+                if (\System::has_feature('Activity-Tracking')) {
+                    $Obj_Activity = new \Activity;
                     $Obj_Activity->do_tracking('visits', $Obj_Album->_get_object_name(), $Obj_Album->_get_ID(), 1);
                 }
                 $Obj_Album->_set('_safe_ID', $this->_safe_ID);
@@ -786,12 +787,12 @@ class Component_Collection_Viewer extends Component_Base
             ."</div>";
     }
 
-    protected function _draw_podcast_selected()
+    protected function drawPodcastSelected()
     {
         if (!$this->_podcast_selected) {
             return;
         }
-        $Obj_Podcast = new Podcast;
+        $Obj_Podcast = new \Podcast;
         $args = array(
             '_block_layout' =>        $this->_Obj_Block_Layout->record,
             '_cp' =>                  $this->_cp,
@@ -837,21 +838,16 @@ class Component_Collection_Viewer extends Component_Base
                 ."[BL]context_selection_end[/BL]"
             )
            ."<hr />\n";
-        if (System::has_feature('Activity-Tracking')) {
-            $Obj_Activity = new Activity;
+        if (\System::has_feature('Activity-Tracking')) {
+            $Obj_Activity = new \Activity;
             $Obj_Activity->do_tracking('visits', $Obj_Podcast->_get_object_name(), $Obj_Podcast->_get_ID(), 1);
         }
         return $html;
     }
 
-    protected function _draw_status()
+    protected function setupLoadPodcastAlbums()
     {
-        $this->_html.=      HTML::draw_status($this->_safe_ID, $this->_msg);
-    }
-
-    protected function _load_podcast_albums()
-    {
-        $Obj = new Podcast_Album;
+        $Obj = new \Podcast_Album;
         $result = $Obj->get_records(
             array(
                 'category' =>
@@ -888,15 +884,15 @@ class Component_Collection_Viewer extends Component_Base
         }
         switch ($this->_cp['filter_album_order_by']){
             case 'date':
-                usort($this->_podcast_albums, array("Component_Collection_Viewer", "_load_podcast_albums_sort_date"));
+                usort($this->_podcast_albums, array("\Component\CollectionViewer", "sortPodcastAlbumsByDate"));
                 break;
             case 'title':
-                usort($this->_podcast_albums, array("Component_Collection_Viewer", "_load_podcast_albums_sort_title"));
+                usort($this->_podcast_albums, array("\Component\CollectionViewer", "sortPodcastAlbumsByTitle"));
                 break;
         }
     }
 
-    protected function _load_podcast_album_counts()
+    protected function setupLoadPodcastAlbumCounts()
     {
         foreach ($this->_podcast_albums as &$album) {
             if (!isset($album['count'])) {
@@ -910,7 +906,7 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    protected static function _load_podcast_albums_sort_date($a, $b)
+    protected static function sortPodcastAlbumsByDate($a, $b)
     {
         if ($a['date'] == $b['date']) {
             return 0;
@@ -918,7 +914,7 @@ class Component_Collection_Viewer extends Component_Base
         return ($a['date'] < $b['date']) ? +1 : -1;
     }
 
-    protected static function _load_podcast_albums_sort_title($a, $b)
+    protected static function sortPodcastAlbumsByTitle($a, $b)
     {
         if ($a['title'] == $b['title']) {
             return 0;
@@ -926,7 +922,7 @@ class Component_Collection_Viewer extends Component_Base
         return ($a['title'] > $b['title']) ? +1 : -1;
     }
 
-    protected function _load_podcast_authors()
+    protected function setupLoadPodcastAuthors()
     {
         $out = array();
         foreach ($this->_podcasts as $record) {
@@ -944,7 +940,7 @@ class Component_Collection_Viewer extends Component_Base
                 $out[$value]['count']++;
             }
         }
-        uksort($out, array("Component_Collection_Viewer", "_load_podcast_authors_sort"));
+        uksort($out, array("\Component\CollectionViewer", "sortPodcastAuthorsByName"));
         $ns = false;
         foreach ($out as $key => $value) {
             if ($key=='not-specified') {
@@ -965,7 +961,7 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    protected static function _load_podcast_authors_sort($a, $b)
+    protected static function sortPodcastAuthorsByName($a, $b)
     {
         $al = strtolower($a['label']);
         $bl = strtolower($b['label']);
@@ -975,7 +971,7 @@ class Component_Collection_Viewer extends Component_Base
         return ($al > $bl) ? +1 : -1;
     }
 
-    protected function _load_podcast_selected()
+    protected function setupLoadPodcastSelected()
     {
         if (!$this->_selected_podcast) {
             return;
@@ -1009,10 +1005,10 @@ class Component_Collection_Viewer extends Component_Base
 
     }
 
-    protected function _load_podcasts()
+    protected function setupLoadPodcasts()
     {
         $this->_filter_offset = (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0);
-        $Obj = new Podcast;
+        $Obj = new \Podcast;
         $container_path = $this->record['path'];
         $result = $Obj->get_records(
             array(
@@ -1042,7 +1038,7 @@ class Component_Collection_Viewer extends Component_Base
                 }
             }
         }
-        $Obj_Parent_type =  $Obj->_get_container_object_type();
+        $Obj_Parent_type =  '\\'.$Obj->_get_container_object_type();
         $parentTitles = array();
         $this->_podcasts_selected = array();
         $i=0;
@@ -1071,21 +1067,20 @@ class Component_Collection_Viewer extends Component_Base
             }
         }
         $this->_records_total = $i;
-        $this->_setup_get_computed_sequence_numbers();
     }
 
-    protected function _load_data()
+    protected function setupLoadData()
     {
-        $this->_load_podcast_albums();
-        $this->_load_podcasts();
-
-        $this->_load_podcast_authors();
-        $this->_load_podcast_album_counts();
-        $this->_load_podcast_selected();
-        $this->_draw_listings_load_paging_controls();
+        $this->setupLoadPodcastAlbums();
+        $this->setupLoadPodcasts();
+        $this->setupGetComputedSequenceNumbers();
+        $this->setupLoadPodcastAuthors();
+        $this->setupLoadPodcastAlbumCounts();
+        $this->setupLoadPodcastSelected();
+        $this->setupPagingControls();
     }
 
-    protected function _draw_listings_load_paging_controls()
+    protected function setupPagingControls()
     {
         global $page_vars;
         $results_limit =    $this->_cp['results_limit'];
@@ -1104,7 +1099,7 @@ class Component_Collection_Viewer extends Component_Base
             ." of ".$this->_records_total
             ."</div>";
         if (!isset($_REQUEST['command']) || $_REQUEST['command']!=$this->_safe_ID."_load") {
-            Page::push_content(
+            \Page::push_content(
                 "javascript",
                 "function ".$this->_safe_ID."_paging(offset) {\n"
                 ."  var post_vars='command=".$this->_safe_ID."_load&offset='+offset;\n"
@@ -1213,9 +1208,9 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    private function _podcast_add($result)
+    private function podcastAdd($result)
     {
-        $Obj_Podcast = new Podcast;
+        $Obj_Podcast = new \Podcast;
         $path =         $result['path'];
         $path_arr =     explode('/', $path);
         $file =         array_pop($path_arr);
@@ -1226,7 +1221,7 @@ class Component_Collection_Viewer extends Component_Base
             $date = sanitize('date-stamp', substr($file, 0, 4).'-'.substr($file, 4, 2).'-'.substr($file, 6, 2));
         }
         if (!$date) {
-            (System::has_feature('Posting-default-publish-now') ? get_timestamp() : '0000-00-00');
+            (\System::has_feature('Posting-default-publish-now') ? get_timestamp() : '0000-00-00');
         }
         $data = array(
             'communityID' =>      $this->_selected_album_communityID,
@@ -1260,11 +1255,11 @@ class Component_Collection_Viewer extends Component_Base
         return $ID;
     }
 
-    protected function _render()
+    protected function render()
     {
         global $print;
-        Page::push_content('style', $this->_css);
-        $Obj_Podcast = new Podcast;
+        \Page::push_content('style', $this->_css);
+        $Obj_Podcast = new \Podcast;
         return $Obj_Podcast->draw_panel_box(
             $this->_cp['box'],
             $this->_cp['box_title'],
@@ -1278,19 +1273,17 @@ class Component_Collection_Viewer extends Component_Base
         );
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
-        parent::_setup($instance, $args, $disable_params);
-        $this->_setup_load_block_layout($this->_cp['block_layout_items']);
-        $this->_setup_load_user_rights();
-        $this->_setup_get_path();
-        $this->_Obj_JL = new Jumploader;
-        $this->_Obj_JL->init($this->_safe_ID);
-        $this->_Obj_JL->_ext = 'mp3';
-        $this->_load_data();
+        parent::setup($instance, $args, $disable_params);
+        $this->setupLoadBlockLayout($this->_cp['block_layout_items']);
+        $this->setupLoadUserRights();
+        $this->setupGetPath();
+        $this->setupJumploader();
+        $this->setupLoadData();
     }
 
-    protected function _setup_get_computed_sequence_numbers()
+    protected function setupGetComputedSequenceNumbers()
     {
         switch($this->_cp['filter_podcast_order']){
             case 'asc':
@@ -1310,7 +1303,7 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    protected function _setup_get_path()
+    protected function setupGetPath()
     {
         global $page_vars;
         $this->_path =      BASE_PATH.trim($page_vars['path'], '/');
@@ -1340,16 +1333,23 @@ class Component_Collection_Viewer extends Component_Base
         }
     }
 
-    protected function _setup_load_block_layout($blockLayoutName)
+    protected function setupJumploader()
     {
-        if ($this->_Obj_Block_Layout = parent::_setup_load_block_layout($blockLayoutName)) {
+        $this->_Obj_JL = new \Jumploader;
+        $this->_Obj_JL->init($this->_safe_ID);
+        $this->_Obj_JL->_ext = 'mp3';
+    }
+
+    protected function setupLoadBlockLayout($blockLayoutName)
+    {
+        if ($this->_Obj_Block_Layout = parent::setupLoadBlockLayout($blockLayoutName)) {
             $this->_Obj_Block_Layout->draw_css_include('listings');
             $this->_Obj_Block_Layout->draw_css_include('detail');
         }
     }
 
-    public function get_version()
+    public function getVersion()
     {
-        return VERSION_COMPONENT_COLLECTION_VIEWER;
+        return VERSION_NS_COMPONENT_COLLECTION_VIEWER;
     }
 }

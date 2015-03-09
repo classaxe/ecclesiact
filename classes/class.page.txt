@@ -1,3 +1,6 @@
+  1.0.119 (2015-02-14)
+    1) Change to Page::prepare_html_head() now that Component_Bible_Links::draw() was moved from a module to
+       its own class
   1.0.118 (2015-01-01)
     1) Now uses globals contant for option_separator tag in Page::prepare_html_head() JS code
     2) Fixed print form functionality - broken for a while I suspect

@@ -1,3 +1,8 @@
+  1.0.2 (2015-01-31)
+    1) Community_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
+    2) Community_Resource::_draw_rss() - some internal changes to correct misleading variable names
+       and make 'help' text title more conformant to other RSS help wording
+    3) Now PSR-2 Compliant
   1.0.1 (2014-01-24)
     1) Implemented calendar embedding for community
   1.0.0 (2014-01-23)

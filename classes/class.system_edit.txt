@@ -1,3 +1,7 @@
+  1.0.32 (2015-03-01)
+    1) Call to System_Health::get_config() is now System_Health::getConfig()
+    2) System_Edit::get_version() now System_Edit::getVersion()
+    3) Now closer to full PSR-2 compliant
   1.0.31 (2014-12-31)
     1) Now uses OPTION_SEPARATOR constant not option_separator in System_Edit::_do_save()
   1.0.30 (2012-11-28)

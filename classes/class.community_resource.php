@@ -1,15 +1,13 @@
 <?php
-define('COMMUNITY_RESOURCE_VERSION', '1.0.2');
+define('COMMUNITY_RESOURCE_VERSION', '1.0.3');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.2 (2015-01-31)
-    1) Community_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
-    2) Community_Resource::_draw_rss() - some internal changes to correct misleading variable names
-       and make 'help' text title more conformant to other RSS help wording
-    3) Now PSR-2 Compliant
+  1.0.3 (2015-03-07)
+    1) Renamed internal methods to camel case format
+    2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
 
 */
 
@@ -18,36 +16,37 @@ class Community_Resource extends Community_Display
 
     public function draw($cp, $path_extension, $community_record)
     {
-        $this->_setup($cp, $path_extension, $community_record);
+        $this->setup($cp, $path_extension, $community_record);
         if ($this->_path_extension=='js' || substr($this->_path_extension, 0, 3)=='js/') {
-            return $this->_serve_jsonp();
+            return $this->serveJsonp();
         }
         if ($this->_path_extension=='rss' || substr($this->_path_extension, 0, 4)=='rss/') {
-            return $this->_draw_rss();
+            return $this->drawRss();
         }
         if ($this->_path_extension=='sermons' || substr($this->_path_extension, 0, 8)=='sermons/') {
-            return $this->_draw_sermons();
+            return $this->drawSermons();
         }
         if ($this->_path_extension=='gallery' || substr($this->_path_extension, 0, 8)=='gallery/') {
-            return $this->_draw_gallery();
+            return $this->drawGallery();
         }
         if (Posting::get_match_for_name($this->_path_extension, $type, $ID)) {
-            return $this->_draw_posting($type, $ID);
+            return $this->drawPosting($type, $ID);
         }
         if (
-        Portal::_parse_request_search_range(
-            $this->_path_extension,
-            $page,
-            $search_date_start,
-            $search_date_end,
-            $search_type
-        )) {
-            return $this->_draw_search_results($search_date_start, $search_date_end, $search_type);
+            Portal::_parse_request_search_range(
+                $this->_path_extension,
+                $page,
+                $search_date_start,
+                $search_date_end,
+                $search_type
+            )
+        ) {
+            return $this->drawSearchResults($search_date_start, $search_date_end, $search_type);
         }
-        return $this->_draw_profile();
+        return $this->drawProfile();
     }
 
-    protected function _draw_gallery()
+    protected function drawGallery()
     {
         $Obj = new Component_Gallery_Album;
         $args = array(
@@ -64,7 +63,7 @@ class Community_Resource extends Community_Display
         return $Obj->draw($this->_instance, $args, true);
     }
 
-    protected function _draw_posting($type, $ID)
+    protected function drawPosting($type, $ID)
     {
         global $page_vars;
         switch ($type){
@@ -90,13 +89,13 @@ class Community_Resource extends Community_Display
         return $Obj->draw_detail();
     }
 
-    protected function _draw_profile()
+    protected function drawProfile()
     {
         $Obj_CMD = new Community_Member_Display;
         return $Obj_CMD->draw($this->_cp, $this->_path_extension);
     }
 
-    protected function _draw_rss()
+    protected function drawRss()
     {
         global $page_vars;
         $path_arr =  explode('/', $this->_path_extension);
@@ -119,7 +118,7 @@ class Community_Resource extends Community_Display
         $Obj_RSS->serve($args);
     }
 
-    protected function _draw_search_results($search_date_start, $search_date_end, $search_type)
+    protected function drawSearchResults($search_date_start, $search_date_end, $search_type)
     {
         $args = array(
              'search_date_end' =>             $search_date_end,
@@ -149,9 +148,9 @@ class Community_Resource extends Community_Display
         return $Obj_Search->_draw_results($search_results, $args);
     }
 
-    protected function _draw_sermons()
+    protected function drawSermons()
     {
-        $Obj = new Community_Component_Collection_Viewer;
+        $Obj = new \Component\CommunityCollectionViewer;
         $args = array(
              'text_prompt_to_choose' =>
                 '<h2>Sermons</h2><p>Please choose a member or speaker to view their sermons.</p>',
@@ -171,7 +170,7 @@ class Community_Resource extends Community_Display
         return $Obj->draw($this->_instance, $args, false);
     }
 
-    protected function _serve_jsonp()
+    protected function serveJsonp()
     {
         $type = substr($this->_path_extension, 3);
         switch($type){
@@ -229,7 +228,7 @@ class Community_Resource extends Community_Display
         die;
     }
 
-    protected function _setup($cp, $path_extension, $community_record)
+    protected function setup($cp, $path_extension, $community_record)
     {
         $this->_cp =                $cp;
         $this->_path_extension =    $path_extension;
@@ -237,7 +236,7 @@ class Community_Resource extends Community_Display
         $this->_set_ID($this->_community_record['ID']);
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return COMMUNITY_RESOURCE_VERSION;
     }

@@ -1,12 +1,10 @@
 <?php
-define('VERSION_SYSTEM_EDIT', '1.0.32');
+define('VERSION_SYSTEM_EDIT', '1.0.33');
 
 /*
 Version History:
-  1.0.32 (2015-03-01)
-    1) Call to System_Health::get_config() is now System_Health::getConfig()
-    2) System_Edit::get_version() now System_Edit::getVersion()
-    3) Now closer to full PSR-2 compliant
+  1.0.33 (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
 
 */
 class System_Edit extends System
@@ -733,137 +731,138 @@ class System_Edit extends System
 
     private function _drawSectionColours()
     {
+        $ObjCalendar = new \Component\CalendarSmall;
         $this->_html.=
-         draw_section_tab_div('colours', $this->_selected_section)
-        ."  <div class='settings_group'>\n"
-        ."    <div class='lbl'><b>Colour Scheme</b>"
-        .($this->_msg!="" ? " &nbsp; <span style='color:#f00'>".$this->_msg."</span>" : "")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <label style='width:120px' for='colour_schemeID'>Use this:</label>\n"
-        ."    <div class='val'>"
-        .draw_form_field(
-            "colour_schemeID",
-            $this->_colour_schemeID,
-            "selector",
-            "350px",
-            Colour_Scheme::get_selector_sql()
-        )
-        ." "
-        ."<input type='button' class='formButton' style='width: 90px' value='Load' "
-        ."onclick=\"if (geid_val('colour_schemeID')==1) { alert('Please select a colour scheme to load'); } else { "
-        ."if(confirm('This action will overwrite the current scheme - continue?')) { "
-        ."geid_set('submode','load_scheme');geid('form').submit();} else {alert('Action Cancelled')}}\"/>\n"
-        ."<input type='button' class='formButton' style='width: 90px' value='Save As...' "
-        ."onclick=\"var cs_name=prompt('Please enter a name for this scheme','');"
-        ."if(cs_name){geid_set('targetValue',cs_name);geid_set('submode','save_scheme');geid('form').submit();}\"/>\n"
-        ."<input type='button' class='formButton' style='width: 90px' value='Delete' "
-        ."onclick=\"if (geid_val('colour_schemeID')==1) { alert('Please select a colour scheme to delete'); } "
-        ."else if(geid('colour_schemeID').options[geid('colour_schemeID').selectedIndex].text.substr(0,2)=='* ') { "
-        ."alert('You cannot delete a globally defined colour scheme'); } "
-        ."else if(confirm('Delete this colour scheme?')) {"
-        ."geid('submode').value='delete_scheme';geid('form').submit();}\"/>\n"
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."  </div>\n"
-        ."  <div class='settings_group'>\n"
-        ."    <div class='lbl'><b>Colours</b></div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <label style='width:120px' for='defaultBgColor' title='Page Background Colour'>Page BG</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("defaultBgColor", $this->record['defaultBgColor'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='text_heading' title='Text Heading Colour'>Text Headings</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("text_heading", $this->record['text_heading'], "swatch", "60px")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."  </div>\n"
-        ."  <div class='settings_group'>\n"
-        ."    <div class='lbl'><b>Table Colours</b></div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <label style='width:120px' for='table_border' title='Table Border Colour'>Table Borders</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("table_border", $this->record['table_border'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='table_header' title='Table Header Cells Colour'>Table Headers</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("table_header", $this->record['table_header'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='table_data' title='Table Data Cells Colour'>Table Data</label>\n"
-        ."    <div class='val' style='width:100px'>"
-        .draw_form_field("table_data", $this->record['table_data'], "swatch", "60px")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."  </div>\n"
-        ."  <div class='settings_group'>\n"
-        ."    <div class='lbl'><b>Accent Colours</b> (may be overridden by layout or page settings)</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <label style='width:120px' for='colour1' title='Accent Colour #1'>Accent # 1</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("colour1", $this->record['colour1'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='colour2' title='Accent Colour #2'>Accent # 2</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("colour2", $this->record['colour2'], "swatch", "60px")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <label style='width:120px' for='colour3' title='Accent Colour #3'>Accent # 3</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("colour3", $this->record['colour3'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='colour4' title='Accent Colour #4'>Accent # 4</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("colour4", $this->record['colour4'], "swatch", "60px")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."  </div>\n"
-        ."  <div class='settings_group'>\n"
-        ."    <div class='lbl'><b>Calendar Colour Scheme</b></div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."    <div style='float:right;height:200px'><div class='constrain'>"
-        ."<div style='position:relative;padding:0px 10px'>"
-        .Component_Calendar_Small::draw(array('shadow'=>1,'show'=>'sample'))
-        ."</div></div></div>\n"
-        ."    <label style='width:120px' for='cal_border' title='Calendar Border'>Border</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_border", $this->record['cal_border'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_current' title='Current Weekday'>Current</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_current", $this->record['cal_current'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_head' title='Calendar Heading'>Heading</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_head", $this->record['cal_head'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_days' title='Day Headings'>Day Headings</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_days", $this->record['cal_days'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_current_we' title='Current Weekend'>Current Wknd</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_current_we", $this->record['cal_current_we'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_today' title=\"Today's date\">Today's Date</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_today", $this->record['cal_today'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_then' title='Inactive Weekday'>Inactive Weekday</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_then", $this->record['cal_then'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_event' title='Event indicator ring'>Event</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_event", $this->record['cal_event'], "swatch", "60px")
-        ."</div>\n"
-        ."    <label style='width:120px' for='cal_then_we' title='Inactive Weekend'>Inactive Weekend</label>\n"
-        ."    <div class='val' style='width:130px'>"
-        .draw_form_field("cal_then_we", $this->record['cal_then_we'], "swatch", "60px")
-        ."</div>\n"
-        ."    <div class='clr_b'></div>\n"
-        ."  </div>\n"
-        ."</div>";
+             draw_section_tab_div('colours', $this->_selected_section)
+            ."  <div class='settings_group'>\n"
+            ."    <div class='lbl'><b>Colour Scheme</b>"
+            .($this->_msg!="" ? " &nbsp; <span style='color:#f00'>".$this->_msg."</span>" : "")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label style='width:120px' for='colour_schemeID'>Use this:</label>\n"
+            ."    <div class='val'>"
+            .draw_form_field(
+                "colour_schemeID",
+                $this->_colour_schemeID,
+                "selector",
+                "350px",
+                Colour_Scheme::get_selector_sql()
+            )
+            ." "
+            ."<input type='button' class='formButton' style='width: 90px' value='Load' "
+            ."onclick=\"if (geid_val('colour_schemeID')==1) { alert('Please select a colour scheme to load'); } else { "
+            ."if(confirm('This action will overwrite the current scheme - continue?')) { "
+            ."geid_set('submode','load_scheme');geid('form').submit();} else {alert('Action Cancelled')}}\"/>\n"
+            ."<input type='button' class='formButton' style='width: 90px' value='Save As...' "
+            ."onclick=\"var cs_name=prompt('Please enter a name for this scheme','');"
+            ."if(cs_name){geid_set('targetValue',cs_name);geid_set('submode','save_scheme');geid('form').submit();}\"/>\n"
+            ."<input type='button' class='formButton' style='width: 90px' value='Delete' "
+            ."onclick=\"if (geid_val('colour_schemeID')==1) { alert('Please select a colour scheme to delete'); } "
+            ."else if(geid('colour_schemeID').options[geid('colour_schemeID').selectedIndex].text.substr(0,2)=='* ') { "
+            ."alert('You cannot delete a globally defined colour scheme'); } "
+            ."else if(confirm('Delete this colour scheme?')) {"
+            ."geid('submode').value='delete_scheme';geid('form').submit();}\"/>\n"
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."  </div>\n"
+            ."  <div class='settings_group'>\n"
+            ."    <div class='lbl'><b>Colours</b></div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label style='width:120px' for='defaultBgColor' title='Page Background Colour'>Page BG</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("defaultBgColor", $this->record['defaultBgColor'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='text_heading' title='Text Heading Colour'>Text Headings</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("text_heading", $this->record['text_heading'], "swatch", "60px")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."  </div>\n"
+            ."  <div class='settings_group'>\n"
+            ."    <div class='lbl'><b>Table Colours</b></div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label style='width:120px' for='table_border' title='Table Border Colour'>Table Borders</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("table_border", $this->record['table_border'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='table_header' title='Table Header Cells Colour'>Table Headers</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("table_header", $this->record['table_header'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='table_data' title='Table Data Cells Colour'>Table Data</label>\n"
+            ."    <div class='val' style='width:100px'>"
+            .draw_form_field("table_data", $this->record['table_data'], "swatch", "60px")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."  </div>\n"
+            ."  <div class='settings_group'>\n"
+            ."    <div class='lbl'><b>Accent Colours</b> (may be overridden by layout or page settings)</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label style='width:120px' for='colour1' title='Accent Colour #1'>Accent # 1</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("colour1", $this->record['colour1'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='colour2' title='Accent Colour #2'>Accent # 2</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("colour2", $this->record['colour2'], "swatch", "60px")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label style='width:120px' for='colour3' title='Accent Colour #3'>Accent # 3</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("colour3", $this->record['colour3'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='colour4' title='Accent Colour #4'>Accent # 4</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("colour4", $this->record['colour4'], "swatch", "60px")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."  </div>\n"
+            ."  <div class='settings_group'>\n"
+            ."    <div class='lbl'><b>Calendar Colour Scheme</b></div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <div style='float:right;height:200px'><div class='constrain'>"
+            ."<div style='position:relative;padding:0px 10px'>"
+            .$ObjCalendar->draw(array('shadow'=>1,'show'=>'sample'))
+            ."</div></div></div>\n"
+            ."    <label style='width:120px' for='cal_border' title='Calendar Border'>Border</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_border", $this->record['cal_border'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_current' title='Current Weekday'>Current</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_current", $this->record['cal_current'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_head' title='Calendar Heading'>Heading</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_head", $this->record['cal_head'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_days' title='Day Headings'>Day Headings</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_days", $this->record['cal_days'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_current_we' title='Current Weekend'>Current Wknd</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_current_we", $this->record['cal_current_we'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_today' title=\"Today's date\">Today's Date</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_today", $this->record['cal_today'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_then' title='Inactive Weekday'>Inactive Weekday</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_then", $this->record['cal_then'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_event' title='Event indicator ring'>Event</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_event", $this->record['cal_event'], "swatch", "60px")
+            ."</div>\n"
+            ."    <label style='width:120px' for='cal_then_we' title='Inactive Weekend'>Inactive Weekend</label>\n"
+            ."    <div class='val' style='width:130px'>"
+            .draw_form_field("cal_then_we", $this->record['cal_then_we'], "swatch", "60px")
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."  </div>\n"
+            ."</div>";
     }
 
     private function _drawSectionFeatures()
