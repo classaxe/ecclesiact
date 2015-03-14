@@ -1,16 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_RESOURCE_VERSION', '1.0.5');
+define('COMMUNITY_MEMBER_RESOURCE_VERSION', '1.0.6');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.5 (2015-01-31)
-    1) Community_Member_Resource::_draw_rss() bug fix - now includes member name in RSS feed title
-    2) Community_Member_Resource::_draw_rss() removed redundant 'limit' argument - this is handled by RSS class itself
-    3) Community_Member_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
-    4) Now PSR-2 Compliant
+  1.0.6 (2015-03-15)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
 
   (Older version history in class.community_member_resource.txt)
 */
@@ -54,7 +51,7 @@ class Community_Member_Resource extends Community_Member
                 $Obj = new Community_Member_Article;
                 break;
             case 'calendar':
-                $Obj = new Community_Member_Calendar;
+                $Obj = new \Component\CommunityMemberCalendar;
                 break;
             case 'events':
                 $Obj = new Community_Member_Event;
@@ -80,7 +77,7 @@ class Community_Member_Resource extends Community_Member
                     'show_controls' =>    0,
                     'show_heading' =>     0,
                 );
-                $out =                  $Obj->draw_json('', $args, true);
+                $out =                  $Obj->drawJson('', $args, true);
                 break;
             default:
                 $args = array(

@@ -1,3 +1,5 @@
+  1.0.39 (2015-03-03)
+    1) Bug fix following move of Component_WOW_Slider to namespace
   1.0.38 (2015-01-04)
     1) Changes to Contact form:
          a) Now includes website link in subject line

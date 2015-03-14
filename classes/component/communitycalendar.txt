@@ -1,0 +1,4 @@
+  1.0.1 (2013-07-23)
+    1) Anchor for mini link changed to '#calendar'
+  1.0.0 (2013-07-23)
+    1) Moved Community_Component_Calendar_Large out of Community class file

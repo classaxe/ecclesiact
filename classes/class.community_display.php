@@ -1,17 +1,13 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION','1.0.37');
+define('COMMUNITY_DISPLAY_VERSION','1.0.38');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.37 (2014-04-29)
-    1) Context menus for members now passes primary_communityID to allow this to be
-       set automatically when new items are added
-    2) Community_Display::_draw_meetings() now includes primary_communityID field
-    3) All listing panels having 'add' icons for admins now set communityID when adding
+  1.0.38 (2015-03-13)
+    1) Changes made following move of Community_Calendar to namespaced \Component\CommunityCalendar
 
-  (Older version history in class.community_display.txt)
 */
 
 class Community_Display extends Community{
@@ -381,14 +377,14 @@ class Community_Display extends Community{
     if ($this->_cp['show_calendar']!=1){
       return;
     }
-    $Obj_Community_Component_Calendar_Large = new Community_Component_Calendar_Large;
-    $Obj_Community_Component_Calendar_Large->community_record = $this->_community_record;
+    $Obj = new \Component\CommunityCalendar;
+    $Obj->community_record = $this->_community_record;
     $this->_html.=
        HTML::draw_section_tab_div('calendar',$this->_selected_section)
       .$this->_draw_web_share('events','calendar')
       ."<h2>".$this->_cp['label_calendar']."</h2>"
       ."<div class='section_header'>".$this->_cp['header_calendar']."</div>"
-      .$Obj_Community_Component_Calendar_Large->draw()
+      .$Obj->draw()
       ."<div class='section_footer'>".$this->_cp['footer_calendar']."</div>"
       .$this->_draw_disclaimer()
       ."</div>\n";

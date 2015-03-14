@@ -1,13 +1,12 @@
 <?php
-define('COMMUNITY_RESOURCE_VERSION', '1.0.3');
+define('COMMUNITY_RESOURCE_VERSION', '1.0.4');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.3 (2015-03-07)
-    1) Renamed internal methods to camel case format
-    2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
+  1.0.4 (2015-03-13)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
 
 */
 
@@ -178,7 +177,7 @@ class Community_Resource extends Community_Display
                 $Obj = new Community_Article;
                 break;
             case 'calendar':
-                $Obj = new Community_Component_Calendar_Large;
+                $Obj = new \Component\CommunityCalendar;
                 break;
             case 'events':
                 $Obj = new Community_Event;
@@ -200,7 +199,7 @@ class Community_Resource extends Community_Display
                     'show_controls' =>    0,
                     'show_heading' =>     0,
                 );
-                $out =                  $Obj->draw_json('', $args, true);
+                $out =                  $Obj->drawJson('', $args, true);
                 break;
             default:
                 $args = array(

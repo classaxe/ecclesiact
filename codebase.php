@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.4");
+define("CODEBASE_VERSION", "3.2.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,97 +16,63 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.4.2368 (2015-03-08)
+3.2.5.2369 (2015-03-13)
 Summary:
   1) More components converted to use namespaces and be more fully PSR-2 conformant
 
 Final Checksums:
-  Classes     CS:a4ccb70d
+  Classes     CS:f0e009ff
   Database    CS:48ba81d8
-  Libraries   CS:6bb00710
+  Libraries   CS:26c3dfe0
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.4     (2015-03-08)
+  codebase.php                                                                                   3.2.5     (2015-03-13)
     1) Updated version information
-  classes/class.community_resource.php                                                           1.0.3     (2015-03-07)
-    1) Renamed internal methods to camel case format
-    2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
-  classes/class.component_base.php                                                               1.0.20    (2015-03-07)
-    1) Moved deprecated support methods out of \Component\Base into here
-  classes/class.component_combo_tabber.php                                                       1.0.10    (2015-03-08)
-    1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
-    2) Was potentially guity of 'magic-this' passing - corrected that now :-)
-  classes/class.page.php                                                                         1.0.120   (2015-03-04)
-    1) Change to Page::prepare_html_head() now Component_Bible_Links::draw() is \Component\BibleLinks::draw()
-    2) Added pushContent() as alias for now deprecated push_content()
-  classes/class.system.php                                                                       1.0.159   (2015-03-08)
-    1)  System::do_commands() for command 'set_parameters' now uses \Component\Base->setParameters() instead of
-        Component_Base->set_parameters() as before
-  classes/class.system_edit.php                                                                  1.0.33    (2015-03-08)
-    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
-  classes/component/activitytabber.php                                                           1.0.6     (2015-03-04)
-    1) Moved from Component_Activity_Tabber and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/adminpersonlookup.php                                                        1.0.5     (2015-03-08)
-    1) Moved here from class.component_admin_person_lookup.php and reworked for namespaces
-  classes/component/articlesrotator.php                                                          1.0.8     (2015-03-07)
-    1) Moved from Component_Articles_Rotator and reworked to use namespaces
-    2) Now has up-to-date constructor-based setup
-    3) Greatly simplified code by splitting into smaller helper classes
-  classes/component/base.php                                                                     1.0.2     (2015-04-07)
-    1) Moved backward deprecated non-camel-cased backward compatability methods out into old component_base class
-       This class is now FULLY PSR-2 compliant - erm, except for property naming of course.
-  classes/component/biblelinks.php                                                               1.0.1     (2015-03-04)
-    1) Moved from Component_Bible_Links and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/breadcrumbs.php                                                              1.0.5     (2015-03-08)
-    1) Moved from class.component_breadcrumbs.php and reworked to use namespaces
-    2) Now with much more modern component setup
-  classes/component/calendarsmall.php                                                            1.0.4     (2014-03-08)
-    1) Moved in here from class.component_calendar_small.php
-  classes/component/collectionviewer.php                                                         1.0.52    (2015-03-07)
-    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
-  classes/component/communitycollectionviewer.php                                                1.0.1     (2015-03-07)
-    1) Now namespaced and PSR-2 compliant
-  classes/component/dailybibleverse.php                                                          1.0.1     (2015-03-04)
-    1) Moved from Component_Daily_Bible_Verse and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  classes/class.community_display.php                                                            1.0.38    (2015-03-13)
+    1) Changes made following move of Community_Calendar to namespaced \Component\CommunityCalendar
+  classes/class.community_member_display.php                                                     1.0.40    (2015-03-15)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
+  classes/class.community_member_resource.php                                                    1.0.6     (2015-03-15)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
+  classes/class.community_resource.php                                                           1.0.4     (2015-03-13)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
+  classes/component/calendarlarge.php                                                            1.0.29    (2015-03-11)
+    1) Moved in here from class.component_calendar_large.php
+    2) Extensivly refactored, and now uses Block Layout renderer for context menu
+    3) Now fully PSR-2 Compliant
+  classes/component/communitycalendar.php                                                        1.0.2     (2015-03-13)
+    1) Now uses namespaces and is fully PSR-2 Compliant
+    2) Now extends \Component\CalendarLarge and modified to suit that object
+  classes/component/communitymembercalendar.php                                                  1.0.2     (2015-03-13)
+    1) Now extends \Component\CalendarLarge and modified to suit that object
 
-2368.sql
-  1) Set version information
+2369.sql
+  1) Updated ECL tag 'calendar_large' for namespaced class
+  2) Set version information
 
 Delete:
-  classes/ (9 php files deleted, plus their version histories)
-    classes/class.community_component_collection_viewer.*
-    classes/class.component_activity_tabber.*
-    classes/class.component_admin_person_lookup.*
-    classes/class.component_articles_rotator.*
-    classes/class.component_bible_links.*
-    classes/class.component_breadcrumbs.*
-    classes/class.component_calendar_small.*
-    classes/class.component_collection_viewer.*
-    classes/class.component_daily_bible_verse.*
+  classes/  (4 files deleted)
+    classes/class.community_component_calendar_large.php
+    classes/class.community_member_calendar.php
+    classes/class.component_calendar_large.php
+    classes/class.component_calendar_large.txt
 
 Promote:
-  codebase.php                                        3.2.4
-  classes/  (16 files changed)
-    class.community_resource.php                      1.0.3     CS:6d0234f3
-    class.component_base.php                          1.0.20    CS:9a7b3462
-    class.component_combo_tabber.php                  1.0.20    CS:749ed472
-    class.page.php                                    1.0.120   CS:258a2fc1
-    class.system.php                                  1.0.159   CS:9b0276f3
-    class.system_edit.php                             1.0.33    CS:1c0b861d
-    component/activitytabber.php                      1.0.6     CS:366aeb7c
-    component/adminpersonlookup.php                   1.0.5     CS:f967491e
-    component/articlesrotator.php                     1.0.8     CS:86e66b90
-    component/base.php                                1.0.2     CS:1368cacc
-    component/biblelinks.php                          1.0.1     CS:d36bdaa4
-    component/breadcrumbs.php                         1.0.5     CS:e1322822
-    component/calendarsmall.php                       1.0.4     CS:1417236b
-    component/collectionviewer.php                    1.0.52    CS:44261cc
-    component/communitycollectionviewer.php           1.0.1     CS:9fe81687
-    component/dailybibleverse.php                     1.0.1     CS:b8719bb1
+  codebase.php                                        3.2.5
+  classes/  (7 files changed)
+    class.community_display.php                       1.0.38    CS:797c46bb
+    class.community_member_display.php                1.0.40    CS:9a50597f
+    class.community_member_resource.php               1.0.6     CS:a941dc6
+    class.community_resource.php                      1.0.4     CS:24421ea9
+    component/calendarlarge.php                       1.0.29    CS:f6b3227e
+    component/communitycalendar.php                   1.0.2     CS:6a208507
+    component/communitymembercalendar.php             1.0.2     CS:4ec600a6
+
+
+
+
+
 
 
   3) Change 'Survey Returned' to 'Last Verified' on Community Member form

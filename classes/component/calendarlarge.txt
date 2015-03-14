@@ -1,3 +1,5 @@
+  1.0.28 (2014-01-28)
+    1) Newline after JS onload code in Component_Calendar_Large::_draw_js()
   1.0.27 (2013-12-14)
     1) Small change to have URL in anchor for 'Add New...' icons on each day
        indicate same path as acgivated when user actually clicks on it

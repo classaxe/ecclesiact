@@ -1,3 +1,8 @@
+  1.0.5 (2015-01-31)
+    1) Community_Member_Resource::_draw_rss() bug fix - now includes member name in RSS feed title
+    2) Community_Member_Resource::_draw_rss() removed redundant 'limit' argument - this is handled by RSS class itself
+    3) Community_Member_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
+    4) Now PSR-2 Compliant
   1.0.4 (2014-01-23)
     1) Refactored code to reduce code complexity and shorten function names
     2) Community_Member_Resource::draw_search_results() now includes gallery-images

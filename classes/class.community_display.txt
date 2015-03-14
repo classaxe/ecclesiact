@@ -1,3 +1,8 @@
+  1.0.37 (2014-04-29)
+    1) Context menus for members now passes primary_communityID to allow this to be
+       set automatically when new items are added
+    2) Community_Display::_draw_meetings() now includes primary_communityID field
+    3) All listing panels having 'add' icons for admins now set communityID when adding
   1.0.36 (2014-03-23)
     1) Special events section for Christmas now retasked as configurable special
        services section so it can also be used for Easter or Summer VBS

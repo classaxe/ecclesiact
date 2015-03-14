@@ -1,0 +1,5 @@
+  1.0.1 (2013-09-20)
+    1) Community_Member_Calendar::_shared_source_link() now sets anchor to linked
+       calendar for member who shared event on calendar
+  1.0.0 (2013-07-24)
+    1) Moved this class out of Community_Member class

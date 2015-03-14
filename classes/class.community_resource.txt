@@ -1,3 +1,6 @@
+  1.0.3 (2015-03-07)
+    1) Renamed internal methods to camel case format
+    2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
   1.0.2 (2015-01-31)
     1) Community_Resource::_draw_jsonp() bug fix - now correctly allows for paging controls
     2) Community_Resource::_draw_rss() - some internal changes to correct misleading variable names

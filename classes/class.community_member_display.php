@@ -1,15 +1,14 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.39');
+define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.40');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.39 (2015-03-03)
-    1) Bug fix following move of Component_WOW_Slider to namespace
+  1.0.40 (2015-03-15)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
 
-  (Older version history in class.community_member_display.txt)
 */
 
 class Community_Member_Display extends Community_Member
@@ -201,11 +200,11 @@ class Community_Member_Display extends Community_Member
         ) {
             return;
         }
-        $Obj_CMC = new Community_Member_Calendar;
-        $Obj_CMC->communityID = $this->_record['communityID'];
-        $Obj_CMC->community_record = $this->_community_record;
-        $Obj_CMC->memberID = $this->_record['ID'];
-        $Obj_CMC->partner_csv = $this->_record['partner_csv'];
+        $Obj = new \Component\CommunityMemberCalendar;
+        $Obj->communityID = $this->_record['communityID'];
+        $Obj->community_record = $this->_community_record;
+        $Obj->memberID = $this->_record['ID'];
+        $Obj->partner_csv = $this->_record['partner_csv'];
         $args = array(
             'show_controls' => 0,
             'show_heading' => 0
@@ -215,7 +214,7 @@ class Community_Member_Display extends Community_Member
             ."<div class='inner'>"
             .$this->_draw_web_share('events', 'calendar')
             ."<h2>Monthly Calendar for ".$this->_record['title']."</h2>"
-            .$Obj_CMC->draw('community_member', $args, false)
+            .$Obj->draw('community_member', $args, false)
             ."</div>\n"
             ."</div>\n";
     }
