@@ -1,9 +1,10 @@
 <?php
-define('VERSION_RECORD', '1.0.88');
+define('VERSION_RECORD', '1.0.89');
 /*
 Version History:
-  1.0.88 (2015-02-17)
-    1) Typo for error message in Record::update() for warning about validating without fields
+  1.0.89 (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
 
   (Older version history in class.record.txt)
 */
@@ -2531,7 +2532,7 @@ class Record extends Portal
         $row = $out;
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_RECORD;
     }

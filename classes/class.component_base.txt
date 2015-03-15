@@ -1,11 +1,13 @@
+  1.0.20 (2015-03-07)
+    1) Moved deprecated support methods out of \Component\Base into here
   1.0.19 (2015-03-01)
     1) Now reduced to a stub file that simply extends Component\Base
-       This file will eventuall;y be removed.
+       This file will eventually be removed.
   1.0.18 (2015-01-02)
     1) Now uses OPTION_SEPARATOR constant not option_separator in various CP parsing methods
     2) Now PSR-2 Compliant
   1.0.17 (2014-05-19)
-    1) Tweak to Component_Base::get_safe_ID() to deal with posibility that an instance-name
+    1) Tweak to Component_Base::get_safe_ID() to deal with possibility that an instance-name
        might actually contain spaces (e.g. TUC homepage 'combo_tabber:front page')
   1.0.16 (2014-01-28)
     1) Newline after JS Onload code in Component_Base::_draw_section_container_open()

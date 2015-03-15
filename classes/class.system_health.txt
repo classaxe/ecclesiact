@@ -1,3 +1,6 @@
+  1.0.44 (2015-03-03)
+    1) Now able to look for and report on namespaced classes in subfolders of classes folder
+    2) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
   1.0.43 (2015-02-01)
     1) System_Health::_get_config_libraries_array() bug fix for file name of /js/spectrum.min.js
        (was /js/spectrum.min.css)

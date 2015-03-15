@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.5");
+define("CODEBASE_VERSION", "3.2.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,63 +16,78 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.5.2369 (2015-03-13)
+3.2.6.2370 (2015-03-15)
 Summary:
-  1) More components converted to use namespaces and be more fully PSR-2 conformant
+  1) More components converted to use namespaces and be more fully PSR-2 conformant:
+        \Component\CalendarYearly
+        \Component\CategoryStacker
+        \Component\CategoryTabber
+  2) System Health now lists deleted classes in code description generation
+  3) Changes to prevent misrepresentation of class version codes where they may have inheritted get_version()
+     from their ancestors, overruling their own getVersion() results -
+     ascendents now use getVersion() to prevent this  
 
 Final Checksums:
-  Classes     CS:f0e009ff
+  Classes     CS:57cdc016
   Database    CS:48ba81d8
-  Libraries   CS:26c3dfe0
+  Libraries   CS:f157b6f0
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.5     (2015-03-13)
+  codebase.php                                                                                   3.2.6     (2015-03-15)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.38    (2015-03-13)
-    1) Changes made following move of Community_Calendar to namespaced \Component\CommunityCalendar
-  classes/class.community_member_display.php                                                     1.0.40    (2015-03-15)
-    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
-  classes/class.community_member_resource.php                                                    1.0.6     (2015-03-15)
-    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
-  classes/class.community_resource.php                                                           1.0.4     (2015-03-13)
-    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
-  classes/component/calendarlarge.php                                                            1.0.29    (2015-03-11)
-    1) Moved in here from class.component_calendar_large.php
-    2) Extensivly refactored, and now uses Block Layout renderer for context menu
+  classes/class.base.php                                                                         1.0.13    (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
+  classes/class.component_base.php                                                               1.0.21    (2015-03-15)
+    1) Renamed recently changed getVersion() back to get_version() to prevent mis-reporting of child class versions
+  classes/class.portal.php                                                                       1.0.34    (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
+  classes/class.record.php                                                                       1.0.89    (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
+  classes/class.system.php                                                                       1.0.160   (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
+  classes/class.system_health.php                                                                1.0.45    (2015-03-15)
+    1) Now lists any deleted classes in code documentation
+  classes/component/calendaryearly.php                                                           1.0.1     (2015-03-14)
+    1) Moved in here from class.component_calendar_yearly.php
+    2) Some refactoring to separate setup and draw operations
     3) Now fully PSR-2 Compliant
-  classes/component/communitycalendar.php                                                        1.0.2     (2015-03-13)
-    1) Now uses namespaces and is fully PSR-2 Compliant
-    2) Now extends \Component\CalendarLarge and modified to suit that object
-  classes/component/communitymembercalendar.php                                                  1.0.2     (2015-03-13)
-    1) Now extends \Component\CalendarLarge and modified to suit that object
+  classes/component/categorystacker.php                                                          1.0.4     (2015-03-14)
+    1) Moved in here from class.component_category_stacker.php
+    2) Extensivly refactored
+    3) Now fully PSR-2 Compliant
+  classes/component/categorytabber.php                                                           1.0.5     (2015-03-14)
+    1) Moved in here from class.component_category_tabber.php
+    2) Extensivly refactored
+    3) Now fully PSR-2 Compliant
 
-2369.sql
-  1) Updated ECL tag 'calendar_large' for namespaced class
-  2) Set version information
+2370.sql
+  1) Updated ECL tag 'calendar_yearly' for namespaced class
+  2) Updated ECL tag 'category_stacker' for namespaced class
+  3) Updated ECL tag 'category_tabber' for namespaced class
+  4) Set version information
 
 Delete:
-  classes/  (4 files deleted)
-    classes/class.community_component_calendar_large.php
-    classes/class.community_member_calendar.php
-    classes/class.component_calendar_large.php
-    classes/class.component_calendar_large.txt
+    class.component_calendar_yearly.php               1.0.20
+    class.component_category_stacker.php              1.0.20
+    class.component_category_tabber.php               1.0.20
 
 Promote:
-  codebase.php                                        3.2.5
-  classes/  (7 files changed)
-    class.community_display.php                       1.0.38    CS:797c46bb
-    class.community_member_display.php                1.0.40    CS:9a50597f
-    class.community_member_resource.php               1.0.6     CS:a941dc6
-    class.community_resource.php                      1.0.4     CS:24421ea9
-    component/calendarlarge.php                       1.0.29    CS:f6b3227e
-    component/communitycalendar.php                   1.0.2     CS:6a208507
-    component/communitymembercalendar.php             1.0.2     CS:4ec600a6
-
-
-
-
-
+  codebase.php                                        3.2.6
+  classes/  (9 files changed)
+    class.base.php                                    1.0.13    CS:ae0a18ca
+    class.component_base.php                          1.0.21    CS:9b82b215
+    class.portal.php                                  1.0.34    CS:acf53d2
+    class.record.php                                  1.0.89    CS:5c2feddc
+    class.system.php                                  1.0.160   CS:3c21192
+    class.system_health.php                           1.0.45    CS:be695493
+    component/calendaryearly.php                      1.0.1     CS:a40eab61
+    component/categorystacker.php                     1.0.4     CS:f1ab375a
+    component/categorytabber.php                      1.0.5     CS:66263824
 
 
   3) Change 'Survey Returned' to 'Last Verified' on Community Member form

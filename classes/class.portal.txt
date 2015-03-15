@@ -1,3 +1,7 @@
+  1.0.33 (2015-01-04)
+    1) Portal::_parse_request_mode_prefix() for export now sets targetID and show_fields if
+       path includes these as slashed path parameters
+    2) Now PSR-2 Compliant
   1.0.32 (2014-02-13)
     1) Portal::portal_upgrade() updated to handle geocode_cache decoding
   1.0.31 (2014-01-21)

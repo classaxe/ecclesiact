@@ -1,13 +1,11 @@
 <?php
-define('VERSION_PORTAL', '1.0.33');
+define('VERSION_PORTAL', '1.0.34');
 /*
 Version History:
-  1.0.33 (2015-01-04)
-    1) Portal::_parse_request_mode_prefix() for export now sets targetID and show_fields if
-       path includes these as slashed path parameters
-    2) Now PSR-2 Compliant
+  1.0.34 (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
 
-  (Older version history in class.portal.txt)
 */
 class Portal extends Base
 {
@@ -506,7 +504,7 @@ class Portal extends Base
         );
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_PORTAL;
     }

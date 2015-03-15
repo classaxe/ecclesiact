@@ -1,3 +1,6 @@
+  1.0.12 (2013-06-13)
+    1) Base::_get_args() now configurable to NOT raise errors if unexpected
+       arguments are encountered
   1.0.11 (2012-11-31)
     1) Base::use_module() now declared to be static
   1.0.10 (2012-07-24)

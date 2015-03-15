@@ -1,3 +1,7 @@
+  1.0.4 (2013-06-07)
+    1) Changed the following CPs:
+         Old: 'filter_limit_per_category',  'filter_sort_by'
+         New: 'results_limit_per_category', 'results_order'
   1.0.3 (2013-05-14)
     1) Added support for group_header and group footer
   1.0.2 (2013-05-09)

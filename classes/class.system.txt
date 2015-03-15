@@ -1,3 +1,6 @@
+  1.0.159 (2015-03-08)
+    1)  System::do_commands() for command 'set_parameters' now uses \Component\Base->setParameters() instead of
+        Component_Base->set_parameters() as before
   1.0.158 (2015-03-01)
     1) Calls to System_Health methods now CamelCase
   1.0.157 (2015-01-10)

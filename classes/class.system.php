@@ -1,13 +1,12 @@
 <?php
-define('VERSION_SYSTEM', '1.0.159');
+define('VERSION_SYSTEM', '1.0.160');
 
 /*
 Version History:
-  1.0.159 (2015-03-08)
-    1)  System::do_commands() for command 'set_parameters' now uses \Component\Base->setParameters() instead of
-        Component_Base->set_parameters() as before
+  1.0.160 (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
 
-  (Older version history in class.system.txt)
 */
 class System extends Record
 {
@@ -1452,7 +1451,7 @@ class System extends Record
         return $Obj->page;
     }
 
-    public function get_version()
+    public function getVersion()
     {
         return VERSION_SYSTEM;
     }

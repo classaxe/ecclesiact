@@ -1,11 +1,10 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.44');
+define('VERSION_SYSTEM_HEALTH', '1.0.45');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.44 (2015-03-03)
-    1) Now able to look for and report on namespaced classes in subfolders of classes folder
-    2) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()
+  1.0.45 (2015-03-15)
+    1) Now lists any deleted classes in code documentation
 
   (Older version history in class.system_health.txt)
 */
@@ -25,13 +24,65 @@ class System_Health extends System
             .$this->_drawReportsTable($config_arr);
     }
 
+    protected static function extractClassesDeletedList($config_arr)
+    {
+        $expected = static::extractClassesExpectedList($config_arr);
+        $actual =   static::extractClassesActualList($config_arr);
+        $deleted =  array();
+        foreach (array_keys($expected) as $e){
+            if (!array_key_exists($e, $actual)) {
+                $deleted[$e] = $expected[$e];
+            }
+        }
+        return $deleted;
+    }
+
+
+    protected static function extractClassesActualList($config_arr)
+    {
+        $actual = array();
+        foreach ($config_arr as $config) {
+            if ($config['category']=='classes' && $config['title']!='classes_cs_actual') {
+                $actual[$config['title']] = $config['content'];
+            }
+        }
+        return $actual;
+    }
+
+    protected static function extractClassesExpectedList($config_arr)
+    {
+        $expected = array();
+        foreach ($config_arr as $config) {
+            if ($config['category']=='config' && $config['title']=='classes_detail') {
+                $entries = explode(',', $config['content']);
+                foreach ($entries as $entry) {
+                    $words = explode('|', $entry);
+                    $expected[trim(array_shift($words))] = implode('|', $words);
+                }
+                return $expected;
+            }
+        }
+    }
+
     private function _drawButtonCodeDocumentation($config_arr, $ID)
     {
         $value = "";
         $cs_arr = $this->_getConfigClassesExpected(System::get_item_version('classes_detail'));
         $classes_changed = 0;
+        $classes_deleted = 0;
         $libraries_checksum =       System::get_item_version('libraries_cs_actual');
         $reports_checksum =         System::get_item_version('reports_cs_actual');
+        $value = "";
+        $deleted =                  static::extractClassesDeletedList($config_arr);
+        if ($deleted) {
+            $value.= "Delete:\n";
+            foreach ($deleted as $title => $content) {
+                $content_arr = explode('|', $content);
+                $value .= "    ".pad($title, 48)."  ".$content_arr[0]."\n";
+            }
+            $value.= "\n";
+        }
+
         foreach ($config_arr as $config) {
             if ($config['category']=='classes' && $config['title']!='classes_cs_actual') {
                 $content_arr = explode('|', $config['content']);
@@ -56,9 +107,10 @@ class System_Health extends System
             }
         }
         $changed_files = array("codebase.php");
-        $value =
-         "Promote:\n"
-        ."  ".pad('codebase.php', 52).System::get_item_version('codebase')."\n";
+
+        $value.=
+             "Promote:\n"
+            ."  ".pad('codebase.php', 52).System::get_item_version('codebase')."\n";
         if ($classes_changed) {
             foreach ($config_arr as $config) {
                 if ($config['category']=='classes' && $config['title']=='classes_cs_actual') {
@@ -168,7 +220,7 @@ class System_Health extends System
                         "  "
                         .pad(trim($changed_file), 95)
                         .pad($history_version_arr[0], 10)
-                        .$history_version_arr[1]
+                        .(isset($history_version_arr[1]) ? $history_version_arr[1] : "(Date not given!)")
                         ."\n"
                         .$history
                         ."\n";
@@ -988,7 +1040,7 @@ class System_Health extends System
             $ext =              array_pop($ext_arr);
             $class =            str_replace('/', '\\', array_pop($ext_arr));
             $Obj =              new $class;
-            $version =          (method_exists($Obj, 'getVersion') ? $Obj->getVersion() : $Obj->get_version());
+            $version =          (method_exists($Obj, 'get_version') ? $Obj->get_version() : $Obj->getVersion());
             $file =             file_get_contents(SYS_CLASSES.$entry);
             $size =             number_format(strlen($file));
 
