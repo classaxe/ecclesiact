@@ -1,3 +1,6 @@
+  1.0.2 (2015-03-07)
+    1) Moved backward deprecated non-camel-cased backward compatability methods out into old component_base class
+       This class is now FULLY PSR-2 compliant - erm, except for property naming of course.
   1.0.1 (2015-03-04)
     1) Changes to static method calls from self:: to static:: to support overriding
     2) Bug fix - deprecated get_help() method wasn't returning content

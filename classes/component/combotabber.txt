@@ -1,3 +1,6 @@
+  1.0.10 (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
+    2) Was potentially guity of 'magic-this' passing - corrected that now :-)
   1.0.9 (2015-02-06)
     1) Events, Podcasts and News panels may now have their orders specified
     2) Now PSR-2 Compliant

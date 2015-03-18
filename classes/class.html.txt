@@ -1,3 +1,8 @@
+  1.0.87 (2015-01-02)
+    1) Class constants Community_Member::DASHBOARD_WIDTH and Community_Member::DASHBOARD_HEIGHT now uppercase
+    2) Removed JS that sets window.status - this hasn't been supported in browsers for a long time now
+    3) Fixed component icon for reports that use one
+    4) Now PSR-2 Compliant
   1.0.86 (2014-06-22)
     1) Added support for page creation defaults for 'email-opt-in' and 'email-opt-out'
   1.0.85 (2014-03-29)

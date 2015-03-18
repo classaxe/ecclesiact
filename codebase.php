@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.6");
+define("CODEBASE_VERSION", "3.2.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,78 +16,89 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.6.2370 (2015-03-15)
+3.2.7.2371 (2015-03-17)
 Summary:
-  1) More components converted to use namespaces and be more fully PSR-2 conformant:
-        \Component\CalendarYearly
-        \Component\CategoryStacker
-        \Component\CategoryTabber
-  2) System Health now lists deleted classes in code description generation
-  3) Changes to prevent misrepresentation of class version codes where they may have inheritted get_version()
-     from their ancestors, overruling their own getVersion() results -
-     ascendents now use getVersion() to prevent this  
+  1) Fix memory monitor for handling namespaced classes -
+     autoloader now passes both classname and path to includes_monitor() and works correctly
+  2) Several more components modernised, namespaced and made fully PSR-2 cmpliant:
+        class.component_change_password.php
+        class.component_combo_tabber.php
+        class.component_communities_display.php
+        class.component_content_block.php
+        class.component_content_group_member_mirror.php
+        class.component_content_signin_mirror.php
 
 Final Checksums:
-  Classes     CS:57cdc016
+  Classes     CS:34b25f57
   Database    CS:48ba81d8
-  Libraries   CS:f157b6f0
+  Libraries   CS:58977773
   Reports     CS:e64d2f5c
 
 Code Changes:
-  codebase.php                                                                                   3.2.6     (2015-03-15)
+  codebase.php                                                                                   3.2.7     (2015-03-17)
     1) Updated version information
-  classes/class.base.php                                                                         1.0.13    (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
-  classes/class.component_base.php                                                               1.0.21    (2015-03-15)
-    1) Renamed recently changed getVersion() back to get_version() to prevent mis-reporting of child class versions
-  classes/class.portal.php                                                                       1.0.34    (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
-  classes/class.record.php                                                                       1.0.89    (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
-  classes/class.system.php                                                                       1.0.160   (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
-  classes/class.system_health.php                                                                1.0.45    (2015-03-15)
-    1) Now lists any deleted classes in code documentation
-  classes/component/calendaryearly.php                                                           1.0.1     (2015-03-14)
-    1) Moved in here from class.component_calendar_yearly.php
-    2) Some refactoring to separate setup and draw operations
-    3) Now fully PSR-2 Compliant
-  classes/component/categorystacker.php                                                          1.0.4     (2015-03-14)
-    1) Moved in here from class.component_category_stacker.php
-    2) Extensivly refactored
-    3) Now fully PSR-2 Compliant
-  classes/component/categorytabber.php                                                           1.0.5     (2015-03-14)
-    1) Moved in here from class.component_category_tabber.php
-    2) Extensivly refactored
-    3) Now fully PSR-2 Compliant
+  classes/class.extended_community.php                                                           1.0.0     (2015-03-17)
+    1) Moved into its own file - was originally part of class.component_communities_display.php
+  classes/class.html.php                                                                         1.0.88    (2015-03-17)
+    1) Made some aliases for PSR-2 compliant method names:
+          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
+          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
+          HTML::drawFormBox()           ->  HTML::draw_form_box()
+  classes/component/base.php                                                                     1.0.3     (2015-03-17)
+    1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
+  classes/component/changepassword.php                                                           1.0.2     (2015-03-17)
+    1) Moved from Component_Change_Password and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/combotabber.php                                                              1.0.11    (2015-03-17)
+    1) Moved from Component_Combo_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/communitiesdisplay.php                                                       1.0.6     (2015-03-17)
+    1) Moved from Component_Change_Password and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/contentblock.php                                                             1.0.1     (2015-03-17)
+    1) Moved from Component_Content_Block and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/contentgroupmembermirror.php                                                 1.0.4     (2015-03-17)
+    1) Moved from Component_Content_Group_Member_Mirror and MAJORLY reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/contentsigninmirror.php                                                      1.0.3     (2015-03-17)
+    1) Moved from Component_Content_Signin_Mirror and MAJORLY reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  functions.php                                                                                  1.0.16    (2015-03-16)
+    1) Changes to includes_monitor() and mem() to handle namespaced classes
+    2) Now mainly PSR-2 Compliant.
 
-2370.sql
-  1) Updated ECL tag 'calendar_yearly' for namespaced class
-  2) Updated ECL tag 'category_stacker' for namespaced class
-  3) Updated ECL tag 'category_tabber' for namespaced class
-  4) Set version information
+2371.sql
+  1) Updated ECL tag 'combo_tabber' for namespaced class
+  2) Updated ECL tag 'content_block' for namespaced class
+  3) Updated ECL tag 'draw_change_password' for namespaced class
+  4) Updated ECL tag 'communities_display' for namespaced class
+  5) Updated ECL tag 'content_group_member_mirror' for namespaced class
+  6) Updated ECL tag 'content_signin_mirror' for namespaced class
+  7) Set version information
 
 Delete:
-    class.component_calendar_yearly.php               1.0.20
-    class.component_category_stacker.php              1.0.20
-    class.component_category_tabber.php               1.0.20
+    class.component_change_password.php               1.0.1
+    class.component_combo_tabber.php                  1.0.10
+    class.component_communities_display.php           1.0.5
+    class.component_content_block.php                 1.0.0
+    class.component_content_group_member_mirror.php   1.0.3
+    class.component_content_signin_mirror.php         1.0.2
 
 Promote:
-  codebase.php                                        3.2.6
+  codebase.php                                        3.2.7
   classes/  (9 files changed)
-    class.base.php                                    1.0.13    CS:ae0a18ca
-    class.component_base.php                          1.0.21    CS:9b82b215
-    class.portal.php                                  1.0.34    CS:acf53d2
-    class.record.php                                  1.0.89    CS:5c2feddc
-    class.system.php                                  1.0.160   CS:3c21192
-    class.system_health.php                           1.0.45    CS:be695493
-    component/calendaryearly.php                      1.0.1     CS:a40eab61
-    component/categorystacker.php                     1.0.4     CS:f1ab375a
-    component/categorytabber.php                      1.0.5     CS:66263824
+    class.extended_community.php                      1.0.0     CS:ce496f1e
+    class.html.php                                    1.0.88    CS:b40185fd
+    component/base.php                                1.0.3     CS:bbc42596
+    component/changepassword.php                      1.0.2     CS:1f5cf17
+    component/combotabber.php                         1.0.11    CS:853ccd34
+    component/communitiesdisplay.php                  1.0.6     CS:226514e6
+    component/contentblock.php                        1.0.0     CS:50ce9955
+    component/contentgroupmembermirror.php            1.0.4     CS:a3d0cfac
+    component/contentsigninmirror.php                 1.0.21    CS:a86e21ba
+  functions.php                                       1.0.16    CS:82c9d1ad
+
 
 
   3) Change 'Survey Returned' to 'Last Verified' on Community Member form
@@ -242,13 +253,13 @@ if (!function_exists('mem')) {
 }
 
 if (!function_exists('includes_monitor')) {
-    function includes_monitor($class_file = '')
+    function includes_monitor($className = '', $filePath = '')
     {
         static $includes = array();
-        if ($class_file=='') {
+        if ($className==''){
             return $includes;
         }
-        $includes[] = $class_file;
+        $includes[$className] = $filePath;
     }
 }
 
@@ -340,24 +351,24 @@ function portal_autoload($className)
     if (class_exists($className)) {
         return;
     }
-    $class_php = 'class.'.strToLower($className).'.php';
-    $include_file = SYS_CLASSES.$class_php;
-    if (file_exists($include_file)) {
-        require_once($include_file);
-        includes_monitor($include_file);
+    $fileName = 'class.'.strToLower($className).'.php';
+    $filePath = SYS_CLASSES.$fileName;
+    if (file_exists($filePath)) {
+        require_once($filePath);
+        includes_monitor($className, $filePath);
         return;
     }
-    $include_file = SYS_SHARED.$class_php;
-    if (file_exists($include_file)) {
-        require_once($include_file);
-        includes_monitor($include_file);
+    $filePath = SYS_SHARED.$fileName;
+    if (file_exists($filePath)) {
+        require_once($filePath);
+        includes_monitor($className, $filePath);
         return;
     }
-    $class_php = str_replace('\\', DIRECTORY_SEPARATOR, strToLower($className).'.php');
-    $include_file = SYS_CLASSES.$class_php;
-    if (file_exists($include_file)) {
-        require_once($include_file);
-        includes_monitor($include_file);
+    $fileName = str_replace('\\', DIRECTORY_SEPARATOR, strToLower($className).'.php');
+    $filePath = SYS_CLASSES.$fileName;
+    if (file_exists($filePath)) {
+        require_once($filePath);
+        includes_monitor($className, $filePath);
         return;
     }
 //    print 'looking for '.$include_file;

@@ -1,16 +1,18 @@
 <?php
-define("VERSION_COMPONENT_COMBO_TABBER", "1.0.10");
+namespace Component;
+
+define("VERSION_NS_COMPONENT_COMBO_TABBER", "1.0.11");
 /*
 Version History:
-  1.0.10 (2015-03-08)
-    1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
-    2) Was potentially guity of 'magic-this' passing - corrected that now :-)
+  1.0.11 (2015-03-17)
+    1) Moved from Component_Combo_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
 
-  (Older version history in class.component_combo_tabber.txt)
 */
-class Component_Combo_Tabber extends Component_Base
+class ComboTabber extends Base
 {
     protected $_tabs = array();
+    protected $_count_sections;
 
     public function __construct()
     {
@@ -206,25 +208,25 @@ class Component_Combo_Tabber extends Component_Base
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
         try {
-            $this->_setup($instance, $args, $disable_params);
-        } catch (Exception $e) {
-            $this->_draw_control_panel(true);
+            $this->setup($instance, $args, $disable_params);
+        } catch (\Exception $e) {
+            $this->drawControlPanel(true);
             $this->_msg.= $e->getMessage();
-            $this->_draw_status();
+            $this->drawStatus();
             return $this->_html;
         }
-        $this->_draw_control_panel(true);
-        $this->_draw_calendar_small();
-        $this->_draw_section_tabs();
-        $this->_draw_section_container_open();
-        $this->_draw_events();
-        $this->_draw_news();
-        $this->_draw_podcasts();
-        $this->_draw_section_container_close();
+        $this->drawControlPanel(true);
+        $this->drawCalendarSmall();
+        $this->drawSectionTabs();
+        $this->drawSectionContainerOpen();
+        $this->drawEvents();
+        $this->drawNews();
+        $this->drawPodcasts();
+        $this->drawSectionContainerClose();
         return $this->_render();
     }
 
-    protected function _draw_calendar_small()
+    protected function drawCalendarSmall()
     {
         if (!$this->_cp['calendar_small.show']) {
             return;
@@ -236,11 +238,11 @@ class Component_Combo_Tabber extends Component_Base
             'show' =>               'events',
             'width' =>              $this->_cp['box_width']
         );
-        $Obj = new Component\CalendarSmall;
+        $Obj = new \Component\CalendarSmall;
         $this->_html.= $Obj->draw($args, true);
     }
 
-    protected function _draw_events()
+    protected function drawEvents()
     {
         if (!$this->_cp['list_events.show']) {
             return;
@@ -258,14 +260,14 @@ class Component_Combo_Tabber extends Component_Base
             'results_limit' =>          $this->_cp['list_events.results_limit'],
             'results_order' =>          $this->_cp['list_events.results_order']
         );
-        $Obj = new Event;
+        $Obj = new \Event;
         $this->_html.=
-             HTML::draw_section_tab_div($this->_safe_ID.'_events', $this->_selected_section)
+             \HTML::drawSectionTabDiv($this->_safe_ID.'_events', $this->_selected_section)
             .$Obj->draw_listings('', $args, true)
             ."</div>";
     }
 
-    protected function _draw_news()
+    protected function drawNews()
     {
         if (!$this->_cp['list_news.show']) {
             return;
@@ -282,14 +284,14 @@ class Component_Combo_Tabber extends Component_Base
             'results_limit' =>          $this->_cp['list_news.results_limit'],
             'results_order' =>          $this->_cp['list_news.results_order']
         );
-        $Obj = new News_Item;
+        $Obj = new \News_Item;
         $this->_html.=
-             HTML::draw_section_tab_div($this->_safe_ID.'_news', $this->_selected_section)
+             \HTML::drawSectionTabDiv($this->_safe_ID.'_news', $this->_selected_section)
             .$Obj->draw_listings('', $args, true)
             ."</div>";
     }
 
-    protected function _draw_podcasts()
+    protected function drawPodcasts()
     {
         if (!$this->_cp['list_podcasts.show']) {
             return;
@@ -314,26 +316,26 @@ class Component_Combo_Tabber extends Component_Base
             'results_limit' =>          $this->_cp['list_podcasts.results_limit'],
             'results_order' =>          $this->_cp['list_podcasts.results_order']
         );
-        $Obj = new Podcast;
+        $Obj = new \Podcast;
         $this->_html.=
-             HTML::draw_section_tab_div($this->_safe_ID.'_podcasts', $this->_selected_section)
+             \HTML::drawSectionTabDiv($this->_safe_ID.'_podcasts', $this->_selected_section)
             .$Obj->draw_listings('', $args, true)
             ."</div>";
     }
 
-    protected function _draw_section_tabs()
+    protected function drawSectionTabs()
     {
         if ($this->_count_sections>1) {
             $this->_html.=
                  "<div style='padding:5px 0;'>"
-                .HTML::draw_section_tab_buttons($this->_tabs, $this->_safe_ID, $this->_selected_section)
+                .\HTML::drawSectionTabButtons($this->_tabs, $this->_safe_ID, $this->_selected_section)
                 ."</div>";
             return;
         }
         if ($this->_cp['calendar_small.show']) {
             $this->_html.= "<div style='padding:5px 0;'></div>";
         }
-        Page::push_content(
+        \Page::pushContent(
             'javascript_onload',
             "  $('#section_".$this->_selected_section."').parent()."
             ."height($('#section_".$this->_selected_section."').height());\n"
@@ -348,25 +350,25 @@ class Component_Combo_Tabber extends Component_Base
             ."</div>\n";
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
-        parent::_setup($instance, $args, $disable_params);
-        $this->_setup_count_sections();
-        $this->_setup_tabs();
+        parent::setup($instance, $args, $disable_params);
+        $this->setupCountSections();
+        $this->setupTabs();
     }
 
-    protected function _setup_count_sections()
+    protected function setupCountSections()
     {
         $this->_count_sections =
              ($this->_cp['list_events.show'] ? 1 : 0)
             +($this->_cp['list_news.show'] ? 1 : 0)
             +($this->_cp['list_podcasts.show'] ? 1 : 0);
         if ($this->_count_sections==0) {
-            throw new Exception("<b>Error:</b><br />".$this->_safe_ID." has nothing to show.");
+            throw new \Exception("<b>Error:</b><br />".$this->_safe_ID." has nothing to show.");
         }
     }
 
-    protected function _setup_tabs()
+    protected function setupTabs()
     {
         $_width =  (int)(($this->_cp['box_width'])/$this->_count_sections)-14;
       // provides enough space even in IE6 with its double margin bug
@@ -384,8 +386,8 @@ class Component_Combo_Tabber extends Component_Base
         $this->_selected_section = $this->_tabs[0]['ID'];
     }
 
-    public function get_version()
+    public function getVersion()
     {
-        return VERSION_COMPONENT_COMBO_TABBER;
+        return VERSION_NS_COMPONENT_COMBO_TABBER;
     }
 }

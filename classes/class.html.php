@@ -1,14 +1,13 @@
 <?php
-define('VERSION_HTML', '1.0.87');
+define('VERSION_HTML', '1.0.88');
 /*
 Version History:
-  1.0.87 (2015-01-02)
-    1) Class constants Community_Member::DASHBOARD_WIDTH and Community_Member::DASHBOARD_HEIGHT now uppercase
-    2) Removed JS that sets window.status - this hasn't been supported in browsers for a long time now
-    3) Fixed component icon for reports that use one
-    4) Now PSR-2 Compliant
+  1.0.88 (2015-03-17)
+    1) Made some aliases for PSR-2 compliant method names:
+          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
+          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
+          HTML::drawFormBox()           ->  HTML::draw_form_box()
 
-  (Older version history in class.html.txt)
 */
 class HTML extends Record
 {
@@ -17,6 +16,11 @@ class HTML extends Record
     protected $_has_no_personal_toolbar =   0;
 
     public static function draw_form_box($title, $content = '', $help = '', $shadow = 0, $width = false, $footer = '')
+    {
+        return static::drawFormBox($title, $content, $help, $shadow, $width, $footer);
+    }
+
+    public static function drawFormBox($title, $content = '', $help = '', $shadow = 0, $width = false, $footer = '')
     {
         global $report_name, $ID;
         return
@@ -497,7 +501,12 @@ class HTML extends Record
         return $out;
     }
 
-    public function draw_section_tab_buttons($arr, $divider_prefix, $selected_section, $js = "")
+    public static function draw_section_tab_buttons($arr, $divider_prefix, $selected_section, $js = "")
+    {
+        return static::drawSectionTabButtons($arr, $divider_prefix, $selected_section, $js);
+    }
+
+    public static function drawSectionTabButtons($arr, $divider_prefix, $selected_section, $js = "")
     {
         $divider_prefix = str_replace(array(' ',':','.','-'), array('_','_','_','_'), $divider_prefix);
         $ID_arr = array();
@@ -517,24 +526,29 @@ class HTML extends Record
             if ($value['label']!="") {
                 $safe_ID = str_replace(array('/'), '_', $value['ID']);
                 $out.=
-                 "  <div class=\"".($selected_section==$safe_ID? "tab_selected" : "tab")."\""
-                ." id='section_".$safe_ID."_heading'"
-                .(isset($value['width']) && $value['width'] ? " style=\"min-width:".$value['width']."px\"" : "")
-                ." onclick=\""
-                .($js ? $js.";" : "")
-                ."return show_section_tab(spans_".$divider_prefix.",'".$safe_ID."')\""
-                .">"
-                ."<a "
-                ."title=\"Click to view ".str_replace('<br />', ' ', $value['label'])."\""
-                ." onclick='return false;'>".$value['label']."</a></div>\n";
+                     "  <div class=\"".($selected_section==$safe_ID? "tab_selected" : "tab")."\""
+                    ." id='section_".$safe_ID."_heading'"
+                    .(isset($value['width']) && $value['width'] ? " style=\"min-width:".$value['width']."px\"" : "")
+                    ." onclick=\""
+                    .($js ? $js.";" : "")
+                    ."return show_section_tab(spans_".$divider_prefix.",'".$safe_ID."')\""
+                    .">"
+                    ."<a "
+                    ."title=\"Click to view ".str_replace('<br />', ' ', $value['label'])."\""
+                    ." onclick='return false;'>".$value['label']."</a></div>\n";
             }
         }
         $out.=
-         "<br class='clr_b' /></div>\n";
+            "<br class='clr_b' /></div>\n";
         return $out;
     }
 
-    public function draw_section_tab_div($ID, $selected_section)
+    public static function draw_section_tab_div($ID, $selected_section)
+    {
+         return static::drawSectionTabDiv($ID, $selected_section);
+    }
+
+    public static function drawSectionTabDiv($ID, $selected_section)
     {
         $safe_ID = str_replace(array('/'), '_', $ID);
         return
@@ -543,7 +557,12 @@ class HTML extends Record
             .";'>";
     }
 
-    public function draw_status($ID, $msg, $ajax_mode = false, $severity = false, $noclose = 0)
+    public static function draw_status($ID, $msg, $ajax_mode = false, $severity = false, $noclose = 0)
+    {
+         return static::drawStatus($ID, $msg, $ajax_mode, $severity, $noclose);
+    }
+
+    public static function drawStatus($ID, $msg, $ajax_mode = false, $severity = false, $noclose = 0)
     {
         if (!$msg) {
             return "";
@@ -566,7 +585,7 @@ class HTML extends Record
             ."\"form_status_".$ID."\",\"".str_replace('/', '\/', $msg)."\",".$severity.",".$noclose
             .");\n";
         if (!$ajax_mode) {
-            Page::push_content('javascript_onload', $js);
+            \Page::push_content('javascript_onload', $js);
             return $html;
         }
         return array(

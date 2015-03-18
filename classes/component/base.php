@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_BASE", "1.0.2");
+define("VERSION_NS_COMPONENT_BASE", "1.0.3");
 /*
 Version History:
-  1.0.2 (2015-04-07)
-    1) Moved backward deprecated non-camel-cased backward compatability methods out into old component_base class
-       This class is now FULLY PSR-2 compliant - erm, except for property naming of course.
+  1.0.3 (2015-03-17)
+    1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
 
 */
 
@@ -72,7 +71,7 @@ class Base extends \Record
 
     protected function drawStatus()
     {
-        $this->_html.=      \HTML::draw_status($this->_safe_ID, $this->_msg);
+        $this->_html.=      \HTML::drawStatus($this->_safe_ID, $this->_msg);
     }
 
     public static function getHelp($ident, $instance, $force_values, $parameter_spec, $cp_defaults)
