@@ -1,12 +1,10 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.126');
+define('VERSION_REPORT_COLUMN', '1.0.127');
 /*
 Version History:
-  1.0.126 (2014-12-31)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Report_Column::draw_form_field() for option_list
-    2) Now PSR-2 Compliant
+  1.0.127 (2015-03-21)
+    1 Added support for type 'json' in Report_Column::draw_form_field()
 
-  (Older version history in class.report_column.txt)
 */
 class Report_Column extends Record
 {
@@ -1448,6 +1446,14 @@ class Report_Column extends Record
                         ." style=\"width: ".$width.";\" class='formField txt_r' $jsCode/>"
                         .$this->attach_behaviour($field, $type);
                     break;
+                case "json":
+                    $out =
+                         "<textarea id=\"".$field."\" name=\"".$field."\" rows='4' cols='80'"
+                        ." style=\"width: ".$width.";height: ".($height ? (int)$height : 240)."px;\" ".$jsCode.">"
+                        .format_json($value)."\n"
+                        ."</textarea>\n";
+                    break;
+
                 case "keywords_assign":
                     $isMASTERADMIN =    get_person_permission("MASTERADMIN");
                     $isSYSADMIN =        get_person_permission("SYSADMIN");

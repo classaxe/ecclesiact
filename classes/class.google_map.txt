@@ -1,3 +1,5 @@
+  1.0.45 (2014-03-28)
+    1) Google_Map::add_circle() now has additional parameter 'markertype'
   1.0.44 (2014-03-27)
     1) Google_Map::add_marker_with_html() now allows for an optional circle to be
        included as part of the control

@@ -1,7 +1,7 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_CONTENT_BLOCK", "1.0.0");
+define("VERSION_NS_COMPONENT_CONTENT_BLOCK", "1.0.1");
 /*
 Version History:
   1.0.1 (2015-03-17)

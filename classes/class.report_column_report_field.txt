@@ -1,3 +1,6 @@
+  1.0.27 (2014-06-22)
+    1) Added specific support in Report_Column_Report_Field::draw() for columns of type
+       'textarea', 'textarea_big' and 'textarea_readonly' to have new lines shown with breaks
   1.0.26 (2014-03-26)
     1) Removed support for type 'link_map' - now uses fieldset type instead
     2) Support for type 'fieldset_map_loc_lat_lon' now includes area field

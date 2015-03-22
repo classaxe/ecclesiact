@@ -1,3 +1,5 @@
+  1.0.2 (2014-02-13)
+    1) Refreshed fields list - now declared as a class constant
   1.0.1 (2013-11-12)
     1) Reduced queries_per_day to be 100 less than Google's daily limit to keep
        us within their upper limit

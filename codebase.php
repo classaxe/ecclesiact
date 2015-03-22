@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.7");
+define("CODEBASE_VERSION", "3.2.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,92 +16,49 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.7.2371 (2015-03-17)
+3.2.8.2372 (2015-03-21)
 Summary:
-  1) Fix memory monitor for handling namespaced classes -
-     autoloader now passes both classname and path to includes_monitor() and works correctly
-  2) Several more components modernised, namespaced and made fully PSR-2 cmpliant:
-        class.component_change_password.php
-        class.component_combo_tabber.php
-        class.component_communities_display.php
-        class.component_content_block.php
-        class.component_content_group_member_mirror.php
-        class.component_content_signin_mirror.php
+  1) New report / form for Geocoding information which shows what google actually mapped against
+  2) Changed 'Survey Returned' to 'Date Member Verified' on Community Member form
+  3) Fixed version number on Component\ContentBlock
 
 Final Checksums:
-  Classes     CS:34b25f57
-  Database    CS:48ba81d8
-  Libraries   CS:58977773
-  Reports     CS:e64d2f5c
+  Classes     CS:220f60dc
+  Database    CS:c6d3209e
+  Libraries   CS:9829cb2d
+  Reports     CS:99aa1758
 
 Code Changes:
-  codebase.php                                                                                   3.2.7     (2015-03-17)
+  codebase.php                                                                                   3.2.8     (2015-03-21)
     1) Updated version information
-  classes/class.extended_community.php                                                           1.0.0     (2015-03-17)
-    1) Moved into its own file - was originally part of class.component_communities_display.php
-  classes/class.html.php                                                                         1.0.88    (2015-03-17)
-    1) Made some aliases for PSR-2 compliant method names:
-          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
-          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
-          HTML::drawFormBox()           ->  HTML::draw_form_box()
-  classes/component/base.php                                                                     1.0.3     (2015-03-17)
-    1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
-  classes/component/changepassword.php                                                           1.0.2     (2015-03-17)
-    1) Moved from Component_Change_Password and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/combotabber.php                                                              1.0.11    (2015-03-17)
-    1) Moved from Component_Combo_Tabber and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/communitiesdisplay.php                                                       1.0.6     (2015-03-17)
-    1) Moved from Component_Change_Password and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  classes/class.geocode_cache.php                                                                1.0.3     (2015-03-21)
+    1) Now extends Displayable_Item and has its own _draw_object_map_html_get_data() method to make maps work
+  classes/class.google_map.php                                                                   1.0.46    (2015-03-21)
+    1) Now writes matched_address into geocode_cache so we can see what got matched
+    2) References to class constants in Geocode_Cache now all uppercase, calls to methods are now camelCase
+    3) Now more PSR-2 compliant
+  classes/class.report_column.php                                                                1.0.127   (2015-03-21)
+    1 Added support for type 'json' in Report_Column::draw_form_field()
+  classes/class.report_column_report_field.php                                                   1.0.28    (2015-03-21)
+    1) Now gives map link as 'Map' if no value is actually given for the text
+    2) Now mainly PSR-2 Compliant
   classes/component/contentblock.php                                                             1.0.1     (2015-03-17)
     1) Moved from Component_Content_Block and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/contentgroupmembermirror.php                                                 1.0.4     (2015-03-17)
-    1) Moved from Component_Content_Group_Member_Mirror and MAJORLY reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/contentsigninmirror.php                                                      1.0.3     (2015-03-17)
-    1) Moved from Component_Content_Signin_Mirror and MAJORLY reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  functions.php                                                                                  1.0.16    (2015-03-16)
-    1) Changes to includes_monitor() and mem() to handle namespaced classes
-    2) Now mainly PSR-2 Compliant.
 
-2371.sql
-  1) Updated ECL tag 'combo_tabber' for namespaced class
-  2) Updated ECL tag 'content_block' for namespaced class
-  3) Updated ECL tag 'draw_change_password' for namespaced class
-  4) Updated ECL tag 'communities_display' for namespaced class
-  5) Updated ECL tag 'content_group_member_mirror' for namespaced class
-  6) Updated ECL tag 'content_signin_mirror' for namespaced class
-  7) Set version information
-
-Delete:
-    class.component_change_password.php               1.0.1
-    class.component_combo_tabber.php                  1.0.10
-    class.component_communities_display.php           1.0.5
-    class.component_content_block.php                 1.0.0
-    class.component_content_group_member_mirror.php   1.0.3
-    class.component_content_signin_mirror.php         1.0.2
+2372.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.2.7
-  classes/  (9 files changed)
-    class.extended_community.php                      1.0.0     CS:ce496f1e
-    class.html.php                                    1.0.88    CS:b40185fd
-    component/base.php                                1.0.3     CS:bbc42596
-    component/changepassword.php                      1.0.2     CS:1f5cf17
-    component/combotabber.php                         1.0.11    CS:853ccd34
-    component/communitiesdisplay.php                  1.0.6     CS:226514e6
-    component/contentblock.php                        1.0.0     CS:50ce9955
-    component/contentgroupmembermirror.php            1.0.4     CS:a3d0cfac
-    component/contentsigninmirror.php                 1.0.21    CS:a86e21ba
-  functions.php                                       1.0.16    CS:82c9d1ad
+  codebase.php                                        3.2.8
+  classes/  (5 files changed)
+    class.geocode_cache.php                           1.0.3     CS:e371642
+    class.google_map.php                              1.0.46    CS:9563bd91
+    class.report_column.php                           1.0.127   CS:9cfaf49c
+    class.report_column_report_field.php              1.0.28    CS:c365f6b0
+    component/contentblock.php                        1.0.1     CS:8dd0a4f5
+  images/icons.gif                                              CS:82900e83
 
-
-
-  3) Change 'Survey Returned' to 'Last Verified' on Community Member form
   4) Allow #easter to be used in place of #special on special events tab in community sites
 
 
@@ -1590,6 +1547,64 @@ function format_time($hhmm)
     }
     sscanf($hhmm, "%02d:%02d", $_hh, $_mm);
     return hhmm_format($_hh.":".$_mm, $system_vars['defaultTimeFormat']==1 || $system_vars['defaultTimeFormat']==3);
+}
+
+function format_json( $json )
+{
+    $result = '';
+    $level = 0;
+    $in_quotes = false;
+    $in_escape = false;
+    $ends_line_level = NULL;
+    $json_length = strlen( $json );
+
+    for( $i = 0; $i < $json_length; $i++ ) {
+        $char = $json[$i];
+        $new_line_level = NULL;
+        $post = "";
+        if( $ends_line_level !== NULL ) {
+            $new_line_level = $ends_line_level;
+            $ends_line_level = NULL;
+        }
+        if ( $in_escape ) {
+            $in_escape = false;
+        } else if( $char === '"' ) {
+            $in_quotes = !$in_quotes;
+        } else if( ! $in_quotes ) {
+            switch( $char ) {
+                case '}': case ']':
+                    $level--;
+                    $ends_line_level = NULL;
+                    $new_line_level = $level;
+                    break;
+
+                case '{': case '[':
+                    $level++;
+                case ',': case ';':
+
+                    $ends_line_level = $level;
+                    break;
+
+                case ':':
+                    $post = " ";
+                    break;
+
+                case " ": case "\t": case "\n": case "\r":
+                    $char = "";
+                    $ends_line_level = $new_line_level;
+                    $new_line_level = NULL;
+                    break;
+            }
+        } else if ( $char === '\\' ) {
+            $in_escape = true;
+        }
+        if( $new_line_level !== NULL ) {
+            $result .= "\n".str_repeat( "  ", $new_line_level );
+        }
+        $result .= $char.$post;
+    }
+
+    return $result;
 }
 
 function format_phone($phone)
