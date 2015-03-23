@@ -1,3 +1,5 @@
+  1.0.127 (2015-03-21)
+    1 Added support for type 'json' in Report_Column::draw_form_field()
   1.0.126 (2014-12-31)
     1) Now uses OPTION_SEPARATOR constant not option_separator in Report_Column::draw_form_field() for option_list
     2) Now PSR-2 Compliant

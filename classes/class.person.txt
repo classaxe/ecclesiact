@@ -1,3 +1,13 @@
+  1.0.123 (2015-02-17)
+    1) Added support in Person::load_profile_fields() for new community-based fields:
+         Community_Name
+         Community_Title
+         Community_URL
+         Community_Member_ID
+         Community_Member_Name
+         Community_Member_Title
+         Community_Member_Image
+         Community_Member_URL
   1.0.122 (2015-02-17)
     1) Added support for communityId field in FIELDS list
     2) Now PSR-2 Compliant

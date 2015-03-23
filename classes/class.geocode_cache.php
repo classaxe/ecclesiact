@@ -1,15 +1,15 @@
 <?php
-define('VERSION_GEOCODE_CACHE', '1.0.3');
+define('VERSION_GEOCODE_CACHE', '1.0.4');
 /*
 Version History:
   1.0.3 (2015-03-21)
-    1) Now extends Displayable_Item and has its own _draw_object_map_html_get_data() method to make maps work
+    1) Now implements its own get_coords() that doesn't try to read the cache (whichof course is itself!)
 
 
 */
 class Geocode_Cache extends Displayable_Item
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, input_address, match_address, match_area, match_quality, match_type, output_address, output_json, output_lat, output_lon, partial_match, query_date, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const FIELDS = 'ID, archive, archiveID, deleted, systemID, input_address, match_address, match_area, match_quality, match_type, output_json, output_lat, output_lon, partial_match, query_date, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const QUERIES_PER_DAY = 2400;   // 100 less than Google's daily maximum
     const MAX_CACHE_AGE =   90;     // Maximum number of days to cache previous results
 
@@ -69,6 +69,25 @@ class Geocode_Cache extends Displayable_Item
             ."  `input_address` = \"".$address."\"";
   //    z($sql);
         return $this->get_record_for_sql($sql);
+    }
+
+    public function get_coords($address = false)
+    {
+        if (!$address) {
+            $address = $this->get_field('input_address');
+        }
+        $geocode = Google_Map::find_geocode($address, true);
+        $result = array(
+            'match_address' =>          $geocode['match_address'],
+            'match_area' =>             $geocode['match_area'],
+            'match_type' =>             $geocode['match_type'],
+            'match_quality' =>          $geocode['match_quality'],
+            'output_json' =>            $geocode['output_json'],
+            'output_lat' =>             $geocode['lat'],
+            'output_lon' =>             $geocode['lon'],
+            'query_date' =>             $geocode['query_date']
+        );
+        return $result;
     }
 
     public function get_version()

@@ -1,3 +1,10 @@
+  1.0.105 (2015-01-01)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in Community_Member::set_up_member_page_vars()
+    2) Class Constants DASHBOARD_WIDTH and DASHBOARD_HEIGHT now uppercase (PSR-2 requirement)
+    3) Bug fix for Dashboard - get_partner_selector_sql() - following changes to address fields a while ago
+    4) Updated editable fields in Dashboard - many have changed since this last worked
+    5) Removed avatar support for community members - now multiple images are held in a gallery
+    6) Now PSR-2 Compliant (except for const FIELDS length warning)
   1.0.104 (2014-03-27)
     1) Community_Member::_draw_object_map_html_get_data() now uses fields passed
        to it to determine which address to display

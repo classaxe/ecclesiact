@@ -1,3 +1,7 @@
+  1.0.46 (2015-03-21)
+    1) Now writes matched_address into geocode_cache so we can see what got matched
+    2) References to class constants in Geocode_Cache now all uppercase, calls to methods are now camelCase
+    3) Now more PSR-2 compliant
   1.0.45 (2014-03-28)
     1) Google_Map::add_circle() now has additional parameter 'markertype'
   1.0.44 (2014-03-27)

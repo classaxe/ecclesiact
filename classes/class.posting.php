@@ -1,17 +1,16 @@
 <?php
-define("VERSION_POSTING", "1.0.120");
+define("VERSION_POSTING", "1.0.121");
 /*
 Version History:
-  1.0.120 (2015-02-06)
-    1) Posting::_get_records_sort_records_using_results_order() now allows for sorting by
-       date_d_name_a and date_d_title_a
+  1.0.121 (2015-03-22)
+    1) Added `map_geocode_address` to fields list
+    2) Posting::get_coords() now includes map_geocode_address
 
-  (Older version history in class.posting.txt)
 */
 
 class Posting extends Displayable_Item
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     public $subtype;
     public $systemID;
     public $_get_records_args = array();
@@ -380,6 +379,7 @@ class Posting extends Displayable_Item
         $geocode = parent::get_coords($address);
         return array(
             'map_geocodeID' =>          $geocode['ID'],
+            'map_geocode_address' =>    $geocode['match_address'],
             'map_geocode_area' =>       $geocode['match_area'],
             'map_geocode_type' =>       $geocode['match_type'],
             'map_geocode_quality' =>    $geocode['match_quality'],

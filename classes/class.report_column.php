@@ -1,9 +1,10 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.127');
+define('VERSION_REPORT_COLUMN', '1.0.128');
 /*
 Version History:
-  1.0.127 (2015-03-21)
-    1 Added support for type 'json' in Report_Column::draw_form_field()
+  1.0.128 (2015-03-22)
+    1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
+       and have no bulk update options. Quality label also opens up map just like lat and lon already did.
 
 */
 class Report_Column extends Record
@@ -426,7 +427,9 @@ class Report_Column extends Record
                 case "text":
                     $out =
                          "<div id=\"div_".$field."\" class='formField'"
-                        ." style='width:".$width.";height:1.4em;background-color:".$bgColor."'>"
+                        ." style='width:".$width.";height:1.4em;background-color:".$bgColor.";"
+                        .($width>100 ? "overflow:auto;" : "")
+                        ."'>"
                         .$value
                         ."<input type='hidden' id=\"".$field."\" value=\"".$value."\" /></div>";
                     break;
@@ -961,7 +964,7 @@ class Report_Column extends Record
                     $_area =    $params[4];
                     $field_names = explode(',', $field);
                     $_width =         (int)$width-($bulk_update ? 21 : 0);
-                    $_div_open =      "<div style='float:left'>";
+                    $_div_open =      "<div style='float:left;'>";
                     $field_loc =      $field_names[0];
                     $value_loc =      (isset($row[$field_loc]) ? $row[$field_loc]  : '');
                     $field_lat =      $field_names[1];
@@ -984,63 +987,49 @@ class Report_Column extends Record
                         false
                     );
                     return
-                        ($bulk_update ?
-                             "<input id=\"".$field_loc."_apply\" name=\"".$field_loc."_apply\""
-                            ." title=\"Apply changes to this field\" type='checkbox' value=\"1\""
-                            ." class=\"fl formField\" style=\"background-color: #60a060;  margin: 0 2px 0 0px;\">"
-                         :
-                            ""
-                        )
-                        .$_div_open
+                         $_div_open
                         .draw_form_field(
                             $field_loc,
                             $value_loc,
                             "text",
-                            $loc_width
+                            $loc_width,
+                            '',
+                            0,
+                            '',
+                            1
                         )
-                        ."&nbsp; "
                         ."</div>"
                         ."<div style='float:left;width:32px;text-align:right'>"
                         .($link ? $link."Lat</a>" : "Lat")
                         ."</div>"
-                        .($bulk_update ?
-                             "<input id=\"".$field_lat."_apply\" name=\"".$field_lat."_apply\""
-                            ." title=\"Apply changes to this field\" type='checkbox' value=\"1\""
-                            ." class=\"fl formField\" style=\"background-color: #60a060;  margin: 0 2px 0 2px;\">"
-                         :
-                            ""
-                        )
                         .$_div_open.draw_form_field(
                             $field_lat,
-                            $value_lat,
+                            ($value_lat ? number_format($value_lat, 4) : ''),
                             "text",
                             70,
                             '',
                             0,
-                            "disabled='disabled'"
+                            '',
+                            1
                         )
                         ."</div>"
                         ."<div style='float:left;width:34px;text-align:right'>"
                         .($link ? $link."Lon</a>" : "Lon")
                         ."</div>"
-                        .($bulk_update ?
-                             "<input id=\"".$field_lon."_apply\" name=\"".$field_lon."_apply\""
-                            ." title=\"Apply changes to this field\" type='checkbox' value=\"1\""
-                            ." class=\"fl formField\" style=\"background-color: #60a060;  margin: 0 2px 0 2px;\">"
-                         :
-                            ""
-                         )
                         .$_div_open.draw_form_field(
                             $field_lon,
-                            $value_lon,
+                            ($value_lon ? number_format($value_lon, 4) : ''),
                             "text",
                             70,
                             '',
                             0,
-                            "disabled='disabled'"
+                            '',
+                            1
                         )
                         ."</div>"
-                        ."<div style='float:left;width:42px;text-align:right'>Qual</div>"
+                        ."<div style='float:left;width:42px;text-align:right'>"
+                        .($link ? $link."Qual</a>" : "Qual")
+                        ."</div>"
                         .$_div_open.draw_form_field(
                             $field_qual,
                             $value_qual,
@@ -1048,10 +1037,11 @@ class Report_Column extends Record
                             48,
                             '',
                             0,
-                            "disabled='disabled'"
+                            '',
+                            1
                         )
-                        ."%</div>"
-                        ."<div class='clear'>&nbsp;</div>";
+                        ."</div>"
+                        ."<div style='float:left;'>%</div><br class='clear' />";
                 break;
                 case "fieldset_name_email":
                     $field_names = explode(',', $field);

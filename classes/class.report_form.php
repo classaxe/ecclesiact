@@ -1,12 +1,11 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.61");
+define("VERSION_REPORT_FORM", "1.0.62");
 
 /*
 Version History:
-  1.0.61 (2015-02-14)
-    1) HTML tweak for Report_Form::_draw_form_field() to correctly space tag attributes
+  1.0.62 (2015-03-22)
+    1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
 
-  (Older version history in class.report_form.txt)
 */
 
 class Report_Form extends Report
@@ -974,14 +973,13 @@ class Report_Form extends Report
         $field_set = array();
         $this->_fields_shown = false;
         foreach ($this->_columnList as $c) {
-            $data =
-            array(
-            'access' =>           $c['access'],
-            'default_value' =>    $c['defaultValue'],
-            'field' =>            $c['formField'],
-            'parameters' =>       $c['formFieldSpecial'],
-            'read_only' =>        $c['readOnly'],
-            'type' =>             $c['fieldType']
+            $data = array(
+                'access' =>           $c['access'],
+                'default_value' =>    $c['defaultValue'],
+                'field' =>            $c['formField'],
+                'parameters' =>       $c['formFieldSpecial'],
+                'read_only' =>        $c['readOnly'],
+                'type' =>             $c['fieldType']
             );
             $data_entries = array();
             switch ($c['fieldType']){
@@ -1016,11 +1014,9 @@ class Report_Form extends Report
                     $data['field'] =      'effective_time_end';
                     $data_entries[] =     $data;
                     break;
+                case 'json':
                 case 'fieldset_map_loc_lat_lon':
-                    $field_names = explode(',', $c['formField']);
-                    $data['type'] =       'text';
-                    $data['field'] =      $field_names[0];
-                    $data_entries[] =     $data;
+                    // Now only readonly
                     break;
                 case 'fieldset_name_email':
                     $field_names = explode(',', $c['formField']);

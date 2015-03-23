@@ -1,3 +1,5 @@
+  1.0.3 (2015-03-21)
+    1) Now extends Displayable_Item and has its own _draw_object_map_html_get_data() method to make maps work
   1.0.2 (2014-02-13)
     1) Refreshed fields list - now declared as a class constant
   1.0.1 (2013-11-12)

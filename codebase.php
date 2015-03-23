@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.8");
+define("CODEBASE_VERSION", "3.2.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,48 +16,72 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.8.2372 (2015-03-21)
+3.2.9.2373 (2015-03-22)
 Summary:
-  1) New report / form for Geocoding information which shows what google actually mapped against
-  2) Changed 'Survey Returned' to 'Date Member Verified' on Community Member form
-  3) Fixed version number on Component\ContentBlock
+  1) Community Members, Contacts, Events and Users forms / reports now show map_geocode_address fields
+     to show the address Google actually matched for the given input.
+  2) Added map_geocode_address fields to community_member, person and postings reports
 
 Final Checksums:
-  Classes     CS:220f60dc
-  Database    CS:c6d3209e
-  Libraries   CS:9829cb2d
-  Reports     CS:99aa1758
+  Classes     CS:a2f2b3ae
+  Database    CS:b3200e2
+  Libraries   CS:d55a13dd
+  Reports     CS:7c7e8e38
 
 Code Changes:
-  codebase.php                                                                                   3.2.8     (2015-03-21)
+  codebase.php                                                                                   3.2.9     (2015-03-22)
     1) Updated version information
+  classes/class.community_member.php                                                             1.0.106   (2015-03-22)
+    1) Added `office_map_geocode_address` and `service_map_geocode_address` to fields list
+    2) Community_Member::get_coords() now includes office_map_geocode_address and service_map_geocode_address
   classes/class.geocode_cache.php                                                                1.0.3     (2015-03-21)
-    1) Now extends Displayable_Item and has its own _draw_object_map_html_get_data() method to make maps work
-  classes/class.google_map.php                                                                   1.0.46    (2015-03-21)
-    1) Now writes matched_address into geocode_cache so we can see what got matched
-    2) References to class constants in Geocode_Cache now all uppercase, calls to methods are now camelCase
-    3) Now more PSR-2 compliant
-  classes/class.report_column.php                                                                1.0.127   (2015-03-21)
-    1 Added support for type 'json' in Report_Column::draw_form_field()
-  classes/class.report_column_report_field.php                                                   1.0.28    (2015-03-21)
-    1) Now gives map link as 'Map' if no value is actually given for the text
-    2) Now mainly PSR-2 Compliant
-  classes/component/contentblock.php                                                             1.0.1     (2015-03-17)
-    1) Moved from Component_Content_Block and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+    1) Now implements its own get_coords() that doesn't try to read the cache (whichof course is itself!)
+  classes/class.google_map.php                                                                   1.0.47    (2015-03-22)
+    1) Bug fix in Google_Map::find_geocode() to read correct field from cache for 'match_address'
+    2) New option in Google_Map::find_geocode() to ignore cache - used when performing lookups in
+       the geocode_cache form to prevent odd things from happening.
+  classes/class.person.php                                                                       1.0.124   (2015-03-22)
+    1) Added AMap_geocode_address and WMap_geocode_address to fields list
+    2) Person::get_coords() now includes map_geocode_address
+  classes/class.posting.php                                                                      1.0.121   (2015-03-22)
+    1) Added `map_geocode_address` to fields list
+    2) Posting::get_coords() now includes map_geocode_address
+  classes/class.report_column.php                                                                1.0.128   (2015-03-22)
+    1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
+       and have no bulk update options. Quality label also opens up map just like lat and lon already did.
+  classes/class.report_form.php                                                                  1.0.62    (2015-03-22)
+    1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
 
-2372.sql
-  1) Set version information
+2373.sql
+  1) Added `office_map_geocode_address` and `service_map_geocode_address` to `community_member` table
+     and new indices on geocodeID fields
+  2) Added `AMap_geocode_address` and `WMap_geocode_address` to `person` table and indices on geocodeIDs
+  3) Added `map_geocode_address` to `postings` table
+  4) Added primary key to geocode_cache table (can't believe I missed that!)
+  5) Update `community_member` records to include `office_map_geocode_address` and `service_map_geocode_address` data
+  6) Update `person` records to include `AMap_geocode_address` and `WMap_geocode_address` data
+  7) Update `postings` records to include `map_geocode_address` data
+  8) Changes to community_member form / report for new match_address fields
+  9) Changes to Contact form / report for new match_address fields
+ 10) Changes to Events form / report for new match_address fields
+ 11) Changes to Events Recurrences form / report for new match_address fields
+ 12) Changes to community.events form / report for new match_address fields
+ 13) Changes to community_member.events form / report for new match_address fields
+ 14) Changes to User form / report for new match_address fields
+ 15) Set version information
 
 Promote:
-  codebase.php                                        3.2.8
-  classes/  (5 files changed)
-    class.geocode_cache.php                           1.0.3     CS:e371642
-    class.google_map.php                              1.0.46    CS:9563bd91
-    class.report_column.php                           1.0.127   CS:9cfaf49c
-    class.report_column_report_field.php              1.0.28    CS:c365f6b0
-    component/contentblock.php                        1.0.1     CS:8dd0a4f5
-  images/icons.gif                                              CS:82900e83
+  codebase.php                                        3.2.9
+  classes/  (7 files changed)
+    class.community_member.php                        1.0.106   CS:1eb9e9b4
+    class.geocode_cache.php                           1.0.4     CS:4a7c0e63
+    class.google_map.php                              1.0.47    CS:bc49f821
+    class.person.php                                  1.0.124   CS:4a5c3273
+    class.posting.php                                 1.0.121   CS:28e31296
+    class.report_column.php                           1.0.128   CS:da5748e9
+    class.report_form.php                             1.0.62    CS:aebe3ffe
+
+
 
   4) Allow #easter to be used in place of #special on special events tab in community sites
 

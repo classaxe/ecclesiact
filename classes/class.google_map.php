@@ -1,11 +1,11 @@
 <?php
-define('VERSION_GOOGLE_MAP', '1.0.46');
+define('VERSION_GOOGLE_MAP', '1.0.47');
 /*
 Version History:
-  1.0.46 (2015-03-21)
-    1) Now writes matched_address into geocode_cache so we can see what got matched
-    2) References to class constants in Geocode_Cache now all uppercase, calls to methods are now camelCase
-    3) Now more PSR-2 compliant
+  1.0.47 (2015-03-22)
+    1) Bug fix in Google_Map::find_geocode() to read correct field from cache for 'match_address'
+    2) New option in Google_Map::find_geocode() to ignore cache - used when performing lookups in
+       the geocode_cache form to prevent odd things from happening. 
 
 */
 class Google_Map
@@ -395,7 +395,7 @@ class Google_Map
         die;
     }
 
-    public static function find_geocode($address)
+    public static function find_geocode($address, $noCache=false)
     {
         global $msg;
         if (trim($address)=='') {
@@ -407,64 +407,73 @@ class Google_Map
                 'error' =>                  '',
                 'match_address' =>          '',
                 'match_area' =>             '',
-                'match_type' =>             '',
                 'match_quality' =>          '',
-                'partial' =>                ''
+                'match_type' =>             '',
+                'output_json' =>            '',
+                'partial' =>                '',
+                'query_date' =>             ''
             );
         }
         if ($result = Google_Map::_get_geocode_test_literal($address)) {
             return $result;
         }
         $Obj_GC = new Geocode_Cache;
-        $cache = $Obj_GC->getCachedLocation($address);
-        if ($cache) {
-            $date = new DateTime('-'.Geocode_Cache::MAX_CACHE_AGE.' days');
-            if ($cache['query_date'] > $date->format('Y-m-d')) {
+        if (!$noCache) {
+            $cache = $Obj_GC->getCachedLocation($address);
+            if ($cache) {
+                $date = new DateTime('-'.Geocode_Cache::MAX_CACHE_AGE.' days');
+                if ($cache['query_date'] > $date->format('Y-m-d')) {
+                    return array(
+                        'ID' =>                 $cache['ID'],
+                        'lat' =>                $cache['output_lat'],
+                        'lon' =>                $cache['output_lon'],
+                        'code' =>               'cached',
+                        'error' =>              '',
+                        'match_address' =>      $cache['match_address'],
+                        'match_area' =>         $cache['match_area'],
+                        'match_type' =>         $cache['match_type'],
+                        'match_quality' =>      $cache['match_quality'],
+                        'output_json' =>        $cache['output_json'],
+                        'partial' =>            $cache['partial_match'],
+                        'query_date' =>         $cache['query_date']
+                    );
+                }
+                if ($Obj_GC->getDailyCount()>Geocode_Cache::QUERIES_PER_DAY) {
+                    return array(
+                        'ID' =>                 $cache['ID'],
+                        'lat' =>                $cache['output_lat'],
+                        'lon' =>                $cache['output_lon'],
+                        'code' =>               'old_result',
+                        'error' =>              '',
+                        'match_address' =>      $cache['match_address'],
+                        'match_area' =>         $cache['match_area'],
+                        'match_type' =>         $cache['match_type'],
+                        'match_quality' =>      $cache['match_quality'],
+                        'output_json' =>        $cache['output_json'],
+                        'partial' =>            $cache['partial_match'],
+                        'query_date' =>         $cache['query_date']
+                    );
+                }
+                $Obj_GC->_set_ID($cache['ID']);
+                $Obj_GC->delete();
+            }
+            if ($Obj_GC->getDailyCount()>=Geocode_Cache::QUERIES_PER_DAY) {
                 return array(
-                    'ID' =>                 $cache['ID'],
-                    'lat' =>                $cache['output_lat'],
-                    'lon' =>                $cache['output_lon'],
-                    'code' =>               'cached',
-                    'error' =>              '',
-                    'match_address' =>      $cache['output_address'],
-                    'match_area' =>         $cache['match_area'],
-                    'match_type' =>         $cache['match_type'],
-                    'match_quality' =>      $cache['match_quality'],
-                    'partial' =>            $cache['partial_match']
+                    'ID' =>                     '',
+                    'lat' =>                    '',
+                    'lon' =>                    '',
+                    'code' =>                   'OVER_DAILY_LIMIT',
+                    'error' =>
+                        'Lookup prevented - we are close to exceeding the maximum number of lookup per day',
+                    'match_address' =>          '',
+                    'match_area' =>             '',
+                    'match_quality' =>          '',
+                    'match_type' =>             '',
+                    'output_json' =>            '',
+                    'partial' =>                '',
+                    'query_date' =>             ''
                 );
             }
-            if ($Obj_GC->getDailyCount()>Geocode_Cache::QUERIES_PER_DAY) {
-                return array(
-                    'ID' =>                 $cache['ID'],
-                    'lat' =>                $cache['output_lat'],
-                    'lon' =>                $cache['output_lon'],
-                    'code' =>               'old_result',
-                    'error' =>              '',
-                    'match_address' =>      $cache['output_address'],
-                    'match_area' =>         $cache['match_area'],
-                    'match_type' =>         $cache['match_type'],
-                    'match_quality' =>      $cache['match_quality'],
-                    'match_address' =>      $cache['output_address'],
-                    'partial' =>            $cache['partial_match']
-                );
-            }
-            $Obj_GC->_set_ID($cache['ID']);
-            $Obj_GC->delete();
-        }
-        if ($Obj_GC->getDailyCount()>=Geocode_Cache::QUERIES_PER_DAY) {
-            return array(
-                'ID' =>                     '',
-                'lat' =>                    '',
-                'lon' =>                    '',
-                'code' =>                   'OVER_DAILY_LIMIT',
-                'error' =>
-                    'Lookup prevented - we are close to exceeding the maximum number of lookup per day',
-                'match_address' =>          '',
-                'match_area' =>             '',
-                'match_type' =>             '',
-                'match_quality' =>          '',
-                'partial' =>                ''
-            );
         }
         $url =
              "http://maps.googleapis.com/maps/api/geocode/json?address="
@@ -481,9 +490,11 @@ class Google_Map
                 'error' =>                  "Couldn't connect to server. Please try again later.",
                 'match_address' =>          '',
                 'match_area' =>             '',
-                'match_type' =>             '',
                 'match_quality' =>          '',
-                'partial' =>                ''
+                'match_type' =>             '',
+                'output_json' =>            '',
+                'partial' =>                '',
+                'query_date' =>             ''
             );
         }
   //    y($response);
@@ -497,9 +508,11 @@ class Google_Map
                     Google_Map::$status_text[trim($response['status'])]."<br />Address: ".$address,
                 'match_address' =>          '',
                 'match_area' =>             '',
-                'match_type' =>             '',
                 'match_quality' =>          '',
-                'partial' =>                ''
+                'match_type' =>             '',
+                'output_json' =>            '',
+                'partial' =>                '',
+                'query_date' =>             date('Y-m-d', time())
             );
         }
         if (count($response['results'])>1) {
@@ -528,9 +541,11 @@ class Google_Map
                 'error' =>                  $error,
                 'match_address' =>          '',
                 'match_area' =>             '',
-                'match_type' =>             '',
                 'match_quality' =>          '',
-                'partial' =>                ''
+                'match_type' =>             '',
+                'output_json' =>            '',
+                'partial' =>                '',
+                'query_date' =>             date('Y-m-d', time())
             );
         }
   //    y($response);
@@ -541,7 +556,7 @@ class Google_Map
         $match_type =       $response['results'][0]['geometry']['location_type'];
         $match_area =       0;
         $match_quality =    0;
-        $output_address =   $response['results'][0]['formatted_address'];
+        $match_address =    $response['results'][0]['formatted_address'];
         switch($match_type){
             case 'ROOFTOP':
                 $match_quality = 100;
@@ -561,32 +576,36 @@ class Google_Map
                 }
                 break;
         }
-        $data = array(
-            'systemID' =>             SYS_ID,
-            'input_address' =>        $Obj_GC->escape_string($address),
-            'output_json' =>          $Obj_GC->escape_string(serialize($response['results'][0])),
-            'output_lat' =>           $lat,
-            'output_lon' =>           $lon,
-            'partial_match' =>        $partial,
-            'match_address' =>        $output_address,
-            'match_area' =>           $match_area,
-            'match_type' =>           $match_type,
-            'match_quality' =>        $match_quality,
-            'query_date' =>           date('Y-m-d', time())
-        );
-        $ID = $Obj_GC->insert($data);
-        return array(
-            'ID' =>                   $ID,
+        $result = array(
             'lat' =>                  $lat,
             'lon' =>                  $lon,
             'code' =>                 'live',
             'error' =>                '',
-            'match_address' =>        $output_address,
+            'match_address' =>        $match_address,
             'match_area' =>           $match_area,
-            'match_type' =>           $match_type,
             'match_quality' =>        $match_quality,
-            'partial' =>              $partial
+            'match_type' =>           $match_type,
+            'output_json' =>          $Obj_GC->escape_string(serialize($response['results'][0])),
+            'partial' =>              $partial,
+            'query_date' =>           date('Y-m-d', time())
         );
+        if (!$noCache) {
+            $data = array(
+                'systemID' =>             SYS_ID,
+                'input_address' =>        $Obj_GC->escape_string($address),
+                'match_address' =>        $match_address,
+                'match_area' =>           $match_area,
+                'match_quality' =>        $match_quality,
+                'match_type' =>           $match_type,
+                'output_json' =>          $Obj_GC->escape_string(serialize($response['results'][0])),
+                'output_lat' =>           $lat,
+                'output_lon' =>           $lon,
+                'partial_match' =>        $partial,
+                'query_date' =>           date('Y-m-d', time())
+            );
+            $result['ID'] = $Obj_GC->insert($data);
+        }
+        return $result;
     }
 
     public static function get_bounds($records = array(), $prefix = '')
@@ -676,11 +695,13 @@ class Google_Map
             'lon' =>                    trim($a[1]),
             'code' =>                   '',
             'error' =>                  '',
-            'match_address' =>          0,
+            'match_address' =>          '',
             'match_area' =>             0,
-            'match_type' =>             'ACTUAL',
             'match_quality' =>          100,
-            'partial' =>                0
+            'match_type' =>             'ACTUAL',
+            'output_json' =>            '',
+            'partial' =>                0,
+            'query_date' =>             ''
         );
     }
 

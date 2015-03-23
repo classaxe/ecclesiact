@@ -1,23 +1,15 @@
 <?php
-define('VERSION_PERSON', '1.0.123');
+define('VERSION_PERSON', '1.0.124');
 /*
 Version History:
-  1.0.123 (2015-02-17)
-    1) Added support in Person::load_profile_fields() for new community-based fields:
-         Community_Name
-         Community_Title
-         Community_URL
-         Community_Member_ID
-         Community_Member_Name
-         Community_Member_Title
-         Community_Member_Image
-         Community_Member_URL
+  1.0.124 (2015-03-22)
+    1) Added AMap_geocode_address and WMap_geocode_address to fields list
+    2) Person::get_coords() now includes map_geocode_address
 
-  (Older version history in class.person.txt)
 */
 class Person extends Displayable_Item
 {
-    const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_address, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_address, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
     {
@@ -1491,6 +1483,7 @@ class Person extends Displayable_Item
         foreach ($prefixes as $p) {
             $geocode = parent::get_coords($this->get_field($p.'location'));
             $result[$p.'geocodeID'] =           $geocode['ID'];
+            $result[$p.'geocode_address'] =     $geocode['match_address'];
             $result[$p.'geocode_area'] =        $geocode['match_area'];
             $result[$p.'geocode_type'] =        $geocode['match_type'];
             $result[$p.'geocode_quality'] =     $geocode['match_quality'];
