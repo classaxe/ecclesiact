@@ -9,7 +9,7 @@ class lst_persontitle extends lst_named_type{
   function __construct($ID="") {
     parent::__construct($ID, 'lst_persontitle','Person Title');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_PERSONTITLE;
   }
 }

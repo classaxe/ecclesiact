@@ -1,3 +1,6 @@
+  1.0.13 (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
   1.0.12 (2013-06-13)
     1) Base::_get_args() now configurable to NOT raise errors if unexpected
        arguments are encountered

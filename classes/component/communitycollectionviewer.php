@@ -18,7 +18,7 @@ class CommunityCollectionViewer extends CollectionViewer
         $this->_cm_podcastalbum =   'podcastalbum';
     }
 
-    public function getversion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_COMMUNITY_COLLECTION_VIEWER;
     }

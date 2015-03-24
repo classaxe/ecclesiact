@@ -129,7 +129,7 @@ class Uploader extends Record {
     return array('status'=>'100', 'message'=>'Continue');
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_UPLOADER;
   }
 }

@@ -1,3 +1,6 @@
+  1.0.85 (2015-01-04)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in Report::draw_form_view()
+    2) Now PSR-2 Compliant
   1.0.84 (2014-06-22)
     1) New features added to Report::REPORT_FEATURES for email CASL compliance:
          selected_set_email_opt_in and selected_set_email_opt_out

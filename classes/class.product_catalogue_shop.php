@@ -119,7 +119,7 @@ class Product_Catalogue_Shop extends Product_Catalogue {
     return $Obj_PGC->get_all_for_grouping($groupingID, $filtered);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PRODUCT_CATALOGUE_SHOP;
   }
 }

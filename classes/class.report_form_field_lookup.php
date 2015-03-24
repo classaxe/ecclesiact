@@ -228,7 +228,7 @@ class Report_Form_Field_Lookup extends Report_Column {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_FORM_FIELD_LOOKUP;
   }
 }

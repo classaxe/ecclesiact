@@ -1,10 +1,12 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.45');
+define('VERSION_SYSTEM_HEALTH', '1.0.46');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.45 (2015-03-15)
-    1) Now lists any deleted classes in code documentation
+  1.0.46 (2015-03-23)
+    1) System_Health::_getConfigClasses() now only looks for getVersion() and not get_version() as before
+       Call is also static and no longer requires checked classes to be instantiated, saving about 1MB of memory
+    2) Method get_version() renamed to getVersion() and made static
 
   (Older version history in class.system_health.txt)
 */
@@ -1039,8 +1041,7 @@ class System_Health extends System
             $ext_arr =          explode(".", $entry);
             $ext =              array_pop($ext_arr);
             $class =            str_replace('/', '\\', array_pop($ext_arr));
-            $Obj =              new $class;
-            $version =          (method_exists($Obj, 'get_version') ? $Obj->get_version() : $Obj->getVersion());
+            $version =          $class::getVersion();
             $file =             file_get_contents(SYS_CLASSES.$entry);
             $size =             number_format(strlen($file));
 
@@ -1557,7 +1558,7 @@ class System_Health extends System
         return $cs_arr;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_SYSTEM_HEALTH;
     }

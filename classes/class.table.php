@@ -78,7 +78,7 @@ class Table extends Record{
     return false;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_TABLE;
   }
 }

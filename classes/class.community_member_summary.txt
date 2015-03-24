@@ -1,3 +1,5 @@
+  1.0.19 (2015-02-20)
+    1) Added new Fax number
   1.0.18 (2015-02-17)
     1) Updated Community_Member_Summary::_draw_page_header() with new phone number
     2) Now presents all fields (including ones normally only visible to administrator) provided that an HTTP

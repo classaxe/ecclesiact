@@ -12,7 +12,7 @@ class PDF {
     include_once(SYS_CLASSES.'class.cpdf.php');
     include_once(SYS_CLASSES.'class.cezpdf.php');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PDF;
   }
 }

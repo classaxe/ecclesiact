@@ -13,7 +13,7 @@ class DTD extends Record {
     die();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_DTD;
   }
 

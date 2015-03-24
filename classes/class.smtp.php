@@ -817,7 +817,7 @@ class SMTP {
     return $data;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SMTP;
   }
 

@@ -111,7 +111,7 @@ class Scheduled_Task extends Record{
     return parent::try_copy($newID,$msg,$msg_tooltip);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SCHEDULED_TASK;
   }
 }

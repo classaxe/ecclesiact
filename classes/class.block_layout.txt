@@ -1,3 +1,6 @@
+  1.0.61 (2014-11-27)
+    1) BL tag for BL_link() where the links_switch_video cp feature is enabled now sets
+       the rel=0 flag to prevent related content from showing.
   1.0.60 (2014-06-07)
     1) Changes to these block layout tags to enable manual setting for time and date format:
        BL_date($format=false)

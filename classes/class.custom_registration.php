@@ -63,7 +63,7 @@ class Custom_Registration extends Posting {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CUSTOM_REGISTRATION;
   }
 }

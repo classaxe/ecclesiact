@@ -93,7 +93,7 @@ class Product_Catalogue_Credit_Memo extends Product_Catalogue {
       ."</div>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PRODUCT_CATALOGUE_CREDIT_MEMO;
   }
 }

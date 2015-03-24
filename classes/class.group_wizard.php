@@ -425,7 +425,7 @@ class Group_Wizard extends Group{
     $this->_filterValue =       get_var('filterValue')=='(Search for ...)' ? '' : get_var('filterValue');
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GROUP_WIZARD;
   }
 }

@@ -589,7 +589,7 @@ class CalendarLarge extends Base
             ."</div>";
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CALENDAR_LARGE;
     }

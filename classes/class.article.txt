@@ -1,3 +1,6 @@
+  1.0.38 (2015-02-06)
+    1) CP for listings 'results_order' now allows for date_a, date_d_name_a and date_d_title_a
+    2) Now PSR-2 Compliant
   1.0.37 (2013-07-31)
     1) Provided default sizes for thumbnail images in listings and details mode
   1.0.36 (2013-06-07)

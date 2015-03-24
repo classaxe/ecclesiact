@@ -123,7 +123,7 @@ class AdminPersonLookup extends Base
         $this->setupLoadUserRights();
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_ADMIN_PERSON_LOOKUP;
     }

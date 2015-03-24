@@ -16,7 +16,7 @@ class Prayer_Request extends Posting
         $this->_set_message_associated('');
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PRAYER_REQUEST;
     }

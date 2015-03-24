@@ -593,7 +593,7 @@ class Person_merge_profiles extends Person
         $this->_Obj_t =                     new Person($this->_targetID);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PERSON_MERGE_PROFILES;
     }

@@ -1296,7 +1296,7 @@ class Report_Form extends Report
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_REPORT_FORM;
     }

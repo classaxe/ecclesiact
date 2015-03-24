@@ -355,7 +355,7 @@ class Register_Event extends Record {
     return mailto($data);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REGISTER_EVENT;
   }
 }

@@ -137,7 +137,7 @@ class CalendarSmall extends Base
             ." style='".($this->_cp['width'] ? "width:".$this->_cp['width']."px" : "xheight:1%")."'></div>";
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CALENDAR_SMALL;
     }

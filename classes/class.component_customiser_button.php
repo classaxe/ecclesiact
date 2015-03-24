@@ -1,12 +1,9 @@
 <?php
-define("VERSION_COMPONENT_CUSTOMISER_BUTTON", "1.0.1");
+define("VERSION_COMPONENT_CUSTOMISER_BUTTON", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-01-02)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Component_Customiser_Button::save()
-    2) Now PSR-2 Compliant
-  1.0.0 (2014-11-15)
-    1) Initial release - for AOJ facelift planning
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 class Component_Customiser_Button extends Component_Base
@@ -104,7 +101,7 @@ class Component_Customiser_Button extends Component_Base
         );
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_CUSTOMISER_BUTTON;
     }

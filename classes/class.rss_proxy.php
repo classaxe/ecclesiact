@@ -92,7 +92,7 @@ class RSS_Proxy {
     }
     return $sFile;
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_RSS_PROXY;
   }
 }

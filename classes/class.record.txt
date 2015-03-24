@@ -1,3 +1,6 @@
+  1.0.89 (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
   1.0.88 (2015-02-17)
     1) Typo for error message in Record::update() for warning about validating without fields
   1.0.87 (2015-01-01)

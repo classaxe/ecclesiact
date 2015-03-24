@@ -386,7 +386,7 @@ class ComboTabber extends Base
         $this->_selected_section = $this->_tabs[0]['ID'];
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_COMBO_TABBER;
     }

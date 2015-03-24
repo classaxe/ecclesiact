@@ -221,7 +221,7 @@ class Component_Persons_Listing extends Component_Base {
     $this->_records = $Obj_Person->get_records_for_sql($sql);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_PERSONS_LISTING;
   }
 }

@@ -1,3 +1,5 @@
+  1.0.6 (2015-03-15)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
   1.0.5 (2015-01-31)
     1) Community_Member_Resource::_draw_rss() bug fix - now includes member name in RSS feed title
     2) Community_Member_Resource::_draw_rss() removed redundant 'limit' argument - this is handled by RSS class itself

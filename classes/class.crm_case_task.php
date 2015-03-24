@@ -135,7 +135,7 @@ class CRM_Case_task extends Record {
       }
     }
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CRM_CASE_TASK;
   }
 }

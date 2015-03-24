@@ -54,7 +54,7 @@ class Sponsorship_Plan extends Gallery_Album {
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return SPONSORSHIP_PLAN_VERSION;
   }
 }

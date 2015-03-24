@@ -1451,7 +1451,7 @@ class System extends Record
         return $Obj->page;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_SYSTEM;
     }

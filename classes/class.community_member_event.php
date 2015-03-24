@@ -1,15 +1,10 @@
 <?php
-define('COMMUNITY_MEMBER_EVENT_VERSION','1.0.2');
-/*
-Custom Fields used:
-custom_1 = denomination (must be as used in other SQL-based controls)
-*/
+define('COMMUNITY_MEMBER_EVENT_VERSION','1.0.3');
 /*
 Version History:
-  1.0.2 (2013-12-14)
-    1) Added override for report form to use for 'Add New...' icon
+  1.0.3 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community_member_event.txt)
 */
 
 class Community_Member_Event extends Event{
@@ -58,7 +53,7 @@ class Community_Member_Event extends Event{
     return draw_auto_report('community_member.event_recurrences',1);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return COMMUNITY_MEMBER_EVENT_VERSION;
   }
 }

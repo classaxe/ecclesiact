@@ -65,7 +65,7 @@ class Push_Product extends Product {
        ."  `seq`,`text`";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PUSH_PRODUCT;
   }
 }

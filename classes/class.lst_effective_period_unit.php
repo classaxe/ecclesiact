@@ -10,7 +10,7 @@ class lst_effective_period_unit extends lst_named_type{
   function __construct($ID="") {
     parent::__construct($ID, 'lst_effective_period_unit','Effective Period Unit');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_EFFECTIVE_PERIOD_UNIT;
   }
 }

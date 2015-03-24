@@ -44,7 +44,7 @@ class Component_Video_Player extends Component_Base {
   }
 
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_VIDEO_PLAYER;
   }
 }

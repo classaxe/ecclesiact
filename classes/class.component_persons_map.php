@@ -114,7 +114,7 @@ class Component_Persons_Map extends Component_Base {
     $_POST['maximize'] =    $this->_cp['maximize'];
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_PERSONS_MAP;
   }
 }

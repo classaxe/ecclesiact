@@ -1,17 +1,10 @@
 <?php
-define('VERSION_CATEGORY_ASSIGN','1.0.4');
+define('VERSION_CATEGORY_ASSIGN','1.0.5');
 /*
 Version History:
-  1.0.4 (2011-11-18)
-    1) Category_Assign::delete_for_assignment() now uses method to get table name
-  1.0.3 (2011-05-18)
-    1) Slight tidy up of Category_Assign::set_for_assignment()
-  1.0.2 (2010-10-19)
-    1) Cagetory_Assign::set_for_assignment() now calls insert() methods
-  1.0.1 (2010-10-04)
-    1) Changes to setter and getter names for parent-based object properties
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Category_Assign extends Record {
   function __construct($ID=""){
@@ -53,7 +46,7 @@ class Category_Assign extends Record {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CATEGORY_ASSIGN;
   }
 }

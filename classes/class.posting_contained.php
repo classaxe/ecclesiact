@@ -385,7 +385,7 @@ class Posting_Contained extends Posting
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_POSTING_CONTAINED;
     }

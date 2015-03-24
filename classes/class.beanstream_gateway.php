@@ -1,13 +1,11 @@
 <?php
-define('VERSION_BEANSTREAM_GATEWAY','1.0.4');
+define('VERSION_BEANSTREAM_GATEWAY','1.0.5');
 
 /*
 Version History:
-  1.0.4 (2014-01-06)
-    1) Beanstream_Gateway::_setup_get_customer_name() now uses User class to
-       load name of customer - contacts cannot place orders
+  1.0.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.beanstream_gateway.txt)
 */
 
 class Beanstream_Gateway {
@@ -237,7 +235,7 @@ class Beanstream_Gateway {
       .$Obj_User->record['NLast'];
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BEANSTREAM_GATEWAY;
   }
 }

@@ -71,7 +71,7 @@ class Component_Prayer_Request extends Component_Base
         return $this->_html;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_PRAYER_REQUEST;
     }

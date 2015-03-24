@@ -128,7 +128,7 @@ class gwSocket{
     }
     return $hdr;
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GWSOCKET;
   }
 }

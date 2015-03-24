@@ -1,21 +1,9 @@
 <?php
-define ("VERSION_CART","1.0.5");
+define ("VERSION_CART","1.0.6");
 /*
 Version History:
-  1.0.5 (2013-05-19)
-    1) Tweak to Cart::get_items) to prevent inclusion of any item with no productID
-  1.0.4 (2011-12-15)
-    1) Added
-  1.0.3 (2011-12-13)
-    1) Added static function Cart::draw_cart_controls()
-  1.0.2 (2011-08-31)
-    1) Cart items now handled as an array
-  1.0.1 (2011-08-19)
-    1) Added a whole whack of methods for handling cart items, pending items
-       (to allow repopulation after a cancellation at the gateway) and
-       pending order numbers (to allow an order to be deleted if cancelled)
-  1.0.0 (2011-08-15)
-    1) Initial release - this class will take care of all cart operations
+  1.0.6 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -191,7 +179,7 @@ class Cart {
     print "";die();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CART;
   }
 }

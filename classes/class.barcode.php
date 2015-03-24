@@ -1,16 +1,10 @@
 <?php
-define ("VERSION_BARCODE","1.0.3");
+define ("VERSION_BARCODE","1.0.4");
 /*
 Version History:
-  1.0.3 (2011-08-04)
-    1) Tweak to BarCode::_generateImage() to use Image_Factory::allocateColor()
-    2) Removed BarCode::allocateColor()
-  1.0.2 (2009-11-16)
-    1) Replace ereg() and eregi() with preg_match() for php 5.3+
-  1.0.1 (2009-07-02)
-    Changes to allow for dynamic include of barcode class and to add get_version()
-  1.0.0 (2009-06-12)
-    Initial release
+  1.0.4 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 
 class BarCode {
@@ -178,7 +172,7 @@ class BarCode {
     return $this->_generateImage($bars['text'],$bars['bars']);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BARCODE;
   }
 }

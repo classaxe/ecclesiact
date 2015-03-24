@@ -1,3 +1,6 @@
+  1.0.6 (2014-01-06)
+    1) Chasepaymentech_Gateway::payment() now uses User class to get details of
+       person placing order - Contacts cannot place orders
   1.0.5 (2013-09-28)
     1) Bug fix for Chasepaymentech_Gateway::notify() -
        one of the log statements was missing an argument

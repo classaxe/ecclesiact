@@ -9,7 +9,7 @@ class lst_product_type extends lst_named_type{
   function __construct($ID="") {
     parent::__construct($ID, 'lst_product_type','Product Type');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_PRODUCT_TYPE;
   }
 }

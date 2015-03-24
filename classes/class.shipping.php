@@ -139,7 +139,7 @@ class Shipping extends Record {
       break;
     }
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SHIPPING;
   }
 }

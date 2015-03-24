@@ -9,7 +9,7 @@ class lst_language extends lst_named_type{
   function __construct($ID="") {
     parent::__construct($ID, 'lst_language','Language Code (ISO639-3)');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_LANGUAGE;
   }
 }

@@ -1,3 +1,5 @@
+  1.0.18 (2014-02-17)
+    1) Refreshed fields list - now statically declared in class definition
   1.0.17 (2013-08-16)
     1) Activity::get_n_per_activity() now respects publish date, active to date
        and enabled flag where available

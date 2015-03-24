@@ -19,7 +19,7 @@ class Report_Column_Type extends lst_named_type {
     // Supports rename
     return parent::try_copy($newID,$msg,$msg_tooltip,$name,true);
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_COLUMN_TYPE;
   }
 }

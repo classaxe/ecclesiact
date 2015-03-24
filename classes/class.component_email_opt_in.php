@@ -101,7 +101,7 @@ class Component_Email_Opt_In extends Component_Base {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_EMAIL_OPT_IN;
   }
 }

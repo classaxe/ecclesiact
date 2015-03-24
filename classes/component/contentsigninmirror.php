@@ -52,7 +52,7 @@ class ContentSigninMirror extends \Component_Base
         $this->content = $content;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CONTENT_SIGNIN_MIRROR;
     }

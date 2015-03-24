@@ -64,7 +64,7 @@ class Component_GC_Weather extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_GC_WEATHER;
   }
 }

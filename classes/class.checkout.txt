@@ -1,3 +1,5 @@
+  1.0.43 (2014-02-06)
+    1) Now invokes Report_Form_Field_Lookup class to handle Ajax lookup
   1.0.42 (2014-01-06)
     1) Checkout::_do_submode_payment_create_person() now renamed to
        Checkout::_do_submode_payment_create_user() and uses User class to create

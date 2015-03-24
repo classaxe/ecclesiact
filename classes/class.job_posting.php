@@ -70,7 +70,7 @@ class Job_Posting extends Posting {
       'title_show' =>               array('match' => 'enum|0,1',        'default' => '1',               'hint' => '0|1')
     );
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_JOB_POSTING;
   }
 }

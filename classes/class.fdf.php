@@ -55,7 +55,7 @@ class FDF {
       .'</xfdf>'."\n";
     return implode('',$out);
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_FDF;
   }
 }

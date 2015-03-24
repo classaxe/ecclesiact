@@ -1,12 +1,10 @@
 <?php
-define('VERSION_BUGTRACKER','1.0.6');
+define('VERSION_BUGTRACKER','1.0.7');
 /*
 Version History:
-  1.0.6 (2012-11-28)
-    1) BugTracker::draw_form() now uses System::get_item_version() not
-       System::get_version() as before
+  1.0.7 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.bug_tracker.txt)
 */
 class BugTracker{
   private $url =        "";
@@ -225,7 +223,7 @@ class BugTracker{
     return $html;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BUGTRACKER;
   }
 }

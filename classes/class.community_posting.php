@@ -1,21 +1,13 @@
 <?php
-define('COMMUNITY_POSTING_VERSION','1.0.4');
+define('COMMUNITY_POSTING_VERSION','1.0.5');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.4 (2014-01-21)
-    1) Changes to Community_Posting::_get_records_get_sql() to include items
-       assigned to this community and not to any specific community member
-       to allow generic community postings (e.g. Prayer Breakfasts) even  if there
-       isn't a ministerial to represent them
-    2) Changes to
-         Community_Posting::BL_shared_source_link()
-         Community_Posting::BL_mini_shared_source_link
-       to display Community Name if posting isn't assigned to a specific member
+  1.0.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community_posting.txt)
 */
 
 
@@ -127,7 +119,7 @@ class Community_Posting extends Posting{
      .$href
      .str_replace('& ','&amp; ',$shortform)."</a></div>";
   }
-  public function get_version(){
+  public static function getVersion(){
     return COMMUNITY_POSTING_VERSION;
   }
 }

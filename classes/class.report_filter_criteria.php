@@ -17,7 +17,7 @@ class Report_Filter_Criteria extends Record {
     $this->_set_has_groups(true);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_Report_Filter_Criteria;
   }
 }

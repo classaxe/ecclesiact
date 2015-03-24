@@ -2570,7 +2570,7 @@ class Person extends Displayable_Item
         return $Obj->draw_form_view('user', $this->_get_ID(), true, true);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PERSON;
     }

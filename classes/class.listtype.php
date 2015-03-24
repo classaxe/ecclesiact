@@ -180,7 +180,7 @@ class Listtype extends Record {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LISTTYPE;
   }
 }

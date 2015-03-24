@@ -1,14 +1,11 @@
 <?php
-define('VERSION_DISPLAYABLE_ITEM', '1.0.151');
+define('VERSION_DISPLAYABLE_ITEM', '1.0.152');
 /*
 Version History:
-  1.0.151 (2014-01-31)
-    1) Changes to internally used parameters in Displayable_Item::_draw_listings_load_records():
-         Old: limit,            order_by
-         New: results_limit,    results_order
-    2) Now PSR-2 Compliant
+  1.0.152 (2015-03-23)
+    1) Now uses namespaced \Map\GoogleMap class in place of Google_Map
+    2) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.displayable_item.txt)
 */
 class Displayable_Item extends Block_Layout
 {
@@ -1424,13 +1421,22 @@ class Displayable_Item extends Block_Layout
         return $out;
     }
 
-    public function draw_object_map_html($ident = false)
+    public function draw_object_map_html($ident = false){
+        return $this->drawObjectMapHtml($ident);
+    }
+
+    public function drawObjectMapHtml($ident = false)
     {
         $this->_ident = ($ident ? $ident : $this->_get_type());
         $this->_draw_object_map_html_setup();
         foreach ($this->_ID_arr as $ID) {
             $this->_set_ID($ID);
-            $this->_draw_object_map_html_get_data();
+            if (method_exists($this, 'drawObjectMapHtmlGetData')) {
+                $this->drawObjectMapHtmlGetData();
+            }
+            elseif (method_exists($this, '_draw_object_map_html_get_data')) {
+                $this->_draw_object_map_html_get_data();
+            }
         }
         $this->_draw_object_map_html_sort_data();
         if (!count($this->_data_items)) {
@@ -1445,17 +1451,17 @@ class Displayable_Item extends Block_Layout
         }
         $this->_draw_object_map_html_get_range();
         if ($this->_range) {
-            $this->_Obj_Map->map_zoom_to_fit($this->_range);
-            $this->_Obj_Map->add_control_scale();
+            $this->_Obj_Map->mapZoomToFit($this->_range);
+            $this->_Obj_Map->addControlScale();
         } else {
-            $this->_Obj_Map->map_centre(
+            $this->_Obj_Map->mapCentre(
                 $this->_data_items[0]['map_lat'],
                 $this->_data_items[0]['map_lon'],
                 $this->_default_zoom
             );
         }
-        $this->_Obj_Map->add_control_type();
-        $this->_Obj_Map->add_control_large();
+        $this->_Obj_Map->addControlType();
+        $this->_Obj_Map->addControlLarge();
         $this->_draw_object_map_html_draw_map_points();
         $this->_draw_object_map_html_draw_frame_open();
         $this->_draw_object_map_html_draw_map();
@@ -1542,7 +1548,7 @@ class Displayable_Item extends Block_Layout
             $circle_line_opacity =    0.6;
             $circle_fill_color =      '#808080';
             $circle_fill_opacity =    0.2;
-            $this->_Obj_Map->add_marker_with_html(
+            $this->_Obj_Map->addMarkerWithHtml(
                 $item['map_lat'],
                 $item['map_lon'],
                 str_replace(
@@ -1597,7 +1603,7 @@ class Displayable_Item extends Block_Layout
 
     protected function _draw_object_map_html_setup()
     {
-        $this->_Obj_Map =           new Google_Map($this->_ident, SYS_ID);
+        $this->_Obj_Map =           new \Map\GoogleMap($this->_ident, SYS_ID);
         $this->_data_items =        array();
         $this->_default_zoom =      14;
         $this->_ID_arr =            explode(',', sanitize('ID', get_var('ID')));
@@ -2097,7 +2103,7 @@ class Displayable_Item extends Block_Layout
         return false;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_DISPLAYABLE_ITEM;
     }

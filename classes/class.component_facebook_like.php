@@ -65,7 +65,7 @@ class Component_Facebook_Like extends Component_Base {
     $this->_html.= "<div id=\"fb_like\" class=\"fb-like\"></div>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_FACEBOOK_LIKE;
   }
 }

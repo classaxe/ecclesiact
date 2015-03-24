@@ -1,3 +1,8 @@
+  1.1.9 (2012-12-03)
+    1) Backup::db_backup() now uses time() not mktime() as per strict standards
+       compliance
+  1.1.8 (2012-09-14)
+    1) Backup::db_export_sql_data() now uses Table::do_sql_query() to use UTF8
   1.1.7 (2012-09-10)
     1) Backup::db_export_sql_query() and Backup::db_export_sql_data() now use
        Record:get_rows_for_sql(), not deprecated function Record::get_arrays_for_sql()

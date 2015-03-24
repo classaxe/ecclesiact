@@ -138,7 +138,7 @@ class Report_Column_Download_PDF extends Report_Column {
     $this->_pdf_filepath =     ".".BASE_PATH."UserFiles/".$this->_pdf_filename;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_COLUMN_DOWNLOAD_PDF;
   }
 }

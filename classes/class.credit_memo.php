@@ -204,7 +204,7 @@ class Credit_Memo extends Order {
     return parent::sql_export($targetID,$show_fields,$header,'',$extra_delete,$extra_select);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CREDIT_MEMO;
   }
 }

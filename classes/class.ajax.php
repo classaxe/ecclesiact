@@ -1,5 +1,5 @@
 <?php
-define('VERSION_AJAX','1.0.23');
+define('VERSION_AJAX','1.0.24');
 /*
 http://laptop.cicbv.ca/ajax/?rs=serve_lookup_report&rst=&rsrnd=12342c424&rsargs[]=1933367189&rsargs[]=%60PUsername%60&rsargs[]=3&rsargs[]=an
 http://laptop.cicbv.ca/ajax/?rs=serve_config&rsrnd=12342c424&rsargs[]=http://www.ecclesiact.com
@@ -8,10 +8,9 @@ http://testportal.auroraonline.com/cicbv/ajax/?rs=serve_lookup_report&rst=&rsrnd
 
 
 Version History:
-  1.0.23 (2014-03-18)
-    1) Ajax::get_report() now accepts
+  1.0.24 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.ajax.txt)
 */
 class Ajax {
   static $control_num = 1;
@@ -417,7 +416,7 @@ class Ajax {
     return $Obj->get_shipping($method,$data,unserialize($cp));
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_AJAX;
   }
 }

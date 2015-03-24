@@ -117,7 +117,7 @@ class Component_Shop extends Component_Base {
 
 
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SHOP;
   }
 }

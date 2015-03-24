@@ -433,7 +433,7 @@ class Report_Filter extends Record {
     return parent::sql_export($targetID,$show_fields,$header,$orderBy,$extra_delete,$extra_select);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_FILTER;
   }
 }

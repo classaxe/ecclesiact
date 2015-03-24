@@ -655,7 +655,7 @@ class DropLib extends DropLib_Base{
 
 	}
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_DROPLIB;
   }
 }

@@ -436,7 +436,7 @@ class Component_Event_Registration extends Component_Base {
     $this->_Obj_Register_Event =    new Register_Event;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_EVENT_REGISTRATION;
   }
 

@@ -102,7 +102,7 @@ class Component_Sitemap extends Component_Base {
       .str_repeat("  ",$depth-1)."</ul>\n";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SITEMAP;
   }
 }

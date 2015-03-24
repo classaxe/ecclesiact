@@ -435,7 +435,7 @@ class Report_Config extends Report {
     return $records;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_CONFIG;
   }
 }

@@ -63,7 +63,7 @@ class Extended_Community extends Community{
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return COMPONENT_EXTENDED_COMMUNITY_VERSION;
   }
 

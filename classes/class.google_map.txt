@@ -1,3 +1,7 @@
+  1.0.47 (2015-03-22)
+    1) Bug fix in Google_Map::find_geocode() to read correct field from cache for 'match_address'
+    2) New option in Google_Map::find_geocode() to ignore cache - used when performing lookups in
+       the geocode_cache form to prevent odd things from happening.
   1.0.46 (2015-03-21)
     1) Now writes matched_address into geocode_cache so we can see what got matched
     2) References to class constants in Geocode_Cache now all uppercase, calls to methods are now camelCase

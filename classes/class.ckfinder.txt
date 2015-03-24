@@ -1,0 +1,13 @@
+  1.0.5 (2011-11-25)
+    1) Added .mp4, .m4v, .f4v, .mov  to list of acceptable video files
+  1.0.4 (2011-07-28)
+    1) Now chmods new folders as 777 - was 755 earlier
+  1.0.3 (2011-05-09)
+    1) Added doc, pdf and image types to Media files list
+  1.0.2 (2010-12-03)
+    1) Now allows .gif and .png images to be uploaded to video folder
+       (for use as preview images)
+  1.0.1 (2010-11-19)
+    1) Now creates Video folder
+  1.0.0 (2009-09-01)
+    Initial release - this is so I never have to set these in doc root again!

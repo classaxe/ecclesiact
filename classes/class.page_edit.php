@@ -799,7 +799,7 @@ class Page_Edit extends Page
         return $out;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PAGE_EDIT;
     }

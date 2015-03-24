@@ -33,7 +33,7 @@ class Component_Search_Tag_Cloud extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SEARCH_TAG_CLOUD;
   }
 }

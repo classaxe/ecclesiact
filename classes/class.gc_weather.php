@@ -109,7 +109,7 @@ class GC_Weather{
       ."<br style='clear:both;' />";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GC_WEATHER;
   }
 }

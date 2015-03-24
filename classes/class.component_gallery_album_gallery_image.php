@@ -37,7 +37,7 @@ class Component_Gallery_Album_Gallery_Image extends Gallery_Image {
       ."<input type='button' onclick=\"document.location='".$next."'\" value=\"Next\" />";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GALLERY_ALBUM_GALLERY_IMAGE;
   }
 }

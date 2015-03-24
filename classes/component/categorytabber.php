@@ -355,7 +355,7 @@ class CategoryTabber extends Base
     }
 
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_NS_CATEGORY_TABBER;
     }

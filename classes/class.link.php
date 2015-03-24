@@ -215,7 +215,7 @@ class Link extends Posting_Container {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LINK;
   }
 }

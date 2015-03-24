@@ -1,17 +1,10 @@
 <?php
-define('COMMUNITY_MEMBER_POSTING_VERSION','1.0.3');
-/*
-Custom Fields used:
-custom_1 = denomination (must be as used in other SQL-based controls)
-*/
+define('COMMUNITY_MEMBER_POSTING_VERSION','1.0.4');
 /*
 Version History:
-  1.0.3 (2014-03-27)
-    1) Community_Member_Posting::BL_shared_source_link() and
-       Community_Member_Posting::BL_mini_shared_source_link() now use new
-       community_url preperty when absolutising shared link hrefs
+  1.0.4 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community_member_posting.txt)
 */
 
 class Community_Member_Posting extends Posting{
@@ -89,7 +82,7 @@ class Community_Member_Posting extends Posting{
      .$href.$Obj->record['member_title']."</a>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return COMMUNITY_MEMBER_POSTING_VERSION;
   }
 }

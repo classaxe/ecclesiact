@@ -215,7 +215,7 @@ class Component_Email_To_Friend extends Component_Base {
       }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_EMAIL_TO_FRIEND;
   }
 }

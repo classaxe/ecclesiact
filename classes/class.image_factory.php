@@ -344,7 +344,7 @@ class Image_Factory {
       break;
     }
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_IMAGE_FACTORY;
   }
 }

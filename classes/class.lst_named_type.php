@@ -85,7 +85,7 @@ class lst_named_type extends Record {
     return parent::try_copy($newID,$msg,$msg_tooltip,false);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_NAMED_TYPE;
   }
 }

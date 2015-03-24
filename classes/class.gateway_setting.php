@@ -80,7 +80,7 @@ class Gateway_Setting extends Record{
     return $this->get_field_for_sql($sql);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GATEWAY_SETTING;
   }
 }

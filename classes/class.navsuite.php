@@ -908,7 +908,7 @@ class Navsuite extends Record {
     return false;  // no loop
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_NAVSUITE;
   }
 }

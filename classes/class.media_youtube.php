@@ -29,7 +29,7 @@ class Media_Youtube{
       .">Embedded Content</a>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_MEDIA_YOUTUBE;
   }
 }

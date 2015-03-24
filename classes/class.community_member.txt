@@ -1,3 +1,6 @@
+  1.0.106 (2015-03-22)
+    1) Added `office_map_geocode_address` and `service_map_geocode_address` to fields list
+    2) Community_Member::get_coords() now includes office_map_geocode_address and service_map_geocode_address
   1.0.105 (2015-01-01)
     1) Now uses OPTION_SEPARATOR constant not option_separator in Community_Member::set_up_member_page_vars()
     2) Class Constants DASHBOARD_WIDTH and DASHBOARD_HEIGHT now uppercase (PSR-2 requirement)

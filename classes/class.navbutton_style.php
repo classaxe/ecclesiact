@@ -93,7 +93,7 @@ class Navbutton_Style extends Record {
     return $Obj_Navbutton_Image->draw($data,$filename,$no_show,$navstyleID);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_NAVBUTTON_STYLE;
   }
 }

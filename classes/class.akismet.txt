@@ -1,0 +1,13 @@
+  0.41.e (2010-09-30)
+    1) Changes to Akismet::isKeyValid() to return pass or fail for key tests
+  0.41.d (2009-07-05)
+    1) Renamed file class.akismet.php, moved to classes folder and added get_version()
+  0.41.c (2008-06-27)
+    1) Change to submitHam() and submitSpam() to return message from Akismet
+  0.41.b (2008-05-16)
+    1) Change to Akismet::isKeyValid() to better handle no valid response
+  0.41 (2008-05-13)
+    1) Version number set in file head for build management
+    2) SocketWriteRead::send() no longer throws error but returns false
+    3) Akismet::isKeyValid() returns -1 if connection failure
+  0.4  (Initial release)

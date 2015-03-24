@@ -1,9 +1,10 @@
 <?php
-define('VERSION_CAPTCHA','1.0.0');
+define('VERSION_CAPTCHA','1.0.1');
 /*
 Version History:
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.1 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Captcha {
   protected $sessionName = 'vihash';
@@ -162,7 +163,7 @@ class Captcha {
     }
     return false;
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CAPTCHA;
   }
 }

@@ -1,11 +1,10 @@
 <?php
-define('COMMUNITY_ARTICLE','1.0.2');
+define('COMMUNITY_ARTICLE','1.0.3');
 /*
 Version History:
-  1.0.2 (2013-12-14)
-    1) Added override for report form to use for 'Add New...' icon
+  1.0.3 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community_article.txt)
 */
 
 
@@ -29,7 +28,7 @@ class Community_Article extends Article{
     return Community_Posting::BL_category();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return COMMUNITY_ARTICLE;
   }
 }

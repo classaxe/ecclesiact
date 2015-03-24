@@ -32,7 +32,7 @@ class Component_Importer extends Component_Base {
       ."<div class='clear'>&nbsp;</div>\n";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_IMPORTER;
   }
 

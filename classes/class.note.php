@@ -100,7 +100,7 @@ class Note extends Posting {
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_NOTE;
   }
 }

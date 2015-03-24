@@ -73,7 +73,7 @@ class Component_Paypal_Return extends Component_Base {
     $this->_gateway_record['type'] =     $this->_Obj_Gateway_Type->get_record();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_PAYPAL_RETURN;
   }
 

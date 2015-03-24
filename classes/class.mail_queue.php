@@ -767,7 +767,7 @@ class Mail_Queue extends Record {
     $this->do_sql_query($sql);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_MAIL_QUEUE;
   }
 }

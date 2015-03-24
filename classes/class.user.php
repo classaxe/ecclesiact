@@ -216,7 +216,7 @@ class User extends Person {
     $this->update($data,true);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_USER;
   }
 }

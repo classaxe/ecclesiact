@@ -159,7 +159,7 @@ class Notification extends Record{
       ."</h1>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_NOTIFICATION;
   }
 }

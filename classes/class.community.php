@@ -1,5 +1,5 @@
 <?php
-define('COMMUNITY_VERSION', '1.0.115');
+define('COMMUNITY_VERSION', '1.0.116');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
@@ -8,12 +8,9 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.115 (2015-01-01)
-    1) Community::_on_action_community_setup_home_page() now uses global constant for option_separator tags
-    2) Fixed community export - was deleting community membership records early and duplicating some postings
-    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
+  1.0.116 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community.txt)
 */
 
 class Community extends Displayable_Item
@@ -1046,7 +1043,7 @@ class Community extends Displayable_Item
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return COMMUNITY_VERSION;
     }

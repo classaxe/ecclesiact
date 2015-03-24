@@ -1,3 +1,7 @@
+  1.0.115 (2015-01-01)
+    1) Community::_on_action_community_setup_home_page() now uses global constant for option_separator tags
+    2) Fixed community export - was deleting community membership records early and duplicating some postings
+    3) Now PSR-2 Compliant - except for line-length warning on Community::FIELDS
   1.0.114 (2014-03-23)
     1) Added Community::get_events_upcoming() to enable special events tab
   1.0.113 (2014-02-17)

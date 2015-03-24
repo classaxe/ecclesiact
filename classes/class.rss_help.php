@@ -17,7 +17,7 @@ class RSS_Help
         return;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return self::VERSION;
     }

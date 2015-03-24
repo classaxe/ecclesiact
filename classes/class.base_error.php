@@ -1,11 +1,10 @@
 <?php
-define('VERSION_BASE_ERROR','1.0.1');
+define('VERSION_BASE_ERROR','1.0.2');
 /*
 Version History:
-  1.0.1 (2011-04-07)
-    1) Now extends Exception class to allow these to be thrown properly
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Base_Error extends Exception{
   private $errorMessage;
@@ -21,7 +20,7 @@ class Base_Error extends Exception{
   public function __set($propertyName, $propertyValue) {
     return $this->errorMessage;
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BASE_ERROR;
   }
 }

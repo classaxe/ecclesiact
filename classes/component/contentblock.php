@@ -140,7 +140,7 @@ class ContentBlock extends Base
         $this->_record =    $this->_Obj->load();
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CONTENT_BLOCK;
     }

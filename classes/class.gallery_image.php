@@ -117,7 +117,7 @@ class Gallery_Image extends Posting_Contained {
     $this->set_field('path',$path);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_GALLERY_IMAGE;
   }
 }

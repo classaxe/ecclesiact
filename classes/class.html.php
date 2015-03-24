@@ -1688,7 +1688,7 @@ class HTML extends Record
         ."</div>";
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_HTML;
     }

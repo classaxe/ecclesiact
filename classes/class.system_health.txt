@@ -1,3 +1,5 @@
+  1.0.45 (2015-03-15)
+    1) Now lists any deleted classes in code documentation
   1.0.44 (2015-03-03)
     1) Now able to look for and report on namespaced classes in subfolders of classes folder
     2) Now System_Health::_getConfigClasses() looks for Obj::getVersion() in preference to Obj::get_version()

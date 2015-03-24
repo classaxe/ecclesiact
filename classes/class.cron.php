@@ -58,7 +58,7 @@ class CRON extends Record {
     $Obj_S->set_field_for_all('cron_job_heartbeat_last_run',get_timestamp());
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CRON;
   }
 }

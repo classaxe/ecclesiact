@@ -56,7 +56,7 @@ class Report_Defaults extends Record {
     $this->update($data);  // Will insert if $this->ID is false
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_DEFAULTS;
   }
 }

@@ -649,7 +649,7 @@ class Podcast extends Posting_Contained
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PODCAST;
     }

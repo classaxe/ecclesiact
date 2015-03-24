@@ -1,12 +1,10 @@
 <?php
-define('VERSION_ARTICLE', '1.0.38');
+define('VERSION_ARTICLE', '1.0.39');
 /*
 Version History:
-  1.0.38 (2015-02-06)
-    1) CP for listings 'results_order' now allows for date_a, date_d_name_a and date_d_title_a
-    2) Now PSR-2 Compliant
+  1.0.39 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.article.txt)
 */
 class Article extends Posting
 {
@@ -364,7 +362,7 @@ class Article extends Posting
         return parent::try_copy($newID, $msg, $msg_tooltip, $name);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_ARTICLE;
     }

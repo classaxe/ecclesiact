@@ -485,7 +485,7 @@ class Gallery_Album extends Posting_Container
              );
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_GALLERY_ALBUM;
     }

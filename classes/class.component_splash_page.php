@@ -28,7 +28,7 @@ class Component_Splash_Page extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SPLASH_PAGE;
   }
 }

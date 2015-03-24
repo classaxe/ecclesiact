@@ -538,7 +538,7 @@ class Component_Gallery_Fader extends Component_Base
         $this->_first_image = $this->_images[$this->_first_idx];
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_GALLERY_FADER;
     }

@@ -60,7 +60,7 @@ class Component_Group_Member_Redirector extends Component_Base {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_GROUP_MEMBER_REDIRECTOR;
   }
 }

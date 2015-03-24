@@ -1,11 +1,10 @@
 <?php
-define('VERSION_ACTION','1.0.21');
+define('VERSION_ACTION','1.0.22');
 /*
 Version History:
-  1.0.21 (2014-01-06)
-    1) Action::_execute_event_register() now uses User class to get inviter
+  1.0.22 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.action.txt)
 */
 class Action extends Record {
 
@@ -454,7 +453,7 @@ class Action extends Record {
   }
 
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_ACTION;
   }
 }

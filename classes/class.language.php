@@ -132,7 +132,7 @@ class Language extends Record {
     return $value;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LANGUAGE;
   }
 }

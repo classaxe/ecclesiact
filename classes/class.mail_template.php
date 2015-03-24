@@ -137,7 +137,7 @@ class Mail_Template extends Record {
     return $result;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_MAIL_TEMPLATE;
   }
 }

@@ -9,7 +9,7 @@ class lst_delivery_method extends lst_named_type{
   function __construct($ID="") {
     parent::__construct($ID, 'lst_delivery_method','Delivery Method');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_DELIVERY_METHOD;
   }
 }

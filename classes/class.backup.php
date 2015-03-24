@@ -1,14 +1,10 @@
 <?php
-define("VERSION_BACKUP","1.1.9");
+define("VERSION_BACKUP","1.1.10");
 /*
 Version History:
-  1.1.9 (2012-12-03)
-    1) Backup::db_backup() now uses time() not mktime() as per strict standards
-       compliance
-  1.1.8 (2012-09-14)
-    1) Backup::db_export_sql_data() now uses Table::do_sql_query() to use UTF8
+  1.1.10 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.backup.txt)
 */
 
 class Backup extends Record{
@@ -325,7 +321,7 @@ class Backup extends Record{
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BACKUP;
   }
 }

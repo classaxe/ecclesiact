@@ -31,7 +31,7 @@ class Component_Remote_Page_Content extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_REMOTE_PAGE_CONTENT;
   }
 }

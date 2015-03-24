@@ -2314,7 +2314,7 @@ class PHPMailer {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PHPMAILER;
   }
 }

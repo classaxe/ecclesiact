@@ -28,7 +28,7 @@ class CommunityCalendar extends \Component\CalendarLarge
         return \Community_Posting::BL_mini_shared_source_link($this, '#calendar');
     }
 
-    public function getversion()
+    public static function getVersion()
     {
         return COMPONENT_NS_COMMUNITY_CALENDAR_LARGE;
     }

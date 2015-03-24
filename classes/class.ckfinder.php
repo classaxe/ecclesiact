@@ -1,20 +1,10 @@
 <?php
-define('VERSION_CKFINDER','1.0.5');
+define('VERSION_CKFINDER','1.0.6');
 /*
 Version History:
-  1.0.5 (2011-11-25)
-    1) Added .mp4, .m4v, .f4v, .mov  to list of acceptable video files
-  1.0.4 (2011-07-28)
-    1) Now chmods new folders as 777 - was 755 earlier
-  1.0.3 (2011-05-09)
-    1) Added doc, pdf and image types to Media files list
-  1.0.2 (2010-12-03)
-    1) Now allows .gif and .png images to be uploaded to video folder
-       (for use as preview images)
-  1.0.1 (2010-11-19)
-    1) Now creates Video folder
-  1.0.0 (2009-09-01)
-    Initial release - this is so I never have to set these in doc root again!
+  1.0.6 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class CKFinder{
   function __construct(){
@@ -117,7 +107,7 @@ class CKFinder{
     $config['ChmodFolders'] =           0777;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CKFINDER;
   }
 }

@@ -1,10 +1,11 @@
 <?php
-define('VERSION_REPORT_COLUMN_REPORT_FIELD', '1.0.28');
+define('VERSION_REPORT_COLUMN_REPORT_FIELD', '1.0.29');
 /*
 Version History:
-  1.0.28 (2015-03-21)
-    1) Now gives map link as 'Map' if no value is actually given for the text
-    2) Now mainly PSR-2 Compliant
+  1.0.29 (2015-03-23)
+    1) Report_Column_Report_Field::draw() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -407,7 +408,7 @@ class Report_Column_Report_Field extends Record
                 break;
             case "fieldset_map_loc_lat_lon":
                 $params = explode('|', $column['reportFieldSpecial']);
-                $_type =    $params[0];
+                $_type =    urlencode($params[0]);
                 $_info =    $params[1];
                 $_lat =     $params[2];
                 $_lon =     $params[3];
@@ -890,7 +891,7 @@ class Report_Column_Report_Field extends Record
         return $out;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_REPORT_COLUMN_REPORT_FIELD;
     }

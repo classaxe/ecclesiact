@@ -192,7 +192,7 @@ class Component_Email_Newsletter_Signup extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_EMAIL_NEWSLETTER_SIGNUP;
   }
 }

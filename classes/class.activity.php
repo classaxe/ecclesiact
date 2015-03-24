@@ -1,14 +1,13 @@
 <?php
-define('VERSION_ACTIVITY','1.0.18');
+define('VERSION_ACTIVITY','1.0.19');
 /*
 Version History:
-  1.0.18 (2014-02-17)
-    1) Refreshed fields list - now statically declared in class definition
+  1.0.19 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.activity.txt)
 */
 class Activity extends Record {
-  const fields = 'ID, archive, archiveID, deleted, systemID, count_total_comments, count_total_emails, count_total_ratings, count_total_visits, count_weighted_comments, count_weighted_emails, count_weighted_ratings, count_weighted_visits, rating_percent, rating_submissions, sourceID, sourceType, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+  const FIELDS = 'ID, archive, archiveID, deleted, systemID, count_total_comments, count_total_emails, count_total_ratings, count_total_visits, count_weighted_comments, count_weighted_emails, count_weighted_ratings, count_weighted_visits, rating_percent, rating_submissions, sourceID, sourceType, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
   protected $_num_updated_records = 0;
   protected $_sites_with_activity_tracking = '';
 
@@ -183,7 +182,7 @@ class Activity extends Record {
     return $this->get_records_for_sql($sql);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_ACTIVITY;
   }
 }

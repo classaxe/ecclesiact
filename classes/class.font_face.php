@@ -29,7 +29,7 @@ class Font_Face extends lst_named_type {
       ." alt=\"Sample of ".$font." at ".$size."pt.\" />";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_FONT_FACE;
   }
 }

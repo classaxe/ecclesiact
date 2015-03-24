@@ -1817,7 +1817,7 @@ class Report_Report extends Report
         ."</th>";
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_REPORT_REPORT;
     }

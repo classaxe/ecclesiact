@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.2.9");
+define("CODEBASE_VERSION", "3.3.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,70 +16,1172 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.2.9.2373 (2015-03-22)
+3.3.0.2374 (2015-03-23) - MASSIVE build! (see CONFESSION below...)
 Summary:
-  1) Community Members, Contacts, Events and Users forms / reports now show map_geocode_address fields
-     to show the address Google actually matched for the given input.
-  2) Added map_geocode_address fields to community_member, person and postings reports
+  1) Moved Google_Maps class to namespace \Map\GoogleMaps and Geocode_Cache to \Map\GeocodeCache
+  2) New object and report / form for \Map\AddressSubstitution fr BNN importer corrections
+  3) Global changed all public references for function get_version() to static getVersion() -
+     every class is affected!
+
+     CONFESSION:
+       I didn't update every version code on every file I made that global getVersion() code change to -
+       There were too many and life is just too short.
 
 Final Checksums:
-  Classes     CS:a2f2b3ae
-  Database    CS:b3200e2
-  Libraries   CS:d55a13dd
-  Reports     CS:7c7e8e38
+  Classes     CS:79a2c4c3
+  Database    CS:c15014ce
+  Libraries   CS:e8a227c1
+  Reports     CS:f06a043d
 
 Code Changes:
-  codebase.php                                                                                   3.2.9     (2015-03-22)
+  codebase.php                                                                                   3.3.0     (2015-03-23)
     1) Updated version information
-  classes/class.community_member.php                                                             1.0.106   (2015-03-22)
-    1) Added `office_map_geocode_address` and `service_map_geocode_address` to fields list
-    2) Community_Member::get_coords() now includes office_map_geocode_address and service_map_geocode_address
-  classes/class.geocode_cache.php                                                                1.0.3     (2015-03-21)
-    1) Now implements its own get_coords() that doesn't try to read the cache (whichof course is itself!)
-  classes/class.google_map.php                                                                   1.0.47    (2015-03-22)
-    1) Bug fix in Google_Map::find_geocode() to read correct field from cache for 'match_address'
-    2) New option in Google_Map::find_geocode() to ignore cache - used when performing lookups in
-       the geocode_cache form to prevent odd things from happening.
+  classes/class.action.php                                                                       1.0.22    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.activity.php                                                                     1.0.19    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.ajax.php                                                                         1.0.24    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.akismet.php                                                                      0.41.f    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Split out SocketWriteRead class into its own file
+  classes/class.array2xml.php                                                                    1.0.1     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.article.php                                                                      1.0.39    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.backup.php                                                                       1.1.10    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.barcode.php                                                                      1.0.4     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.base.php                                                                         1.0.14    (2015-03-23)
+    1) Method getVersion() is now static
+  classes/class.base_error.php                                                                   1.0.2     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.beanstream_gateway.php                                                           1.0.5     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.block_layout.php                                                                 1.0.62    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.bugtracker.php                                                                   1.0.7     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.captcha.php                                                                      1.0.1     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.cart.php                                                                         1.0.6     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.category.php                                                                     1.0.2     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.category_assign.php                                                              1.0.5     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.cezpdf.php                                                                       1.0.1     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.chasepaymentech_gateway.php                                                      1.0.7     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.checkout.php                                                                     1.0.44    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.ckfinder.php                                                                     1.0.6     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.colour_scheme.php                                                                1.0.2     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.comment.php                                                                      1.0.19    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community.php                                                                    1.0.116   (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_article.php                                                            1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_display.php                                                            1.0.39    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_event.php                                                              1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member.php                                                             1.0.107   (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_article.php                                                     1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_display.php                                                     1.0.41    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_event.php                                                       1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_news_item.php                                                   1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_podcast.php                                                     1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_posting.php                                                     1.0.4     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_resource.php                                                    1.0.7     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_member_summary.php                                                     1.0.20    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_membership.php                                                         1.0.5     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_news_item.php                                                          1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_podcast.php                                                            1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_posting.php                                                            1.0.5     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.community_resource.php                                                           1.0.4     (2015-03-13)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
+  classes/class.community_sponsorship_plan.php                                                   1.0.3     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.component.php                                                                    1.0.108   (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.component_base.php                                                               1.0.22    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.component_custom_form.php                                                        1.0.4     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.component_customiser_button.php                                                  1.0.2     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.component_document_covers.php                                                    1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_document_reader.php                                                    1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_donate.php                                                             1.0.2     (2014-01-28)
+    1) Newline after JS onload code
+  classes/class.component_edit_your_profile.php                                                  1.0.0     (2013-06-03)
+    1) Initial release - moved from Person class and User class
+  classes/class.component_email_form.php                                                         1.0.1     (2013-10-29)
+    1) Brought component up to date with latest standards
+    2) Now sets 'reply to' address to Email field if given
+  classes/class.component_email_newsletter_signup.php                                            1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_email_opt_in.php                                                       1.0.0     (2014-06-22)
+    1) Initial release
+  classes/class.component_email_opt_out.php                                                      1.0.0     (2014-06-22)
+    1) Initial release
+  classes/class.component_email_to_friend.php                                                    1.0.0     (2011-12-29)
+    1) Initial release - moved from Component class
+  classes/class.component_event_registration.php                                                 1.0.7     (2014-02-06)
+    1) Now invokes Report_Form_Field_Lookup class to handle ajax lookup
+  classes/class.component_events_map.php                                                         1.0.2     (2015-01-31)
+    1) Changes to internally used parameters in Component_Events_Map::_setup_load_event_IDs():
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_facebook_like.php                                                      1.0.4     (2012-11-02)
+    1) Bug fix for jquery call - was unescaped
+  classes/class.component_flickr.php                                                             1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_folder_viewer.php                                                      1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_forgotten_password.php                                                 1.0.1     (2014-01-06)
+    1) Component_Forgotten_Password now uses User class to draw actual control
+  classes/class.component_form.php                                                               1.0.0     (2010-10-12)
+    1) Initial release
+  classes/class.component_gallery_album.php                                                      1.0.71    (2014-04-03)
+    1) Last build prevented valid configuration of NO root folder which caused some issues
+       This build now correctly handles that circumstance
+  classes/class.component_gallery_album_gallery_image.php                                        1.0.3     (2013-11-08)
+    1) Now includes 'Up' button
+  classes/class.component_gallery_fader.php                                                      1.0.42    (2015-01-31)
+    1) Changes to internally used parameters in Component_Gallery_Fader::_setup_load_records():
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_gallery_thumbnails.php                                                 1.0.35    (2014-01-31)
+    1) Changes to internally used parameters in Component_Gallery_Thumbnails::_setup_load_images():
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
+  classes/class.component_gc_weather.php                                                         1.0.0     (2010-12-11)
+    1) Initial release
+  classes/class.component_google_map.php                                                         1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_google_plusone.php                                                     1.0.0     (2012-01-25)
+    1) Initial release
+  classes/class.component_group_member_redirector.php                                            1.0.1     (2013-11-20)
+    1) Component_Group_Member_Redirector::draw() removed support for
+       permADMIN and permAPPROVER
+  classes/class.component_image_fader.php                                                        1.0.1     (2014-01-28)
+    1) Newline after js onload code
+  classes/class.component_image_gallery.php                                                      1.0.0     (2011-12-30)
+    1) Initial release - moved from Component class
+  classes/class.component_image_text.php                                                         1.0.0     (2010-07-07)
+    1) Moved Component::image_text() into here
+  classes/class.component_importer.php                                                           1.0.2     (2012-01-23)
+    1) Now uses _setup() and _setup_load_parameters() in base class
+  classes/class.component_inline_signin.php                                                      1.0.2     (2014-01-28)
+    1) Newline after js onload code
+  classes/class.component_jumploader.php                                                         1.0.4     (2011-03-30)
+    1) Added Component_Jumploader::_draw_uploaded_files_table()
+  classes/class.component_language_button.php                                                    1.0.1     (2012-12-08)
+    1) French c-cedilla charcacter now defined as HTML entity
+  classes/class.component_member_search.php                                                      1.0.12    (2014-03-28)
+    1) Now has additional CPs:
+         'filter_type'
+         'show_range_ring'
+         'show_start_ring'
+    2) Component_Member_Search::_get_query_limit_for_filter() now filters on type
+    2) Component_Member_Search::_setup_lookup_search_location() now remembers
+       search_area to provide for range ring indicating certainty of search location
+  classes/class.component_nav_links.php                                                          1.0.1     (2012-11-16)
+    1) Now cleanly handles issue where there are no buttons to draw links for
+  classes/class.component_order_detail.php                                                       1.0.6     (2013-10-31)
+    1) Component_Order_Detail::draw() now uses ECL tag 'draw_signin()' rather than
+       the hated 'component_signin_context' which is now gone forever.
+  classes/class.component_password_protect.php                                                   1.0.3     (2014-01-28)
+    1) Newline and semicolon after js in Component_Password_Protect::_draw_js()
+  classes/class.component_paypal_return.php                                                      1.0.1     (2013-10-11)
+    1) Now reports error if there are no gateway settings defined for component
+       or for the site
+  classes/class.component_persons_listing.php                                                    1.0.1     (2014-01-17)
+    1) Change to Component_Persons_Listing::_draw_entry() map info-window code
+       to use new ecc_map.point.i() helper function
+  classes/class.component_persons_map.php                                                        1.0.1     (2013-10-28)
+    1) Added CP for filter_sp to filter on state / province
+    2) CP for filter_category now defaults to '*' meaning everything
+  classes/class.component_poll.php                                                               1.0.2     (2012-11-03)
+    1) Now inserts extra break between multiple items where required
+  classes/class.component_poll_archive.php                                                       1.0.1     (2012-11-03)
+    1) Big changes to allow for use of standard methods for setup and control panel
+       and refactoring to reduce stament nesting
+    2) Changes to deal with fields being renamed in poll_choice table in preparation
+       for moving to postings table
+  classes/class.component_prayer_request.php                                                     1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+  classes/class.component_prev_next.php                                                          1.0.1     (2014-08-12)
+    1) Changes to bring this component up to date and to have a configrable control panel
+    2) Added ability to take a list of pages and take links from them to splice into the
+       sequence to allow for navigation through pages not normally navigable via navsuites
+  classes/class.component_product_dropdown.php                                                   1.0.2     (2014-04-16)
+    1) Now has separate setup method and applies correct visibility to displayed items
+  classes/class.component_random_news.php                                                        1.0.1     (2015-01-28)
+    1) Now has parameters to show content and title and CM editing of news item currently being displayed
+  classes/class.component_related_block.php                                                      1.0.4     (2012-01-23)
+    1) Changes to _setup() to harness protected method in Component_Base class
+    2) Removed local implementation of _setup_load_parameters()
+  classes/class.component_remote_page_content.php                                                1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_rss_displayer.php                                                      1.0.1     (2014-01-28)
+    1) Added newline and semicolon after JS onload code
+  classes/class.component_rss_headlines.php                                                      1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_sdmenu.php                                                             1.0.5     (2014-01-28)
+    1) Newline after JS code in Component_SDMenu::_draw_js_onload()
+  classes/class.component_search_date_picker.php                                                 1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_search_tag_cloud.php                                                   1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_search_word_cloud.php                                                  1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_secure_email.php                                                       1.0.0     (2011-12-31)
+    1) Initial release - moved from Component class
+  classes/class.component_share_this.php                                                         1.0.2     (2012-11-06)
+    1) Removed hidden paragraph for facebook context -
+       We now have open graph (og) metatags provided by
+       Displayable_Item::_draw_detail_include_og_support()
+  classes/class.component_shop.php                                                               1.0.8     (2012-01-23)
+    1) Changes to _setup() to harness protected method in Component_Base class
+    2) Removed local implementation of _setup_load_parameters()
+  classes/class.component_signin.php                                                             1.0.2     (2014-01-28)
+    1) Newline and semicolun after JS code in Component_Signin::_draw_signin()
+  classes/class.component_signup.php                                                             1.0.2     (2013-06-03)
+    1) Added new CP for width
+  classes/class.component_sitemap.php                                                            1.0.2     (2012-12-19)
+    1) Changes to Component_Sitemap::get_sitemap() to handle possibility that the
+       current pages doesn't appear on the nav structure at all
+  classes/class.component_social_icon.php                                                        1.0.1     (2013-07-30)
+    1) SEO improvments with inclusion of inline height and width attributes
+  classes/class.component_splash_page.php                                                        1.0.0     (2012-01-01)
+    1) Initial release - moved from Component class
+  classes/class.component_subscribe.php                                                          1.0.1     (2010-10-25)
+    1) Bit more work on subscription component - not complete yet
+  classes/class.component_survey.php                                                             1.0.0     (2013-03-05)
+    1) Initial release
+  classes/class.component_time_tracker.php                                                       1.0.3     (2012-10-28)
+    1) Changes to use jquery for elemet selection, not prototypejs
+  classes/class.component_twitter.php                                                            1.0.2     (2012-05-04)
+    1) Added Component_Twitter::draw_tweets()
+  classes/class.component_video_player.php                                                       1.0.0     (2011-12-29)
+    1) Initial release - moved from Component class
+  classes/class.contact.php                                                                      1.0.5     (2013-11-07)
+    1) Added edit_parameters to allow this type to be iewed in a listings panel
+  classes/class.content_block.php                                                                1.0.9     (2013-06-27)
+    1) Moved displaying of content_blocks as ECL tags into own dedicated class
+  classes/class.context_menu.php                                                                 1.0.75    (2014-03-29)
+    1) Context_Menu::_cm_community_member() now sets communityID when adding new items
+  classes/class.country.php                                                                      1.0.1     (2011-09-06)
+    1) Changes to Country::get_iso3166() to use lst_named_type and avoid
+       hard-coded listtypeID and made static
+  classes/class.cpdf.php                                                                         1.0.0     (2009-07-11)
+    Initial release
+  classes/class.credit_memo.php                                                                  1.0.11    (2011-08-26)
+    1) Changes to Credit_Memo::draw_items() for renaming of product_category to
+       product_grouping table
+  classes/class.crm_case.php                                                                     1.0.12    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.crm_case_task.php                                                                1.0.2     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.cron.php                                                                         1.0.10    (2014-02-21)
+    1) CRON::heartbeat_actions() now includes queued map updates
+    2) Bug fix for CRON::heartbeat() to correctly prevent a second thread from being
+       activated within 55 seconds of a previous activation
+  classes/class.curl.php                                                                         1.0.1     (2009-10-21)
+    1) Changes to Curl::_construct() to allow for cookies file for persistent sessions
+  classes/class.custom_form.php                                                                  1.0.41    (2014-02-07)
+    1) JS callback functions for ajax fedex rate lookups now contained within sajax
+       object to reduce namespace clutter
+  classes/class.custom_registration.php                                                          1.0.3     (2012-08-28)
+    1) Further tweak to correct newline conversion - wasn't quite right last time
+  classes/class.displayable_item.php                                                             1.0.152   (2015-03-23)
+    1) Now uses namespaced \Map\GoogleMap class in place of Google_Map
+    2) Method get_version() renamed to getVersion() and made static
+  classes/class.droplib.php                                                                      2.1.0.c   (2012-10-14)
+    1) Additional parameter for DropLib_Http::fetch() - use_post
+    2) New method DropLib::delta() - takes cursor and returns delta list of changes
+  classes/class.dtd.php                                                                          1.0.0     (2012-02-03)
+    1) Initial release
+  classes/class.ecc_facebook.php                                                                 1.0.0     (2010-05-03)
+    Initial release
+  classes/class.ecl_tag.php                                                                      1.0.3     (2012-05-27)
+    1) Tweak to ECL_Tag::get_all() to make sure that tag names are all lowercase
+       for consistent use, even in email broardcast where plain text version of
+       message is in uppercase, including ECL tags
+  classes/class.event.php                                                                        1.0.104   (2015-02-06)
+    1) New CP for listings - results_order - previously not possible to change display order
+    2) Now PSR-2 Compliant
+  classes/class.event_recurrence.php                                                             1.0.12    (2013-12-10)
+    1) Now uses Displayable_Item::_draw_render_JSON() instead of its own variant
+  classes/class.export.php                                                                       1.0.25    (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Export::draw() now looks for exportSql() and then tries export_sql() if the former method isn't found
+  classes/class.extended_community.php                                                           1.0.0     (2015-03-17)
+    1) Moved into its own file - was originally part of class.component_communities_display.php
+  classes/class.fck.php                                                                          1.0.22    (2014-04-17)
+    1) Changes to include indenting rules for parsed code
+  classes/class.fdf.php                                                                          1.0.0     (2009-07-02)
+    Initial release
+  classes/class.field_template.php                                                               1.0.1     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.filesystem.php                                                                   1.0.17    (2015-01-11)
+    1) Changes to FileSystem::get_file_changes() to deal with unix-style line endings in classes
+    2) Now PSR-2 Compliant
+  classes/class.font_face.php                                                                    1.0.1     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.gallery_album.php                                                                1.0.33    (2015-01-31)
+    1) Changes to internally used parameters in Gallery_Album::BL_contained_items():
+         Old: filter_limit,  paging_controls
+         New: results_limit, results_paging
+    2) Now PSR-2 Compliant
+  classes/class.gallery_image.php                                                                1.0.23    (2013-06-07)
+    1) Changed the following CPs for listings mode:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
+  classes/class.gateway_setting.php                                                              1.0.4     (2012-09-05)
+    1) Gateway_Setting::do_donation() wasn't recognising gateway types of
+       'Paypal (Live)' and 'Paypal (Test)' - it does now.
+  classes/class.gateway_type.php                                                                 1.0.2     (2012-05-08)
+    1) Added handle_report_copy() method for cloning entries
+    2) Removed stub for Gateway_Type::get_beanstream_country() -
+       was never implemented nor used
+  classes/class.gc_weather.php                                                                   1.0.0     (2010-12-10)
+    Initial release
+  classes/class.google_map.php                                                                   1.0.48    (2015-03-23)
+    1) Moved main code into new namespaced class under map
+    2) This class is now just a stub for backward compatability
+    3) Method get_version() renamed to getVersion() and made static
+  classes/class.group.php                                                                        1.0.29    (2014-06-22)
+    1) Group::member_assign() now includes support for permEMAILOPTIN and optional parameter
+       $email_subscription_log
+  classes/class.group_assign.php                                                                 1.0.2     (2012-10-01)
+    1) Group_Assign::get_selector_sql() has colour-codes entries for MasterAdmin
+       now that option-transfer function is now preserving these after sorting
+    2) Group_Assign::get_selector_sql() no longer takes any parameters so looks
+       similar to other methods of the same name
+  classes/class.group_member.php                                                                 1.0.5     (2014-06-22)
+    1) Added permEMAILOPTIN to permArr
+  classes/class.group_wizard.php                                                                 1.0.13    (2013-10-27)
+    1) Group_Wizard::_setup_get_targetIDs() now uses Record::set_group_concat_max_len()
+       to change MYSQL session variable group_concat_max_len
+  classes/class.gwsocket.php                                                                     1.0.0     (2009-07-02)
+    Initial release
+  classes/class.handler.php                                                                      1.0.0     (2009-07-02)
+    Initial release
+  classes/class.help.php                                                                         1.0.7     (2012-11-28)
+    1) Help::menu() now uses System::get_item_version() not
+       System::get_version() as before
+  classes/class.history.php                                                                      1.0.5     (2012-09-20)
+    1) History:initialise() now sets shop page to '' to allow this to be determined
+       by CP values in checkout
+  classes/class.html.php                                                                         1.0.88    (2015-03-17)
+    1) Made some aliases for PSR-2 compliant method names:
+          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
+          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
+          HTML::drawFormBox()           ->  HTML::draw_form_box()
+  classes/class.html2text.php                                                                    1.0.1     (2012-06-12)
+    1) Added extra search and replace clauses for ECL tags to strip extra slashes
+       inside bolded tags
+  classes/class.http_raw_socket.php                                                              1.0.0     (2009-07-02)
+    Initial release
+  classes/class.image_factory.php                                                                1.0.10    (2012-01-20)
+    1) Changes to Image_Factory::xml_to_image() for text handling using datasource
+       to make it show field name if datasource field is not actually set
+  classes/class.image_template.php                                                               1.0.2     (2011-08-24)
+    1) Added handle_report_copy() to implement renaming of cloned item
+  classes/class.job_posting.php                                                                  1.0.20    (2013-06-07)
+    1) Changed the following CPs for listings mode:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
+  classes/class.jsmin.php                                                                        1.0.0     (2010-05-10)
+    Initial release
+  classes/class.jumploader.php                                                                   1.0.7     (2011-07-05)
+    1) Jumploader JS now registers presence of java applet to allow it to be
+       hidden if required, e.g. with dropdown menu or layer-based divs.
+  classes/class.keyword.php                                                                      1.0.10    (2011-11-18)
+    1) Keyword::delete() now removes associated csv entries for all types
+       including products (not previously handled) and contacts
+       (was looking in contacts table for these - that doesn't event exist now!)
+  classes/class.keyword_assign.php                                                               1.0.2     (2010-10-19)
+    1) Keyword_Assign::set_for_assignment() now calls insert() method
+  classes/class.language.php                                                                     1.0.3     (2012-12-09)
+    1) Changes to Language::prepare_field() to handle resaving of single language
+       content after conversion to a multi-language system.
+    2) Bug fix for changing language to ensure that viewer remains on original page
+  classes/class.language_assign.php                                                              1.0.1     (2013-10-10)
+    1) New method Language_Assign::get_listdata_for_assignment()
+    2) New method Language_Assign::get_text_csv_for_assignment()
+  classes/class.layout.php                                                                       1.0.28    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.link.php                                                                         1.0.6     (2013-06-07)
+    1) Changed the following CPs for listings mode:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
+  classes/class.listdata.php                                                                     1.0.5     (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.listtype.php                                                                     1.0.7     (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.lst_delivery_method.php                                                          1.0.0     (2009-07-02)
+    Initial release
+  classes/class.lst_delivery_status.php                                                          1.0.0     (2009-07-02)
+    Initial release
+  classes/class.lst_effective_period_unit.php                                                    1.0.0     (2010-09-20)
+    Initial release
+  classes/class.lst_language.php                                                                 1.0.0     (2013-10-08)
+    Initial release
+  classes/class.lst_named_type.php                                                               1.0.4     (2012-04-20)
+    1) Added new method lst_named_type::get_listdata() to get all items
+  classes/class.lst_note_person_type.php                                                         1.0.0     (2009-07-02)
+    Initial release
+  classes/class.lst_payment_status.php                                                           1.0.2     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.lst_persontitle.php                                                              1.0.0     (2009-07-02)
+    Initial release
+  classes/class.lst_product_type.php                                                             1.0.0     (2009-07-02)
+    Initial release
+  classes/class.lst_refund_status.php                                                            1.0.0     (2009-07-02)
+    Initial release
+  classes/class.mail_identity.php                                                                1.0.7     (2011-06-29)
+    1) Renamed class from Email_Identity to Mail_Identity
+  classes/class.mail_queue.php                                                                   1.0.37    (2014-03-11)
+    1) Mail_Queue::_draw_wizard_preview() now URL decodes content supplied to it
+       because the javascript that packages the content now first URL encodes it.
+  classes/class.mail_queue_item.php                                                              1.0.16    (2015-03-01)
+    1) Bug fix for viewing message list - needed personID to get list of messages sent
+    2) New method viewMessagesForPerson
+    3) Renamed const fields to FIELDS
+    4) Now PSR-2 Compliant
+  classes/class.mail_template.php                                                                1.0.13    (2012-05-25)
+    1) Mail_Template::send_email() now sets NGreetingName
+  classes/class.media.php                                                                        1.0.3     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.media_audioplayer.php                                                            1.0.9     (2014-01-28)
+    1) Newline after code in JS onload code in Media_Audioplayer::draw_clip()
+  classes/class.media_youtube.php                                                                1.0.6     (2014-01-20)
+    1) Now accepts optional fourth parameter to determine start time for clip
+  classes/class.membership_rule.php                                                              1.0.2     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.navbutton.php                                                                    1.0.16    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.navbutton_image.php                                                              1.0.8     (2012-12-08)
+    1) Bug fix for one accented character in Navbutton_Image::get_uppercase()
+  classes/class.navbutton_style.php                                                              1.0.8     (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.navsuite.php                                                                     1.0.33    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.news_item.php                                                                    1.0.24    (2015-02-06)
+    1) New CP for listings - results_order - previously not possible to change display order
+    2) Now PSR-2 Compliant
+  classes/class.note.php                                                                         1.0.3     (2013-06-07)
+    1) Changed the following CPs for listings mode:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
+  classes/class.notification.php                                                                 1.0.4     (2012-10-17)
+    1) Split out css into static Notification::draw_css()
+    2) Split out header to static Notification::draw_footer()
+    3) Split out footer to static Notification::draw_footer()
+  classes/class.order.php                                                                        1.0.68    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.orderitem.php                                                                    1.0.14    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.orders_overview.php                                                              1.0.1     (2012-04-25)
+    1) Fix to Orders_Overview::_setup_get_unique_payment_status() to default
+       payment status to 'IGNORED' not 'Paid' if not given.
+       Was failing to show orders if they all had the same status and that status
+       was other than 'Paid'
+    2) Was using wrong constant for returned version number
+  classes/class.page.php                                                                         1.0.120   (2015-03-04)
+    1) Change to Page::prepare_html_head() now Component_Bible_Links::draw() is \Component\BibleLinks::draw()
+    2) Added pushContent() as alias for now deprecated push_content()
+  classes/class.page_edit.php                                                                    1.0.16    (2015-01-03)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in Page_Edit::draw() for saving
+    2) Removed 'yellow fever' correction cde - not needed with new CK Editor code
+    3) Now PSR-2 Compliant
+  classes/class.page_vars.php                                                                    1.0.24    (2015-01-02)
+    1) Added provision to ban msnbot and bingbot if load is too high
+    2) Now Page_Vars::_get_vars_for_mode() sets ID for details, export, print_form and report
+    3) Now PSR-2 Compliant
+  classes/class.password.php                                                                     1.0.4     (2012-03-28)
+    1) Initial Release:
+    2) Page_Vars::_password_check_history() now Password::check_csvlist_against_previous()
+    3) Page_vars::_password_check() now Password::check_password_against_csvlist()
+  classes/class.payment_method.php                                                               1.0.10    (2014-01-29)
+    1) Payment_Method::draw_selector() changes to JS for loadTotalCost() to add extra newline
+  classes/class.paypal_gateway.php                                                               1.0.24    (2013-03-08)
+    1) PayPal_Gateway::simplePaymentVerify() -
+       Extensive changes to have system show prominent 'print tickets' link
+       and also to prevent errors if page is accessed with TX token but person
+       isn't signed in anymore.
+  classes/class.pdf.php                                                                          1.0.1     (2009-07-11)
+    Changes to paths for cpdf and cezpdf
   classes/class.person.php                                                                       1.0.124   (2015-03-22)
     1) Added AMap_geocode_address and WMap_geocode_address to fields list
     2) Person::get_coords() now includes map_geocode_address
+  classes/class.person_merge_profiles.php                                                        1.0.4     (2015-01-11)
+    1) Changed references from System::tables to System::TABLES
+    2) Now PSR-2 Compliant
+  classes/class.php_excel.php                                                                    1.0.2     (2012-05-01)
+    1) Changes to constructor:
+       Greatly improved error handling if Pear date library isn't present -
+       Now provides instructions to correct the issue
+  classes/class.phpmailer.php                                                                    2.0.0     (2010-06-09)
+    1) New release using PHPMailer 5.1
+    2) Changes to PHPMailer::CreateHeader() to save MessageID for tracking
+    3) Changes to various functions to NOT echo errors but just throw exceptions
+  classes/class.phpop3.php                                                                       1.0.2     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.piwik.php                                                                        1.0.2     (2014-02-05)
+    1) Piwik::get_outlinks() is incapable of accepting a filter so removed 'find'
+    2) Added Piwik::get_outlink() - takes a pipe delimited find parameter
+    3) Added Piwik::get_visit() - takes a pipe delimited find parameter
+  classes/class.podcast.php                                                                      1.0.46    (2015-02-06)
+    1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
+  classes/class.podcast_album.php                                                                1.0.17    (2015-02-01)
+    1) Changes to internally used parameters in Podcast_Album::BL_contained_items():
+         Old: filter_limit,  paging_controls
+         New: results_limit, results_paging
+    2) Now PSR-2 Compliant
+  classes/class.poll.php                                                                         1.0.10    (2014-02-17)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.poll_choice.php                                                                  1.0.4     (2014-02-17)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.portal.php                                                                       1.0.35    (2015-03-23)
+    1) Portal::get_request_path() now allows \ in a path -
+       This is needed for namespace determination, e.g.
+         http://desktop.churchesinyourtown.ca/_map?type=\Map\GeocodeCache&ID=709381220...
+    2) Method get_version() renamed to getVersion() and made static
   classes/class.posting.php                                                                      1.0.121   (2015-03-22)
     1) Added `map_geocode_address` to fields list
     2) Posting::get_coords() now includes map_geocode_address
-  classes/class.report_column.php                                                                1.0.128   (2015-03-22)
-    1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
-       and have no bulk update options. Quality label also opens up map just like lat and lon already did.
+  classes/class.posting_contained.php                                                            1.0.242   (2015-02-01)
+    1) Changed call in Posting_Contained::_get_records_sort_records()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    2) Changed call in Posting_Contained::_get_records_sort_records_by_sequence()
+         from $this->_get_records_sort_records_using_filter_order_by()
+         to   $this->_get_records_sort_records_using_results_order()
+    3) Changes internal arguments for Posting_Contained::get_records_matching()
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    4) Changes to internal arguments for Posting_Contained::_draw_listings_load_records()
+         Old: filter_limit,  filter_order_by
+         New: results_limit, results_order
+    5) Now PSR-2 Compliant
+  classes/class.posting_container.php                                                            1.0.4     (2012-11-21)
+    1) Now Posting_Container::set_default_enclosure_folder() checks the parent
+       folder if there is one, and then builds default folder based on parent
+       path combined with the name of the object represented.
+       Also checks that the path is properly prefixed ad suffixed with a slash
+  classes/class.prayer_request.php                                                               1.0.0     (2015-02-14)
+    1) Initial release - Moved from Church Module
+  classes/class.product.php                                                                      1.0.77    (2015-02-01)
+    1) Changes to Product::get_records() to rename some expected arguments to conform to other classes:
+         Old: order_by,      limit
+         New: results_order, results_limit
+    2) Class constant Product::fields renamed to Product::FIELDS
+    2) Now PSR-2 Compliant
+  classes/class.product_catalogue.php                                                            1.0.31    (2012-10-17)
+    1) Product_Catalogue::_draw_setup_load_product_groupings() now sets item field
+       'has_second_row' for each item loaded
+    2) Product_Catalogue::_draw_item_description() now checks each item's
+       'has_second_row' value to decide whether or not to skip.
+    3) Product_Catalogue::_has_catalogue_row_description() now only returns true
+       where an entry HAS an image value, the column list includes Image and
+       the $this->_image flag is set indicating that images are to be shown
+    4) Product_Catalogue::_draw_item_credit_memo() now spans one additional column
+       since quantity was removed from columns count now it spans two rows.
+  classes/class.product_catalogue_checkout.php                                                   1.0.5     (2012-10-17)
+    1) Product_Catalogue_Checkout::_draw_item_quantity() now ONLY spans two rows
+       IF item's 'has_second_row' flag is true
+  classes/class.product_catalogue_credit_memo.php                                                1.0.2     (2012-10-17)
+    1) Product_Catalogue_Credit_Memo::_draw_item_quantity() now ONLY spans two rows
+       IF item's 'has_second_row' flag is true
+  classes/class.product_catalogue_order_history.php                                              1.0.4     (2012-10-17)
+    1) Product_Catalogue_Order_History::_draw_item_quantity() now ONLY spans two rows
+       IF item's 'has_second_row' flag is true
+  classes/class.product_catalogue_shop.php                                                       1.0.6     (2012-10-17)
+    1) Product_Catalogue_Shop::_draw_item_quantity() now ONLY spans two rows
+       IF item's 'has_second_row' flag is true
+  classes/class.product_grouping.php                                                             1.0.8     (2011-08-26)
+    1) Renamed class to Product_Grouping and changed table name to improve consistency
+    2) Changed references to `product`.`categoryID` to `product`.`groupingID`
+  classes/class.product_grouping_column.php                                                      1.0.1     (2011-08-26)
+    1) Changed references to Product_Category to Product_Grouping
+  classes/class.product_relationship.php                                                         1.0.4     (2011-10-19)
+    1) Change to Product_Relationship::draw_combo_product_relationship() to
+       reference `effective_date_start`
+  classes/class.push_product.php                                                                 1.0.8     (2011-11-21)
+    1) Initial Release
+  classes/class.push_product_assign.php                                                          1.0.1     (2011-11-21)
+    1) Push_Product_Assign::set_for_assignment() - bug fix
+  classes/class.qrcode.php                                                                       1.0.0     (2011-12-01)
+    Initial release
+  classes/class.quickbooks.php                                                                   1.0.31    (2012-12-10)
+    1) Changes to handle embedded ampersand in customer data:
+       QuickBooks::_qbwc_wrap_XML() now replaces any standalone ampersands with
+       html entity variant
+  classes/class.rating.php                                                                       1.0.5     (2014-01-28)
+    1) Includes newlines after JS blocks in Rating::draw()
+  classes/class.record.php                                                                       1.0.90    (2015-03-23)
+    1) Record::get_coords() now uses \Map\GoogleMap class
+    2) Record::on_action_set_map_location() now looks for getCoords() if it exists and uses that
+    3) Method get_version() renamed to getVersion() and made static
+  classes/class.refunditem.php                                                                   1.0.1     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.register_event.php                                                               1.0.23    (2014-01-28)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.remote.php                                                                       1.0.11    (2015-01-31)
+    1) Changes to Remote::get_items() to use newer argument parameters to retrieve records:
+         Old: limit
+         New: results_limit
+    2) Now PSR-2 Compliant
+  classes/class.report.php                                                                       1.0.86    (2015-03-23)
+    1) Report::handle_copy() now looks for $Obj->handleReportCopy() and uses that if it exists in place of old
+       camelCased variant $Obj->handle_report_copy()
+    2) Method get_version() renamed to getVersion() and made static
+  classes/class.report_column.php                                                                1.0.129   (2015-03-23)
+    1) Report_Column::draw_form_field() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
+  classes/class.report_column_download_pdf.php                                                   1.0.2     (2013-10-30)
+    1) Report_Column_Download_PDF::_setup() modified to handle XML fields
+    2) Report_Column_Download_PDF::_merge_mapfile_with_data() now handles extra
+       tabs as separator
+  classes/class.report_column_report_field.php                                                   1.0.29    (2015-03-23)
+    1) Report_Column_Report_Field::draw() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
+  classes/class.report_column_type.php                                                           1.0.0     (2009-07-02)
+    Initial release
+  classes/class.report_config.php                                                                1.0.7     (2012-12-03)
+    1) Removed ini_set() that forces display_errors on
+  classes/class.report_defaults.php                                                              1.0.3     (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.report_filter.php                                                                1.0.16    (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.report_filter_criteria.php                                                       1.0.2     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
   classes/class.report_form.php                                                                  1.0.62    (2015-03-22)
     1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
+  classes/class.report_form_field_lookup.php                                                     1.0.2     (2014-03-17)
+    1) Now if multiple options are provided as XML for report_field, mode can also
+       be specified for each option
+       Report_Form_Field_Lookup::_setup_get_filter_criteria() now looks for mode
+       items as well as field
+  classes/class.report_report.php                                                                1.0.29    (2015-01-10)
+    1) Now PSR-2 Compliant
+  classes/class.report_settings.php                                                              1.0.5     (2014-02-21)
+    1) Report_Settings::delete_settings_for_filter() now removes filter settings
+       record if there are no filters to show
+  classes/class.rss.php                                                                          1.0.29    (2015-01-31)
+    1) Changes to RSS::_serve_get_records() to rename internal arguments for getting records:
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Changes to RSS::_serve_setup() to rename internal arguments for getting records:
+         Old: limit
+         New: results_limit
+    3) Moved RSS_Help into its own class file
+    4) Now PSR-2 Compliant
+  classes/class.rss_help.php                                                                     1.0.0     (2015-02-01)
+    1) Initial release - split from RSS class file
+  classes/class.rss_proxy.php                                                                    1.0.1     (2011-12-31)
+    1) Replaced deprecated ereg_replace functions which would fail in newer PHP
+  classes/class.scheduled_task.php                                                               1.0.4     (2014-01-28)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.search.php                                                                       1.0.10    (2014-01-21)
+    1) Changes to allow for searching by communityID
+  classes/class.services_json.php                                                                1.0.1     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.shipping.php                                                                     1.0.6     (2013-10-31)
+    1) Achived changelog
+  classes/class.smtp.php                                                                         2.0.0     (2010-06-09)
+    1) New release using class that ships with PHPMailer 5.1
+  classes/class.snoopy.php                                                                       1.2.5     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+  classes/class.socketwriteread.php                                                              1.0.0     (2015-03-23)
+    1) Moved from class.akismet.php
+  classes/class.sponsorship_plan.php                                                             1.0.4     (2012-11-22)
+    1) Sponsorship_Plan constructor now sets subtype to 'sponsorship-plan' but
+       leaves type as determined by the parent, in this case 'gallery-album'
+  classes/class.state_province.php                                                               1.0.4     (2011-06-01)
+    1) Removed State_Province::draw_selector() - now obsolete
+  classes/class.survey.php                                                                       1.0.17    (2013-03-08)
+    1) Changes to standard CPs to include options such as showing title or date
+  classes/class.survey_block.php                                                                 1.0.5     (2013-09-09)
+    1) Changes to apply classnames to table cells for better css control
+  classes/class.survey_response.php                                                              1.0.1     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.system.php                                                                       1.0.160   (2015-03-15)
+    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
+       resulting in wrong version code being returned by extending classes
+  classes/class.system_copy.php                                                                  1.0.7     (2012-08-22)
+    1) Now remaps posting parents to their new copied parents
+    2) Now remaps page parents to their new copied parents
+  classes/class.system_edit.php                                                                  1.0.33    (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
+  classes/class.system_export.php                                                                1.0.18    (2015-01-10)
+    1) Changed references from System::tables to System::TABLES
+  classes/class.system_health.php                                                                1.0.46    (2015-03-23)
+    1) System_Health::_getConfigClasses() now only looks for getVersion() and not get_version() as before
+       Call is also static and no longer requires checked classes to be instantiated, saving about 1MB of memory
+    2) Method get_version() renamed to getVersion() and made static
+  classes/class.table.php                                                                        1.0.5     (2012-09-08)
+    1) Tweak to table::get_checksum() to no longer ignore fields prefixed with word
+       'module' - new modules should from now on use XML fields instead of hacking
+       database structure
+  classes/class.tax_code.php                                                                     1.0.1     (2014-01-28)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.tax_regime.php                                                                   1.0.15    (2014-01-28)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.tax_rule.php                                                                     1.0.1     (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  classes/class.tax_zone.php                                                                     1.0.4     (2012-12-03)
+    1) Tax_Zone::copy() now has same signature as Record::copy()
+  classes/class.theme.php                                                                        1.0.8     (2014-02-17)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.transformer.php                                                                  1.0.5     (2012-09-03)
+    1) Changes to extend from Record class and use machinery there where required
+    2) Removed Transformer::admin() -
+       never accessed now since there is no longer a CKEditor plugin that is
+       compatible with it
+  classes/class.uploader.php                                                                     1.0.6     (2011-05-05)
+    1) Change to Uploader::do_upload() to unlink old file if it exists before
+       trying to rename new file to old file name
+  classes/class.user.php                                                                         1.0.7     (2014-02-17)
+    1) User::update_logon_count() now validates updated fields against field list
+  classes/class.widget.php                                                                       1.0.9     (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
+  classes/class.xml2array.php                                                                    1.0.1     (2010-10-18)
+    1) Now moved into classes folder and included automagically
+    2) Minor tidy up and added get_version()
+  classes/class.xml_sitemap.php                                                                  1.0.3     (2015-01-26)
+    1) Disallowed robots from indexing UserFiles File, Media and Video subfolders
+    2) Now PSR-2 Compliant
+  classes/component/activitytabber.php                                                           1.0.6     (2015-03-04)
+    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/adminpersonlookup.php                                                        1.0.5     (2015-03-08)
+    1) Moved here from class.component_admin_person_lookup.php and reworked for namespaces
+  classes/component/articlesrotator.php                                                          1.0.8     (2015-03-07)
+    1) Moved from Component_Articles_Rotator and reworked to use namespaces
+    2) Now has up-to-date constructor-based setup
+    3) Greatly simplified code by splitting into smaller helper classes
+  classes/component/base.php                                                                     1.0.3     (2015-03-17)
+    1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
+  classes/component/biblelinks.php                                                               1.0.1     (2015-03-04)
+    1) Moved from Component_Bible_Links and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/breadcrumbs.php                                                              1.0.5     (2015-03-08)
+    1) Moved from class.component_breadcrumbs.php and reworked to use namespaces
+    2) Now with much more modern component setup
+  classes/component/calendarlarge.php                                                            1.0.29    (2015-03-11)
+    1) Moved in here from class.component_calendar_large.php
+    2) Extensivly refactored, and now uses Block Layout renderer for context menu
+    3) Now fully PSR-2 Compliant
+  classes/component/calendarsmall.php                                                            1.0.4     (2014-03-08)
+    1) Moved in here from class.component_calendar_small.php
+  classes/component/calendaryearly.php                                                           1.0.1     (2015-03-14)
+    1) Moved in here from class.component_calendar_yearly.php
+    2) Some refactoring to separate setup and draw operations
+    3) Now fully PSR-2 Compliant
+  classes/component/categorystacker.php                                                          1.0.4     (2015-03-14)
+    1) Moved in here from class.component_category_stacker.php
+    2) Extensivly refactored
+    3) Now fully PSR-2 Compliant
+  classes/component/categorytabber.php                                                           1.0.5     (2015-03-14)
+    1) Moved in here from class.component_category_tabber.php
+    2) Extensivly refactored
+    3) Now fully PSR-2 Compliant
+  classes/component/changepassword.php                                                           1.0.2     (2015-03-17)
+    1) Moved from Component_Change_Password and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/collectionviewer.php                                                         1.0.52    (2015-03-07)
+    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
+  classes/component/combotabber.php                                                              1.0.11    (2015-03-17)
+    1) Moved from Component_Combo_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/communitiesdisplay.php                                                       1.0.6     (2015-03-17)
+    1) Moved from Component_Change_Password and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/communitycalendar.php                                                        1.0.2     (2015-03-13)
+    1) Now uses namespaces and is fully PSR-2 Compliant
+    2) Now extends \Component\CalendarLarge and modified to suit that object
+  classes/component/communitycollectionviewer.php                                                1.0.1     (2015-03-07)
+    1) Now namespaced and PSR-2 compliant
+  classes/component/communitymembercalendar.php                                                  1.0.2     (2015-03-13)
+    1) Now extends \Component\CalendarLarge and modified to suit that object
+  classes/component/contentblock.php                                                             1.0.1     (2015-03-17)
+    1) Moved from Component_Content_Block and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/contentgroupmembermirror.php                                                 1.0.4     (2015-03-17)
+    1) Moved from Component_Content_Group_Member_Mirror and MAJORLY reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/contentsigninmirror.php                                                      1.0.3     (2015-03-17)
+    1) Moved from Component_Content_Signin_Mirror and MAJORLY reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/dailybibleverse.php                                                          1.0.1     (2015-03-04)
+    1) Moved from Component_Daily_Bible_Verse and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/emailunsubscribe.php                                                         1.0.1     (2015-03-01)
+    1) Moved from Component_Email_Unsubscribe and reworked to use namespaces
+    2) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
+    3) Fully PSR-2 compliant
+  classes/component/wowslider.php                                                                1.0.9     (2015-03-02)
+    1) Moved from Component_WOW_Slider and reworked to use namespaces
+    2) Moved optional anchor for associated links inside Block Layout context Div to confrm to XHTML strict
+    3) Fully PSR-2 compliant
+  classes/map/addresssubstitution.php                                                            1.0.0     (2015-03-23)
+    1) Initial Release
+  classes/map/geocodecache.php                                                                   1.0.5     (2015-03-23)
+    1) Moved to map namespace and made PSR-2 compliant
+    2) Renamed export_sql() to exportSql
+  classes/map/googlemap.php                                                                      1.0.0     (2015-03-23)
+    1) Moved here from class.google_map.php which is now just a stub class
+    2) References to class Geocode_Cache now point to map\geocodeCache
 
-2373.sql
-  1) Added `office_map_geocode_address` and `service_map_geocode_address` to `community_member` table
-     and new indices on geocodeID fields
-  2) Added `AMap_geocode_address` and `WMap_geocode_address` to `person` table and indices on geocodeIDs
-  3) Added `map_geocode_address` to `postings` table
-  4) Added primary key to geocode_cache table (can't believe I missed that!)
-  5) Update `community_member` records to include `office_map_geocode_address` and `service_map_geocode_address` data
-  6) Update `person` records to include `AMap_geocode_address` and `WMap_geocode_address` data
-  7) Update `postings` records to include `map_geocode_address` data
-  8) Changes to community_member form / report for new match_address fields
-  9) Changes to Contact form / report for new match_address fields
- 10) Changes to Events form / report for new match_address fields
- 11) Changes to Events Recurrences form / report for new match_address fields
- 12) Changes to community.events form / report for new match_address fields
- 13) Changes to community_member.events form / report for new match_address fields
- 14) Changes to User form / report for new match_address fields
- 15) Set version information
+2374.sql
+  1) Set version information
+
+Delete:
+    class.geocode_cache.php                           1.0.4
 
 Promote:
-  codebase.php                                        3.2.9
-  classes/  (7 files changed)
-    class.community_member.php                        1.0.106   CS:1eb9e9b4
-    class.geocode_cache.php                           1.0.4     CS:4a7c0e63
-    class.google_map.php                              1.0.47    CS:bc49f821
-    class.person.php                                  1.0.124   CS:4a5c3273
-    class.posting.php                                 1.0.121   CS:28e31296
-    class.report_column.php                           1.0.128   CS:da5748e9
-    class.report_form.php                             1.0.62    CS:aebe3ffe
+  codebase.php                                        3.3.0
+  classes/  (307 files changed)
+    class.action.php                                  1.0.22    CS:92d1cc84
+    class.activity.php                                1.0.19    CS:1a17c13d
+    class.ajax.php                                    1.0.24    CS:58a25ba7
+    class.akismet.php                                 0.41.f    CS:920d6584
+    class.array2xml.php                               1.0.1     CS:76b4c130
+    class.article.php                                 1.0.39    CS:9769ae0b
+    class.backup.php                                  1.1.10    CS:cc614105
+    class.barcode.php                                 1.0.4     CS:eca9ae45
+    class.base.php                                    1.0.14    CS:50b22484
+    class.base_error.php                              1.0.2     CS:8fb940e8
+    class.beanstream_gateway.php                      1.0.5     CS:37b53ef6
+    class.block_layout.php                            1.0.62    CS:20805925
+    class.bugtracker.php                              1.0.7     CS:3b49ccfd
+    class.captcha.php                                 1.0.1     CS:99d91fea
+    class.cart.php                                    1.0.6     CS:26808dcf
+    class.category.php                                1.0.2     CS:46d8b827
+    class.category_assign.php                         1.0.5     CS:57230d08
+    class.cezpdf.php                                  1.0.1     CS:d9fe0916
+    class.chasepaymentech_gateway.php                 1.0.7     CS:98e8b339
+    class.checkout.php                                1.0.44    CS:47303759
+    class.ckfinder.php                                1.0.6     CS:3d198b83
+    class.colour_scheme.php                           1.0.2     CS:751e9c1b
+    class.comment.php                                 1.0.19    CS:4c1c5efe
+    class.community.php                               1.0.116   CS:2dfbd34c
+    class.community_article.php                       1.0.3     CS:476321bf
+    class.community_display.php                       1.0.39    CS:f30c2eb0
+    class.community_event.php                         1.0.3     CS:77c9ced9
+    class.community_member.php                        1.0.107   CS:119671b8
+    class.community_member_article.php                1.0.3     CS:84103817
+    class.community_member_display.php                1.0.41    CS:29232f8d
+    class.community_member_event.php                  1.0.3     CS:47c3440c
+    class.community_member_news_item.php              1.0.3     CS:48d0f669
+    class.community_member_podcast.php                1.0.3     CS:ca21628a
+    class.community_member_posting.php                1.0.4     CS:90658d1d
+    class.community_member_resource.php               1.0.7     CS:7f75cc7e
+    class.community_member_summary.php                1.0.20    CS:dafb83ff
+    class.community_membership.php                    1.0.5     CS:ce7e4fe5
+    class.community_news_item.php                     1.0.3     CS:6c9c12db
+    class.community_podcast.php                       1.0.3     CS:df75b8e0
+    class.community_posting.php                       1.0.5     CS:7b6a1d32
+    class.community_resource.php                      1.0.4     CS:828f888e
+    class.community_sponsorship_plan.php              1.0.3     CS:7cb49d72
+    class.component.php                               1.0.108   CS:50dd744b
+    class.component_base.php                          1.0.22    CS:bff1a982
+    class.component_custom_form.php                   1.0.4     CS:5ecb7eba
+    class.component_customiser_button.php             1.0.2     CS:ef9c0329
+    class.component_document_covers.php             * 1.0.0     CS:6688f643   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_document_reader.php             * 1.0.0     CS:bc5e3735   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_donate.php                      * 1.0.2     CS:b31ac9e    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_edit_your_profile.php           * 1.0.0     CS:4e3201fb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_email_form.php                  * 1.0.1     CS:ecfa3f     * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_email_newsletter_signup.php     * 1.0.0     CS:e7d1a4a5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_email_opt_in.php                * 1.0.0     CS:2a95c052   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_email_opt_out.php               * 1.0.0     CS:e81f3450   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_email_to_friend.php             * 1.0.0     CS:3ffac8bb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_event_registration.php          * 1.0.7     CS:99d0ea24   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_events_map.php                  * 1.0.2     CS:c46defc2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_facebook_like.php               * 1.0.4     CS:c085d746   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_flickr.php                      * 1.0.0     CS:d56be417   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_folder_viewer.php               * 1.0.0     CS:86a2a83f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_forgotten_password.php          * 1.0.1     CS:b0cf42f    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_form.php                        * 1.0.0     CS:b6150d41   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_gallery_album.php               * 1.0.71    CS:ed1056b2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_gallery_album_gallery_image.php * 1.0.3     CS:c626f759   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_gallery_fader.php               * 1.0.42    CS:9a36a919   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_gallery_thumbnails.php          * 1.0.35    CS:951867e4   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_gc_weather.php                  * 1.0.0     CS:169d1f1b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_google_map.php                  * 1.0.0     CS:6d601124   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_google_plusone.php              * 1.0.0     CS:f9750402   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_group_member_redirector.php     * 1.0.1     CS:ec0b11a2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_image_fader.php                 * 1.0.1     CS:207af46e   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_image_gallery.php               * 1.0.0     CS:96ee1bf8   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_image_text.php                  * 1.0.0     CS:fafb7e6f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_importer.php                    * 1.0.2     CS:5fad515f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_inline_signin.php               * 1.0.2     CS:27adf516   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_jumploader.php                  * 1.0.4     CS:be809f93   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_language_button.php             * 1.0.1     CS:2fe3a328   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_member_search.php               * 1.0.12    CS:84db68     * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_nav_links.php                   * 1.0.1     CS:e7db485d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_order_detail.php                * 1.0.6     CS:2716b1d0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_password_protect.php            * 1.0.3     CS:ae399f55   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_paypal_return.php               * 1.0.1     CS:3bad72af   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_persons_listing.php             * 1.0.1     CS:49ce06c0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_persons_map.php                 * 1.0.1     CS:cb7d23f7   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_poll.php                        * 1.0.2     CS:6adce7d1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_poll_archive.php                * 1.0.1     CS:e0eb4058   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_prayer_request.php              * 1.0.0     CS:ec7d1b95   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_prev_next.php                   * 1.0.1     CS:267e26b9   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_product_dropdown.php            * 1.0.2     CS:2596d391   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_random_news.php                 * 1.0.1     CS:22f34d84   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_related_block.php               * 1.0.4     CS:9a9bef64   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_remote_page_content.php         * 1.0.0     CS:d95e2965   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_rss_displayer.php               * 1.0.1     CS:6b040a4c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_rss_headlines.php               * 1.0.0     CS:5356657b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_sdmenu.php                      * 1.0.5     CS:e6611345   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_search_date_picker.php          * 1.0.0     CS:f77806be   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_search_tag_cloud.php            * 1.0.0     CS:294f51a5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_search_word_cloud.php           * 1.0.0     CS:a4190296   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_secure_email.php                * 1.0.0     CS:4ca1ff40   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_share_this.php                  * 1.0.2     CS:adbdf122   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_shop.php                        * 1.0.8     CS:12926bb6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_signin.php                      * 1.0.2     CS:d677ac65   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_signup.php                      * 1.0.2     CS:2ecaeb26   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_sitemap.php                     * 1.0.2     CS:7f995aac   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_social_icon.php                 * 1.0.1     CS:11f08556   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_splash_page.php                 * 1.0.0     CS:e57f991e   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_subscribe.php                   * 1.0.1     CS:6138f722   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_survey.php                      * 1.0.0     CS:5b837778   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_time_tracker.php                * 1.0.3     CS:490806c    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_twitter.php                     * 1.0.2     CS:951af625   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_video_player.php                * 1.0.0     CS:8ac03761   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.contact.php                               * 1.0.5     CS:68e9b1eb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.content_block.php                         * 1.0.9     CS:2bb73e0f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.context_menu.php                          * 1.0.75    CS:97a23fac   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.country.php                               * 1.0.1     CS:39e46aa6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.cpdf.php                                  * 1.0.0     CS:9fad0b3a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.credit_memo.php                           * 1.0.11    CS:7e84cfe4   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.crm_case.php                              * 1.0.12    CS:6b5825b5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.crm_case_task.php                         * 1.0.2     CS:12e74983   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.cron.php                                  * 1.0.10    CS:637aeb2d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.curl.php                                  * 1.0.1     CS:f9de57b2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.custom_form.php                           * 1.0.41    CS:6ded5682   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.custom_registration.php                   * 1.0.3     CS:daef5ff    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.displayable_item.php                        1.0.152   CS:a113c418
+    class.droplib.php                               * 2.1.0.c   CS:7b6eaed7   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.dtd.php                                   * 1.0.0     CS:a996428f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.ecc_facebook.php                          * 1.0.0     CS:6f282a51   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.ecl_tag.php                               * 1.0.3     CS:76624a77   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.event.php                                 * 1.0.104   CS:bd6e926b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.event_recurrence.php                      * 1.0.12    CS:d06fc64b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.export.php                                  1.0.25    CS:c128e729
+    class.extended_community.php                    * 1.0.0     CS:724bb4c2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.fck.php                                   * 1.0.22    CS:bccc34f6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.fdf.php                                   * 1.0.0     CS:62b82016   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.field_template.php                        * 1.0.1     CS:417ff657   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.filesystem.php                            * 1.0.17    CS:d9f859c2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.font_face.php                             * 1.0.1     CS:690325e1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gallery_album.php                         * 1.0.33    CS:ebfb7c3d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gallery_image.php                         * 1.0.23    CS:ab525f99   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gateway_setting.php                       * 1.0.4     CS:a9b30269   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gateway_type.php                          * 1.0.2     CS:3cd3cf44   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gc_weather.php                            * 1.0.0     CS:f4a8aeee   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.google_map.php                              1.0.48    CS:c6032914
+    class.group.php                                 * 1.0.29    CS:5a3df4b0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.group_assign.php                          * 1.0.2     CS:9bb48107   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.group_member.php                          * 1.0.5     CS:7c27c8f6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.group_wizard.php                          * 1.0.13    CS:eb43bcd0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.gwsocket.php                              * 1.0.0     CS:af934122   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.handler.php                               * 1.0.0     CS:11fa6a89   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.help.php                                  * 1.0.7     CS:28485daf   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.history.php                               * 1.0.5     CS:c07e3f8c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.html.php                                  * 1.0.88    CS:8d223624   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.html2text.php                             * 1.0.1     CS:217d0b8b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.http_raw_socket.php                       * 1.0.0     CS:7fed2e0d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.image_factory.php                         * 1.0.10    CS:43335bdb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.image_template.php                        * 1.0.2     CS:fa8e93a4   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.job_posting.php                           * 1.0.20    CS:51ce59fa   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.jsmin.php                                 * 1.0.0     CS:8aa9202b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.jumploader.php                            * 1.0.7     CS:7fac1506   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.keyword.php                               * 1.0.10    CS:206de727   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.keyword_assign.php                        * 1.0.2     CS:86d9d3cd   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.language.php                              * 1.0.3     CS:5d71387    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.language_assign.php                       * 1.0.1     CS:8974f40c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.layout.php                                * 1.0.28    CS:ed75f955   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.link.php                                  * 1.0.6     CS:b2ae7f60   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.listdata.php                              * 1.0.5     CS:8c3cbbfa   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.listtype.php                              * 1.0.7     CS:43030c10   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_delivery_method.php                   * 1.0.0     CS:90060428   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_delivery_status.php                   * 1.0.0     CS:7147e852   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_effective_period_unit.php             * 1.0.0     CS:60c1e9da   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_language.php                          * 1.0.0     CS:2ba59612   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_named_type.php                        * 1.0.4     CS:1a524390   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_note_person_type.php                  * 1.0.0     CS:34916ccf   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_payment_status.php                    * 1.0.2     CS:cf5b6db3   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_persontitle.php                       * 1.0.0     CS:ccf0a81a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_product_type.php                      * 1.0.0     CS:53bcafa0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.lst_refund_status.php                     * 1.0.0     CS:1678668a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.mail_identity.php                         * 1.0.6     CS:69bbff18   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.mail_queue.php                            * 1.0.37    CS:fb64185b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.mail_queue_item.php                       * 1.0.16    CS:6bf6c2a8   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.mail_template.php                         * 1.0.13    CS:f445df4f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.media.php                                 * 1.0.3     CS:3830441c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.media_audioplayer.php                     * 1.0.9     CS:fe405e6f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.media_youtube.php                         * 1.0.6     CS:2782db0f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.membership_rule.php                       * 1.0.2     CS:dd7c8104   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.navbutton.php                             * 1.0.16    CS:794b4d05   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.navbutton_image.php                       * 1.0.8     CS:af3654cb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.navbutton_style.php                       * 1.0.8     CS:6c2e796c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.navsuite.php                              * 1.0.33    CS:2d3598c6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.news_item.php                             * 1.0.24    CS:590b2ea8   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.note.php                                  * 1.0.3     CS:773e3893   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.notification.php                          * 1.0.4     CS:8c117e0    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.order.php                                 * 1.0.68    CS:6f1709ac   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.orderitem.php                             * 1.0.14    CS:2ef9938c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.orders_overview.php                       * 1.0.1     CS:67bf2cca   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.page.php                                  * 1.0.120   CS:4cdbfe3a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.page_edit.php                             * 1.0.16    CS:937b7914   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.page_vars.php                             * 1.0.25    CS:e354ad7b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.password.php                              * 1.0.0     CS:66a7578e   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.payment_method.php                        * 1.0.10    CS:20303f63   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.paypal_gateway.php                        * 1.0.24    CS:7648cd63   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.pdf.php                                   * 1.0.1     CS:69fcfaf5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.person.php                                * 1.0.124   CS:7050f56f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.person_merge_profiles.php                 * 1.0.4     CS:87939c99   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.php_excel.php                             * 1.0.2     CS:deb8e278   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.phpmailer.php                             * 2.0.0     CS:43909226   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.phpop3.php                                  1.0.2     CS:448eb00
+    class.piwik.php                                 * 1.0.2     CS:448fdcc9   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.podcast.php                               * 1.0.46    CS:a99c8211   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.podcast_album.php                         * 1.0.17    CS:dd665209   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.poll.php                                  * 1.0.10    CS:729a45e2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.poll_choice.php                           * 1.0.4     CS:c918aab3   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.portal.php                                  1.0.35    CS:38d37dca
+    class.posting.php                               * 1.0.121   CS:9235caf1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.posting_contained.php                     * 1.0.242   CS:c2083d8d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.posting_container.php                     * 1.0.4     CS:f77c2949   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.prayer_request.php                        * 1.0.0     CS:7c065020   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product.php                               * 1.0.77    CS:44fa9e5b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_catalogue.php                     * 1.0.31    CS:1ac7e5e1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_catalogue_checkout.php            * 1.0.5     CS:38b354ad   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_catalogue_credit_memo.php         * 1.0.2     CS:4dde8ab1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_catalogue_order_history.php       * 1.0.4     CS:ee35aea5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_catalogue_shop.php                * 1.0.6     CS:825adfc5   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_grouping.php                      * 1.0.8     CS:d11c50cf   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_grouping_column.php               * 1.0.1     CS:d009a62d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.product_relationship.php                  * 1.0.4     CS:aa53d5bc   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.push_product.php                          * 1.0.0     CS:b8bee9cb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.push_product_assign.php                   * 1.0.1     CS:91df8dcd   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.qrcode.php                                * 1.0.0     CS:9552549b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.quickbooks.php                            * 1.0.31    CS:adf6bf32   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.rating.php                                * 1.0.5     CS:c8d76c72   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.record.php                                  1.0.90    CS:500b2d64
+    class.refunditem.php                            * 1.0.1     CS:541168c3   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.register_event.php                        * 1.0.23    CS:3ded3e43   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.remote.php                                * 1.0.11    CS:cc71c3ab   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report.php                                  1.0.86    CS:76d71ef4
+    class.report_column.php                           1.0.129   CS:6bcc221b
+    class.report_column_download_pdf.php            * 1.0.2     CS:a8e3ea4c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_column_report_field.php              1.0.29    CS:6cd62076
+    class.report_column_type.php                    * 1.0.0     CS:a52ba350   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_config.php                         * 1.0.7     CS:f881457    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_defaults.php                       * 1.0.3     CS:7fca07da   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_filter.php                         * 1.0.16    CS:32b52c59   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_filter_criteria.php                * 1.0.2     CS:84f1a66e   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_form.php                           * 1.0.62    CS:4a424d77   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_form_field_lookup.php              * 1.0.2     CS:5a6bfab7   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_report.php                         * 1.0.29    CS:942f30c0   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.report_settings.php                       * 1.0.5     CS:b42169f2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.rss.php                                   * 1.0.29    CS:931cb4b9   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.rss_help.php                              * 1.0.0     CS:5477dd87   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.rss_proxy.php                             * 1.0.1     CS:ec9312af   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.scheduled_task.php                        * 1.0.4     CS:94b6eaa7   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.search.php                                * 1.0.10    CS:398a8795   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.services_json.php                           1.0.1     CS:a3b8a85c
+    class.shipping.php                              * 1.0.6     CS:e1856dbc   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.smtp.php                                  * 2.0.0     CS:8fef1b22   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.snoopy.php                                * 1.2.4     CS:3da7574a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.socketwriteread.php                         1.0.0     CS:ce3717a6
+    class.sponsorship_plan.php                      * 1.0.4     CS:e0b40d3c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.state_province.php                        * 1.0.4     CS:a8af9045   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.survey.php                                * 1.0.17    CS:70c09a2a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.survey_block.php                          * 1.0.5     CS:4ff3b4d2   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.survey_response.php                       * 1.0.1     CS:355c5596   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.system.php                                * 1.0.160   CS:c369760a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.system_copy.php                           * 1.0.7     CS:1d813fec   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.system_edit.php                           * 1.0.33    CS:e4d217e1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.system_export.php                         * 1.0.18    CS:bf9c3574   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.system_health.php                           1.0.46    CS:fd9c4d6d
+    class.table.php                                 * 1.0.5     CS:6d770ade   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.tax_code.php                              * 1.0.1     CS:557edda    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.tax_regime.php                            * 1.0.15    CS:a92add9b   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.tax_rule.php                              * 1.0.1     CS:9f60a7a9   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.tax_zone.php                              * 1.0.4     CS:faeeccb8   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.theme.php                                 * 1.0.8     CS:84267997   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.transformer.php                           * 1.0.5     CS:d805fe7c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.uploader.php                              * 1.0.6     CS:e58805cb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.user.php                                  * 1.0.7     CS:6ec5a88    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.widget.php                                * 1.0.9     CS:27582a66   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.xml2array.php                             * 1.0.1     CS:18dcc68c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.xml_sitemap.php                           * 1.0.3     CS:799d9a53   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/activitytabber.php                    * 1.0.6     CS:81264bf4   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/adminpersonlookup.php                 * 1.0.5     CS:2e6bc18f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/articlesrotator.php                   * 1.0.8     CS:c0cab53    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/base.php                              * 1.0.3     CS:f8c825c    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/biblelinks.php                        * 1.0.1     CS:cc9881c1   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/breadcrumbs.php                       * 1.0.5     CS:12fccf16   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/calendarlarge.php                     * 1.0.29    CS:46a68b34   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/calendarsmall.php                     * 1.0.4     CS:273dfc9f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/calendaryearly.php                    * 1.0.1     CS:eda3cbbb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/categorystacker.php                   * 1.0.4     CS:4693e61d   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/categorytabber.php                    * 1.0.5     CS:a8b4f1cf   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/changepassword.php                    * 1.0.2     CS:a787378c   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/collectionviewer.php                  * 1.0.52    CS:757d9c9    * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/combotabber.php                       * 1.0.11    CS:2823fb23   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/communitiesdisplay.php                * 1.0.6     CS:cf9f20c8   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/communitycalendar.php                 * 1.0.2     CS:945c0d6a   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/communitycollectionviewer.php         * 1.0.1     CS:621069cd   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/communitymembercalendar.php           * 1.0.2     CS:321cbad6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/contentblock.php                      * 1.0.1     CS:87117391   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/contentgroupmembermirror.php          * 1.0.4     CS:d854e239   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/contentsigninmirror.php                 1.0.3     CS:4c5b2e63
+    component/dailybibleverse.php                   * 1.0.1     CS:bf6fad81   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/emailunsubscribe.php                  * 1.0.1     CS:e552f820   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    component/wowslider.php                         * 1.0.9     CS:5c8ab7a6   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    map/addresssubstitution.php                       1.0.0     CS:999e54da
+    map/geocodecache.php                              1.0.5     CS:7bf13a72
+    map/googlemap.php                                 1.0.0     CS:490a0482
+  images/icons.gif                                              CS:fcf2a910
 
 
 

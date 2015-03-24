@@ -78,7 +78,7 @@ class Product_Grouping_Column extends Lst_Named_Type {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PRODUCT_GROUPING_COLUMN;
   }
 }

@@ -1,11 +1,10 @@
 <?php
-define('VERSION_CHECKOUT','1.0.43');
+define('VERSION_CHECKOUT','1.0.44');
 /*
 Version History:
-  1.0.43 (2014-02-06)
-    1) Now invokes Report_Form_Field_Lookup class to handle Ajax lookup
+  1.0.44 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.checkout.txt)
 */
 class Checkout extends Component_Base{
   private $_lookup_status =             '';
@@ -451,7 +450,7 @@ class Checkout extends Component_Base{
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CHECKOUT;
   }
 }

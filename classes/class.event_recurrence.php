@@ -1093,7 +1093,7 @@ class Event_Recurrence extends Event {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_EVENT_RECURRENCE;
   }
 }

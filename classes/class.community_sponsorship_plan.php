@@ -1,16 +1,9 @@
 <?php
-define('VERSION_COMMUNITY_SPONSORSHIP_PLAN','1.0.2');
+define('VERSION_COMMUNITY_SPONSORSHIP_PLAN','1.0.3');
 /*
 Version History:
-  1.0.2 (2012-11-23)
-    1) Changes to Community_Sponsorship_Plan::set_container_path() to allow
-       container album to be changed to something other than the one given in
-       the community record and to remap the path based on such a change
-  1.0.1 (2012-11-19)
-    1) More work to implement automatic assignment of file folders for each
-       community sponsorship plan
-  1.0.0 (2012-11-19)
-    1) Initial release - incomplete as yet
+  1.0.3 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 class Community_Sponsorship_Plan extends Sponsorship_Plan {
@@ -33,7 +26,7 @@ class Community_Sponsorship_Plan extends Sponsorship_Plan {
     parent::set_container_path();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMMUNITY_SPONSORSHIP_PLAN;
   }
 }

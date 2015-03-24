@@ -106,7 +106,7 @@ class Component_Signin extends Component_Base {
     $this->_username =  sanitize('html',get_var('username'));
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SIGNIN;
   }
 }

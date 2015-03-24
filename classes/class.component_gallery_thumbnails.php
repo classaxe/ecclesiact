@@ -680,7 +680,7 @@ class Component_Gallery_Thumbnails extends Component_Base
         $this->_isAdmin =   ($isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_GALLERY_THUMBNAILS;
     }

@@ -253,7 +253,7 @@ class Survey extends Posting {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SURVEY;
   }
 }

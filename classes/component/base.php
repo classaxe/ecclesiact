@@ -520,7 +520,7 @@ class Base extends \Record
         return $out;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_BASE;
     }

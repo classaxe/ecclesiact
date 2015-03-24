@@ -1,12 +1,11 @@
 <?php
-define('VERSION_EXPORT', '1.0.24');
+define('VERSION_EXPORT', '1.0.25');
 /*
 Version History:
-  1.0.24 (2015-01-04)
-    1) Now always sets show_fields to true whe exporting sql results
-    2) Now conforms to PSR-2
+  1.0.25 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Export::draw() now looks for exportSql() and then tries export_sql() if the former method isn't found
 
-  (Older version history in class.export.txt)
 */
 class Export extends Record
 {
@@ -44,7 +43,11 @@ class Export extends Record
                 $Obj_Report->_set_ID($Obj_Report->get_ID_by_name($report_name));
                 $reportPrimaryObjectName = $Obj_Report->get_field('primaryObject');
                 $Obj = $Obj_Report->get_ObjPrimary($report_name, $reportPrimaryObjectName);
-                $result = $Obj->export_sql($targetID, 1);
+                $result = (method_exists($Obj, 'exportSql') ?
+                    $Obj->exportSql($targetID, 1)
+                 :
+                    $Obj->export_sql($targetID, 1)
+                );
                 print $result;
                 die;
             break;
@@ -288,7 +291,7 @@ class Export extends Record
         die();
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_EXPORT;
     }

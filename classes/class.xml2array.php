@@ -53,7 +53,7 @@ class xml2Array {
     array_pop($this->arrOutput);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_XML2ARRAY;
   }
 }

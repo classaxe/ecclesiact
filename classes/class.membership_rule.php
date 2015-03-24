@@ -106,7 +106,7 @@ class Membership_Rule extends Record {
     return 0;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_MEMBERSHIP_RULE;
   }
 }

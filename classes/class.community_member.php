@@ -1,14 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_VERSION', '1.0.106');
+define('COMMUNITY_MEMBER_VERSION', '1.0.107');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.106 (2015-03-22)
-    1) Added `office_map_geocode_address` and `service_map_geocode_address` to fields list
-    2) Community_Member::get_coords() now includes office_map_geocode_address and service_map_geocode_address
+  1.0.107 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -1516,7 +1515,7 @@ class Community_Member extends Displayable_Item
         $page_vars['layout_component_parameter'] = $Obj_Layout->get_field('component_parameters');
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return COMMUNITY_MEMBER_VERSION;
     }

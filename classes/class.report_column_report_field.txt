@@ -1,3 +1,6 @@
+  1.0.28 (2015-03-21)
+    1) Now gives map link as 'Map' if no value is actually given for the text
+    2) Now mainly PSR-2 Compliant
   1.0.27 (2014-06-22)
     1) Added specific support in Report_Column_Report_Field::draw() for columns of type
        'textarea', 'textarea_big' and 'textarea_readonly' to have new lines shown with breaks

@@ -1,17 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_CUSTOM_FORM","1.0.3");
+  define ("VERSION_COMPONENT_CUSTOM_FORM","1.0.4");
 /*
 Version History:
-  1.0.3 (2012-11-15)
-    1) Control Panel now has setting for gateway settings to use when processing
-       any orders that may result
-  1.0.2 (2012-03-30)
-    1) Now defaults name to instance name of inserted custom form
-  1.0.1 (2012-01-26)
-    1) Added two new component parameters -
-       new_user_email (0|1) and new_user_email_template (default=user_signup)
-  1.0.0 (2011-12-30)
-    1) Initial release - moved from Component class
+  1.0.4 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Component_Custom_Form extends Component_Base {
 
@@ -70,7 +63,7 @@ class Component_Custom_Form extends Component_Base {
     return          $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_CUSTOM_FORM;
   }
 }

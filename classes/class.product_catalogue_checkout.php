@@ -131,7 +131,7 @@ class Product_Catalogue_Checkout extends Product_Catalogue {
     $this->_html.= "</div>";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PRODUCT_CATALOGUE_CHECKOUT;
   }
 }

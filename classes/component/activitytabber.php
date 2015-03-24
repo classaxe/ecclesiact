@@ -265,7 +265,7 @@ class ActivityTabber extends Base
         $this->_selected_section = (in_array($temp, $this->_activities) ? $temp : $this->_activities[0]);
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_ACTIVITY_TABBER;
     }

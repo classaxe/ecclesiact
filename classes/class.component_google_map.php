@@ -60,7 +60,7 @@ class Component_Google_Map extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_GOOGLE_MAP;
   }
 }

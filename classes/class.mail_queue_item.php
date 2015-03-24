@@ -196,7 +196,7 @@ class Mail_Queue_Item extends Displayable_Item
 
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_MAIL_QUEUE_ITEM;
     }

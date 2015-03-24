@@ -1,11 +1,10 @@
 <?php
-define('VERSION_COMMENT','1.0.18');
+define('VERSION_COMMENT','1.0.19');
 /*
 Version History:
-  1.0.18 (2014-02-17)
-    1) Refreshed fields list - now declared as a class constant
+  1.0.19 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.comment.txt)
 */
 class Comment extends Record{
   const fields = 'ID, archive, archiveID, deleted, systemID, approved, author_browser, author_email, author_hostname, author_ip, author_name, author_url, content, parentID, personID, sourceID, sourceType, type, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
@@ -610,7 +609,7 @@ class Comment extends Record{
     return true;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMMENT;
   }
 }

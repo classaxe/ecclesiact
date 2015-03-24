@@ -99,7 +99,7 @@ class Component_Image_Gallery extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_IMAGE_GALLERY;
   }
 }

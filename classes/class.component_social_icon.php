@@ -65,7 +65,7 @@ class Component_Social_Icon extends Component_Base {
     Page::push_content('style',$this->_css);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SOCIAL_ICON;
   }
 

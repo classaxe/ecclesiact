@@ -217,7 +217,7 @@ class CalendarYearly extends Base
         $this->events =     $Obj->get_yearly_dates($this->YYYY, $this->memberID);
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CALENDAR_YEARLY;
     }

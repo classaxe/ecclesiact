@@ -911,7 +911,7 @@ class Component_Gallery_Album extends Component_Base {
     History::set('shop',BASE_PATH.trim($page_vars['path'],'/'));
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_GALLERY_ALBUM;
   }
 }

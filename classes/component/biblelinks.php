@@ -69,7 +69,7 @@ class BibleLinks extends Base
         return $this->_html;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_BIBLE_LINKS;
     }

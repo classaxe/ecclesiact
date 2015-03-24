@@ -568,7 +568,7 @@ class Page_Vars extends Page
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PAGE_VARS;
     }

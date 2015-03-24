@@ -1,15 +1,10 @@
 <?php
-define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.19');
-/*
-Custom Fields used:
-custom_1 = denomination (must be as used in other SQL-based controls)
-*/
+define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.20');
 /*
 Version History:
-  1.0.19 (2015-02-20)
-    1) Added new Fax number
+  1.0.20 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.community_member_summary.txt)
 */
 
 class Community_Member_Summary extends Community_Member
@@ -1184,7 +1179,7 @@ class Community_Member_Summary extends Community_Member
             (get_person_permission("COMMUNITYADMIN") && $_SESSION['person']['memberID']==$this->_record['ID']);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return COMMUNITY_MEMBER_SUMMARY_VERSION;
     }

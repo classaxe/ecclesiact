@@ -1,3 +1,6 @@
+  1.0.128 (2015-03-22)
+    1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
+       and have no bulk update options. Quality label also opens up map just like lat and lon already did.
   1.0.127 (2015-03-21)
     1 Added support for type 'json' in Report_Column::draw_form_field()
   1.0.126 (2014-12-31)

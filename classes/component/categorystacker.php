@@ -258,7 +258,7 @@ class CategoryStacker extends Base
             ."[ICON]11 11 1188 [/ICON]</a>\n";
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CATEGORY_STACKER;
     }

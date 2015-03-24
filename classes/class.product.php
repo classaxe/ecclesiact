@@ -1577,7 +1577,7 @@ class Product extends Displayable_Item
         return true;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_PRODUCT;
     }

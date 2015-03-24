@@ -170,7 +170,7 @@ class Component_Prev_Next extends Component_Base {
     return;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_PREV_NEXT;
   }
 }

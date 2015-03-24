@@ -10,7 +10,7 @@ class lst_delivery_status extends lst_named_type{
     parent::__construct($ID, 'lst_delivery_status','Delivery Status');
     $this->set_plural_append('','es');
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_DELIVERY_STATUS;
   }
 }

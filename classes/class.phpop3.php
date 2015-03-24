@@ -1,7 +1,9 @@
 <?php
-define ("VERSION_PHPOP3","1.0.1");
+define ("VERSION_PHPOP3","1.0.2");
 /*
-Version History
+Version History:
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.1 (2009-11-16)
     1) Changed eregi() to preg_match() in phPOP3::pop3_stat() for php 5.3+
   1.0.0 (2009-07-11)
@@ -382,7 +384,7 @@ Version History
 			// output last result message
 			echo $this->status[ "lastresultmessage" ] . "<br>";
 		}
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PHPOP3;
   }
 

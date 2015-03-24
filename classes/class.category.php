@@ -1,11 +1,10 @@
 <?php
-define('VERSION_CATEGORY','1.0.1');
+define('VERSION_CATEGORY','1.0.2');
 /*
 Version History:
-  1.0.1 (2010-10-04)
-    1) Changes to setter and getter names for parent-based object properties
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Category extends Record {
   // Not really lst_named_type as may draw from multiple list types
@@ -90,7 +89,7 @@ class Category extends Record {
       ."ORDER BY\n"
       ."  `seq`,`text`\n";
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CATEGORY;
   }
 }

@@ -874,7 +874,7 @@ class RSS extends Record
         $this->_serve_set_object();
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_RSS;
     }

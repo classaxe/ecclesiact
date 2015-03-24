@@ -23,7 +23,7 @@ class lst_payment_status extends lst_named_type{
     return ($this->get_field('custom_1')=='1' ? true : false);
   }
   
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_LST_PAYMENT_STATUS;
   }
 }

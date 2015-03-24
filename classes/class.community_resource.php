@@ -235,7 +235,7 @@ class Community_Resource extends Community_Display
         $this->_set_ID($this->_community_record['ID']);
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return COMMUNITY_RESOURCE_VERSION;
     }

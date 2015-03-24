@@ -98,7 +98,7 @@ class Report_Settings extends Record {
   }
 
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REPORT_SETTINGS;
   }
 }

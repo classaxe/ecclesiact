@@ -668,7 +668,7 @@ class Widget extends Record {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_WIDGET;
   }
 }

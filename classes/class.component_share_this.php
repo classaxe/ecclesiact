@@ -75,7 +75,7 @@ class Component_Share_This extends Component_Base {
     return $this->_html;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SHARE_THIS;
   }
 }

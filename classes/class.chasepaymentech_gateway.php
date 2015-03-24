@@ -1,13 +1,11 @@
 <?php
-define('VERSION_CASEPAYMENTECH_GATEWAY','1.0.6');
+define('VERSION_CASEPAYMENTECH_GATEWAY','1.0.7');
 
 /*
 Version History:
-  1.0.6 (2014-01-06)
-    1) Chasepaymentech_Gateway::payment() now uses User class to get details of
-       person placing order - Contacts cannot place orders
+  1.0.7 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.chasepaymentech_gateway.txt)
 */
 
 class Chasepaymentech_Gateway {
@@ -294,7 +292,7 @@ class Chasepaymentech_Gateway {
     die();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CASEPAYMENTECH_GATEWAY;
   }
 }

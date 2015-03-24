@@ -99,7 +99,7 @@ class Component_Inline_Signin extends Component_Base {
 
 
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_INLINE_SIGNIN;
   }
 }

@@ -37,7 +37,7 @@ class Component_Google_Plusone extends Component_Base {
     );
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_GOOGLE_PLUSONE;
   }
 }

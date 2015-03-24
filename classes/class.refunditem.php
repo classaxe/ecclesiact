@@ -14,7 +14,7 @@ class RefundItem extends OrderItem {
     $this->_set_object_name('Refunded Item');
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_REFUNDITEM;
   }
 }

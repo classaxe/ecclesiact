@@ -1,11 +1,10 @@
 <?php
-define('VERSION_ARRAY2XML','1.0.0');
+define('VERSION_ARRAY2XML','1.0.1');
 /*
 Version History:
-  1.0.0 (2010-04-19)
-    Initial release
-    Based on code at phpclasses by Roger Veciana
-    http://www.phpclasses.org/package/2286-PHP-Convert-XML-documents-into-arrays-and-vice-versa.html
+  1.0.1 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class array2xml {
   var $text;
@@ -73,7 +72,7 @@ class array2xml {
      $this->depth--;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_ARRAY2XML;
   }
 }

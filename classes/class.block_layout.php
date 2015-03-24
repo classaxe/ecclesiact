@@ -1,12 +1,10 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.61');
+define('VERSION_BLOCK_LAYOUT','1.0.62');
 /*
 Version History:
-  1.0.61 (2014-11-27)
-    1) BL tag for BL_link() where the links_switch_video cp feature is enabled now sets
-       the rel=0 flag to prevent related content from showing.
+  1.0.62 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.block_layout.txt)
 */
 class Block_Layout extends Record{
   function __construct($table='block_layout', $ID='', $systemID=SYS_ID) {
@@ -900,7 +898,7 @@ class Block_Layout extends Record{
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_BLOCK_LAYOUT;
   }
 }

@@ -36,7 +36,7 @@ class Component_Form extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_FORM;
   }
 

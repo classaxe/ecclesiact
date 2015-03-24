@@ -1,5 +1,11 @@
 <?php
 define ("VERSION_SNOOPY","1.2.4");
+/*
+Version History:
+  1.2.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
+*/
 
 /*************************************************
 
@@ -1246,7 +1252,7 @@ class Snoopy
 
 		return $postdata;
 	}
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SNOOPY;
   }
 }

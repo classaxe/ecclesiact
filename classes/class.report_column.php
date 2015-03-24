@@ -1,10 +1,11 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.128');
+define('VERSION_REPORT_COLUMN', '1.0.129');
 /*
 Version History:
-  1.0.128 (2015-03-22)
-    1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
-       and have no bulk update options. Quality label also opens up map just like lat and lon already did.
+  1.0.129 (2015-03-23)
+    1) Report_Column::draw_form_field() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
 
 */
 class Report_Column extends Record
@@ -957,7 +958,7 @@ class Report_Column extends Record
                 break;
                 case "fieldset_map_loc_lat_lon":
                     $params = explode('|', $formFieldSpecial);
-                    $_type =    $params[0];
+                    $_type =    urlencode($params[0]);
                     $_info =    $params[1];
                     $_lat =     $params[2];
                     $_lon =     $params[3];
@@ -3419,7 +3420,7 @@ class Report_Column extends Record
         ."----------------------------------------------------\n";
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_REPORT_COLUMN;
     }

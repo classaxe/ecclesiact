@@ -81,7 +81,7 @@ class Component_Edit_Your_Profile extends Component_Base {
     }
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_EDIT_YOUR_PROFILE;
   }
 }

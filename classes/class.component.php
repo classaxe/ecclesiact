@@ -1,11 +1,10 @@
 <?php
-define ("VERSION_COMPONENT","1.0.107");
+define ("VERSION_COMPONENT","1.0.108");
 /*
 Version History:
-  1.0.107 (2013-11-13)
-    1) Archived old comments
+  1.0.108 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.component.txt)
 */
 class Component extends Component_Base {
 
@@ -55,7 +54,7 @@ class Component extends Component_Base {
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT;
   }
 }

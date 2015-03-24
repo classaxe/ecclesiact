@@ -1,0 +1,10 @@
+  1.0.3 (2012-11-15)
+    1) Control Panel now has setting for gateway settings to use when processing
+       any orders that may result
+  1.0.2 (2012-03-30)
+    1) Now defaults name to instance name of inserted custom form
+  1.0.1 (2012-01-26)
+    1) Added two new component parameters -
+       new_user_email (0|1) and new_user_email_template (default=user_signup)
+  1.0.0 (2011-12-30)
+    1) Initial release - moved from Component class

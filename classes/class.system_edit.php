@@ -1459,7 +1459,7 @@ class System_Edit extends System
         }
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_SYSTEM_EDIT;
     }

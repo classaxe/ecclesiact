@@ -58,7 +58,7 @@ class Component_Search_Date_Picker extends Component_Base {
     return $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SEARCH_DATE_PICKER;
   }
 }

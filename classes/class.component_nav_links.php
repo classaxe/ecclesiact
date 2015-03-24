@@ -58,7 +58,7 @@ class Component_Nav_Links extends Component_Base {
     $this->_buttons = $Obj_NS->get_buttons();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_NAV_LINKS;
   }
 }

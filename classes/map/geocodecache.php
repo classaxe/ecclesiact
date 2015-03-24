@@ -1,13 +1,15 @@
 <?php
-define('VERSION_GEOCODE_CACHE', '1.0.4');
+namespace Map;
+
+define('VERSION_NS_GEOCODE_CACHE', '1.0.5');
 /*
 Version History:
-  1.0.3 (2015-03-21)
-    1) Now implements its own get_coords() that doesn't try to read the cache (whichof course is itself!)
-
+  1.0.5 (2015-03-23)
+    1) Moved to map namespace and made PSR-2 compliant
+    2) Renamed export_sql() to exportSql
 
 */
-class Geocode_Cache extends Displayable_Item
+class GeocodeCache extends \Displayable_Item
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, input_address, match_address, match_area, match_quality, match_type, output_json, output_lat, output_lon, partial_match, query_date, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const QUERIES_PER_DAY = 2400;   // 100 less than Google's daily maximum
@@ -20,7 +22,7 @@ class Geocode_Cache extends Displayable_Item
         $this->_set_has_groups(false);
     }
 
-    protected function _draw_object_map_html_get_data()
+    protected function drawObjectMapHtmlGetData()
     {
         if (!$this->load()) {
             return;
@@ -39,7 +41,7 @@ class Geocode_Cache extends Displayable_Item
         }
     }
 
-    public function export_sql($targetID, $show_fields)
+    public function exportSql($targetID, $show_fields)
     {
         return $this->sql_export($targetID, $show_fields);
     }
@@ -71,12 +73,12 @@ class Geocode_Cache extends Displayable_Item
         return $this->get_record_for_sql($sql);
     }
 
-    public function get_coords($address = false)
+    public function getCoords($address = false)
     {
         if (!$address) {
             $address = $this->get_field('input_address');
         }
-        $geocode = Google_Map::find_geocode($address, true);
+        $geocode = GoogleMap::findGeocode($address, true);
         $result = array(
             'match_address' =>          $geocode['match_address'],
             'match_area' =>             $geocode['match_area'],
@@ -90,8 +92,8 @@ class Geocode_Cache extends Displayable_Item
         return $result;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
-        return VERSION_GEOCODE_CACHE;
+        return VERSION_NS_GEOCODE_CACHE;
     }
 }

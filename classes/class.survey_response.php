@@ -18,7 +18,7 @@ class Survey_response extends Posting {
     $this->_set_message_associated('');
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_SURVEY_RESPONSE;
   }
 }

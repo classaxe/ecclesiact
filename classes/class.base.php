@@ -1,10 +1,9 @@
 <?php
-define('VERSION_BASE','1.0.13');
+define('VERSION_BASE','1.0.14');
 /*
 Version History:
-  1.0.13 (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
+  1.0.14 (2015-03-23)
+    1) Method getVersion() is now static
 
 */
 class Base{
@@ -184,7 +183,7 @@ class Base{
     return new Base_Error("The ".$name." module does not exist.");
   }
 
-  public function getVersion(){
+  public static function getVersion(){
     return VERSION_BASE;
   }
 }

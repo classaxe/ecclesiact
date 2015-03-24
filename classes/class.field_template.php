@@ -18,7 +18,7 @@ class Field_Template extends Record{
   function export_sql($targetID,$show_fields) {
     return  $this->sql_export($targetID,$show_fields);
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_FIELD_TEMPLATE;
   }
 }

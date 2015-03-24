@@ -84,7 +84,7 @@ class HTTP_Raw_Socket {
     fclose($socket);
     return $out;
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_HTTP_RAW_SOCKET;
   }
 }

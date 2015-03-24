@@ -176,7 +176,7 @@ class CommunitiesDisplay extends Base
         $this->_records =       $this->_Obj_Community->get_communities();
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return COMPONENT_NS_COMMUNITIES_DISPLAY_VERSION;
     }

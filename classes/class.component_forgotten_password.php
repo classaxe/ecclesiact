@@ -30,7 +30,7 @@ class Component_Forgotten_Password extends Component_Base {
     return  $out;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_FORGOTTEN_PASSWORD;
   }
 }

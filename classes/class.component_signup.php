@@ -267,7 +267,7 @@ class Component_Signup extends Component_Base {
     $this->_submode = get_var('submode');
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_SIGNUP;
   }
 }

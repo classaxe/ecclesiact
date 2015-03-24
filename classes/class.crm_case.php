@@ -211,7 +211,7 @@ class CRM_Case extends Record {
 //    print"<pre>";print_r($data);print "</pre>";
     parent::update($data,$validate);
   }
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CRM_CASE;
   }
 }

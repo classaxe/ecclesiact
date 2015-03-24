@@ -1,11 +1,10 @@
 <?php
-define('VERSION_COLOUR_SCHEME','1.0.1');
+define('VERSION_COLOUR_SCHEME','1.0.2');
 /*
 Version History:
-  1.0.1 (2011-10-04)
-    1) Made Colour_Scheme::get_selector_sql() static
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+
 */
 class Colour_Scheme extends Record {
   function __construct($ID="") {
@@ -124,7 +123,7 @@ class Colour_Scheme extends Record {
     return $this->get_record_for_sql($sql);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COLOUR_SCHEME;
   }
 }

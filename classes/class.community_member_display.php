@@ -1,13 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.40');
+define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.41');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.40 (2015-03-15)
-    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
+  1.0.41 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -1747,7 +1747,7 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return COMMUNITY_MEMBER_DISPLAY_VERSION;
     }

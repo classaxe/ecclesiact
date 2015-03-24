@@ -1,9 +1,9 @@
 <?php
-define("VERSION_COMPONENT_BASE", "1.0.21");
+define("VERSION_COMPONENT_BASE", "1.0.22");
 /*
 Version History:
-  1.0.21 (2015-03-15)
-    1) Renamed recently changed getVersion() back to get_version() to prevent mis-reporting of child class versions
+  1.0.22 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -115,7 +115,7 @@ class Component_Base extends Component\Base
         return static::getSafeID($ident, $instance);
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_COMPONENT_BASE;
     }

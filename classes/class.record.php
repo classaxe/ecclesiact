@@ -1,12 +1,12 @@
 <?php
-define('VERSION_RECORD', '1.0.89');
+define('VERSION_RECORD', '1.0.90');
 /*
 Version History:
-  1.0.89 (2015-03-15)
-    1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
-       resulting in wrong version code being returned by extending classes
+  1.0.90 (2015-03-23)
+    1) Record::get_coords() now uses \Map\GoogleMap class
+    2) Record::on_action_set_map_location() now looks for getCoords() if it exists and uses that
+    3) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.record.txt)
 */
 class Record extends Portal
 {
@@ -804,8 +804,8 @@ class Record extends Portal
 
     public function get_coords($address)
     {
-        $Obj_Map = new Google_Map(0, SYS_ID);
-        return $Obj_Map->get_geocode($address);
+        $Obj_Map = new \map\GoogleMap(0, SYS_ID);
+        return $Obj_Map->getGeocode($address);
     }
 
     public function get_children()
@@ -1791,7 +1791,13 @@ class Record extends Portal
         $ID_arr = explode(',', str_replace(' ', '', $this->_get_ID()));
         foreach ($ID_arr as $ID) {
             $this->_set_ID($ID);
-            $coords = $this->get_coords();
+            if (method_exists($this, 'getCoords')){
+                $coords = $this->getCoords();
+            }
+            else {
+                $coords = $this->get_coords();
+
+            }
             $this->update($coords);
         }
     }
@@ -2532,7 +2538,7 @@ class Record extends Portal
         $row = $out;
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_RECORD;
     }

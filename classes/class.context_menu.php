@@ -2259,7 +2259,7 @@ class Context_Menu extends Base{
     $this->_cm_types[] = $type;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CONTEXT_MENU;
   }
 }

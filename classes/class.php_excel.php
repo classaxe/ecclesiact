@@ -20,7 +20,7 @@ if (class_exists('PHPExcel')){
     function __construct(){
       parent::__construct();
     }
-    public function get_version(){
+    public static function getVersion(){
       return VERSION_PHP_EXCEL;
     }
   }
@@ -43,7 +43,7 @@ else {
         ."400,200)");
       return;
     }
-    public function get_version(){
+    public static function getVersion(){
       return VERSION_PHP_EXCEL;
     }
   }

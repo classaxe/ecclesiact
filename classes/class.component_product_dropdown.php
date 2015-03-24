@@ -153,7 +153,7 @@ class Component_Product_Dropdown extends Component_Base {
     $this->_sort_products();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_COMPONENT_PRODUCT_DROPDOWN;
   }
 }

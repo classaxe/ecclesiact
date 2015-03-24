@@ -1,13 +1,13 @@
 <?php
-define("VERSION_REPORT", "1.0.85");
+define("VERSION_REPORT", "1.0.86");
 
 /*
 Version History:
-  1.0.85 (2015-01-04)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Report::draw_form_view()
-    2) Now PSR-2 Compliant
+  1.0.86 (2015-03-23)
+    1) Report::handle_copy() now looks for $Obj->handleReportCopy() and uses that if it exists in place of old
+       camelCased variant $Obj->handle_report_copy()
+    2) Method get_version() renamed to getVersion() and made static
 
-  (Older version history in class.report.txt)
 */
 
 class Report extends Displayable_Item
@@ -1425,6 +1425,9 @@ class Report extends Displayable_Item
         if ($primaryObject_name = $this->get_field('primaryObject')) {
             $Obj = new $primaryObject_name;
             $Obj->_set_ID($targetID);
+            if (method_exists($Obj, 'handleReportCopy')) {
+                return $Obj->handleReportCopy($newID, $msg, $msg_tooltip, $targetValue);
+            }
             return $Obj->handle_report_copy($newID, $msg, $msg_tooltip, $targetValue);
         }
         $msg = "<b>Error</b>This report doesn't have an associated class to allow copy functionality: ".$report_name;
@@ -1558,7 +1561,7 @@ class Report extends Displayable_Item
         return $result;
     }
 
-    public function get_version()
+    public static function getVersion()
     {
         return VERSION_REPORT;
     }

@@ -213,7 +213,7 @@ class Product_Catalogue_Order_History extends Product_Catalogue {
       ."</script>\n";
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_PRODUCT_CATALOGUE_ORDER_HISTORY;
   }
 }

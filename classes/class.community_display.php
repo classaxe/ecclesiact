@@ -1,12 +1,12 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION','1.0.38');
+define('COMMUNITY_DISPLAY_VERSION','1.0.39');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.38 (2015-03-13)
-    1) Changes made following move of Community_Calendar to namespaced \Component\CommunityCalendar
+  1.0.39 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
 
 */
 
@@ -1550,7 +1550,7 @@ class Community_Display extends Community{
     $this->_sponsors_national_records = $Obj_GA->get_children();
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return COMMUNITY_DISPLAY_VERSION;
   }
 }

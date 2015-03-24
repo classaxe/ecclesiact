@@ -1,0 +1,4 @@
+  1.0.0 (2010-04-19)
+    Initial release
+    Based on code at phpclasses by Roger Veciana
+    http://www.phpclasses.org/package/2286-PHP-Convert-XML-documents-into-arrays-and-vice-versa.html

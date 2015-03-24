@@ -337,7 +337,7 @@ class Poll extends Displayable_Item {
     return (int)$a['votes'] == (int)$b['votes'] ? 0 : ((int)$a['votes'] > (int)$b['votes']) ? -1 : +1;
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_POLL;
   }
 }

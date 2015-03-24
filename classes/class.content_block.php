@@ -30,7 +30,7 @@ class Content_Block extends Record{
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
 
-  public function get_version(){
+  public static function getVersion(){
     return VERSION_CONTENT_BLOCK;
   }
 }

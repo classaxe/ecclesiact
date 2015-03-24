@@ -171,7 +171,7 @@ class ChangePassword extends Base
         }
     }
 
-    public function getVersion()
+    public static function getVersion()
     {
         return VERSION_NS_COMPONENT_CHANGE_PASSWORD;
     }

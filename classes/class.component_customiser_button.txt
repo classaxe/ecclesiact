@@ -1,0 +1,5 @@
+  1.0.1 (2015-01-02)
+    1) Now uses OPTION_SEPARATOR constant not option_separator in Component_Customiser_Button::save()
+    2) Now PSR-2 Compliant
+  1.0.0 (2014-11-15)
+    1) Initial release - for AOJ facelift planning
