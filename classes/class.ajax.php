@@ -10,6 +10,7 @@ http://testportal.auroraonline.com/cicbv/ajax/?rs=serve_lookup_report&rst=&rsrnd
 Version History:
   1.0.24 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
+    2) Fix to internal reference for get_version() to getVersion()
 
 */
 class Ajax {
@@ -317,7 +318,7 @@ class Ajax {
         die($testName);
       break;
       case "version":
-        print Ajax::get_version();
+        print static::getVersion();
       break;
       default:
         $rs =   get_var('rs');

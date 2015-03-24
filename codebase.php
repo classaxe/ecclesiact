@@ -27,8 +27,12 @@ Summary:
        I didn't update every version code on every file I made that global getVersion() code change to -
        There were too many and life is just too short.
 
+3.3.0.2374 (2015-03-23)
+Summary:
+  (Provide top-level summary here)
+
 Final Checksums:
-  Classes     CS:79a2c4c3
+  Classes     CS:d8147e02
   Database    CS:c15014ce
   Libraries   CS:e8a227c1
   Reports     CS:f06a043d
@@ -42,6 +46,7 @@ Code Changes:
     1) Method get_version() renamed to getVersion() and made static
   classes/class.ajax.php                                                                         1.0.24    (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
+    2) Fix to internal reference for get_version() to getVersion()
   classes/class.akismet.php                                                                      0.41.f    (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
     2) Split out SocketWriteRead class into its own file
@@ -289,8 +294,9 @@ Code Changes:
     1) Changes to use jquery for elemet selection, not prototypejs
   classes/class.component_twitter.php                                                            1.0.2     (2012-05-04)
     1) Added Component_Twitter::draw_tweets()
-  classes/class.component_video_player.php                                                       1.0.0     (2011-12-29)
-    1) Initial release - moved from Component class
+  classes/class.component_video_player.php                                                       1.0.1     (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Fix to internal reference for get_version() to getVersion()
   classes/class.contact.php                                                                      1.0.5     (2013-11-07)
     1) Added edit_parameters to allow this type to be iewed in a listings panel
   classes/class.content_block.php                                                                1.0.9     (2013-06-27)
@@ -866,7 +872,11 @@ Code Changes:
     2) References to class Geocode_Cache now point to map\geocodeCache
 
 2374.sql
-  1) Set version information
+  1) New table address_substitution
+  2) Changes to geocode-cache report to fix icon and permissions on system column
+  3) New report 'address-substitution'
+  4) Updated ECL tag 'object_draw_map' to use namespaced \Map\GoogleMap
+  5) Set version information
 
 Delete:
     class.geocode_cache.php                           1.0.4
@@ -876,7 +886,7 @@ Promote:
   classes/  (307 files changed)
     class.action.php                                  1.0.22    CS:92d1cc84
     class.activity.php                                1.0.19    CS:1a17c13d
-    class.ajax.php                                    1.0.24    CS:58a25ba7
+    class.ajax.php                                    1.0.24    CS:8121b561
     class.akismet.php                                 0.41.f    CS:920d6584
     class.array2xml.php                               1.0.1     CS:76b4c130
     class.article.php                                 1.0.39    CS:9769ae0b
@@ -984,7 +994,7 @@ Promote:
     class.component_survey.php                      * 1.0.0     CS:5b837778   * PROBLEM - VERSION NUMBER DID NOT CHANGE
     class.component_time_tracker.php                * 1.0.3     CS:490806c    * PROBLEM - VERSION NUMBER DID NOT CHANGE
     class.component_twitter.php                     * 1.0.2     CS:951af625   * PROBLEM - VERSION NUMBER DID NOT CHANGE
-    class.component_video_player.php                * 1.0.0     CS:8ac03761   * PROBLEM - VERSION NUMBER DID NOT CHANGE
+    class.component_video_player.php                  1.0.1     CS:64d49857
     class.contact.php                               * 1.0.5     CS:68e9b1eb   * PROBLEM - VERSION NUMBER DID NOT CHANGE
     class.content_block.php                         * 1.0.9     CS:2bb73e0f   * PROBLEM - VERSION NUMBER DID NOT CHANGE
     class.context_menu.php                          * 1.0.75    CS:97a23fac   * PROBLEM - VERSION NUMBER DID NOT CHANGE

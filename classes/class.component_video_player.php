@@ -1,7 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_VIDEO_PLAYER","1.0.0");
+  define ("VERSION_COMPONENT_VIDEO_PLAYER","1.0.1");
 /*
 Version History:
+  1.0.1 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Fix to internal reference for get_version() to getVersion()
   1.0.0 (2011-12-29)
     1) Initial release - moved from Component class
 */
@@ -26,13 +29,13 @@ class Component_Video_Player extends Component_Base {
     $out =          Component_Base::get_help($ident, $instance, $disable_params, $parameter_spec, $cp_defaults);
     $out.=
        "<object id=\"".$safe_ID."\" classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" name=\"".$safe_ID."\" width=\"".$cp['width']."\" height=\"".$cp['height']."\">\n"
-      ."  <param name=\"movie\" value=\"".BASE_PATH."resource/jwplayer/".Component_Video_Player::get_version()."\" />\n"
+      ."  <param name=\"movie\" value=\"".BASE_PATH."resource/jwplayer/".static::getVersion()."\" />\n"
       ."  <param name=\"wmode\" value=\"opaque\" />\n"
       ."  <param name=\"allowfullscreen\" value=\"".($cp['allow_full_screen'] ? "true" : "false")."\" />\n"
       ."  <param name=\"allowscriptaccess\" value=\"always\" />\n"
       ."  <param name=\"flashvars\" value=\"file=".$cp['path_flv'].($cp['path_jpg'] ? "&amp;image=".BASE_PATH."img/sysimg/?img=".$cp['path_jpg'] : "")."\" />\n"
-      ."  <object type=\"application/x-shockwave-flash\" data=\"".BASE_PATH."resource/jwplayer/".Component_Video_Player::get_version()."\" width=\"".$cp['width']."\" height=\"".$cp['height']."\">\n"
-      ."    <param name=\"movie\" value=\"".BASE_PATH."resource/jwplayer/".Component_Video_Player::get_version()."\" />\n"
+      ."  <object type=\"application/x-shockwave-flash\" data=\"".BASE_PATH."resource/jwplayer/".static::getVersion()."\" width=\"".$cp['width']."\" height=\"".$cp['height']."\">\n"
+      ."    <param name=\"movie\" value=\"".BASE_PATH."resource/jwplayer/".static::getVersion()."\" />\n"
       ."    <param name=\"wmode\" value=\"opaque\" />\n"
       ."    <param name=\"allowfullscreen\" value=\"".($cp['allow_full_screen'] ? "true" : "false")."\" />\n"
       ."    <param name=\"allowscriptaccess\" value=\"always\" />\n"
