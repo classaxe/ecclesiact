@@ -1,9 +1,8 @@
-/* 1.0.44
+/* 1.0.45
 Version History:
-  1.0.44 (2015-02-02)
-    1) Now with unix-style line endings
+  1.0.45 (2015-03-24)
+    1) Added tbl_address_substitution
 
-  (Older version history in labels.txt)
 */
 .lbl_actions{
   background-position:-22px 0; width:11px; height:46px;
@@ -841,6 +840,9 @@ Version History:
 }
 .lbl_tbl_activity{
   background-position:-4301px 0; width:11px; height:100px;
+}
+.lbl_tbl_address_substitution{
+  background-position:-5237px 0; width:11px; height:100px;
 }
 .lbl_tbl_block_layout{
   background-position:-4312px 0; width:11px; height:100px;

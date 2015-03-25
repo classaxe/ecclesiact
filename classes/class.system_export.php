@@ -1,108 +1,25 @@
 <?php
-define('VERSION_SYSTEM_EXPORT', '1.0.18');
+define('VERSION_SYSTEM_EXPORT', '1.0.19');
 
 /*
 Version History:
-  1.0.18 (2015-01-10)
-    1) Changed references from System::tables to System::TABLES
+  1.0.19 (2015-03-24)
+    1) Added support for address_substitution table export and some minor refactoring
 
-  (Older version history in class.system_export.txt)
 */
 
 class System_Export extends System
 {
-    private $_custom_tables_csv;
-    private $_custom_tables_delete_sql;
-    private $_custom_tables_select_sql;
+    protected $customTablesCsv;
+    protected $customTablesDeleteSql;
+    protected $customTablesSelectSql;
+    protected $sortby;
+    protected $showFields;
 
-    public function draw($show_fields)
+    public function draw($showFields)
     {
-        global $page_vars;
-        $targetID = $this->_get_ID();
-        $this->get_db_custom_tables();
-        if (get_var('targetValue')=='') {
-            $this->_draw_form($show_fields);
-            die;
-        }
-        $this->get_db_custom_tables();
+        $this->setup($showFields);
         header("Content-type: text/plain; charset=UTF-8");
-        $sql_arr = array(
-            'system' =>                   "`textEnglish`",
-            'action' =>                   "`systemID`,`sourceType`,`sourceID`,`seq`",
-            'activity' =>                 "`systemID`,`sourceType`,`history_created_date`",
-            'block_layout' =>             "`systemID`,`name`",
-            'cases' =>                    "`systemID`,`history_created_date`",
-            'case_tasks' =>               "`systemID`,`history_created_date`",
-            'category_assign' =>          "`systemID`,`history_created_date`",
-            'colour_scheme' =>            "`systemID`,`name`",
-            'comment' =>                  "`systemID`,`history_created_date`",
-            'community' =>                "`systemID`,`history_created_date`",
-            'community_member' =>         "`systemID`,`history_created_date`",
-            'community_membership' =>     "`systemID`,`history_created_date`",
-            'component' =>                "`systemID`,`name`",
-            'content_block' =>            "`systemID`,`name`",
-            'custom_form' =>              "`systemID`,`name`",
-            'ecl_tags' =>                 "`systemID`,`tag`",
-            'field_templates' =>          "`systemID`,`name`",
-            'gateway_settings' =>         "`systemID`,`name`",
-            'gateway_type' =>             "`systemID`,`name`",
-            'geocode_cache' =>            "`systemID`,`query_date`,`input_address",
-            'groups' =>                   "`systemID`,`name`",
-            'group_assign' =>             "`systemID`,`groupID`,`assign_type`",
-            'group_members' =>            "`systemID`,`groupID`",
-            'keywords' =>                 "`systemID`,`keyword`",
-            'keyword_assign' =>           "`systemID`,`keywordID`",
-            'language_assign' =>          "`systemID`,`languageID`",
-            'layout' =>                   "`systemID`,`name`",
-            'listdata' =>                 "`systemID`,`listTypeID`,`textEnglish`",
-            'listtype' =>                 "`systemID`,`ID`",
-            'mailidentity' =>             "`systemID`,`name`",
-            'mailqueue' =>                "`systemID`,`date_started`",
-            'mailqueue_item' =>           "`systemID`,`mailQueueID`,`PEmail`",
-            'mailtemplate' =>             "`systemID`,`name`",
-            'membership_rule' =>          "`systemID`,`seq`",
-            'module_credits' =>           "`systemID`,`history_created_date`",
-            'navbuttons' =>               "`systemID`,`suiteID`,`position`,`text1`",
-            'navsuite' =>                 "`systemID`,`name`",
-            'navstyle' =>                 "`systemID`,`name`",
-            'orders' =>                   "`systemID`,`history_created_date`",
-            'order_items' =>              "`systemID`,`history_created_date`",
-            'pages' =>                    "`systemID`,`page`",
-            'payment_method' =>           "`systemID`,`history_created_date`",
-            'person' =>                   "`systemID`,`PUsername`",
-            'poll' =>                     "`systemID`,`date`,`question`",
-            'poll_choice' =>              "`systemID`,`parentID`,`title`",
-            'postings' =>                 "`systemID`,`date`,`time_start`",
-            'product' =>                  "`systemID`,`groupingID`,`itemCode`",
-            'product_grouping' =>         "`systemID`,`name`",
-            'product_relationship' =>     "`systemID`,`productID`,`related_object`,`related_objectID`",
-            'push_product_assign' =>      "`systemID`,`productID`",
-            'qb_config' =>                "`systemID`,`history_created_date`",
-            'qb_connection' =>            "`systemID`,`history_created_date`",
-            'qb_ident' =>                 "`systemID`,`history_created_date`",
-            'qb_import' =>                "`systemID`,`history_created_date`",
-            'qb_log' =>                   "`systemID`,`history_created_date`",
-            'qb_notify' =>                "`systemID`,`history_created_date`",
-            'qb_queue' =>                 "`systemID`,`history_created_date`",
-            'qb_recur' =>                 "`systemID`,`history_created_date`",
-            'qb_ticket' =>                "`systemID`,`history_created_date`",
-            'qb_user' =>                  "`systemID`,`history_created_date`",
-            'registerevent' =>            "`systemID`,`eventID`,`inviter_personID`,`attender_NLast`",
-            'report' =>                   "`systemID`,`name`",
-            'report_columns' =>           "`systemID`,`reportID`,`tab`,`seq`",
-            'report_defaults' =>          "`systemID`,`reportID`,`personID`",
-            'report_filter' =>            "`systemID`,`reportID`,`label`",
-            'report_filter_criteria' =>   "`systemID`,`filterID`,`filter_seq`",
-            'report_settings' =>          "`systemID`,`reportID`,`destinationType`,`destinationID`",
-            'scheduled_task' =>           "`systemID`,`description`",
-            'tax_code' =>                 "`systemID`,`name`",
-            'tax_regime' =>               "`systemID`,`name`",
-            'tax_rule' =>                 "`systemID`,`seq`",
-            'tax_zone' =>                 "`systemID`,`name`",
-            'theme' =>                    "`systemID`,`name`",
-            'widget' =>                   "`systemID`,`name`"
-        );
-        $this->get_custom_tables_sql($show_fields);
         $chosen = explode(',', get_var('targetValue'));
         $ObjBackup = new Backup;
         $delete_sql = "";
@@ -116,10 +33,10 @@ class System_Export extends System
             }
         }
         print
-        $this->sql_header("Selected ".$this->_get_object_name().$this->plural($this->_get_ID()))
-        .$delete_sql
-        .(in_array('custom_tables', $chosen) ? $this->_custom_tables_delete_sql : "")
-        .$this->sql_footer();
+             $this->sql_header("Selected ".$this->_get_object_name().$this->plural($this->_get_ID()))
+            .$delete_sql
+            .(in_array('custom_tables', $chosen) ? $this->customTablesDeleteSql : "")
+            .$this->sql_footer();
         foreach ($chosen as $table) {
             switch ($table){
                 case 'custom_tables':
@@ -129,25 +46,24 @@ class System_Export extends System
                         "`".$table."`",
                         "SELECT * FROM `".$table."` WHERE "
                         .($table=='system' ? "`ID`      " : "`systemID`")
-                        ." IN (".$targetID.")"
-                        ." ORDER BY ".$sql_arr[$table],
-                        $show_fields
+                        ." IN (".$this->_get_ID().")"
+                        ." ORDER BY ".$this->sortby[$table],
+                        $this->showFields
                     );
                     break;
             }
         }
         if (in_array('custom_tables', $chosen)) {
-            print $this->_custom_tables_select_sql;
+            print $this->customTablesSelectSql;
         }
         die;
     }
 
-    protected function _draw_form($show_fields)
+    protected function drawForm()
     {
-        $targetID = $this->_get_ID();
-        $this->get_db_custom_tables();
-        $counts = $this->get_counts_for_tables($targetID);
-        $custom_tables = $this->get_counts_for_custom_tables($targetID);
+        $this->getDbCustomTables();
+        $counts = $this->getCountsForTables($this->_get_ID());
+        $custom_tables = $this->getCountsForCustomTables($this->_get_ID());
         $system_tables = explode(',', str_replace(' ', '', System::TABLES));
         $tables = array();
         foreach ($system_tables as $t) {
@@ -224,8 +140,8 @@ class System_Export extends System
             ."<form id='form' action='".BASE_PATH."export/sql/system' method='post' onsubmit=\"form_submit()\">\n"
             ."<fieldset>\n"
             ."<input type='hidden' name='targetValue' id='targetValue' value='1' />\n"
-            ."<input type='hidden' name='show_fields' id='show_fields' value='".$show_fields."' />\n"
-            ."<input type='hidden' name='targetID' id='targetID' value='".$targetID."' />\n"
+            ."<input type='hidden' name='show_fields' id='show_fields' value='".$this->showFields."' />\n"
+            ."<input type='hidden' name='targetID' id='targetID' value='".$this->_get_ID()."' />\n"
             ."<table class='options' cellpadding='0' cellspacing='0' border='0'>\n";
         $columns = 3;
         $len = ceil(count($tables)/$columns);
@@ -283,7 +199,7 @@ class System_Export extends System
         die;
     }
 
-    protected function get_counts_for_tables($targetID)
+    protected function getCountsForTables()
     {
         $count = array();
         $sql = "SHOW TABLES";
@@ -302,7 +218,7 @@ class System_Export extends System
                 ."FROM\n"
                 ."  `".$t."`\n"
                 ."WHERE\n"
-                ."  `".($t=='system' ? 'ID' : 'systemID')."` IN(".$targetID.")";
+                ."  `".($t=='system' ? 'ID' : 'systemID')."` IN(".$this->_get_ID().")";
                 $count[$t] = $this->get_field_for_sql($sql);
             } else {
                 $count[$t] = -1;
@@ -311,7 +227,7 @@ class System_Export extends System
         return $count;
     }
 
-    protected function get_counts_for_custom_tables($targetID)
+    protected function getCountsForCustomTables()
     {
         $sql =
          "SELECT\n"
@@ -319,7 +235,7 @@ class System_Export extends System
         ."FROM\n"
         ."  `system`\n"
         ."WHERE\n"
-        ."  `ID` IN(".$targetID.")";
+        ."  `ID` IN(".$this->_get_ID().")";
         $result_arr = explode(',', $this->get_field_for_sql($sql));
         $out = array();
         foreach ($result_arr as $result) {
@@ -331,11 +247,11 @@ class System_Export extends System
         return array_keys($out);
     }
 
-    private function get_db_custom_tables()
+    protected function getDbCustomTables()
     {
         global $system_vars;
         if ($this->_get_ID()==SYS_ID) {
-            $this->_custom_tables_csv = trim($system_vars['db_custom_tables']);
+            $this->customTablesCsv = trim($system_vars['db_custom_tables']);
             return;
         }
         $sql =
@@ -362,17 +278,17 @@ class System_Export extends System
             $custom_tables_arr[] = $key;
         }
         asort($custom_tables_arr);
-        $this->_custom_tables_csv = implode(',', $custom_tables_arr);
+        $this->customTablesCsv = implode(',', $custom_tables_arr);
     }
 
-    private function get_custom_tables_sql($show_fields)
+    protected function getCustomTablesSql()
     {
-        if ($this->_custom_tables_csv=='') {
+        if ($this->customTablesCsv=='') {
             return;
         }
         $extra_delete_arr = array();
         $extra_select_arr = array();
-        $custom_tables_arr = explode(",", $this->_custom_tables_csv);
+        $custom_tables_arr = explode(",", $this->customTablesCsv);
         $ObjBackup = new Backup;
         $Obj_Table = new Table;
         foreach ($custom_tables_arr as $custom_table) {
@@ -393,19 +309,107 @@ class System_Export extends System
                 ." WHERE `systemID` IN (".$this->_get_ID().")"
                 : ""
                 ),
-                $show_fields
+                $this->showFields
             );
         }
-        $this->_custom_tables_delete_sql =
+        $this->customTablesDeleteSql =
         "\n"
          ."# Custom Table".(count($extra_delete_arr)>1 ? 's' : '').":\n"
          .implode("", $extra_delete_arr)
          ."\n";
-        $this->_custom_tables_select_sql =
+        $this->customTablesSelectSql =
         "\n"
          ."# Custom Table".(count($extra_delete_arr)>1 ? 's' : '').":\n"
          .implode("", $extra_select_arr)
          ."\n";
+    }
+
+    protected function setup($showFields)
+    {
+        $this->showFields = $showFields;
+        $this->getDbCustomTables();
+        if (get_var('targetValue')=='') {
+            $this->drawForm();
+            die;
+        }
+        $this->sortby = array(
+            'system' =>                   "`textEnglish`",
+            'action' =>                   "`systemID`,`sourceType`,`sourceID`,`seq`",
+            'activity' =>                 "`systemID`,`sourceType`,`history_created_date`",
+            'address_substitution' =>     "`systemID`,`input`,`output`,`history_created_date`",
+            'block_layout' =>             "`systemID`,`name`",
+            'cases' =>                    "`systemID`,`history_created_date`",
+            'case_tasks' =>               "`systemID`,`history_created_date`",
+            'category_assign' =>          "`systemID`,`history_created_date`",
+            'colour_scheme' =>            "`systemID`,`name`",
+            'comment' =>                  "`systemID`,`history_created_date`",
+            'community' =>                "`systemID`,`history_created_date`",
+            'community_member' =>         "`systemID`,`history_created_date`",
+            'community_membership' =>     "`systemID`,`history_created_date`",
+            'component' =>                "`systemID`,`name`",
+            'content_block' =>            "`systemID`,`name`",
+            'custom_form' =>              "`systemID`,`name`",
+            'ecl_tags' =>                 "`systemID`,`tag`",
+            'field_templates' =>          "`systemID`,`name`",
+            'gateway_settings' =>         "`systemID`,`name`",
+            'gateway_type' =>             "`systemID`,`name`",
+            'geocode_cache' =>            "`systemID`,`query_date`,`input_address",
+            'groups' =>                   "`systemID`,`name`",
+            'group_assign' =>             "`systemID`,`groupID`,`assign_type`",
+            'group_members' =>            "`systemID`,`groupID`",
+            'keywords' =>                 "`systemID`,`keyword`",
+            'keyword_assign' =>           "`systemID`,`keywordID`",
+            'language_assign' =>          "`systemID`,`languageID`",
+            'layout' =>                   "`systemID`,`name`",
+            'listdata' =>                 "`systemID`,`listTypeID`,`textEnglish`",
+            'listtype' =>                 "`systemID`,`ID`",
+            'mailidentity' =>             "`systemID`,`name`",
+            'mailqueue' =>                "`systemID`,`date_started`",
+            'mailqueue_item' =>           "`systemID`,`mailQueueID`,`PEmail`",
+            'mailtemplate' =>             "`systemID`,`name`",
+            'membership_rule' =>          "`systemID`,`seq`",
+            'module_credits' =>           "`systemID`,`history_created_date`",
+            'navbuttons' =>               "`systemID`,`suiteID`,`position`,`text1`",
+            'navsuite' =>                 "`systemID`,`name`",
+            'navstyle' =>                 "`systemID`,`name`",
+            'orders' =>                   "`systemID`,`history_created_date`",
+            'order_items' =>              "`systemID`,`history_created_date`",
+            'pages' =>                    "`systemID`,`page`",
+            'payment_method' =>           "`systemID`,`history_created_date`",
+            'person' =>                   "`systemID`,`PUsername`",
+            'poll' =>                     "`systemID`,`date`,`question`",
+            'poll_choice' =>              "`systemID`,`parentID`,`title`",
+            'postings' =>                 "`systemID`,`date`,`time_start`",
+            'product' =>                  "`systemID`,`groupingID`,`itemCode`",
+            'product_grouping' =>         "`systemID`,`name`",
+            'product_relationship' =>     "`systemID`,`productID`,`related_object`,`related_objectID`",
+            'push_product_assign' =>      "`systemID`,`productID`",
+            'qb_config' =>                "`systemID`,`history_created_date`",
+            'qb_connection' =>            "`systemID`,`history_created_date`",
+            'qb_ident' =>                 "`systemID`,`history_created_date`",
+            'qb_import' =>                "`systemID`,`history_created_date`",
+            'qb_log' =>                   "`systemID`,`history_created_date`",
+            'qb_notify' =>                "`systemID`,`history_created_date`",
+            'qb_queue' =>                 "`systemID`,`history_created_date`",
+            'qb_recur' =>                 "`systemID`,`history_created_date`",
+            'qb_ticket' =>                "`systemID`,`history_created_date`",
+            'qb_user' =>                  "`systemID`,`history_created_date`",
+            'registerevent' =>            "`systemID`,`eventID`,`inviter_personID`,`attender_NLast`",
+            'report' =>                   "`systemID`,`name`",
+            'report_columns' =>           "`systemID`,`reportID`,`tab`,`seq`",
+            'report_defaults' =>          "`systemID`,`reportID`,`personID`",
+            'report_filter' =>            "`systemID`,`reportID`,`label`",
+            'report_filter_criteria' =>   "`systemID`,`filterID`,`filter_seq`",
+            'report_settings' =>          "`systemID`,`reportID`,`destinationType`,`destinationID`",
+            'scheduled_task' =>           "`systemID`,`description`",
+            'tax_code' =>                 "`systemID`,`name`",
+            'tax_regime' =>               "`systemID`,`name`",
+            'tax_rule' =>                 "`systemID`,`seq`",
+            'tax_zone' =>                 "`systemID`,`name`",
+            'theme' =>                    "`systemID`,`name`",
+            'widget' =>                   "`systemID`,`name`"
+        );
+        $this->getCustomTablesSql();
     }
 
     public static function getVersion()

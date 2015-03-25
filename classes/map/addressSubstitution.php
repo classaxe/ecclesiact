@@ -1,12 +1,11 @@
 <?php
 namespace Map;
 
-define('VERSION_NS_ADDRESS_SUBSTITUTION', '1.0.0');
+define('VERSION_NS_ADDRESS_SUBSTITUTION', '1.0.1');
 /*
 Version History:
-  1.0.0 (2015-03-23)
-    1) Initial Release
-
+  1.0.1 (2015-03-24)
+    1) Added AddressSubstitution::getAddressForInput() method
 
 */
 class AddressSubstitution extends \Record
@@ -18,6 +17,21 @@ class AddressSubstitution extends \Record
         parent::__construct("address_substitution", $ID);
         $this->_set_object_name('Address Substitution Entry');
         $this->_set_has_groups(false);
+    }
+
+    public function getAddressForInput($input)
+    {
+        $sql =
+             "SELECT\n"
+            ."    `output`\n"
+            ."FROM\n"
+            ."    `".$this->_get_table_name()."`\n"
+            ."WHERE\n"
+            ."    `input` = '".static::escape_string($input)."'";
+        if ($result = $this->get_field_for_sql($sql)) {
+            return $result;
+        }
+        return $input;
     }
 
     public function exportSql($targetID, $show_fields)
