@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.1");
+define("CODEBASE_VERSION", "3.3.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,49 +16,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.1.2375
+3.3.2.2376
 Summary:
-  1) System Export now includes address_substitution records
-  2) System Report now shows count for address_substitution records
-  3) Added method AddressSubstitution::getAddressForInput() -
-     used in BNN importer...
-     but not yet integrated with general map lookup code (TODO)
+  1) Changes to Communities to make Easter and Christmas times a permanently available fixture,
+     and to add a new 'Special Services' tab that appears whenever events marked 'Special' are forthcoming.
 
 Final Checksums:
-  Classes     CS:db2f7c41
+  Classes     CS:2d85d2f8
   Database    CS:c15014ce
-  Libraries   CS:68b1170e
+  Libraries   CS:bf257e1e
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.1     (2015-03-24)
+  codebase.php                                                                                   3.3.2     (2015-03-28)
     1) Updated version information
-  classes/class.system.php                                                                       1.0.161   (2015-03-24)
-    1) Added address_substitution to tables list
-  classes/class.system_export.php                                                                1.0.19    (2015-03-24)
-    1) Added support for address_substitution table export and some minor refactoring
-  classes/map/addresssubstitution.php                                                            1.0.1     (2015-03-24)
-    1) Added AddressSubstitution::getAddressForInput() method
-  style/labels.css                                                                               1.0.45    (2015-03-24)
-    1) Added tbl_address_substitution
+  classes/class.base.php                                                                         1.0.15    (2015-03-28)
+    1) Magic method __call() now gives stack trace when called for non-existent method
+  classes/class.community.php                                                                    1.0.117   (2015-03-28)
+    1) Moved _check_dropbox code out into community_display class
+  classes/class.community_display.php                                                            1.0.40    (2015-03-28)
+    1) Now includes cps for separate Christmas, Easter and Special events
+    2) Moved dropbox checking code into here from parent class
+    3) Now PSR-2 Compliant (that's a big one for this class!)
+  classes/class.community_member_display.php                                                     1.0.42    (2015-03-28)
+    1) Now includes Special Events, Easter Events and Christmas Events whenever they are there to see
+       and uses separate tab indexes for each so that #easter for example goes directly to that tab
 
-2375.sql
-  1) New column for system report - address_substitution
-  2) Set version information
+2376.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.3.1
-  classes/  (3 files changed)
-    class.system.php                                  1.0.161   CS:428a29be
-    class.system_export.php                           1.0.19    CS:281c5519
-    map/addresssubstitution.php                       1.0.1     CS:aa0f65fc
-  images/labels.gif                                             CS:dcfdb243
-  style/labels.css                                    1.0.45    CS:e619bb08
-
-
-
-
-  4) Allow #easter to be used in place of #special on special events tab in community sites
+  codebase.php                                        3.3.2
+  classes/  (4 files changed)
+    class.base.php                                    1.0.15    CS:5f571c58
+    class.community.php                               1.0.117   CS:6e95fa6d
+    class.community_display.php                       1.0.40    CS:9e453ec2
+    class.community_member_display.php                1.0.42    CS:abd603a3
 
 
 

@@ -1,9 +1,9 @@
 <?php
-define('VERSION_BASE','1.0.14');
+define('VERSION_BASE','1.0.15');
 /*
 Version History:
-  1.0.14 (2015-03-23)
-    1) Method getVersion() is now static
+  1.0.15 (2015-03-28)
+    1) Magic method __call() now gives stack trace when called for non-existent method
 
 */
 class Base{
@@ -26,6 +26,7 @@ class Base{
          "<h1>Technical Fault</h1>\n"
         .($dev_status ?
            "<p>The following method does not exist: <b>".get_class($this)."</b>::<b>".$method."</b>()</p>"
+           .x()
          :
            "<p>Sorry, we have just experienced a technical fault with the page you just tried to access.<br />\n"
           ."Our technicians have now been alerted to the issue.</p>\n"

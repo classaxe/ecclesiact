@@ -1,5 +1,5 @@
 <?php
-define('COMMUNITY_VERSION', '1.0.116');
+define('COMMUNITY_VERSION', '1.0.117');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
@@ -8,8 +8,8 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.116 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.117 (2015-03-28)
+    1) Moved _check_dropbox code out into community_display class
 
 */
 
@@ -18,8 +18,6 @@ class Community extends Displayable_Item
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
-    protected $_dropbox_additions =       array();
-    protected $_dropbox_modifications =   array();
     protected $_edit_form =               array();
     protected $_Obj_DropLib =             false;
     protected $_path_extension =          '';
@@ -38,9 +36,9 @@ class Community extends Displayable_Item
         $this->_set_context_menu_ID('community');
         $this->set_edit_params(
             array(
-            'report' =>                 'community',
-            'report_rename' =>          true,
-            'report_rename_label' =>    'new name'
+                'report' =>                 'community',
+                'report_rename' =>          true,
+                'report_rename_label' =>    'new name'
             )
         );
     }
@@ -54,281 +52,19 @@ class Community extends Displayable_Item
         $this->_default_enclosure_base_folder = $value;
     }
 
-    protected function _check_dropbox()
-    {
-        $check_period = $this->_cp['dropbox_check_frequency'];
-        sscanf(
-            $this->_community_record['dropbox_last_checked'],
-            "%4s-%2s-%2s %2s:%2s:%2s",
-            $YYYY,
-            $MM,
-            $DD,
-            $hh,
-            $mm,
-            $ss
-        );
-        $last_checked = mktime($hh, $mm, $ss, $MM, $DD, $YYYY);
-        $diff =         time()-$last_checked;
-        if ($diff>$check_period) {
-            $diff = 0;
-            $this->_check_dropbox_update();
-        }
-        if (!$this->_current_user_rights['isSYSADMIN']) {
-            die();
-        }
-        $out = array();
-        foreach ($this->_records as $record) {
-            $status =   0;
-            $tooltip =  "Status unknown - member belongs to another community or their dropbox settings are not known";
-            $ID =         $record['ID'];
-            if ($record['primary_communityID']==$this->_community_record['ID']) {
-                if ($record['dropbox_folder']) {
-                    $status =       $record['dropbox_last_status'];
-                    $num_files =    0;
-                    $files =        '';
-                    if ($record['dropbox_last_filelist']) {
-                        $items = ($record['dropbox_last_filelist'] ?
-                            unserialize($record['dropbox_last_filelist'])
-                        :
-                            array()
-                        );
-                        $num_files =  count($items);
-                        $files =      array();
-                        foreach ($items as $item) {
-                            $path_arr = explode("/", $item['path']);
-                            $filename = array_pop($path_arr);
-                            $folder =   strtoupper(array_pop($path_arr));
-                            $files[] =  $folder.': '.$filename.' ('.$item['size'].')';
-                        }
-                    }
-                    switch ($num_files){
-                        case 0:
-                            $status =   1;
-                            $tooltip =
-                                 "No items pending\n[Checked every ".format_seconds($check_period)." min, "
-                                ."next check in ".format_seconds($check_period-$diff)." min]";
-                            break;
-                        case 1:
-                            $status =   2;
-                            $tooltip =
-                                 "One item pending:\n- ".implode("\n- ", $files)."\n"
-                                ."[Checked every ".format_seconds($check_period)." min, "
-                                ."next check in ".format_seconds($check_period-$diff)." min]";
-                            break;
-                        default:
-                            $status =   2;
-                            $tooltip =
-                                 $num_files." items pending:\n- ".implode("\n- ", $files)."\n"
-                                ."[Checked every ".format_seconds($check_period)." min, "
-                                ."next check in ".format_seconds($check_period-$diff)." min]";
-                            break;
-                    }
-                }
-            }
-            $out[] = array(
-            'i' =>  $ID,
-            's' =>  $status,
-            't' =>  $tooltip
-            );
-        }
-        header('Content-Type: application/json');
-        print json_encode($out);
-        die;
-    }
-
-    protected function _check_dropbox_notify()
-    {
-        global $system_vars;
-        if ($this->_cp['dropbox_notify_emails']=='') {
-            return;
-        }
-        if (!$this->_dropbox_additions && !$this->_dropbox_modifications) {
-            return;
-        }
-        $html = '';
-        if ($this->_dropbox_additions) {
-            $html.=
-             "<h2>New Pending Dropbox Items</h2>"
-            ."<table cellpadding='2' cellspacing='0' border='1'>\n"
-            ."  <thead>\n"
-            ."    <th>Path</th>\n"
-            ."    <th>Size</th>\n"
-            ."  </thead>\n"
-            ."  <tbody>\n";
-            foreach ($this->_dropbox_additions as $item) {
-                $html.=
-                 "    <tr>\n"
-                ."      <td>".$item['path']."</td>\n"
-                ."      <td>".$item['size']."</td>\n"
-                ."    </tr>\n";
-            }
-            $html.=
-            "  </tbody>\n"
-            ."</table>\n";
-        }
-        if ($this->_dropbox_modifications) {
-            $html.=
-             "<h2>Modified Pending Dropbox Items</h2>"
-            ."<table cellpadding='2' cellspacing='0' border='1'>\n"
-            ."  <thead>\n"
-            ."    <th>Path</th>\n"
-            ."    <th>Size</th>\n"
-            ."  </thead>\n"
-            ."  <tbody>\n";
-            foreach ($this->_dropbox_modifications as $item) {
-                $html.=
-                 "    <tr>\n"
-                ."      <td>".$item['path']."</td>\n"
-                ."      <td>".$item['size']."</td>\n"
-                ."    </tr>\n";
-            }
-            $html.=
-            "  </tbody>\n"
-            ."</table>\n";
-        }
-        $am_pm =    $system_vars['defaultTimeFormat']==1 || $system_vars['defaultTimeFormat']==3;
-        $html =
-         Notification::draw_css()
-        .Notification::draw_header($system_vars['textEnglish'], trim($system_vars['URL'], '/'))
-        .$html
-        .Notification::draw_footer($am_pm);
-        get_mailsender_to_component_results(); // Use system default mail sender details
-        component_result_set('from_name', $system_vars['adminName']);
-        component_result_set('from_email', $system_vars['adminEmail']);
-        $data =             array();
-        $data['subject'] =      "Community Dropbox Notification";
-        $data['html'] =         $html;
-        $emails = explode(',', $this->_cp['dropbox_notify_emails']);
-        foreach ($emails as $email) {
-            $data['PEmail'] =       trim($email);
-            $data['NName'] =        trim($email);
-            $mail_result =          mailto($data);
-            if (strpos($mail_result, 'Message-ID') === false) {
-                do_log(3, __CLASS__.'::'.__FUNCTION__.'()', '', $mail_result.' '.$html);
-            }
-        }
-    }
-
-    protected function _check_dropbox_update()
-    {
-        $changes = $this->_check_dropbox_update_get_delta();
-        if ($changes) {
-            foreach ($changes as $change) {
-                $path =       $change[0];
-                $metadata =   $change[1];
-                $member =     implode('/', array_splice(explode('/', $path), 0, 3)).'/';
-                if (!$metadata) {
-                    $this->_check_dropbox_update_deleted($member, $path);
-                } else {
-                    $this->_check_dropbox_update_added($member, $metadata);
-                }
-            }
-            foreach ($this->_records as $record) {
-                $data = array(
-                'dropbox_last_checked' =>     get_timestamp(),
-                'dropbox_last_filelist' =>    Record::escape_string($record['dropbox_last_filelist']),
-                'dropbox_last_status' =>      (count(unserialize($record['dropbox_last_filelist']))==0 ? 1 : 2)
-                );
-                $Obj_Community_Member = new Community_Member($record['ID']);
-                $Obj_Community_Member->update($data);
-            }
-            $this->_check_dropbox_notify();
-        }
-        $this->_setup_listings_load_records();
-    }
-
-    protected function _check_dropbox_update_added($member, $metadata)
-    {
-        $path_arr = explode('/', $metadata->path);
-        if (count($path_arr)<6 || $path_arr[3]!='Pending') {
-            return;
-        }
-        foreach ($this->_records as &$record) {
-            if (strToLower($record['dropbox_folder'])!=$member) {
-                continue;
-            }
-            $items = ($record['dropbox_last_filelist'] ? unserialize($record['dropbox_last_filelist']) : array());
-            foreach ($items as &$item) {
-                if ($item['path']==$metadata->path) {
-                    $item['size'] = $metadata->size;
-                    $this->_dropbox_modifications[] = $item;
-                    $record['dropbox_last_filelist'] = serialize($items);
-                    return;
-                }
-            }
-            $new = array(
-            'path' => $metadata->path,
-            'size' => $metadata->size
-            );
-            $this->_dropbox_additions[] = $new;
-            $items[] = $new;
-            $record['dropbox_last_filelist'] = serialize($items);
-        }
-    }
-
-    protected function _check_dropbox_update_deleted($member, $file)
-    {
-        foreach ($this->_records as &$record) {
-            if (strToLower($record['dropbox_folder'])==$member) {
-                $items = ($record['dropbox_last_filelist'] ? unserialize($record['dropbox_last_filelist']) : array());
-                for ($i=0; $i<count($items); $i++) {
-                    if (isset($items[$i]['path']) && $file == strToLower($items[$i]['path'])) {
-                        unset($items[$i]);
-                    }
-                }
-                $record['dropbox_last_filelist'] = serialize($items);
-                break;
-            }
-        }
-    }
-
-
-    protected function _check_dropbox_update_get_delta()
-    {
-        if ($this->_community_record['dropbox_access_token_key']=='') {
-            return array();
-        }
-        if ($this->_community_record['dropbox_access_token_secret']=='') {
-            return array();
-        }
-        $entries = array();
-        $cursor = $this->_community_record['dropbox_delta_cursor'];
-        $has_more = true;
-        while ($has_more) {
-            $dropbox_delta = $this->_Obj_DropLib->delta($cursor);
-            $dropbox_delta = json_decode($dropbox_delta['response']);
-            if ($dropbox_delta) {
-                $cursor = $dropbox_delta->cursor;
-                $has_more = $dropbox_delta->has_more;
-                foreach ($dropbox_delta->entries as $entry) {
-                    $entries[] = $entry;
-                }
-            } else {
-                $has_more=false;
-            }
-        }
-        $data = array(
-        'dropbox_last_checked' => get_timestamp(),
-        'dropbox_delta_cursor' => $cursor
-        );
-        $this->update($data);
-        do_log(3, 'Dropbox', '_check_dropbox_update_get_delta()', print_r($entries, true));
-        return $entries;
-    }
-
     public function delete()
     {
         $sql =
-         "DELETE FROM\n"
-        ."  `community_membership`\n"
-        ."WHERE\n"
-        ." `communityID` IN(".$this->_get_ID().")";
+             "DELETE FROM\n"
+            ."  `community_membership`\n"
+            ."WHERE\n"
+            ." `communityID` IN(".$this->_get_ID().")";
         $this->do_sql_query($sql);
         $sql =
-         "DELETE FROM\n"
-        ."  `postings`\n"
-        ."WHERE\n"
-        ." `communityID` IN(".$this->_get_ID().")";
+             "DELETE FROM\n"
+            ."  `postings`\n"
+            ."WHERE\n"
+            ." `communityID` IN(".$this->_get_ID().")";
         $this->do_sql_query($sql);
         parent::delete();
     }
@@ -336,77 +72,77 @@ class Community extends Displayable_Item
     public function get_bounding_box()
     {
         $sql =
-         "SELECT\n"
-        ."  MAX(`community_member`.`service_map_lat`) `map_lat_max`,\n"
-        ."  MIN(`community_member`.`service_map_lat`) `map_lat_min`,\n"
-        ."  MAX(`community_member`.`service_map_lon`) `map_lon_max`,\n"
-        ."  MIN(`community_member`.`service_map_lon`) `map_lon_min`\n"
-        ."FROM\n"
-        ."  `community`INNER JOIN `community_membership` ON\n"
-        ."  `community_membership`.`communityID` = `community`.`ID`\n"
-        ."INNER JOIN `community_member` ON\n"
-        ."  `community_member`.`ID` = `community_membership`.`memberID`\n"
-        ."WHERE\n"
-        ."  (`community_member`.`service_map_lat`!=0 || `community_member`.`service_map_lon`!=0) AND\n"
-        ."  `community`.`ID` = ".$this->_get_ID();
+             "SELECT\n"
+            ."  MAX(`community_member`.`service_map_lat`) `map_lat_max`,\n"
+            ."  MIN(`community_member`.`service_map_lat`) `map_lat_min`,\n"
+            ."  MAX(`community_member`.`service_map_lon`) `map_lon_max`,\n"
+            ."  MIN(`community_member`.`service_map_lon`) `map_lon_min`\n"
+            ."FROM\n"
+            ."  `community`INNER JOIN `community_membership` ON\n"
+            ."  `community_membership`.`communityID` = `community`.`ID`\n"
+            ."INNER JOIN `community_member` ON\n"
+            ."  `community_member`.`ID` = `community_membership`.`memberID`\n"
+            ."WHERE\n"
+            ."  (`community_member`.`service_map_lat`!=0 || `community_member`.`service_map_lon`!=0) AND\n"
+            ."  `community`.`ID` = ".$this->_get_ID();
         return $this->get_record_for_sql($sql);
     }
 
     public function get_communities()
     {
         $sql =
-         "SELECT\n"
-        ."  (SELECT\n"
-        ."      COUNT(*)\n"
-        ."  FROM\n"
-        ."     `community_membership`\n"
-        ."  WHERE\n"
-        ."      `community_membership`.`communityID`=`".$this->_get_table_name()."`.`ID`\n"
-        ."  ) `members`,\n"
-        ."  `map_lat_min`+((`map_lat_max`-`map_lat_min`)/2) `map_lat`,\n"
-        ."  `map_lon_min`+((`map_lon_max`-`map_lon_min`)/2) `map_lon`,\n"
-        ."  `".$this->_get_table_name()."`.*\n"
-        ."FROM\n"
-        ."  `".$this->_get_table_name()."`\n"
-        .($this->_current_user_rights['canEdit'] ? "" : "WHERE\n  `enabled`=1\n")
-        ."ORDER BY\n"
-        ."  `title`";
+             "SELECT\n"
+            ."  (SELECT\n"
+            ."      COUNT(*)\n"
+            ."  FROM\n"
+            ."     `community_membership`\n"
+            ."  WHERE\n"
+            ."      `community_membership`.`communityID`=`".$this->_get_table_name()."`.`ID`\n"
+            ."  ) `members`,\n"
+            ."  `map_lat_min`+((`map_lat_max`-`map_lat_min`)/2) `map_lat`,\n"
+            ."  `map_lon_min`+((`map_lon_max`-`map_lon_min`)/2) `map_lon`,\n"
+            ."  `".$this->_get_table_name()."`.*\n"
+            ."FROM\n"
+            ."  `".$this->_get_table_name()."`\n"
+            .($this->_current_user_rights['canEdit'] ? "" : "WHERE\n  `enabled`=1\n")
+            ."ORDER BY\n"
+            ."  `title`";
         return $this->get_records_for_sql($sql);
     }
 
     public function get_events_upcoming($category_csv = false)
     {
         $sql =
-         "SELECT\n"
-        ."  *\n"
-        ."FROM\n"
-        ."  `postings`\n"
-        ."WHERE\n"
-        ."  `systemID`=".SYS_ID." AND\n"
-        ."  `type`='event' AND\n"
-        .($category_csv!="" ?
-            "  `category` REGEXP \"".implode("|", explode(',', str_replace(" ", "", $category_csv)))."\" AND\n"
-        :
-            ""
-        )
-        ."  `effective_date_start` >= '".date('Y')."-".date('m')."-".date('d')."' AND\n"
-        ."  `communityID` = ".$this->_get_ID();
+             "SELECT\n"
+            ."  *\n"
+            ."FROM\n"
+            ."  `postings`\n"
+            ."WHERE\n"
+            ."  `systemID`=".SYS_ID." AND\n"
+            ."  `type`='event' AND\n"
+            .($category_csv!="" ?
+                "  `category` REGEXP \"".implode("|", explode(',', str_replace(" ", "", $category_csv)))."\" AND\n"
+            :
+                ""
+            )
+            ."  `effective_date_start` >= '".date('Y')."-".date('m')."-".date('d')."' AND\n"
+            ."  `communityID` = ".$this->_get_ID();
         return $this->get_records_for_sql($sql);
     }
 
     public function get_members_ID_csv()
     {
         $sql =
-         "SELECT\n"
-        ."  GROUP_CONCAT(`community_member`.`ID`)\n"
-        ."FROM\n"
-        ."  `community`\n"
-        ."INNER JOIN `community_membership` ON\n"
-        ."  `community_membership`.`communityID` = `community`.`ID`\n"
-        ."INNER JOIN `community_member` ON\n"
-        ."  `community_member`.`ID` = `community_membership`.`memberID`\n"
-        ."WHERE\n"
-        ."  `community`.`ID` = ".$this->_get_ID()."\n";
+             "SELECT\n"
+            ."  GROUP_CONCAT(`community_member`.`ID`)\n"
+            ."FROM\n"
+            ."  `community`\n"
+            ."INNER JOIN `community_membership` ON\n"
+            ."  `community_membership`.`communityID` = `community`.`ID`\n"
+            ."INNER JOIN `community_member` ON\n"
+            ."  `community_member`.`ID` = `community_membership`.`memberID`\n"
+            ."WHERE\n"
+            ."  `community`.`ID` = ".$this->_get_ID()."\n";
         return $this->get_field_for_sql($sql);
     }
 
@@ -634,6 +370,35 @@ class Community extends Displayable_Item
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
         if ($isMASTERADMIN) {
             return
+                 "SELECT\n"
+                ."  0 `seq`,\n"
+                ."  '' `value`,\n"
+                ."  '(None)' `text`,\n"
+                ."  'd0d0d0' `color_background`,\n"
+                ."  '404040' `color_text`\n"
+                ."UNION SELECT\n"
+                ."  1,\n"
+                ."  `community_member`.`ID`,\n"
+                ."  CONCAT(\n"
+                ."    `system`.`textEnglish`,': ',\n"
+                ."    `service_addr_country`,\n"
+                ."    IF(\n"
+                ."      `service_addr_sp`!='',\n"
+                ."      CONCAT(' | ',`service_addr_sp`),\n"
+                ."     ''\n"
+                ."    ),\n"
+                ."    ' | ',`service_addr_city`,' | ',`title`\n"
+                ."  ),\n"
+                ."  IF(`system`.`ID`=SYS_ID,'c0ffc0','ffe0e0'),\n"
+                ."  '000000'\n"
+                ."FROM\n"
+                ."  `community_member`\n"
+                ."INNER JOIN `system` ON\n"
+                ."  `system`.`ID` = `community_member`.`systemID`\n"
+                ."ORDER BY\n"
+                ."  `seq`,`text`";
+        }
+        return
              "SELECT\n"
             ."  0 `seq`,\n"
             ."  '' `value`,\n"
@@ -644,51 +409,22 @@ class Community extends Displayable_Item
             ."  1,\n"
             ."  `community_member`.`ID`,\n"
             ."  CONCAT(\n"
-            ."    `system`.`textEnglish`,': ',\n"
             ."    `service_addr_country`,\n"
             ."    IF(\n"
             ."      `service_addr_sp`!='',\n"
             ."      CONCAT(' | ',`service_addr_sp`),\n"
-            ."     ''\n"
+            ."      ''\n"
             ."    ),\n"
             ."    ' | ',`service_addr_city`,' | ',`title`\n"
             ."  ),\n"
-            ."  IF(`system`.`ID`=SYS_ID,'c0ffc0','ffe0e0'),\n"
+            ."  'c0ffc0',\n"
             ."  '000000'\n"
             ."FROM\n"
             ."  `community_member`\n"
-            ."INNER JOIN `system` ON\n"
-            ."  `system`.`ID` = `community_member`.`systemID`\n"
+            ."WHERE\n"
+            ."  `community_member`.`systemID` IN(1,".SYS_ID.")\n"
             ."ORDER BY\n"
             ."  `seq`,`text`";
-        }
-        return
-         "SELECT\n"
-        ."  0 `seq`,\n"
-        ."  '' `value`,\n"
-        ."  '(None)' `text`,\n"
-        ."  'd0d0d0' `color_background`,\n"
-        ."  '404040' `color_text`\n"
-        ."UNION SELECT\n"
-        ."  1,\n"
-        ."  `community_member`.`ID`,\n"
-        ."  CONCAT(\n"
-        ."    `service_addr_country`,\n"
-        ."    IF(\n"
-        ."      `service_addr_sp`!='',\n"
-        ."      CONCAT(' | ',`service_addr_sp`),\n"
-        ."      ''\n"
-        ."    ),\n"
-        ."    ' | ',`service_addr_city`,' | ',`title`\n"
-        ."  ),\n"
-        ."  'c0ffc0',\n"
-        ."  '000000'\n"
-        ."FROM\n"
-        ."  `community_member`\n"
-        ."WHERE\n"
-        ."  `community_member`.`systemID` IN(1,".SYS_ID.")\n"
-        ."ORDER BY\n"
-        ."  `seq`,`text`";
     }
 
     public function handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name)
@@ -729,17 +465,17 @@ class Community extends Displayable_Item
         }
         if (!$r['dropbox_app_key']) {
             $data = array(
-            'dropbox_access_token_key' =>      '',
-            'dropbox_access_token_secret' =>   ''
+                'dropbox_access_token_key' =>      '',
+                'dropbox_access_token_secret' =>   ''
             );
             $this->update($data, true, false);
             unset($_SESSION['DropLib_RequestToken']);
             $msg.=
-            "No App Key or Secret were provided.<br />"
-            ."Please provide these or "
-            ."<a target='new_window' href='"
-            ."https://www.dropbox.com/login?cont=https%3A//www.dropbox.com/developers/apps"
-            ."'>click here</a> to create them.";
+                 "No App Key or Secret were provided.<br />"
+                ."Please provide these or "
+                ."<a target='new_window' href='"
+                ."https://www.dropbox.com/login?cont=https%3A//www.dropbox.com/developers/apps"
+                ."'>click here</a> to create them.";
             return;
         }
         if ($r['dropbox_access_token_key']) {
@@ -747,32 +483,32 @@ class Community extends Displayable_Item
         }
         if (isset($_SESSION['DropLib_RequestToken'])) {
             $params = array(
-            'consumerKey' =>      $r['dropbox_app_key'],
-            'consumerSecret' =>   $r['dropbox_app_secret'],
-            'tokenKey' =>         $_SESSION['DropLib_RequestToken']['key'],
-            'tokenSecret' =>      $_SESSION['DropLib_RequestToken']['secret'],
-            'sslCheck' =>         false
+                'consumerKey' =>      $r['dropbox_app_key'],
+                'consumerSecret' =>   $r['dropbox_app_secret'],
+                'tokenKey' =>         $_SESSION['DropLib_RequestToken']['key'],
+                'tokenSecret' =>      $_SESSION['DropLib_RequestToken']['secret'],
+                'sslCheck' =>         false
             );
             $Obj_DropLib = new DropLib($params);
             $token = $Obj_DropLib->accessToken();
             $data = array(
-            'dropbox_access_token_key' =>      $token['key'],
-            'dropbox_access_token_secret' =>   $token['secret']
+                'dropbox_access_token_key' =>      $token['key'],
+                'dropbox_access_token_secret' =>   $token['secret']
             );
             $this->update($data, true, false);
         } else {
             $params = array(
-            'consumerKey' =>      $r['dropbox_app_key'],
-            'consumerSecret' =>   $r['dropbox_app_secret'],
-            'sslCheck' =>         false
+                'consumerKey' =>      $r['dropbox_app_key'],
+                'consumerSecret' =>   $r['dropbox_app_secret'],
+                'sslCheck' =>         false
             );
             $Obj_DropLib = new DropLib($params);
             $_SESSION['DropLib_RequestToken'] = $Obj_DropLib->requestToken();
             $url = $Obj_DropLib->authorizeUrl();
             $msg.=
-            "Please <a target='new_window' href='".$url."'>click here</a>"
-            ." to sign in to dropbox and confirm the request to connect,"
-            ." then save this community member one more time.";
+                 "Please <a target='new_window' href='".$url."'>click here</a>"
+                ." to sign in to dropbox and confirm the request to connect,"
+                ." then save this community member one more time.";
         }
     }
 
@@ -787,65 +523,65 @@ class Community extends Displayable_Item
             $this->set_field('gallery_album_rootID', $albumID, true, false);
         } else {
             $data = array(
-            'communityID' =>    $this->record['ID'],
-            'container_path' => '//communities',
-            'content' =>        'Root Album for '.$this->record['title'].' Community',
-            'date' =>           date('Y-m-d', time()),
-            'enabled' =>        1,
-            'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/',
-            'layoutID' =>       1,
-            'name' =>           $this->record['name'],
-            'parentID' =>       $parentID,
-            'path' =>           '//communities/'.$this->record['name'],
-            'permPUBLIC' =>     1,
-            'permSYSMEMBER' =>  1,
-            'permSYSLOGON' =>   1,
-            'systemID' =>       SYS_ID,
-            'themeID' =>        1,
-            'title' =>          $this->record['title'],
+                'communityID' =>    $this->record['ID'],
+                'container_path' => '//communities',
+                'content' =>        'Root Album for '.$this->record['title'].' Community',
+                'date' =>           date('Y-m-d', time()),
+                'enabled' =>        1,
+                'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/',
+                'layoutID' =>       1,
+                'name' =>           $this->record['name'],
+                'parentID' =>       $parentID,
+                'path' =>           '//communities/'.$this->record['name'],
+                'permPUBLIC' =>     1,
+                'permSYSMEMBER' =>  1,
+                'permSYSLOGON' =>   1,
+                'systemID' =>       SYS_ID,
+                'themeID' =>        1,
+                'title' =>          $this->record['title'],
             );
             $albumID = $Obj_GA->insert($data);
             $this->set_field('gallery_album_rootID', $albumID, true, false);
         }
         if (!$Obj_GA->get_ID_by_path('//communities/'.$this->record['name'].'/members')) {
             $data = array(
-            'communityID' =>    $this->record['ID'],
-            'container_path' => '//communities/'.$this->record['name'],
-            'content' =>        'Sub Album for '.$this->record['title'].' Community Members',
-            'date' =>           date('Y-m-d', time()),
-            'enabled' =>        1,
-            'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/members/',
-            'layoutID' =>       1,
-            'name' =>           'members',
-            'parentID' =>       $albumID,
-            'path' =>           '//communities/'.$this->record['name'].'/members',
-            'permPUBLIC' =>     1,
-            'permSYSMEMBER' =>  1,
-            'permSYSLOGON' =>   1,
-            'systemID' =>       SYS_ID,
-            'themeID' =>        1,
-            'title' =>          'Members',
+                'communityID' =>    $this->record['ID'],
+                'container_path' => '//communities/'.$this->record['name'],
+                'content' =>        'Sub Album for '.$this->record['title'].' Community Members',
+                'date' =>           date('Y-m-d', time()),
+                'enabled' =>        1,
+                'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/members/',
+                'layoutID' =>       1,
+                'name' =>           'members',
+                'parentID' =>       $albumID,
+                'path' =>           '//communities/'.$this->record['name'].'/members',
+                'permPUBLIC' =>     1,
+                'permSYSMEMBER' =>  1,
+                'permSYSLOGON' =>   1,
+                'systemID' =>       SYS_ID,
+                'themeID' =>        1,
+                'title' =>          'Members',
             );
             $Obj_GA->insert($data);
         }
         if (!$Obj_GA->get_ID_by_path('//communities/'.$this->record['name'].'/sponsors')) {
             $data = array(
-            'communityID' =>    $this->record['ID'],
-            'container_path' => '//communities/'.$this->record['name'],
-            'content' =>        'Sub Album for '.$this->record['title'].' Community Sponsors',
-            'date' =>           date('Y-m-d', time()),
-            'enabled' =>        1,
-            'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/sponsors/',
-            'layoutID' =>       1,
-            'name' =>           'sponsors',
-            'parentID' =>       $albumID,
-            'path' =>           '//communities/'.$this->record['name'].'/sponsors',
-            'permPUBLIC' =>     1,
-            'permSYSMEMBER' =>  1,
-            'permSYSLOGON' =>   1,
-            'systemID' =>       SYS_ID,
-            'themeID' =>        1,
-            'title' =>          'Sponsors',
+                'communityID' =>    $this->record['ID'],
+                'container_path' => '//communities/'.$this->record['name'],
+                'content' =>        'Sub Album for '.$this->record['title'].' Community Sponsors',
+                'date' =>           date('Y-m-d', time()),
+                'enabled' =>        1,
+                'enclosure_url' =>  '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/sponsors/',
+                'layoutID' =>       1,
+                'name' =>           'sponsors',
+                'parentID' =>       $albumID,
+                'path' =>           '//communities/'.$this->record['name'].'/sponsors',
+                'permPUBLIC' =>     1,
+                'permSYSMEMBER' =>  1,
+                'permSYSLOGON' =>   1,
+                'systemID' =>       SYS_ID,
+                'themeID' =>        1,
+                'title' =>          'Sponsors',
             );
             $Obj_GA->insert($data);
         }
@@ -867,48 +603,48 @@ class Community extends Displayable_Item
             return;
         }
         $data = array(
-        'systemID' =>             SYS_ID,
-        'page' =>                 $this->record['name'],
-        'path' =>                 '//'.trim($this->record['URL'], '/').'/',
-        'path_extender' =>        1,
-        'componentID_post' =>     1,
-        'componentID_pre' =>      1,
-        'component_parameters' =>
-         "calendar_large.show_controls=0".OPTION_SEPARATOR
-        ."calendar_large.show_heading=0".OPTION_SEPARATOR
-        ."community:module_community.community_name=".$this->record['name']."".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_height=210".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_padding=3".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_photo_height=135".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_photo_width=180".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_spacing=4".OPTION_SEPARATOR
-        ."community:module_community.gallery_member_width=190".OPTION_SEPARATOR
-        ."list_articles.content_char_limit=300".OPTION_SEPARATOR
-        ."list_articles.content_plaintext=1".OPTION_SEPARATOR
-        ."list_articles.content_show=1".OPTION_SEPARATOR
-        ."list_articles.results_limit=20".OPTION_SEPARATOR
-        ."list_articles.results_paging=2".OPTION_SEPARATOR
-        ."list_articles.title_linked=1".OPTION_SEPARATOR
-        ."list_articles.title_show=1".OPTION_SEPARATOR
-        ."list_events.box=0".OPTION_SEPARATOR
-        ."list_events.box_rss_link=0".OPTION_SEPARATOR
-        ."list_events.box_title_link=0".OPTION_SEPARATOR
-        ."list_news.box=0".OPTION_SEPARATOR
-        ."list_news.box_rss_link=0".OPTION_SEPARATOR
-        ."list_news.box_title_link=0".OPTION_SEPARATOR
-        ."list_podcasts.results_limit=10".OPTION_SEPARATOR
-        ."list_podcasts.results_paging=2",
-        'content' =>              "[ECL]community_panel:community[/ECL]",
-        'layoutID' =>             1,
-        'meta_description' =>
-            $this->record['URL_external']." - Churches and Christian organisations in ".$this->record['title'],
-        'meta_keywords' =>        $this->record['URL_external'].", Churches in ".$this->record['title'],
-        'parentID' =>             $parent_r['ID'],
-        'permPUBLIC' =>           1,
-        'permSYSLOGON' =>         1,
-        'permSYSMEMBER' =>        1,
-        'themeID' =>              1,
-        'title' =>                'Community of '.$this->record['title']
+            'systemID' =>             SYS_ID,
+            'page' =>                 $this->record['name'],
+            'path' =>                 '//'.trim($this->record['URL'], '/').'/',
+            'path_extender' =>        1,
+            'componentID_post' =>     1,
+            'componentID_pre' =>      1,
+            'component_parameters' =>
+                 "calendar_large.show_controls=0".OPTION_SEPARATOR
+                ."calendar_large.show_heading=0".OPTION_SEPARATOR
+                ."community:module_community.community_name=".$this->record['name']."".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_height=210".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_padding=3".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_photo_height=135".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_photo_width=180".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_spacing=4".OPTION_SEPARATOR
+                ."community:module_community.gallery_member_width=190".OPTION_SEPARATOR
+                ."list_articles.content_char_limit=300".OPTION_SEPARATOR
+                ."list_articles.content_plaintext=1".OPTION_SEPARATOR
+                ."list_articles.content_show=1".OPTION_SEPARATOR
+                ."list_articles.results_limit=20".OPTION_SEPARATOR
+                ."list_articles.results_paging=2".OPTION_SEPARATOR
+                ."list_articles.title_linked=1".OPTION_SEPARATOR
+                ."list_articles.title_show=1".OPTION_SEPARATOR
+                ."list_events.box=0".OPTION_SEPARATOR
+                ."list_events.box_rss_link=0".OPTION_SEPARATOR
+                ."list_events.box_title_link=0".OPTION_SEPARATOR
+                ."list_news.box=0".OPTION_SEPARATOR
+                ."list_news.box_rss_link=0".OPTION_SEPARATOR
+                ."list_news.box_title_link=0".OPTION_SEPARATOR
+                ."list_podcasts.results_limit=10".OPTION_SEPARATOR
+                ."list_podcasts.results_paging=2",
+            'content' =>              "[ECL]community_panel:community[/ECL]",
+            'layoutID' =>             1,
+            'meta_description' =>
+                $this->record['URL_external']." - Churches and Christian organisations in ".$this->record['title'],
+            'meta_keywords' =>        $this->record['URL_external'].", Churches in ".$this->record['title'],
+            'parentID' =>             $parent_r['ID'],
+            'permPUBLIC' =>           1,
+            'permSYSLOGON' =>         1,
+            'permSYSMEMBER' =>        1,
+            'themeID' =>              1,
+            'title' =>                'Community of '.$this->record['title']
         );
         $Obj_Page->insert($data);
     }
@@ -924,44 +660,44 @@ class Community extends Displayable_Item
             $this->set_field('podcast_album_rootID', $parentID, true, false);
         } else {
             $data = array(
-            'communityID' =>    $this->record['ID'],
-            'container_path' => '//communities',
-            'content' =>        'Root Album for '.$this->record['title'].' Community',
-            'date' =>           date('Y-m-d', time()),
-            'enabled' =>        1,
-            'enclosure_url' =>  '/UserFiles/Media/communities/'.$this->record['name'].'/',
-            'layoutID' =>       1,
-            'name' =>           $this->record['name'],
-            'parentID' =>       $rootID,
-            'path' =>           '//communities/'.$this->record['name'],
-            'permPUBLIC' =>     1,
-            'permSYSMEMBER' =>  1,
-            'permSYSLOGON' =>   1,
-            'systemID' =>       SYS_ID,
-            'themeID' =>        1,
-            'title' =>          $this->record['title'],
+                'communityID' =>    $this->record['ID'],
+                'container_path' => '//communities',
+                'content' =>        'Root Album for '.$this->record['title'].' Community',
+                'date' =>           date('Y-m-d', time()),
+                'enabled' =>        1,
+                'enclosure_url' =>  '/UserFiles/Media/communities/'.$this->record['name'].'/',
+                'layoutID' =>       1,
+                'name' =>           $this->record['name'],
+                'parentID' =>       $rootID,
+                'path' =>           '//communities/'.$this->record['name'],
+                'permPUBLIC' =>     1,
+                'permSYSMEMBER' =>  1,
+                'permSYSLOGON' =>   1,
+                'systemID' =>       SYS_ID,
+                'themeID' =>        1,
+                'title' =>          $this->record['title'],
             );
             $parentID = $Obj_PA->insert($data);
             $this->set_field('podcast_album_rootID', $parentID, true, false);
         }
         if (!$Obj_PA->get_ID_by_path('//communities/'.$this->record['name'].'/members')) {
             $data = array(
-            'communityID' =>    $this->record['ID'],
-            'container_path' => '//communities/'.$this->record['name'],
-            'content' =>        'Sub Album for '.$this->record['title'].' Community Members',
-            'date' =>           date('Y-m-d', time()),
-            'enabled' =>        1,
-            'enclosure_url' =>  '/UserFiles/Media/communities/'.$this->record['name'].'/members/',
-            'layoutID' =>       1,
-            'name' =>           'members',
-            'parentID' =>       $parentID,
-            'path' =>           '//communities/'.$this->record['name'].'/members',
-            'permPUBLIC' =>     1,
-            'permSYSMEMBER' =>  1,
-            'permSYSLOGON' =>   1,
-            'systemID' =>       SYS_ID,
-            'themeID' =>        1,
-            'title' =>          'Members',
+                'communityID' =>    $this->record['ID'],
+                'container_path' => '//communities/'.$this->record['name'],
+                'content' =>        'Sub Album for '.$this->record['title'].' Community Members',
+                'date' =>           date('Y-m-d', time()),
+                'enabled' =>        1,
+                'enclosure_url' =>  '/UserFiles/Media/communities/'.$this->record['name'].'/members/',
+                'layoutID' =>       1,
+                'name' =>           'members',
+                'parentID' =>       $parentID,
+                'path' =>           '//communities/'.$this->record['name'].'/members',
+                'permPUBLIC' =>     1,
+                'permSYSMEMBER' =>  1,
+                'permSYSLOGON' =>   1,
+                'systemID' =>       SYS_ID,
+                'themeID' =>        1,
+                'title' =>          'Members',
             );
             $Obj_PA->insert($data);
         }

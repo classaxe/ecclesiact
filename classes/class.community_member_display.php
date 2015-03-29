@@ -1,19 +1,22 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.41');
+define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.42');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.41 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.42 (2015-03-28)
+    1) Now includes Special Events, Easter Events and Christmas Events whenever they are there to see
+       and uses separate tab indexes for each so that #easter for example goes directly to that tab
 
 */
 
 class Community_Member_Display extends Community_Member
 {
     protected $_events =                  array();
+    protected $_events_christmas =        array();
+    protected $_events_easter =           array();
     protected $_events_special =          array();
     protected $_nav_prev =                false;
     protected $_nav_next =                false;
@@ -25,7 +28,7 @@ class Community_Member_Display extends Community_Member
 
     public function draw($cp, $member_extension)
     {
-        $this->_setup_initial($cp, $member_extension);
+        $this->setupInitial($cp, $member_extension);
         if ($this->_print) {
             $Obj = new Community_Member_Summary;
             return $Obj->draw($cp, $member_extension);
@@ -34,32 +37,34 @@ class Community_Member_Display extends Community_Member
             $Obj = new Community_Member_Resource;
             return $Obj->draw($cp, $member_extension);
         }
-        $this->_setup($cp);
-        $this->_draw_js();
-        $this->_draw_css();
-        $this->_draw_title();
-        $this->_draw_community_navigation();
-        $this->_draw_section_tabs();
-        $this->_draw_frame_open();
-        $this->_draw_section_container_open();
-        $this->_draw_profile();
-        $this->_draw_members();
-        $this->_draw_map();
-        $this->_draw_contact();
-        $this->_draw_articles();
-        $this->_draw_events();
-        $this->_draw_events_special();
-        $this->_draw_calendar();
-        $this->_draw_news();
-        $this->_draw_podcasts();
-        $this->_draw_stats();
-        $this->_draw_about();
-        $this->_draw_section_container_close();
-        $this->_draw_frame_shut();
+        $this->setup($cp);
+        $this->drawJs();
+        $this->drawCss();
+        $this->drawTitle();
+        $this->drawCommunityNavigation();
+        $this->drawSectionTabButtons();
+        $this->drawFrameOpen();
+        $this->drawSectionContainerOpen();
+        $this->drawProfile();
+        $this->drawMembers();
+        $this->drawMap();
+        $this->drawContact();
+        $this->drawArticles();
+        $this->drawEvents();
+        $this->drawEventsChristmas();
+        $this->drawEventsEaster();
+        $this->drawEventsSpecial();
+        $this->drawCalendar();
+        $this->drawNews();
+        $this->drawPodcasts();
+        $this->drawStats();
+        $this->drawAbout();
+        $this->drawSectionContainerClose();
+        $this->drawFrameClose();
         return $this->_html;
     }
 
-    protected function _draw_2col_entry($label, $content, $test)
+    protected function drawTwoColumEntry($label, $content, $test)
     {
         if ($test=='') {
             return;
@@ -71,7 +76,7 @@ class Community_Member_Display extends Community_Member
         ."  </tr>\n";
     }
 
-    protected function _draw_css()
+    protected function drawCss()
     {
         Page::push_content(
             'style_include',
@@ -88,7 +93,7 @@ class Community_Member_Display extends Community_Member
         Page::push_content('style', $css);
     }
 
-    protected function _draw_js()
+    protected function drawJs()
     {
         $selected_section = (get_var('selected_section') ?
             get_var('selected_section')
@@ -107,7 +112,7 @@ class Community_Member_Display extends Community_Member
         );
     }
 
-    protected function _draw_about()
+    protected function drawAbout()
     {
         if (!$this->_cp['show_about']) {
             return;
@@ -117,7 +122,7 @@ class Community_Member_Display extends Community_Member
         $Obj_Page->_set_ID($this->_pageID);
         $content =          $Obj_Page->get_field('content');
         $this->_html.=
-             HTML::draw_section_tab_div('about', $this->_selected_section)
+             HTML::drawSectionTabDiv('about', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>"
             .($this->_current_user_rights['canEdit'] && $this->_pageID ?
@@ -132,7 +137,7 @@ class Community_Member_Display extends Community_Member
             ."</h2>\n"
             .($this->_cp['header_about'] ? "<div class='section_header'>".$this->_cp['header_about']."</div>\n" : "")
             .($this->_pageID ?
-                $this->_draw_about_items($content)
+                $this->drawAboutItems($content)
             :
                  "<b>Error </b>: The 'About' section template page //".trim($this->_cp['template_member_page'], '/')."/"
                 ." wasn't found."
@@ -143,7 +148,7 @@ class Community_Member_Display extends Community_Member
             ."</div>";
     }
 
-    protected function _draw_about_items($content)
+    protected function drawAboutItems($content)
     {
         $replace = array(
             '[[COMMUNITY_NAME]]' =>     $this->_community_record['name'],
@@ -153,13 +158,13 @@ class Community_Member_Display extends Community_Member
             '[[MEMBER_URL]]' =>
                  BASE_PATH.trim($this->_community_record['URL'], '/').'/'
                 .trim($this->_record['name'], '/'),
-            '[[SPONSORS_LOCAL]]' =>     $this->_draw_sponsors_local(),
-            '[[SPONSORS_NATIONAL]]' =>  $this->_draw_sponsors_national()
+            '[[SPONSORS_LOCAL]]' =>     $this->drawSponsorsLocal(),
+            '[[SPONSORS_NATIONAL]]' =>  $this->drawSponsorsNational()
         );
         return strtr($content, $replace);
     }
 
-    protected function _draw_articles()
+    protected function drawArticles()
     {
         if (!$this->_cp['show_articles'] || !$this->_record['full_member']) {
             return;
@@ -182,16 +187,16 @@ class Community_Member_Display extends Community_Member
             'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
         );
         $this->_html.=
-            HTML::draw_section_tab_div('articles', $this->_selected_section)
+            HTML::drawSectionTabDiv('articles', $this->_selected_section)
             ."<div class='inner'>"
-            .$this->_draw_web_share('articles', 'articles')
+            .$this->drawWebShare('articles', 'articles')
             ."<h2>Articles for ".$this->_record['title']."</h2>"
             .$Obj->draw_listings('member_articles', $args, false)
             ."</div>\n"
             ."</div>\n";
     }
 
-    protected function _draw_calendar()
+    protected function drawCalendar()
     {
         if (
             !$this->_cp['show_calendar'] ||
@@ -210,16 +215,16 @@ class Community_Member_Display extends Community_Member
             'show_heading' => 0
         );
         $this->_html.=
-             HTML::draw_section_tab_div('calendar', $this->_selected_section)
+             HTML::drawSectionTabDiv('calendar', $this->_selected_section)
             ."<div class='inner'>"
-            .$this->_draw_web_share('events', 'calendar')
+            .$this->drawWebShare('events', 'calendar')
             ."<h2>Monthly Calendar for ".$this->_record['title']."</h2>"
             .$Obj->draw('community_member', $args, false)
             ."</div>\n"
             ."</div>\n";
     }
 
-    protected function _draw_community_navigation()
+    protected function drawCommunityNavigation()
     {
         global $page_vars;
         $this->_html.=
@@ -243,19 +248,19 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_contact()
+    protected function drawContact()
     {
         if (!$this->_cp['show_contact']) {
             return;
         }
-        $this->_draw_contact_form_setup();
-        $office =   $this->_draw_address('office_addr_');
-        $mailing =  $this->_draw_address('mailing_addr_');
-        $phone =    $this->_draw_office_phone();
-        $notes =    $this->_draw_office_notes();
-        $hours =    $this->_draw_office_hours();
+        $this->drawContactFormSetup();
+        $office =   $this->drawAddress('office_addr_');
+        $mailing =  $this->drawAddress('mailing_addr_');
+        $phone =    $this->drawOfficePhone();
+        $notes =    $this->drawOfficeNotes();
+        $hours =    $this->drawOfficeHours();
         $this->_html.=
-             HTML::draw_section_tab_div('contact', $this->_selected_section)
+             HTML::drawSectionTabDiv('contact', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>Contact ".htmlentities($this->_record['title'])."</h2><br />\n"
             ."<div class='addresses'>\n"
@@ -272,27 +277,27 @@ class Community_Member_Display extends Community_Member
                  "<hr />\n"
                 .HTML::draw_status('contact_form_status', $this->_msg);
         }
-        $this->_draw_contact_form();
+        $this->drawContactForm();
         $this->_html.=
              "</div>\n"
             ."</div>\n";
     }
 
-    protected function _draw_contact_form()
+    protected function drawContactForm()
     {
         global $page_vars;
         if (!count($this->_contacts)) {
             return;
         }
         if ($this->submode == "community_member_contact_sent") {
-            $this->_draw_contact_form_draw_result();
+            $this->drawContactFormResult();
             return;
         }
-        $this->_draw_contact_form_draw_js();
-        $this->_draw_contact_form_draw_form();
+        $this->drawContactFormJs();
+        $this->drawContactFormHtml();
     }
 
-    protected function _draw_contact_form_draw_form()
+    protected function drawContactFormHtml()
     {
         $width = 400;
         $this->_html.=
@@ -373,7 +378,7 @@ class Community_Member_Display extends Community_Member
             ."</div>";
     }
 
-    protected function _draw_contact_form_draw_js()
+    protected function drawContactFormJs()
     {
         $js =
              "function email_check(val){\n"
@@ -415,7 +420,7 @@ class Community_Member_Display extends Community_Member
         Page::push_content('javascript', $js);
     }
 
-    protected function _draw_contact_form_draw_result()
+    protected function drawContactFormResult()
     {
         $this->_html.=
              "<div class='contact_form'>\n"
@@ -440,7 +445,7 @@ class Community_Member_Display extends Community_Member
             ."</div>";
     }
 
-    protected function _draw_contact_form_handle_user_requests()
+    protected function drawContactFormProcess()
     {
         switch ($this->submode){
             case "community_member_contact":
@@ -489,7 +494,7 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _draw_contact_form_setup()
+    protected function drawContactFormSetup()
     {
         if (!count($this->_contacts)) {
             return;
@@ -500,8 +505,8 @@ class Community_Member_Display extends Community_Member
         $this->contact_sender_name =    get_var('contact_sender_name');
         $this->contact_message =        get_var('contact_message');
         $this->msg = "";
-        $this->_draw_contact_form_handle_user_requests();
-        $this->_draw_contact_form_get_contacts_csv();
+        $this->drawContactFormProcess();
+        $this->drawContactFormGetContactsCsv();
         if ($personID = get_userID()) {
             $Obj_User =     new User($personID);
             $Obj_User->load();
@@ -520,7 +525,7 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _draw_contact_form_get_contacts_csv()
+    protected function drawContactFormGetContactsCsv()
     {
         if (!count($this->_contacts)) {
             return "";
@@ -538,7 +543,7 @@ class Community_Member_Display extends Community_Member
         $this->_contacts_csv = implode(',', $out);
     }
 
-    protected function _draw_context_menu_member($record)
+    protected function drawContextMenuMember($record)
     {
         if (!$this->_current_user_rights['canEdit']) {
             return;
@@ -559,17 +564,17 @@ class Community_Member_Display extends Community_Member
             ." onmouseout=\"this.style.backgroundColor='';_CM.type=''\"";
     }
 
-    protected function _draw_frame_open()
+    protected function drawFrameOpen()
     {
         $this->_html.="<div class='profile_frame'>";
     }
 
-    protected function _draw_frame_shut()
+    protected function drawFrameClose()
     {
         $this->_html.="</div>";
     }
 
-    protected function _draw_address($prefix)
+    protected function drawAddress($prefix)
     {
         $r = $this->_record;
         if (
@@ -595,7 +600,7 @@ class Community_Member_Display extends Community_Member
     }
 
 
-    protected function _draw_office_hours()
+    protected function drawOfficeHours()
     {
         $days =         explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
         $r =            $this->_record;
@@ -614,7 +619,7 @@ class Community_Member_Display extends Community_Member
         foreach ($days as $d) {
             $hours = $r['xml:Church_Office_'.substr($d, 0, 3)];
             if ($hours) {
-                $out.= $this->_draw_2col_entry($d, $hours, $hours);
+                $out.= $this->drawTwoColumEntry($d, $hours, $hours);
             }
         }
         $out.=
@@ -622,7 +627,7 @@ class Community_Member_Display extends Community_Member
         return $out;
     }
 
-    protected function _draw_office_notes()
+    protected function drawOfficeNotes()
     {
         $r = $this->_record;
         if (!$r['office_notes']) {
@@ -632,7 +637,7 @@ class Community_Member_Display extends Community_Member
             "<p style='margin:0 0 2em 1em;'>\n".$r['office_notes']."</p>";
     }
 
-    protected function _draw_office_phone()
+    protected function drawOfficePhone()
     {
         $r = $this->_record;
         if (!$r['office_phone1_lbl'] && !$r['office_phone2_lbl']) {
@@ -640,11 +645,11 @@ class Community_Member_Display extends Community_Member
         }
         return
              "<table class='table_details' cellpadding='0' cellspacing='0' border='0'>"
-            .$this->_draw_2col_entry($r['office_phone1_lbl'], $r['office_phone1_num'], $r['office_phone1_lbl'])
-            .$this->_draw_2col_entry($r['office_phone2_lbl'], $r['office_phone2_num'], $r['office_phone2_lbl'])
+            .$this->drawTwoColumEntry($r['office_phone1_lbl'], $r['office_phone1_num'], $r['office_phone1_lbl'])
+            .$this->drawTwoColumEntry($r['office_phone2_lbl'], $r['office_phone2_num'], $r['office_phone2_lbl'])
             ."</table>\n";
     }
-    protected function _draw_map()
+    protected function drawMap()
     {
         if (!$this->_cp['show_map']) {
             return;
@@ -653,7 +658,7 @@ class Community_Member_Display extends Community_Member
             return;
         }
         $this->_html.=
-             HTML::draw_section_tab_div('map', $this->_selected_section)
+             HTML::drawSectionTabDiv('map', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>Map for ".htmlentities($this->_record['title'])."</h2>\n";
         $Obj_Map =      new Google_Map('community_member', SYS_ID);
@@ -709,7 +714,7 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_members()
+    protected function drawMembers()
     {
         if (!$this->_record['type']=='ministerium') {
             return;
@@ -724,7 +729,7 @@ class Community_Member_Display extends Community_Member
             return;
         }
         $this->_html.=
-             HTML::draw_section_tab_div('members', $this->_selected_section)
+             HTML::drawSectionTabDiv('members', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>Members of ".$this->_record['title']."</h2>"
             ."<ul class=\"cross churches_spaced\">\n";
@@ -738,7 +743,7 @@ class Community_Member_Display extends Community_Member
                 BASE_PATH."img/sysimg?img=".$img."&amp;resize=1&amp;maintain=0&amp;width=50&amp;height=40";
             $this->_html.=
                 "  <li"
-                .$this->_draw_context_menu_member($r)
+                .$this->drawContextMenuMember($r)
                 .">\n"
                 ."    <a href=\"".$r['member_URL']."\">"
                 ."<img alt=\"".str_replace('& ', '&amp; ', $r['title'])."\" src=\"".$featured_image."\""
@@ -764,7 +769,7 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_events()
+    protected function drawEvents()
     {
         if (
             !$this->_cp['show_events'] ||
@@ -791,16 +796,88 @@ class Community_Member_Display extends Community_Member
             'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
         );
         $this->_html.=
-            HTML::draw_section_tab_div('events', $this->_selected_section)
+            HTML::drawSectionTabDiv('events', $this->_selected_section)
             ."<div class='inner'>"
-            .$this->_draw_web_share('events', 'events')
+            .$this->drawWebShare('events', 'events')
             ."<h2>Upcoming Events for ".htmlentities($this->_record['title'])."</h2>\n"
             .$Obj->draw_listings('member_events', $args, false)
             ."</div>\n"
             ."</div>\n";
     }
 
-    protected function _draw_events_special()
+    protected function drawEventsChristmas()
+    {
+        if (!$this->_cp['show_events_special']) {
+            return;
+        }
+        if (!$this->_events_christmas) {
+            return;
+        }
+        $Obj = new Community_Member_Event;
+        $Obj->communityID =     $this->_record['communityID'];
+        $Obj->memberID =        $this->_record['ID'];
+        $Obj->partner_csv =     $this->_record['partner_csv'];
+        $Obj->community_URL =   $this->_community_record['URL'];
+        $args = array(
+            'author_show' =>          $this->_cp['listing_show_author'],
+            'category_show' =>        false,
+            'content_char_limit' =>   $this->_cp['listing_content_char_limit'],
+            'content_plaintext' =>    $this->_cp['listing_content_plaintext'],
+            'content_show' =>         $this->_cp['listing_show_content'],
+            'filter_category_list' => 'Christmas',
+            'filter_what' =>          'future',
+            'results_limit' =>        $this->_cp['listing_results_limit'],
+            'results_paging' =>       $this->_cp['listing_results_paging'],
+            'thumbnail_height' =>     $this->_cp['listing_thumbnail_height'],
+            'thumbnail_show' =>       $this->_cp['listing_show_thumbnails'],
+            'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
+        );
+        $this->_html.=
+            HTML::drawSectionTabDiv('christmas', $this->_selected_section)
+            ."<div class='inner'>"
+            ."<h2>".$this->_cp['label_events_christmas']." for ".htmlentities($this->_record['title'])."</h2>\n"
+            .$Obj->draw_listings('member_events_christmas', $args, false)
+            ."</div>\n"
+            ."</div>\n";
+    }
+
+    protected function drawEventsEaster()
+    {
+        if (!$this->_cp['show_events_special']) {
+            return;
+        }
+        if (!$this->_events_easter) {
+            return;
+        }
+        $Obj = new Community_Member_Event;
+        $Obj->communityID =     $this->_record['communityID'];
+        $Obj->memberID =        $this->_record['ID'];
+        $Obj->partner_csv =     $this->_record['partner_csv'];
+        $Obj->community_URL =   $this->_community_record['URL'];
+        $args = array(
+            'author_show' =>          $this->_cp['listing_show_author'],
+            'category_show' =>        false,
+            'content_char_limit' =>   $this->_cp['listing_content_char_limit'],
+            'content_plaintext' =>    $this->_cp['listing_content_plaintext'],
+            'content_show' =>         $this->_cp['listing_show_content'],
+            'filter_category_list' => 'Easter',
+            'filter_what' =>          'future',
+            'results_limit' =>        $this->_cp['listing_results_limit'],
+            'results_paging' =>       $this->_cp['listing_results_paging'],
+            'thumbnail_height' =>     $this->_cp['listing_thumbnail_height'],
+            'thumbnail_show' =>       $this->_cp['listing_show_thumbnails'],
+            'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
+        );
+        $this->_html.=
+            HTML::drawSectionTabDiv('easter', $this->_selected_section)
+            ."<div class='inner'>"
+            ."<h2>".$this->_cp['label_events_easter']." for ".htmlentities($this->_record['title'])."</h2>\n"
+            .$Obj->draw_listings('member_events_easter', $args, false)
+            ."</div>\n"
+            ."</div>\n";
+    }
+
+    protected function drawEventsSpecial()
     {
         if (!$this->_cp['show_events_special']) {
             return;
@@ -819,7 +896,7 @@ class Community_Member_Display extends Community_Member
             'content_char_limit' =>   $this->_cp['listing_content_char_limit'],
             'content_plaintext' =>    $this->_cp['listing_content_plaintext'],
             'content_show' =>         $this->_cp['listing_show_content'],
-            'filter_category_list' => $this->_cp['category_events_special'],
+            'filter_category_list' => 'Special-Days',
             'filter_what' =>          'future',
             'results_limit' =>        $this->_cp['listing_results_limit'],
             'results_paging' =>       $this->_cp['listing_results_paging'],
@@ -828,7 +905,7 @@ class Community_Member_Display extends Community_Member
             'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
         );
         $this->_html.=
-            HTML::draw_section_tab_div('special', $this->_selected_section)
+            HTML::drawSectionTabDiv('special', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>".$this->_cp['label_events_special']." for ".htmlentities($this->_record['title'])."</h2>\n"
             .$Obj->draw_listings('member_events_special', $args, false)
@@ -836,7 +913,7 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_news()
+    protected function drawNews()
     {
         if (
             !$this->_cp['show_news'] ||
@@ -862,16 +939,16 @@ class Community_Member_Display extends Community_Member
             'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
         );
         $this->_html.=
-            HTML::draw_section_tab_div('news', $this->_selected_section)
+            HTML::drawSectionTabDiv('news', $this->_selected_section)
             ."<div class='inner'>"
-            .$this->_draw_web_share('news', 'news')
+            .$this->drawWebShare('news', 'news')
             ."<h2>Latest News for ".htmlentities($this->_record['title'])."</h2>\n"
             .$Obj->draw_listings('member_news', $args, false)
             ."</div>\n"
             ."</div>\n";
     }
 
-    protected function _draw_podcasts()
+    protected function drawPodcasts()
     {
         if (!$this->_cp['show_podcasts'] || !$this->_record['full_member']) {
             return;
@@ -895,9 +972,9 @@ class Community_Member_Display extends Community_Member
             'thumbnail_width' =>      $this->_cp['listing_thumbnail_width']
         );
         $this->_html.=
-            HTML::draw_section_tab_div('podcasts', $this->_selected_section)
+            HTML::drawSectionTabDiv('podcasts', $this->_selected_section)
             ."<div class='inner'>"
-            .$this->_draw_web_share('podcasts', 'podcasts')
+            .$this->drawWebShare('podcasts', 'podcasts')
             ."<h2>Latest "
             .($this->_record['type']=='ministerium' ? 'Audio' : 'Sermons')." from "
             .htmlentities($this->_record['title'])."</h2>\n"
@@ -907,11 +984,11 @@ class Community_Member_Display extends Community_Member
     }
 
 
-    protected function _draw_profile()
+    protected function drawProfile()
     {
         global $page_vars;
         $r =            $this->_record;
-        $servicetimes = $this->_draw_service_times();
+        $servicetimes = $this->drawServiceTimes();
         $website =      (isset($r['link_website']) && $r['link_website'] ?
             substr($r['link_website'], 2+strpos($r['link_website'], '//'))
          :
@@ -927,7 +1004,7 @@ class Community_Member_Display extends Community_Member
          :
             ""
         );
-        $service_addr = $this->_draw_address('service_addr_');
+        $service_addr = $this->drawAddress('service_addr_');
         $verified =     ($r['date_survey_returned']!='0000-00-00' ? $r['date_survey_returned'] : false);
         $ministerial =  ($r['ministerial_title']!='' ? $r['ministerial_title'] : false);
         $video_icon =   "-7980px 0px";
@@ -964,7 +1041,7 @@ class Community_Member_Display extends Community_Member
         $Obj_LA = new Language_Assign;
         $languages = $Obj_LA->get_text_csv_for_assignment($this->_get_assign_type(), $r['ID']);
         $this->_html.=
-             HTML::draw_section_tab_div('profile', $this->_selected_section)
+             HTML::drawSectionTabDiv('profile', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>"
             .($this->_current_user_rights['isEditor'] ?
@@ -978,7 +1055,7 @@ class Community_Member_Display extends Community_Member
             .($this->_current_user_rights['isEditor'] ? "</a>" : "")
             ."</h2>"
             ."<div class='photo_frame'>"
-            .$this->_draw_profile_image()
+            .$this->drawProfileImage()
             .($r['full_member'] || $verified || $ministerial ?
                 "<div class='member_icons'>"
                .($r['full_member']?
@@ -1136,15 +1213,15 @@ class Community_Member_Display extends Community_Member
             ;
     }
 
-    protected function _draw_profile_image()
+    protected function drawProfileImage()
     {
         if ($this->get_member_profile_images()) {
-            return $this->_draw_profile_image_slideshow();
+            return $this->drawProfileImageSlideshow();
         }
-        return $this->_draw_profile_image_single();
+        return $this->drawProfileImageSingle();
     }
 
-    protected function _draw_profile_image_single()
+    protected function drawProfileImageSingle()
     {
         $img = ($this->_record['featured_image'] && file_exists('.'.$this->_record['featured_image']) ?
             $this->_record['featured_image']
@@ -1160,7 +1237,7 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_profile_image_slideshow()
+    protected function drawProfileImageSlideshow()
     {
         $Obj_WS =   new Component\WOWSlider;
         $path =     '//communities/'.$this->_community_record['name'].'/members/'.$this->_record['name'].'/profile';
@@ -1179,10 +1256,10 @@ class Community_Member_Display extends Community_Member
         return "<div class='member_slideshow'>".$Obj_WS->draw('profile', $args, true)."</div>";
     }
 
-    protected function _draw_section_tabs()
+    protected function drawSectionTabButtons()
     {
         $this->_html.=
-            HTML::draw_section_tab_buttons(
+            HTML::drawSectionTabButtons(
                 $this->_section_tabs_arr,
                 $this->_safe_ID,
                 $this->_selected_section,
@@ -1190,12 +1267,12 @@ class Community_Member_Display extends Community_Member
             );
     }
 
-    protected function _draw_section_container_close()
+    protected function drawSectionContainerClose()
     {
         $this->_html.= "</div>\n";
     }
 
-    protected function _draw_section_container_open()
+    protected function drawSectionContainerOpen()
     {
         Page::push_content(
             'javascript_onload',
@@ -1204,7 +1281,7 @@ class Community_Member_Display extends Community_Member
         $this->_html.= "<div id='".$this->_safe_ID."_container' style='position:relative;'>\n";
     }
 
-    protected function _draw_service_times()
+    protected function drawServiceTimes()
     {
         $days = explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
         $dd =   '';
@@ -1262,7 +1339,7 @@ class Community_Member_Display extends Community_Member
             ."</table>";
     }
 
-    protected function _draw_sponsors_national()
+    protected function drawSponsorsNational()
     {
         if ($this->_cp['show_sponsors']!=1) {
             return;
@@ -1297,7 +1374,7 @@ class Community_Member_Display extends Community_Member
             .$Obj_CGT->draw('national_sponsors', $args, false);
     }
 
-    protected function _draw_sponsors_local()
+    protected function drawSponsorsLocal()
     {
         if ($this->_cp['show_sponsors']!=1) {
             return;
@@ -1361,7 +1438,7 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _draw_stats()
+    protected function drawStats()
     {
         if (!$this->_current_user_rights['canViewStats']) {
             return;
@@ -1374,7 +1451,7 @@ class Community_Member_Display extends Community_Member
         }
         $r =    $this->_record;
         $this->_html.=
-             HTML::draw_section_tab_div('stats', $this->_selected_section)
+             HTML::drawSectionTabDiv('stats', $this->_selected_section)
             ."<h2>".$this->_cp['label_stats']."</h2>"
             ."<table cellpadding='2' cellspacing='0' border='1' class='member_stats'"
             ." summary='Table showing statistics for this member'>\n"
@@ -1490,7 +1567,7 @@ class Community_Member_Display extends Community_Member
             ."</div>\n";
     }
 
-    protected function _draw_title()
+    protected function drawTitle()
     {
         $this->_html.=
              "<h1 class='title'>"
@@ -1503,7 +1580,7 @@ class Community_Member_Display extends Community_Member
             ."</h1>";
     }
 
-    protected function _draw_web_share($rss = '', $embed = '')
+    protected function drawWebShare($rss = '', $embed = '')
     {
         return
              "<div class='web_share'>"
@@ -1525,14 +1602,14 @@ class Community_Member_Display extends Community_Member
             ."</div>";
     }
 
-    protected function _setup_initial($cp, $member_extension)
+    protected function setupInitial($cp, $member_extension)
     {
         $this->_cp =    $cp;
-        $this->_setup_initial_load_member($member_extension);
+        $this->setupInitialLoadMember($member_extension);
         $this->_print = get_var('print')=='1';
     }
 
-    protected function _setup_initial_load_member($member_extension)
+    protected function setupInitialLoadMember($member_extension)
     {
         global $page_vars;
         $this->_ident =             "community_member_display";
@@ -1548,23 +1625,23 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _setup($cp)
+    protected function setup($cp)
     {
         global $page_vars;
         $this->_cp =                $cp;
-        $this->_setup_load_email_contacts();
-        $this->_setup_load_user_rights();
-        $this->_setup_load_edit_parameters();
-        $this->_setup_load_community_record();
-        $this->_setup_load_events_special();
-        $this->_setup_load_community_members();
-        $this->_setup_load_sponsors();
-        $this->_setup_load_stats();
-        $this->_setup_load_navigation_position();
-        $this->_setup_tabs();
+        $this->setupLoadEmailContacts();
+        $this->setupLoadUserRights();
+        $this->setupLoadEditParameters();
+        $this->setupLoadCommunityRecord();
+        $this->setupLoadEventsSpecial();
+        $this->setupLoadCommunityMembers();
+        $this->setupLoadSponsors();
+        $this->setupLoadStats();
+        $this->setupLoadNavigationPosition();
+        $this->setupTabs();
     }
 
-    protected function _setup_load_community_record()
+    protected function setupLoadCommunityRecord()
     {
         $community_name =   $this->_cp['community_name'];
         $this->_Obj_Community = new Community;
@@ -1575,12 +1652,12 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _setup_load_community_members()
+    protected function setupLoadCommunityMembers()
     {
         $this->_members =   $this->_Obj_Community->get_members();
     }
 
-    protected function _setup_load_edit_parameters()
+    protected function setupLoadEditParameters()
     {
         if (!$this->_current_user_rights['isEditor']) {
             return;
@@ -1595,17 +1672,19 @@ class Community_Member_Display extends Community_Member
         $this->_popup['sponsor_plan'] =       get_popup_size($this->_edit_form['sponsor_plan']);
     }
 
-    protected function _setup_load_email_contacts()
+    protected function setupLoadEmailContacts()
     {
         $this->_contacts =          $this->get_email_contacts();
     }
 
-    protected function _setup_load_events_special()
+    protected function setupLoadEventsSpecial()
     {
-        $this->_events_special =          $this->get_events_upcoming($this->_cp['category_events_special']);
+        $this->_events_christmas =        $this->get_events_upcoming('Christmas');
+        $this->_events_easter =           $this->get_events_upcoming('Easter');
+        $this->_events_special =          $this->get_events_upcoming('Special-Days');
     }
 
-    protected function _setup_load_navigation_position()
+    protected function setupLoadNavigationPosition()
     {
         for ($i=0; $i<count($this->_members); $i++) {
             $m = $this->_members[$i];
@@ -1617,7 +1696,7 @@ class Community_Member_Display extends Community_Member
         }
     }
 
-    protected function _setup_load_sponsors()
+    protected function setupLoadSponsors()
     {
         $Obj_GA = new Gallery_Album;
         $this->_sponsors_national_container = '//sponsors/national';
@@ -1629,7 +1708,7 @@ class Community_Member_Display extends Community_Member
         $this->_sponsors_national_records = $Obj_GA->get_children();
     }
 
-    protected function _setup_load_stats()
+    protected function setupLoadStats()
     {
         global $system_vars;
         if (
@@ -1644,7 +1723,7 @@ class Community_Member_Display extends Community_Member
         $this->get_stats();
     }
 
-    protected function _setup_load_user_rights()
+    protected function setupLoadUserRights()
     {
         $this->_current_user_rights['isEditor'] =
             get_person_permission("SYSEDITOR") ||
@@ -1658,16 +1737,19 @@ class Community_Member_Display extends Community_Member
             $this->_current_user_rights['canEdit'];
     }
 
-    protected function _setup_tabs()
+    protected function setupTabs()
     {
         $this->_section_tabs_arr[] =    array('ID'=>'profile','label'=>'Profile');
         if ($this->_record['type'] == 'ministerium') {
             $this->_section_tabs_arr[] =    array('ID'=>'members', 'label'=>$this->_cp['tab_members']);
         }
-        if (
-            $this->_cp['show_events_special']==1 &&
-            $this->_events_special
-        ) {
+        if ($this->_cp['show_events_special']==1 && $this->_events_christmas) {
+            $this->_section_tabs_arr[] =    array('ID'=>'christmas', 'label'=>$this->_cp['tab_events_christmas']);
+        }
+        if ($this->_cp['show_events_special']==1 && $this->_events_easter) {
+            $this->_section_tabs_arr[] =    array('ID'=>'easter', 'label'=>$this->_cp['tab_events_easter']);
+        }
+        if ($this->_cp['show_events_special']==1 && $this->_events_special) {
             $this->_section_tabs_arr[] =    array('ID'=>'special', 'label'=>$this->_cp['tab_events_special']);
         }
         if (

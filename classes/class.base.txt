@@ -1,3 +1,5 @@
+  1.0.14 (2015-03-23)
+    1) Method getVersion() is now static
   1.0.13 (2015-03-15)
     1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
        resulting in wrong version code being returned by extending classes
