@@ -1,14 +1,12 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION', '1.0.40');
+define('COMMUNITY_DISPLAY_VERSION', '1.0.41');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.40 (2015-03-28)
-    1) Now includes cps for separate Christmas, Easter and Special events
-    2) Moved dropbox checking code into here from parent class
-    3) Now PSR-2 Compliant (that's a big one for this class!)
+  1.0.41 (2015-03-30)
+    1) Bug fix for showing Christmas, Easter and Special Events and now colour codes these in red
 
 */
 
@@ -940,9 +938,13 @@ class Community_Display extends Community
             .".community_frame .member_gallery_entry_phone {\n"
             ."  font-size: ".$this->_cp['members_text_phone_size']."pt;\n"
             ."}\n"
+            ."#section_christmas_heading,\n"
+            ."#section_easter_heading,\n"
             ."#section_special_heading {\n"
             ."  background-color: #ffd0d0;\n"
             ."}\n"
+            ."#section_christmas_heading.tab_selected\n"
+            ."#section_easter_heading.tab_selected,\n"
             ."#section_special_heading.tab_selected {\n"
             ."  background-color: #ffa0a0;\n"
             ."}\n"
@@ -1178,7 +1180,7 @@ class Community_Display extends Community
         if ($this->_cp['show_events_special']!=1) {
             return;
         }
-        if (!$this->_events_special) {
+        if (!$this->_events_christmas) {
             return;
         }
         $Obj = new Community_Event;
@@ -1213,7 +1215,7 @@ class Community_Display extends Community
         if ($this->_cp['show_events_special']!=1) {
             return;
         }
-        if (!$this->_events_special) {
+        if (!$this->_events_easter) {
             return;
         }
         $Obj = new Community_Event;

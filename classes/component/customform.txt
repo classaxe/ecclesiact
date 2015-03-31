@@ -1,3 +1,5 @@
+  1.0.4 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.3 (2012-11-15)
     1) Control Panel now has setting for gateway settings to use when processing
        any orders that may result

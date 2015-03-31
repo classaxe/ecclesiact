@@ -1,7 +1,11 @@
 <?php
-define("VERSION_COMPONENT_BASE", "1.0.22");
+define("VERSION_COMPONENT_BASE", "1.0.23");
 /*
 Version History:
+  1.0.23 (2015-03-29)
+    1) Removed unused stub methods:
+         Component_Base::_draw_section_container_open()
+         Component_Base::_draw_section_container_close()
   1.0.22 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
 
@@ -13,16 +17,6 @@ class Component_Base extends Component\Base
     protected function _draw_control_panel($extra_break = false)
     {
         $this->drawControlPanel($extra_break);
-    }
-
-    protected function _draw_section_container_close()
-    {
-        $this->drawSectionContainerClose();
-    }
-
-    protected function _draw_section_container_open()
-    {
-        $this->drawSectionContainerOpen();
     }
 
     protected function _draw_status()

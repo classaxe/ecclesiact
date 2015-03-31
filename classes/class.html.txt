@@ -1,3 +1,8 @@
+  1.0.88 (2015-03-17)
+    1) Made some aliases for PSR-2 compliant method names:
+          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
+          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
+          HTML::drawFormBox()           ->  HTML::draw_form_box()
   1.0.87 (2015-01-02)
     1) Class constants Community_Member::DASHBOARD_WIDTH and Community_Member::DASHBOARD_HEIGHT now uppercase
     2) Removed JS that sets window.status - this hasn't been supported in browsers for a long time now

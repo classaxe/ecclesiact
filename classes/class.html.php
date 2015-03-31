@@ -1,12 +1,9 @@
 <?php
-define('VERSION_HTML', '1.0.88');
+define('VERSION_HTML', '1.0.89');
 /*
 Version History:
-  1.0.88 (2015-03-17)
-    1) Made some aliases for PSR-2 compliant method names:
-          HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()
-          HTML::drawSectionTabDiv()     ->  HTML::draw_section_tab_div()
-          HTML::drawFormBox()           ->  HTML::draw_form_box()
+  1.0.89 (2015-03-29)
+    1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
 
 */
 class HTML extends Record
@@ -595,6 +592,11 @@ class HTML extends Record
     }
 
     public function draw_toolbar($type, $args = array())
+    {
+        return $this->drawToolbar($type, $args);
+    }
+
+    public function drawToolbar($type, $args = array())
     {
         global $system_vars;
         $this->_args = $args;

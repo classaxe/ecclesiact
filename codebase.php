@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.2");
+define("CODEBASE_VERSION", "3.3.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,43 +16,46 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.2.2376
+3.3.3.2377 (2015-03-30)
 Summary:
-  1) Changes to Communities to make Easter and Christmas times a permanently available fixture,
-     and to add a new 'Special Services' tab that appears whenever events marked 'Special' are forthcoming.
+  1) Bug fix for display of easter, christmas and special events on communities listings
+  2) Refactored component_custom_form into namespaced component and fully PSR-2 compliant
 
 Final Checksums:
-  Classes     CS:2d85d2f8
+  Classes     CS:5805a813
   Database    CS:c15014ce
-  Libraries   CS:bf257e1e
+  Libraries   CS:f256a6ee
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.2     (2015-03-28)
+  codebase.php                                                                                   3.3.3     (2015-03-30)
     1) Updated version information
-  classes/class.base.php                                                                         1.0.15    (2015-03-28)
-    1) Magic method __call() now gives stack trace when called for non-existent method
-  classes/class.community.php                                                                    1.0.117   (2015-03-28)
-    1) Moved _check_dropbox code out into community_display class
-  classes/class.community_display.php                                                            1.0.40    (2015-03-28)
-    1) Now includes cps for separate Christmas, Easter and Special events
-    2) Moved dropbox checking code into here from parent class
-    3) Now PSR-2 Compliant (that's a big one for this class!)
-  classes/class.community_member_display.php                                                     1.0.42    (2015-03-28)
-    1) Now includes Special Events, Easter Events and Christmas Events whenever they are there to see
-       and uses separate tab indexes for each so that #easter for example goes directly to that tab
+  classes/class.community_display.php                                                            1.0.41    (2015-03-30)
+    1) Bug fix for showing Christmas, Easter and Special Events and now colour codes these in red
+  classes/class.component_base.php                                                               1.0.23    (2015-03-29)
+    1) Removed unused stub methods:
+         Component_Base::_draw_section_container_open()
+         Component_Base::_draw_section_container_close()
+  classes/class.html.php                                                                         1.0.89    (2015-03-29)
+    1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
+  classes/component/customform.php                                                               1.0.5     (2015-03-29)
+    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
 
-2376.sql
-  1) Set version information
+2377.sql
+  1) Update to ecl tag 'custom_form' for namespaces
+  2) Set version information
+
+Delete:
+    class.component_custom_form.php                   1.0.4
 
 Promote:
-  codebase.php                                        3.3.2
+  codebase.php                                        3.3.3
   classes/  (4 files changed)
-    class.base.php                                    1.0.15    CS:5f571c58
-    class.community.php                               1.0.117   CS:6e95fa6d
-    class.community_display.php                       1.0.40    CS:9e453ec2
-    class.community_member_display.php                1.0.42    CS:abd603a3
-
+    class.community_display.php                       1.0.41    CS:34ac710b
+    class.component_base.php                          1.0.23    CS:e58dd795
+    class.html.php                                    1.0.89    CS:bcc486e3
+    component/customform.php                          1.0.5     CS:270c63be
 
 
   Bug:

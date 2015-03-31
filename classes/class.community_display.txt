@@ -1,3 +1,7 @@
+  1.0.40 (2015-03-28)
+    1) Now includes cps for separate Christmas, Easter and Special events
+    2) Moved dropbox checking code into here from parent class
+    3) Now PSR-2 Compliant (that's a big one for this class!)
   1.0.39 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
   1.0.38 (2015-03-13)
