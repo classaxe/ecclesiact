@@ -1,31 +1,12 @@
 <?php
-define("FUNCTIONS_VERSION", "1.0.16");
+define("FUNCTIONS_VERSION", "1.0.17");
 /*
 Version History:
-  1.0.16 (2015-03-16)
-    1) Changes to includes_monitor() and mem() to handle namespaced classes
-    2) Now mainly PSR-2 Compliant.
+  1.0.17 (2015-04-19)
+    1) Removed backward compatible implementation for memory_get_usage()
 
 */
 
-if (!function_exists('memory_get_usage')) {
-    function memory_get_usage()
-    {
-      // Thanks to e.a.schultz@gmail.com for memory_usage_replacement for windows
-        if (substr(PHP_OS, 0, 3) == 'WIN') {
-            // Windows XP Pro SP2. Should work on Win 2003 Server
-            $output = array();
-            exec('tasklist /FI "PID eq ' . getmypid() . '" /FO LIST', $output);
-            return preg_replace('/[\D]/', '', $output[5]) * 1024;
-        } else {
-            // UNIX Tested on Mac OS X 10.4.6 and Linux Red Hat Enterprise 4
-            $pid = getmypid();
-            exec("ps -eo%mem,rss,pid | grep $pid", $output);
-            $output = explode("  ", $output[0]);
-            return $output[1] * 1024;
-        }
-    }
-}
 function includes_monitor($className = '', $filePath = '')
 {
     static $includes = array();

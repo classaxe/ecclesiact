@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.3");
+define("CODEBASE_VERSION", "3.3.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,46 +16,71 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.3.2377 (2015-03-30)
-Summary:
-  1) Bug fix for display of easter, christmas and special events on communities listings
-  2) Refactored component_custom_form into namespaced component and fully PSR-2 compliant
+3.3.4.2378 (2015-04-19)
+  1) Refactored several ECL tags for icons into their own namespaced classes:
+       draw_bookmark_icon
+       draw_print_friendly_button()
+       draw_sitemap_icon
+       draw_social_icon
+       draw_text_sizer()
+  2) mem_get_usage() no longer synthesised in either codebase.php or functions.php -
+     we have it now with all used versions of PHP
 
 Final Checksums:
-  Classes     CS:5805a813
+  Classes     CS:44b10aa7
   Database    CS:c15014ce
-  Libraries   CS:f256a6ee
+  Libraries   CS:5ed7ee25
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.3     (2015-03-30)
+  codebase.php                                                                                   3.3.4     (2015-04-19)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.41    (2015-03-30)
-    1) Bug fix for showing Christmas, Easter and Special Events and now colour codes these in red
-  classes/class.component_base.php                                                               1.0.23    (2015-03-29)
-    1) Removed unused stub methods:
-         Component_Base::_draw_section_container_open()
-         Component_Base::_draw_section_container_close()
-  classes/class.html.php                                                                         1.0.89    (2015-03-29)
-    1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
-  classes/component/customform.php                                                               1.0.5     (2015-03-29)
-    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+  classes/class.html.php                                                                         1.0.90    (2015-04-19)
+    1) Moved support for HTML::draw_icon() out into separate classes for:
+         bookmark, print_friendly, sitemap, text_sizer
+  classes/component/iconbookmark.php                                                             1.0.0     (2015-04-19)
+    1) Moved from HTML::draw_icon('bookmark') and reworked to use namespaces
     2) Now Fully PSR-2 compliant
+  classes/component/iconprintfriendly.php                                                        1.0.0     (2015-04-16)
+    1) Moved from HTML::draw_icon('text_sizer') and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/iconsitemap.php                                                              1.0.0     (2015-04-19)
+    1) Moved from HTML::draw_icon('sitemap') and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/iconsocial.php                                                               1.0.2     (2015-04-16)
+    1) Moved from Component_Social_Icon and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/icontextsizer.php                                                            1.0.0     (2015-04-16)
+    1) Moved from HTML::draw_icon('text_sizer') and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  functions.php                                                                                  1.0.17    (2015-04-19)
+    1) Removed backward compatible implementation for memory_get_usage()
+  style/default.css                                                                              1.0.167   (2015-04-19)
+    1) Integrated support for bookmark, print_friendly, sitemap and text_sizer icons
 
-2377.sql
-  1) Update to ecl tag 'custom_form' for namespaces
-  2) Set version information
+2378.sql
+  1) Update to the following ecl tags for namespaces:
+       draw_bookmark_icon
+       draw_print_friendly_button()
+       draw_sitemap_icon
+       draw_social_icon
+       draw_text_sizer()
 
 Delete:
-    class.component_custom_form.php                   1.0.4
+    class.component_social_icon.php                   1.0.1
 
 Promote:
-  codebase.php                                        3.3.3
-  classes/  (4 files changed)
-    class.community_display.php                       1.0.41    CS:34ac710b
-    class.component_base.php                          1.0.23    CS:e58dd795
-    class.html.php                                    1.0.89    CS:bcc486e3
-    component/customform.php                          1.0.5     CS:270c63be
+  codebase.php                                        3.3.4
+  classes/  (6 files changed)
+    class.html.php                                    1.0.90    CS:b20c2cce
+    component/iconbookmark.php                        1.0.0     CS:b8a860ca
+    component/iconprintfriendly.php                   1.0.0     CS:9fd5d81e
+    component/iconsitemap.php                         1.0.0     CS:8782c7ed
+    component/iconsocial.php                          1.0.2     CS:484dfa65
+    component/icontextsizer.php                       1.0.0     CS:dc0694ee
+  functions.php                                       1.0.17    CS:d140aaa0
+  style/default.css                                   1.0.167   CS:76f2afd9
+
 
 
   Bug:
@@ -214,26 +239,6 @@ if (!function_exists('includes_monitor')) {
         $includes[$className] = $filePath;
     }
 }
-
-if (!function_exists('memory_get_usage')) {
-    function memory_get_usage()
-    {
-        if (substr(PHP_OS, 0, 3) == 'WIN') {
-            if (substr(PHP_OS, 0, 3) == 'WIN') {
-                $output = array();
-                exec('tasklist /FI "PID eq ' . getmypid() . '" /FO LIST', $output);
-                return preg_replace('/[\D]/', '', $output[5]) * 1024;
-            }
-        } else {
-            $pid = getmypid();
-            exec("ps -eo%mem,rss,pid | grep $pid", $output);
-            $output = explode("  ", $output[0]);
-            return $output[1] * 1024;
-        }
-    }
-}
-
-
 
 
 // ************************************

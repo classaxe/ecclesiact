@@ -1,4 +1,6 @@
-  1.0.164 (2014-08-09)
+  1.0.166 (2015-02-02)
+    1) Now with unix-style line endings
+  1.0.165 (2014-08-09)
     1) Changes to CSS for google map to make size consistent when listing is shown or not
   1.0.164 (2014-04-05)
     1) Added CSS for styling ECL tag dropdown in CKEditor panel

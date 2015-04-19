@@ -1,3 +1,6 @@
+  1.0.16 (2015-03-16)
+    1) Changes to includes_monitor() and mem() to handle namespaced classes
+    2) Now mainly PSR-2 Compliant.
   1.0.15 (2015-01-11)
     1) Now uses Unix line endings
   1.0.14 (2012-11-29)

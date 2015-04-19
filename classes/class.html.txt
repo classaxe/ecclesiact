@@ -1,3 +1,5 @@
+  1.0.89 (2015-03-29)
+    1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
   1.0.88 (2015-03-17)
     1) Made some aliases for PSR-2 compliant method names:
           HTML::drawSectionTabButtons() ->  HTML::draw_section_tab_buttons()

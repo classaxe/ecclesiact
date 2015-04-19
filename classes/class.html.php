@@ -1,9 +1,10 @@
 <?php
-define('VERSION_HTML', '1.0.89');
+define('VERSION_HTML', '1.0.90');
 /*
 Version History:
-  1.0.89 (2015-03-29)
-    1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
+  1.0.90 (2015-04-19)
+    1) Moved support for HTML::draw_icon() out into separate classes for:
+         bookmark, print_friendly, sitemap, text_sizer
 
 */
 class HTML extends Record
@@ -139,46 +140,6 @@ class HTML extends Record
                     ." onmouseout=\"this.style.backgroundPosition='-3902px 0px';return true;\""
                     ." height=\"10\" width=\"30\""
                     ." />";
-            break;
-            case 'bookmark':
-                global $page_vars;
-                $ident =        "draw_bookmark_button";
-                $parameter_spec = array(
-                    'disable' =>      array('default'=>'0', 'hint'=>'0|1'),
-                    'label'   =>      array('default'=>'Bookmark', 'hint'=>'Text for label (if shown)'),
-                    'show_label'   => array('default'=>'0', 'hint'=>'0|1')
-                );
-                $cp_settings =  Component_Base::get_parameter_defaults_and_values($ident, '', false, $parameter_spec);
-                $cp_defaults =  $cp_settings['defaults'];
-                $cp =           $cp_settings['parameters'];
-                $URL =          ($_SERVER["SERVER_PORT"]==443 ?
-                    "https://"
-                :
-                    "http://"
-                ).$_SERVER["HTTP_HOST"].BASE_PATH.trim($page_vars['path'], '/');
-                $out =          Component_Base::get_help($ident, '', false, $parameter_spec, $cp_defaults);
-                if (!$cp['disable']) {
-                    $out.=
-                         ($out ? "<br />" : "")
-                        ."<span class='noprint' title='Click to add a bookmark'"
-                        ." onmouseover=\"geid('icon_bookmark').style.backgroundPosition='-876px 0px';\""
-                        ." onmouseout=\"geid('icon_bookmark').style.backgroundPosition='-861px 0px';\">"
-                        ."<a href=\"#\""
-                        ." onclick=\"add_bookmark('".$URL."','".addslashes($page_vars['title'])."');return false;\">"
-                        ."<img alt='Add Bookmark' id='icon_bookmark' src='".BASE_PATH."img/spacer' class='toolbar_icon'"
-                        ." style=\"background-position:-861px 0px;\""
-                        ." height=\"15\" width=\"15\""
-                        ."/></a>"
-                        .($cp['show_label'] ?
-                            "<a href=\"#\""
-                            ." onclick=\"add_bookmark('".$URL."','".addslashes($page_vars['title'])."');return false;\""
-                            ." style=\"float:left\">".$cp['label']."</a>"
-                        :
-                            ""
-                        )
-                        ."</span>";
-                }
-                return $out;
             break;
             case "buy_event":
                 return
@@ -316,138 +277,14 @@ class HTML extends Record
                     ." height=\"12\" width=\"13\""
                     ."/></a>";
             break;
-            case 'print_friendly':
-                global $page_vars;
-                $ident =        "draw_print_friendly_button";
-                $parameter_spec = array(
-                    'disable'       => array('default'=>'0', 'hint'=>'0|1'),
-                    'label'         => array('default'=>'Print Friendly', 'hint'=>'Text for label (if shown)'),
-                    'show_label'    => array('default'=>'0', 'hint'=>'0|1')
-                );
-                $cp_settings =  Component_Base::get_parameter_defaults_and_values($ident, '', false, $parameter_spec);
-                $cp_defaults =  $cp_settings['defaults'];
-                $cp =           $cp_settings['parameters'];
-                $out =          Component_Base::get_help($ident, '', false, $parameter_spec, $cp_defaults);
-                if (!$cp['disable']) {
-                    $out.=
-                         ($out ? "<br />" : "")
-                        ."<span class='noprint'"
-                        ." title='Click to see a Print-Friendly \nversion of this ".$page_vars['object_name']."'"
-                        ." onmouseover=\"geid('icon_print').style.backgroundPosition='-1476px 0px';\""
-                        ." onmouseout=\"geid('icon_print').style.backgroundPosition='-1456px 0px';\">"
-                        ."<a href=\"#\" onclick=\"print_friendly();return false;\">"
-                        ."<img alt='Click to print' id='icon_print' src='".BASE_PATH."img/spacer' class='toolbar_icon'"
-                        ." style='background-position:-1456px 0px;'"
-                        ." height=\"16\" width=\"20\""
-                        ."/></a>"
-                        .($cp['show_label'] ?
-                            "<a href=\"#\" style=\"float:left\" onclick=\"print_friendly();return false;\">"
-                            .$cp['label']
-                            ."</a>"
-                        :
-                            ""
-                        )
-                        ."</span>";
-                }
-                return $out;
-            break;
             case "register_event":
                 return
-             "<img alt='Register for Event' src='".BASE_PATH."img/spacer' class='icons std_control'"
-            ." style='margin-top:3px;margin-bottom:3px;background-position:-3962px 0px;'"
-            ." onmouseover=\"this.style.backgroundPosition='-4017px 0px';return true;\""
-            ." onmouseout=\"this.style.backgroundPosition='-3962px 0px';return true;\""
-            ." height=\"10\" width=\"55\""
-            ." />";
-            break;
-            case 'sitemap':
-                $ident =        "draw_sitemap_button";
-                $parameter_spec = array(
-                'disable' =>      array('default'=>'0', 'hint'=>'0|1'),
-                'label'   =>      array('default'=>'Sitemap', 'hint'=>'Text for label (if shown)'),
-                'show_label'   => array('default'=>'0', 'hint'=>'0|1'),
-                'URL' =>          array('default'=>BASE_PATH.'sitemap', 'hint'=>'URL to go to')
-                );
-                $cp_settings =  Component_Base::get_parameter_defaults_and_values($ident, '', false, $parameter_spec);
-                $cp_defaults =  $cp_settings['defaults'];
-                $cp =           $cp_settings['parameters'];
-                $out =          Component_Base::get_help($ident, '', false, $parameter_spec, $cp_defaults);
-                if (!$cp['disable']) {
-                    $out.=
-                        ($out ?
-                           "<br />"
-                        :
-                           ""
-                        )
-                        ."<span class='noprint' title='Click to view Sitemap'"
-                        ." onmouseover=\"geid('icon_sitemap').style.backgroundPosition='-1512px 0px';\""
-                        ." onmouseout=\"geid('icon_sitemap').style.backgroundPosition='-1496px 0px';\">"
-                        ."<a href=\"".$cp['URL']."\">"
-                        ."<img alt='View sitemap' id='icon_sitemap' src='".BASE_PATH."img/spacer' class='toolbar_icon'"
-                        ." style='background-position:-1496px 0px;'"
-                        ." height=\"16\" width=\"16\""
-                        ."/>"
-                        ."</a>"
-                        .($cp['show_label'] ?
-                            "<a href=\"".$cp['URL']."\" style=\"float:left\">".$cp['label']."</a>"
-                        :
-                            ""
-                        )
-                        ."</span>";
-                }
-                return $out;
-            break;
-            case 'text_sizer':
-                $ident =        "draw_text_sizer_button";
-                $parameter_spec = array(
-                'disable' =>      array('default'=>'0', 'hint'=>'0|1'),
-                'label'   =>      array('default'=>'Text Size', 'hint'=>'Text for label (if shown)'),
-                'show_label'   => array('default'=>'0', 'hint'=>'0|1')
-                );
-                $cp_settings =  Component_Base::get_parameter_defaults_and_values($ident, '', false, $parameter_spec);
-                $cp_defaults =  $cp_settings['defaults'];
-                $cp =           $cp_settings['parameters'];
-                $out =          Component_Base::get_help($ident, '', false, $parameter_spec, $cp_defaults);
-                $size = (isset($_COOKIE['textsize']) ? $_COOKIE['textsize'] : "small");
-                if (!$cp['disable']) {
-                    $out.=
-                     ($out ? "<br />" : "")
-                    ."<span id='text_sizer_enlarge' title='Click to Enlarge Text'"
-                    ." onmouseover=\"geid('icon_textsizer_enlarge').style.backgroundPosition='-1576px 0px';\""
-                    ." onmouseout=\"geid('icon_textsizer_enlarge').style.backgroundPosition='-1528px 0px';\""
-                    .($size=='big' ? " style='display:none'" : "")
-                    .">"
-                    ."<a href=\"#\" onclick=\"toggleTextSize();return false;\""
-                    .">"
-                    ."<img alt='Enlarge Text' id='icon_textsizer_enlarge' src='".BASE_PATH."img/spacer'"
-                    ." class='toolbar_icon' style='background-position:-1528px 0px;' height=\"16\" width=\"16\" /></a>"
-                    .($cp['show_label'] ?
-                        "<a href=\"#\" style=\"float:left\" onclick=\"toggleTextSize();return false;\">"
-                        .$cp['label']
-                        ."</a>"
-                    :
-                        ""
-                    )
-                    ."</span>"
-                    ."<span id='text_sizer_reduce' title='Click to Reduce Text'"
-                    ." onmouseover=\"geid('icon_textsizer_reduce').style.backgroundPosition='-1560px 0px';\""
-                    ." onmouseout=\"geid('icon_textsizer_reduce').style.backgroundPosition='-1544px 0px';\""
-                    .($size=='big' ? "" : " style='display:none'")
-                    .">"
-                    ."<a href=\"#\" onclick=\"toggleTextSize();return false;\""
-                    .">"
-                    ."<img alt='Reduce Text' id='icon_textsizer_reduce' src='".BASE_PATH."img/spacer'"
-                    ." class='toolbar_icon' style='background-position:-1544px 0px;' height=\"16\" width=\"16\"/></a>"
-                    .($cp['show_label'] ?
-                        "<a href=\"#\" style=\"float:left\" onclick=\"toggleTextSize();return false;\">"
-                        .$cp['label']
-                        ."</a>"
-                    :
-                        ""
-                    )
-                    ."</span>";
-                }
-                return $out;
+                     "<img alt='Register for Event' src='".BASE_PATH."img/spacer' class='icons std_control'"
+                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3962px 0px;'"
+                    ." onmouseover=\"this.style.backgroundPosition='-4017px 0px';return true;\""
+                    ." onmouseout=\"this.style.backgroundPosition='-3962px 0px';return true;\""
+                    ." height=\"10\" width=\"55\""
+                    ." />";
             break;
         }
     }
@@ -455,12 +292,12 @@ class HTML extends Record
     public function draw_info($title, $content)
     {
         return
-         "<div class='info'>"
-        ."<h1>".$title."</h1>"
-        ."<img alt='Info' src='".BASE_PATH."img/spacer'"
-        ." class='icons' style='height:11px;width:11px;background-position:-2600px 0px;' />\n"
-        .$content
-        ."</div>";
+             "<div class='info'>"
+            ."<h1>".$title."</h1>"
+            ."<img alt='Info' src='".BASE_PATH."img/spacer'"
+            ." class='icons' style='height:11px;width:11px;background-position:-2600px 0px;' />\n"
+            .$content
+            ."</div>";
     }
 
     public function draw_section_tabs($arr, $divider_prefix, $selected_section, $js = "")
@@ -483,14 +320,14 @@ class HTML extends Record
             if ($value['label']!="") {
                 $safe_ID = str_replace(array('/'), '_', $value['ID']);
                 $out.=
-                 "  <div class=\"".($selected_section==$safe_ID? "tab_selected" : "tab")."\""
-                ." id='section_".$safe_ID."_heading'"
-                .(isset($value['width']) && $value['width'] ? " style=\"min-width:".$value['width']."px\"" : "")
-                ." onclick=\"".($js ? $js.";" : "")."return show_section(spans_".$divider_prefix.",'".$safe_ID."')\""
-                .">"
-                ."<a "
-                ."title=\"Click to view ".str_replace('<br />', ' ', $value['label'])."\""
-                ." onclick='return false;'>".$value['label']."</a></div>\n";
+                     "  <div class=\"".($selected_section==$safe_ID? "tab_selected" : "tab")."\""
+                    ." id='section_".$safe_ID."_heading'"
+                    .(isset($value['width']) && $value['width'] ? " style=\"min-width:".$value['width']."px\"" : "")
+                    ." onclick=\"".($js ? $js.";" : "")
+                    ."return show_section(spans_".$divider_prefix.",'".$safe_ID."')\""
+                    .">"
+                    ."<a title=\"Click to view ".str_replace('<br />', ' ', $value['label'])."\""
+                    ." onclick='return false;'>".$value['label']."</a></div>\n";
             }
         }
         $out.=

@@ -1,9 +1,8 @@
-/* 1.0.166
+/* 1.0.167
 Version History:
-  1.0.166 (2015-02-02)
-    1) Now with unix-style line endings
+  1.0.167 (2015-04-19)
+    1) Integrated support for bookmark, print_friendly, sitemap and text_sizer icons
 
-  (Older version history in default.txt)
 */
 
 .swatch {
@@ -36,6 +35,22 @@ Version History:
 .cke_selector_ecl option.nameable {
   color:#008000;
 }
+
+/* [ Icons ] */
+.icon_bookmark img                  { background-position:-861px 0px; height:15px; width:15px; }
+.icon_bookmark:hover img            { background-position:-876px 0px; }
+
+.icon_print img                     { background-position:-1456px 0px; height:16px; width:20px; }
+.icon_print:hover img               { background-position:-1476px 0px; }
+
+.icon_sitemap img                   { background-position:-1496px 0px; height:16px; width:16px; }
+.icon_sitemap:hover img             { background-position:-1512px 0px; }
+
+.icon_textsizer_enlarge img         { background-position:-1528px 0px; height:16px; width:16px; }
+.icon_textsizer_enlarge:hover img   { background-position:-1576px 0px; }
+.icon_textsizer_reduce img          { background-position:-1544px 0px; height:16px; width:16px; }
+.icon_textsizer_reduce:hover img    { background-position:-1560px 0px; }
+
 
 
 /* [ Twitter Tweets ] */
