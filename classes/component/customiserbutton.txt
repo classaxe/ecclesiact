@@ -1,3 +1,5 @@
+  1.0.2 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.1 (2015-01-02)
     1) Now uses OPTION_SEPARATOR constant not option_separator in Component_Customiser_Button::save()
     2) Now PSR-2 Compliant

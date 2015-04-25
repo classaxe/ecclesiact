@@ -51,7 +51,8 @@ Version History:
 .icon_textsizer_reduce img          { background-position:-1544px 0px; height:16px; width:16px; }
 .icon_textsizer_reduce:hover img    { background-position:-1560px 0px; }
 
-
+.icon_customiser_button img         { background-position:-8095px 0px; height:16px; width:16px; }
+.icon_customiser_button:hover img   { background-position:-8111px 0px; }
 
 /* [ Twitter Tweets ] */
 .twitter_tweets{

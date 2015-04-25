@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.4");
+define("CODEBASE_VERSION", "3.3.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,72 +16,96 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.4.2378 (2015-04-19)
-  1) Refactored several ECL tags for icons into their own namespaced classes:
-       draw_bookmark_icon
-       draw_print_friendly_button()
-       draw_sitemap_icon
-       draw_social_icon
-       draw_text_sizer()
-  2) mem_get_usage() no longer synthesised in either codebase.php or functions.php -
-     we have it now with all used versions of PHP
+3.3.5.2379 (2015-04-25)
+  1) Deleted Component_Donate - unused now
+  2) Refactored several ECL tags for icons into their own namespaced classes:
+       draw_customiser_icon - and fixed 'cancel' action
+       document_covers
+       document_reader
+       edit_your_profile
+       component_email_newsletter_signup - and added status display
+       component_email_opt_in
+       component_email_opt_out
+  3) Refactored code for component Email Form
 
 Final Checksums:
-  Classes     CS:44b10aa7
+  Classes     CS:3022a099
   Database    CS:c15014ce
-  Libraries   CS:5ed7ee25
+  Libraries   CS:a3672d25
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.4     (2015-04-19)
+  codebase.php                                                                                   3.3.5     (2015-04-25)
     1) Updated version information
-  classes/class.html.php                                                                         1.0.90    (2015-04-19)
-    1) Moved support for HTML::draw_icon() out into separate classes for:
-         bookmark, print_friendly, sitemap, text_sizer
-  classes/component/iconbookmark.php                                                             1.0.0     (2015-04-19)
-    1) Moved from HTML::draw_icon('bookmark') and reworked to use namespaces
+  classes/class.system.php                                                                       1.0.162   (2015-04-22)
+    1) Changes following migration of Component_Customiser_Button to namespaced component
+  classes/component/customiserbutton.php                                                         1.0.3     (2015-04-22)
+    1) Moved from class.component_customiser_button.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/iconprintfriendly.php                                                        1.0.0     (2015-04-16)
-    1) Moved from HTML::draw_icon('text_sizer') and reworked to use namespaces
+  classes/component/documentcovers.php                                                           1.0.1     (2015-04-22)
+    1) Moved from class.component_document_covers.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/iconsitemap.php                                                              1.0.0     (2015-04-19)
-    1) Moved from HTML::draw_icon('sitemap') and reworked to use namespaces
+  classes/component/documentreader.php                                                           1.0.1     (2015-04-22)
+    1) Moved from class.component_document_reader.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/iconsocial.php                                                               1.0.2     (2015-04-16)
-    1) Moved from Component_Social_Icon and reworked to use namespaces
+  classes/component/edityourprofile.php                                                          1.0.1     (2015-04-24)
+    1) Moved from class.component_edit_your_profile.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/icontextsizer.php                                                            1.0.0     (2015-04-16)
-    1) Moved from HTML::draw_icon('text_sizer') and reworked to use namespaces
+  classes/component/emailForm.php                                                                1.0.1     (2013-10-29)
+    1) Brought component up to date with latest standards
+    2) Now sets 'reply to' address to Email field if given
+  classes/component/emailnewslettersignup.php                                                    1.0.1     (2015-04-24)
+    1) Moved from class.component_email_newsletter_signup.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  functions.php                                                                                  1.0.17    (2015-04-19)
-    1) Removed backward compatible implementation for memory_get_usage()
+  classes/component/emailoptin.php                                                               1.0.1     (2015-04-24)
+    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  classes/component/emailoptout.php                                                              1.0.1     (2015-04-24)
+    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
+  js/functions.js                                                                                1.0.268   (2015-04-22)
+    1) Bug fix for customise_colours.save() to allow cancel of saving
   style/default.css                                                                              1.0.167   (2015-04-19)
     1) Integrated support for bookmark, print_friendly, sitemap and text_sizer icons
 
-2378.sql
-  1) Update to the following ecl tags for namespaces:
-       draw_bookmark_icon
-       draw_print_friendly_button()
-       draw_sitemap_icon
-       draw_social_icon
-       draw_text_sizer()
+2379.sql
+  1) Deleted ECL tag 'online_donation' - unused anywhere and now removed
+  2) Updated component 'COMPONENT: Email Form' to use namespaced component code
+  3) Update to the following ecl tags for namespaces:
+       draw_customiser_button
+       document_covers
+       document_reader
+       edit_your_profile
+       component_email_newsletter_signup
+       component_email_opt_in
+       component_email_opt_out
+  4) Set version information
 
 Delete:
-    class.component_social_icon.php                   1.0.1
+    class.component_customiser_button.php             1.0.2
+    class.component_document_covers.php               1.0.0
+    class.component_document_reader.php               1.0.0
+    class.component_donate.php                        1.0.2
+    class.component_edit_your_profile.php             1.0.0
+    class.component_email_form.php                    1.0.1
+    class.component_email_newsletter_signup.php       1.0.0
+    class.component_email_opt_in.php                  1.0.0
+    class.component_email_opt_out.php                 1.0.0
 
 Promote:
-  codebase.php                                        3.3.4
-  classes/  (6 files changed)
-    class.html.php                                    1.0.90    CS:b20c2cce
-    component/iconbookmark.php                        1.0.0     CS:b8a860ca
-    component/iconprintfriendly.php                   1.0.0     CS:9fd5d81e
-    component/iconsitemap.php                         1.0.0     CS:8782c7ed
-    component/iconsocial.php                          1.0.2     CS:484dfa65
-    component/icontextsizer.php                       1.0.0     CS:dc0694ee
-  functions.php                                       1.0.17    CS:d140aaa0
-  style/default.css                                   1.0.167   CS:76f2afd9
-
-
+  codebase.php                                        3.3.5
+  classes/  (9 files changed)
+    class.system.php                                  1.0.162   CS:67dfb4a7
+    component/customiserbutton.php                    1.0.3     CS:b2bcc265
+    component/documentcovers.php                      1.0.1     CS:3ccffece
+    component/documentreader.php                      1.0.1     CS:40d5df18
+    component/edityourprofile.php                     1.0.1     CS:2794410e
+    component/emailForm.php                           1.0.1     CS:481cf68
+    component/emailnewslettersignup.php               1.0.1     CS:64d3bda3
+    component/emailoptin.php                          1.0.1     CS:fbaff723
+    component/emailoptout.php                         1.0.1     CS:39241d2f
+  js/functions.js                                     1.1.268   CS:bfa2ae46
+  style/default.css                                   1.0.167   CS:cba6016e
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

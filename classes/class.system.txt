@@ -1,3 +1,5 @@
+  1.0.161 (2015-03-24)
+    1) Added address_substitution to tables list
   1.0.160 (2015-03-15)
     1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
        resulting in wrong version code being returned by extending classes

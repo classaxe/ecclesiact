@@ -1,10 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.161');
+define('VERSION_SYSTEM', '1.0.162');
 
 /*
 Version History:
-  1.0.161 (2015-03-24)
-    1) Added address_substitution to tables list
+  1.0.162 (2015-04-22)
+    1) Changes following migration of Component_Customiser_Button to namespaced component
 
 */
 class System extends Record
@@ -195,7 +195,7 @@ class System extends Record
                     break;
               // other operations
                 case "customise_colours":
-                    Component_Customiser_Button::save();
+                    \Component\CustomiserButton::save();
                     break;
                 case "cart":
                     Cart::update_cart();

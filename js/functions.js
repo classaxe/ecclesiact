@@ -1,9 +1,9 @@
-// 1.1.267
+// 1.1.268
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.267 (2015-02-02)
-    1) Now with unix-style line endings
+  1.0.268 (2015-04-22)
+    1) Bug fix for customise_colours.save() to allow cancel of saving
 
   (Older version history in functions.txt)
 */
@@ -1997,6 +1997,9 @@ customise_colours = {
   save: function (current){
     var name, parameters, query;
     name = prompt('Type a name for this setting');
+    if (name===null) {
+        return;
+    }
     parameters = []
     for (i=0; i < current.length; i++) {
       parameters[i] = current[i].bgcolor+'|'+current[i].color;

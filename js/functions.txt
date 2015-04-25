@@ -1,3 +1,5 @@
+  1.0.267 (2015-02-02)
+    1) Now with unix-style line endings
   1.0.266 (2014-11-27)
     1) Changes to video switcher code to prevent related videos showing afterwards
   1.0.265 (2014-11-16)
