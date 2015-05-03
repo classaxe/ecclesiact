@@ -29,7 +29,7 @@ define(
   3) Refactored code for component Email Form
 
 Final Checksums:
-  Classes     CS:3022a099
+  Classes     CS:48f0573e
   Database    CS:c15014ce
   Libraries   CS:2f82f2e1
   Reports     CS:a6a5f5c0
@@ -51,7 +51,7 @@ Code Changes:
   classes/component/edityourprofile.php                                                          1.0.1     (2015-04-24)
     1) Moved from class.component_edit_your_profile.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant
-  classes/component/emailForm.php                                                                1.0.1     (2013-10-29)
+  classes/component/emailform.php                                                                1.0.1     (2013-10-29)
     1) Brought component up to date with latest standards
     2) Now sets 'reply to' address to Email field if given
   classes/component/emailnewslettersignup.php                                                    1.0.1     (2015-04-24)
@@ -100,7 +100,7 @@ Promote:
     component/documentcovers.php                      1.0.1     CS:3ccffece
     component/documentreader.php                      1.0.1     CS:40d5df18
     component/edityourprofile.php                     1.0.1     CS:2794410e
-    component/emailForm.php                           1.0.1     CS:481cf68
+    component/emailform.php                           1.0.1     CS:481cf68
     component/emailnewslettersignup.php               1.0.1     CS:64d3bda3
     component/emailoptin.php                          1.0.1     CS:fbaff723
     component/emailoptout.php                         1.0.1     CS:39241d2f
