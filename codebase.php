@@ -31,11 +31,11 @@ define(
 Final Checksums:
   Classes     CS:3022a099
   Database    CS:c15014ce
-  Libraries   CS:a3672d25
+  Libraries   CS:2f82f2e1
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.5     (2015-04-25)
+  codebase.php                                                                                   3.3.5     (2015-05-03)
     1) Updated version information
   classes/class.system.php                                                                       1.0.162   (2015-04-22)
     1) Changes following migration of Component_Customiser_Button to namespaced component
@@ -65,8 +65,8 @@ Code Changes:
     2) Now Fully PSR-2 compliant
   js/functions.js                                                                                1.0.268   (2015-04-22)
     1) Bug fix for customise_colours.save() to allow cancel of saving
-  style/default.css                                                                              1.0.167   (2015-04-19)
-    1) Integrated support for bookmark, print_friendly, sitemap and text_sizer icons
+  style/default.css                                                                              1.0.168   (2015-04-25)
+    1) Integrated support for customiser icon
 
 2379.sql
   1) Deleted ECL tag 'online_donation' - unused anywhere and now removed
@@ -105,7 +105,8 @@ Promote:
     component/emailoptin.php                          1.0.1     CS:fbaff723
     component/emailoptout.php                         1.0.1     CS:39241d2f
   js/functions.js                                     1.1.268   CS:bfa2ae46
-  style/default.css                                   1.0.167   CS:cba6016e
+  style/default.css                                   1.0.168   CS:1641064c
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
