@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.5");
+define("CODEBASE_VERSION", "3.3.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,96 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.5.2379 (2015-04-25)
-  1) Deleted Component_Donate - unused now
-  2) Refactored several ECL tags for icons into their own namespaced classes:
-       draw_customiser_icon - and fixed 'cancel' action
-       document_covers
-       document_reader
-       edit_your_profile
-       component_email_newsletter_signup - and added status display
-       component_email_opt_in
-       component_email_opt_out
-  3) Refactored code for component Email Form
+3.3.6.2380 (2015-05-04)
+Summary:
+  1) Changes to jumploader component to allow for use of CPs to set import mapping
 
 Final Checksums:
-  Classes     CS:48f0573e
+  Classes     CS:57cb1b20
   Database    CS:c15014ce
-  Libraries   CS:2f82f2e1
+  Libraries   CS:f8169bf1
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.5     (2015-05-03)
+  codebase.php                                                                                   3.3.6     (2015-05-04)
     1) Updated version information
-  classes/class.system.php                                                                       1.0.162   (2015-04-22)
-    1) Changes following migration of Component_Customiser_Button to namespaced component
-  classes/component/customiserbutton.php                                                         1.0.3     (2015-04-22)
-    1) Moved from class.component_customiser_button.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/documentcovers.php                                                           1.0.1     (2015-04-22)
-    1) Moved from class.component_document_covers.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/documentreader.php                                                           1.0.1     (2015-04-22)
-    1) Moved from class.component_document_reader.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/edityourprofile.php                                                          1.0.1     (2015-04-24)
-    1) Moved from class.component_edit_your_profile.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/emailform.php                                                                1.0.1     (2013-10-29)
-    1) Brought component up to date with latest standards
-    2) Now sets 'reply to' address to Email field if given
-  classes/component/emailnewslettersignup.php                                                    1.0.1     (2015-04-24)
-    1) Moved from class.component_email_newsletter_signup.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/emailoptin.php                                                               1.0.1     (2015-04-24)
-    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  classes/component/emailoptout.php                                                              1.0.1     (2015-04-24)
-    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-  js/functions.js                                                                                1.0.268   (2015-04-22)
-    1) Bug fix for customise_colours.save() to allow cancel of saving
-  style/default.css                                                                              1.0.168   (2015-04-25)
-    1) Integrated support for customiser icon
+  classes/class.component_jumploader.php                                                         1.0.5     (2015-05-03)
+    1) Moved CPs and ident to constructor
 
-2379.sql
-  1) Deleted ECL tag 'online_donation' - unused anywhere and now removed
-  2) Updated component 'COMPONENT: Email Form' to use namespaced component code
-  3) Update to the following ecl tags for namespaces:
-       draw_customiser_button
-       document_covers
-       document_reader
-       edit_your_profile
-       component_email_newsletter_signup
-       component_email_opt_in
-       component_email_opt_out
-  4) Set version information
-
-Delete:
-    class.component_customiser_button.php             1.0.2
-    class.component_document_covers.php               1.0.0
-    class.component_document_reader.php               1.0.0
-    class.component_donate.php                        1.0.2
-    class.component_edit_your_profile.php             1.0.0
-    class.component_email_form.php                    1.0.1
-    class.component_email_newsletter_signup.php       1.0.0
-    class.component_email_opt_in.php                  1.0.0
-    class.component_email_opt_out.php                 1.0.0
+2380.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.3.5
-  classes/  (9 files changed)
-    class.system.php                                  1.0.162   CS:67dfb4a7
-    component/customiserbutton.php                    1.0.3     CS:b2bcc265
-    component/documentcovers.php                      1.0.1     CS:3ccffece
-    component/documentreader.php                      1.0.1     CS:40d5df18
-    component/edityourprofile.php                     1.0.1     CS:2794410e
-    component/emailform.php                           1.0.1     CS:481cf68
-    component/emailnewslettersignup.php               1.0.1     CS:64d3bda3
-    component/emailoptin.php                          1.0.1     CS:fbaff723
-    component/emailoptout.php                         1.0.1     CS:39241d2f
-  js/functions.js                                     1.1.268   CS:bfa2ae46
-  style/default.css                                   1.0.168   CS:1641064c
+  codebase.php                                        3.3.6
+  classes/  (1 file changed)
+    class.component_jumploader.php                    1.0.5     CS:fb8d4240
 
 
   Bug:
