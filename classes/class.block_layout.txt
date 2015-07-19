@@ -1,3 +1,5 @@
+  1.0.62 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.61 (2014-11-27)
     1) BL tag for BL_link() where the links_switch_video cp feature is enabled now sets
        the rel=0 flag to prevent related content from showing.

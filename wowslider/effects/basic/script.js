@@ -8,4 +8,4 @@
 // Obfuscated by Javascript Obfuscator
 // http://javascript-source.com
 //***********************************************
-function ws_basic(c,a,b){this.go=function(d){b.find("ul").stop(true).animate({left:(d?-d+"00%":(/Safari/.test(navigator.userAgent)?"0%":0))},c.duration,"easeInOutExpo");return d}};
+function ws_basic(c,a,b){var d=$(this);this.go=function(e){d.trigger("effectStart");b.find("ul").css("transform","translate3d(0,0,0)").stop(true).animate({left:(e?-e+"00%":(/Safari/.test(navigator.userAgent)?"0%":0))},c.duration,"easeInOutExpo",function(){d.trigger("effectEnd")});return e}};

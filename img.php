@@ -1,7 +1,9 @@
 <?php
-define("VERSION","2.0.82");
+define("VERSION","2.0.83");
 /*
 Version History:
+  2.0.83 (2015-07-19)
+    1) Supports additional wowslider effects
   2.0.82 (2015-01-11)
     1) Now has Unix-style line endings
 
@@ -503,6 +505,14 @@ function css(){
       $record =     get_css_for_theme($_REQUEST['ID']);
       print $record['style'];
     break;
+    case "tcal":
+      readfile(SYS_STYLE."tcal.css");
+    break;
+    case "ws":
+      header('Content-Type: text/css');
+      img_set_cache(3600*24*7); // expire in one week
+      readfile(SYS_WS."ws.css");
+    break;
     default:
       readfile(SYS_STYLE."default.css");
     break;
@@ -807,6 +817,7 @@ function lib_wowslider($request_arr){
       }
     break;
     case 'effects':
+      $effects = explode(',', 'basic,basic_linear,blast,blinds,blur,book,brick,collage,cube,domino,fade,flip,fly,kenburns,overlay,page,photo,rotate,seven,slices,squares,stack,stack_vertical');
       img_set_cache(3600*1); // expire in one hour
       header('Content-Type: text/javascript');
       switch($request_arr[3]){
@@ -818,23 +829,8 @@ function lib_wowslider($request_arr){
           print lib_wowslider_js(SYS_WS.$request_arr[2].'/'.$request_arr[3]."/coin-slider.js");
         break;
       }
-      switch($request_arr[3]){
-        case 'basic':
-        case 'basic_linear':
-        case 'blast':
-        case 'blinds':
-        case 'blur':
-        case 'fade':
-        case 'flip':
-        case 'fly':
-        case 'kenburns':
-        case 'rotate':
-        case 'slices':
-        case 'squares':
-        case 'stack':
-        case 'stack_vertical':
+      if (in_array($request_arr[3], $effects)) {
           print lib_wowslider_js(SYS_WS.$request_arr[2].'/'.$request_arr[3]."/script.js");
-        break;
       }
     break;
   }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.6");
+define("CODEBASE_VERSION", "3.3.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.6.2380 (2015-05-04)
+3.3.7.2381 (2015-07-19)
 Summary:
-  1) Changes to jumploader component to allow for use of CPs to set import mapping
+  1) Replaced wowslider with mobile-friendly version supporting swipe and resizing
+  2) Context editing of wowslider images now via thumbnail bullets
+  3) Wowslide now allows for responsive sizing for some effects modes
+  4) Some standard asset png images optimised
 
 Final Checksums:
-  Classes     CS:57cb1b20
+  Classes     CS:b20ca351
   Database    CS:c15014ce
-  Libraries   CS:f8169bf1
+  Libraries   CS:87b21f19
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.6     (2015-05-04)
+  codebase.php                                                                                   3.3.7     (2015-07-19)
     1) Updated version information
-  classes/class.component_jumploader.php                                                         1.0.5     (2015-05-03)
-    1) Moved CPs and ident to constructor
+  classes/class.block_layout.php                                                                 1.0.63    (2015-07-19)
+    1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
+       especially with Wowslider Gallery Image operations
+  classes/component/wowslider.php                                                                1.0.10    (2015-07-19)
+    1) Refreshed Wow Slider to use libraries with version 5.6
+    2) Wow Slider now has Context Menus on bullets, and only sets size to be absolute on effects that need it to be.
+  img.php                                                                                        2.0.83    (2015-07-19)
+    1) Supports additional wowslider effects
 
-2380.sql
+2381.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.3.6
-  classes/  (1 file changed)
-    class.component_jumploader.php                    1.0.5     CS:fb8d4240
+  codebase.php                                        3.3.7
+  classes/  (2 files changed)
+    class.block_layout.php                            1.0.63    CS:22c1ddad
+    component/wowslider.php                           1.0.10    CS:3202b348
+  img.php                                             2.0.83    CS:f402cf5c
+
 
 
   Bug:

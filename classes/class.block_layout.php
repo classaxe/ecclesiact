@@ -1,9 +1,10 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.62');
+define('VERSION_BLOCK_LAYOUT','1.0.63');
 /*
 Version History:
-  1.0.62 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.63 (2015-07-19)
+    1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
+       especially with Wowslider Gallery Image operations
 
 */
 class Block_Layout extends Record{
@@ -168,7 +169,7 @@ class Block_Layout extends Record{
     return
       "<div onmouseover=\""
      ."if(!CM_visible('CM_".$this->_context_menu_ID."')) {"
-     ."this.style.backgroundColor='"
+     ."_replaceContext=true;this.style.backgroundColor='"
      .($this->record['systemID']==SYS_ID ? '#ffff80' : '#ffe0e0')
      ."';"
      .(isset($this->_safe_ID) ? "_CM.source='".$this->_safe_ID."';" : "")
@@ -188,7 +189,7 @@ class Block_Layout extends Record{
       : '')
      .($this->_get_type()=='event' ? "_CM.event_registrants=".$registrations.";" : "")
      ."}\" "
-     ." onmouseout=\"this.style.backgroundColor='';_CM.type=''\">";
+     ." onmouseout=\"_replaceContext = false; this.style.backgroundColor='';_CM.type=''\">";
   }
 
   protected function BL_CP_footer(){
