@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.7");
+define("CODEBASE_VERSION", "3.3.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -23,22 +23,19 @@ Summary:
 Final Checksums:
   Classes     CS:a63d1709
   Database    CS:c15014ce
-  Libraries   CS:87b21f19
+  Libraries   CS:b895decb
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.7     (2015-07-21)
+  codebase.php                                                                                   3.3.8     (2015-07-21)
     1) Updated version information
-  classes/class.navsuite.php                                                                     1.0.34    (2015-07-21)
-    1) Added title attribute to menu link images for Accessibility Compliance
 
 2382.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.3.7
-  classes/  (1 file changed)
-    class.navsuite.php                                1.0.34    CS:a9d57590
+  codebase.php                                        3.3.8
+
 
 
   Bug:
