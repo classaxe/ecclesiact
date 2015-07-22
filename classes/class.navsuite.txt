@@ -1,3 +1,5 @@
+  1.0.33 (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
   1.0.32 (2012-12-03)
     1) Navsuite::copy() now has same signature as Record::copy()
   1.0.31 (2012-09-25)

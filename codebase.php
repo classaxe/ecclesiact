@@ -16,41 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.7.2381 (2015-07-19)
+3.3.8.2382 (2015-07-21)
 Summary:
-  1) Replaced wowslider with mobile-friendly version supporting swipe and resizing
-  2) Context editing of wowslider images now via thumbnail bullets
-  3) Wowslide now allows for responsive sizing for some effects modes
-  4) Some standard asset png images optimised
+  1) Added title attribute to menu links (requested by Darlene for Accesibility Compliance
 
 Final Checksums:
-  Classes     CS:b20ca351
+  Classes     CS:a63d1709
   Database    CS:c15014ce
   Libraries   CS:87b21f19
   Reports     CS:a6a5f5c0
 
 Code Changes:
-  codebase.php                                                                                   3.3.7     (2015-07-19)
+  codebase.php                                                                                   3.3.7     (2015-07-21)
     1) Updated version information
-  classes/class.block_layout.php                                                                 1.0.63    (2015-07-19)
-    1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
-       especially with Wowslider Gallery Image operations
-  classes/component/wowslider.php                                                                1.0.10    (2015-07-19)
-    1) Refreshed Wow Slider to use libraries with version 5.6
-    2) Wow Slider now has Context Menus on bullets, and only sets size to be absolute on effects that need it to be.
-  img.php                                                                                        2.0.83    (2015-07-19)
-    1) Supports additional wowslider effects
+  classes/class.navsuite.php                                                                     1.0.34    (2015-07-21)
+    1) Added title attribute to menu link images for Accessibility Compliance
 
-2381.sql
+2382.sql
   1) Set version information
 
 Promote:
   codebase.php                                        3.3.7
-  classes/  (2 files changed)
-    class.block_layout.php                            1.0.63    CS:22c1ddad
-    component/wowslider.php                           1.0.10    CS:3202b348
-  img.php                                             2.0.83    CS:f402cf5c
-
+  classes/  (1 file changed)
+    class.navsuite.php                                1.0.34    CS:a9d57590
 
 
   Bug:

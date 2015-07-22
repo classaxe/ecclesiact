@@ -1,9 +1,9 @@
 <?php
-define('VERSION_NAVSUITE','1.0.33');
+define('VERSION_NAVSUITE','1.0.34');
 /*
 Version History:
-  1.0.33 (2014-02-18)
-    1) Refreshed fields list - now declared as a class constant
+  1.0.34 (2015-07-21)
+    1) Added title attribute to menu link images for Accessibility Compliance
 
   (Older version history in class.navsuite.txt)
 */
@@ -307,7 +307,7 @@ class Navsuite extends Record {
                  ""
                )
               ."background:".$bSrc." no-repeat ".$bOffset."'"
-              ." alt=\"".$bTextSafe."\"/>"
+              ." title=\"".$bTextSafe."\" alt=\"".$bTextSafe."\"/>"
               ."</a>";
             $current_button++;
             if ($childID) {
@@ -396,7 +396,7 @@ class Navsuite extends Record {
                  ""
                )
               ."background:".$bSrc." no-repeat ".$bOffset."'"
-              ." alt=\"".$bTextSafe."\"/>"
+              ." title=\"".$bTextSafe."\" alt=\"".$bTextSafe."\"/>"
               ."</a>";
             if ($childID) {
               $out.=
