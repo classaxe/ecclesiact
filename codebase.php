@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.8");
+define("CODEBASE_VERSION", "3.3.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,26 +16,9 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.8.2382 (2015-07-21)
+3.3.9.2383 (2015-07-25)
 Summary:
-  1) Added title attribute to menu links (requested by Darlene for Accesibility Compliance
-
-Final Checksums:
-  Classes     CS:a63d1709
-  Database    CS:c15014ce
-  Libraries   CS:b895decb
-  Reports     CS:a6a5f5c0
-
-Code Changes:
-  codebase.php                                                                                   3.3.8     (2015-07-21)
-    1) Updated version information
-
-2382.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        3.3.8
-
+  1) More work on Accesibility Compliance
 
 
   Bug:

@@ -1,3 +1,6 @@
+  1.0.152 (2015-03-23)
+    1) Now uses namespaced \Map\GoogleMap class in place of Google_Map
+    2) Method get_version() renamed to getVersion() and made static
   1.0.151 (2014-01-31)
     1) Changes to internally used parameters in Displayable_Item::_draw_listings_load_records():
          Old: limit,            order_by

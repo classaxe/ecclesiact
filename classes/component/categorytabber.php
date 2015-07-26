@@ -1,13 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_COMPONENT_NS_CATEGORY_TABBER", "1.0.5");
+define("VERSION_COMPONENT_NS_CATEGORY_TABBER", "1.0.6");
 /*
 Version History:
-  1.0.5 (2015-03-14)
-    1) Moved in here from class.component_category_tabber.php
-    2) Extensivly refactored
-    3) Now fully PSR-2 Compliant
+  1.0.6 (2015-07-26)
+    1) Add icon now correctly hidden for non-admins
 
 */
 class CategoryTabber extends Base
@@ -203,6 +201,9 @@ class CategoryTabber extends Base
 
     protected function drawAddIcon($category)
     {
+        if (!$this->_isAdmin) {
+            return;
+        }
         $this->_html.=
              "<a class='fl' href=\"#\" onclick=\"details("
             ."'".$this->popupForm."','','".$this->popupSize['h']."','".$this->popupSize['w']."',"

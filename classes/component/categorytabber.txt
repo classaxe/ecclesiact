@@ -1,3 +1,7 @@
+  1.0.5 (2015-03-14)
+    1) Moved in here from class.component_category_tabber.php
+    2) Extensivly refactored
+    3) Now fully PSR-2 Compliant
   1.0.4 (2013-06-07)
     1) Changed the following CPs:
          Old: 'filter_limit_per_category',  'filter_sort_by'

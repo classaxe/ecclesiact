@@ -1,10 +1,9 @@
 <?php
-define('VERSION_DISPLAYABLE_ITEM', '1.0.152');
+define('VERSION_DISPLAYABLE_ITEM', '1.0.153');
 /*
 Version History:
-  1.0.152 (2015-03-23)
-    1) Now uses namespaced \Map\GoogleMap class in place of Google_Map
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.153 (2015-07-26)
+    1) Various anchors for 'content begins here' now have hidden text for accessibility conformance
 
 */
 class Displayable_Item extends Block_Layout
@@ -440,7 +439,7 @@ class Displayable_Item extends Block_Layout
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $this->_html.=
              "<input type='hidden' name='ID' id='ID' value='".$this->_get_ID()."' />"
-            ."<a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\"></a>\n";
+            ."<a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\" style=\"visibility:hidden\">Main content begins here</a>\n";
         return true;
     }
 
@@ -1132,7 +1131,7 @@ class Displayable_Item extends Block_Layout
         return
              "<div class='clr_b'></div>\n"
             ."<div id='comments_list' class='comments_list'>"
-            ."<a name='anchor_comments_list' id='anchor_comments_list'></a>"
+            ."<a name='anchor_comments_list' id='anchor_comments_list'><span style=\"visibility:hidden\">Comments list begins</span></a>"
             .$Obj->get_comments_all_html($this->_get_object_name(), $this->_get_ID(), $allow_add)
             ."<div class='clr_b'></div>\n"
             ."</div>"
@@ -1350,8 +1349,9 @@ class Displayable_Item extends Block_Layout
                 .">\n"
                 .($img && $args['thumbnail_at_top']==1?
                      ($args['thumbnail_link'] ? $read_link : "")
-                    ."<img class='thumbnail_".$args['thumbnail_image']."' alt=\"".$record['title']."\""
+                    ."<img role=\"presentation\" class='thumbnail_".$args['thumbnail_image']."' title=\"".$record['title']."\" alt=\"".$record['title']."\""
                     ." src=\"".$thumbnail_img."\" />"
+                    ."<span style=\"visibility:hidden\">".$record['title']."</span>"
                     .($args['thumbnail_link'] ? "</a>" : "")
                   :
                     ""
@@ -1385,8 +1385,9 @@ class Displayable_Item extends Block_Layout
                 ."</div>"
                 .($img && $args['thumbnail_at_top']==0 ?
                      ($args['thumbnail_link'] ? $read_link : "")
-                    ."<img class='thumbnail_".$args['thumbnail_image']."' alt=\"".$record['title']."\""
+                    ."<img role=\"presentation\" class='thumbnail_".$args['thumbnail_image']."' title=\"".$record['title']."\" alt=\"".$record['title']."\""
                     ." src=\"".$thumbnail_img."\" />"
+                    ."<span style=\"visibility:hidden\">".$record['title']."</span>"
                     .($args['thumbnail_link'] ? "</a>" : "")
                   :
                     ""

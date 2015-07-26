@@ -1,3 +1,6 @@
+  1.0.63 (2015-07-19)
+    1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
+       especially with Wowslider Gallery Image operations
   1.0.62 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
   1.0.61 (2014-11-27)

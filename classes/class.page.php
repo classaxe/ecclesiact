@@ -1,10 +1,9 @@
 <?php
-define('VERSION_PAGE', '1.0.120');
+define('VERSION_PAGE', '1.0.121');
 /*
 Version History:
-  1.0.120 (2015-03-04)
-    1) Change to Page::prepare_html_head() now Component_Bible_Links::draw() is \Component\BibleLinks::draw()
-    2) Added pushContent() as alias for now deprecated push_content()
+  1.0.121 (2015-07-26)
+    1) Page::draw_detail_content() now has accessible text for 'Main content' anchor
 
   (Older version history in class.page.txt)
 */
@@ -547,7 +546,7 @@ class Page extends Displayable_Item
         $anchor_ID = System::get_item_version('system_family').'_main_content';
 
         return
-         "<div><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\"></a></div>\r\n"
+         "<div style=\"visibility:hidden\"><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\">Main content begins here</a></div>\r\n"
         .$page_heading_title
         ."<div class='content'>"
         .($status_msg ? HTML::draw_status('form_edit_inpage', $status_msg) : "")
@@ -2022,9 +2021,8 @@ class Page extends Displayable_Item
             'body',
             "<form id='form' enctype='multipart/form-data' method='post' action='./' style='padding:0;margin:0;'>\r\n"
             ."<div id='top' class='margin_none padding_none'>\r\n"
-            ."<a href=\"#".$anchor_ID."\" class='fl'>"
-            ."<img src=\"".BASE_PATH."img/spacer\" alt=\"Skip to Content\" height=\"1\" width=\"1\""
-            ." class=\"border_none fl b margin_none\" /></a>\r\n"
+            ."<a href=\"#".$anchor_ID."\" title=\"Main content begins here\" class='fl' style=\"display:none\">"
+            ."Skip to Main Content</a>\r\n"
             .draw_form_field('limit', $limit, 'hidden')."\r\n"
             .draw_form_field('offset', $offset, 'hidden')."\r\n"
             .draw_form_field('filterExact', $filterExact, 'hidden')."\r\n"

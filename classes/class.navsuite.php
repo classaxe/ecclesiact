@@ -1,9 +1,9 @@
 <?php
-define('VERSION_NAVSUITE','1.0.34');
+define('VERSION_NAVSUITE','1.0.35');
 /*
 Version History:
-  1.0.34 (2015-07-21)
-    1) Added title attribute to menu link images for Accessibility Compliance
+  1.0.35 (2015-07-25)
+    1) Menu Button images now have role of 'presentation' and a following span with text from button
 
   (Older version history in class.navsuite.txt)
 */
@@ -296,7 +296,7 @@ class Navsuite extends Record {
                   ""
                )
               .">"
-              ."<img"
+              ."<img role=\"presentation\""
               ." src=\"".BASE_PATH."img/spacer\""
               ." height=\"".$bHeight."\""
               ." width=\"".$bWidth."\""
@@ -307,7 +307,8 @@ class Navsuite extends Record {
                  ""
                )
               ."background:".$bSrc." no-repeat ".$bOffset."'"
-              ." title=\"".$bTextSafe."\" alt=\"".$bTextSafe."\"/>"
+              ." alt=\"".$bTextSafe."\"/>"
+              ."<span style='display:none'>".$bTextSafe."</span>"
               ."</a>";
             $current_button++;
             if ($childID) {
@@ -385,7 +386,7 @@ class Navsuite extends Record {
                   ""
                )
               .">"
-              ."<img"
+              ."<img role=\"presentation\""
               ." src=\"".BASE_PATH."img/spacer\""
               ." height=\"".$bHeight."\""
               ." width=\"".$bWidth."\""
@@ -396,7 +397,8 @@ class Navsuite extends Record {
                  ""
                )
               ."background:".$bSrc." no-repeat ".$bOffset."'"
-              ." title=\"".$bTextSafe."\" alt=\"".$bTextSafe."\"/>"
+              ." alt=\"".$bTextSafe."\"/>"
+              ."<span style='display:none'>".$bTextSafe."</span>"
               ."</a>";
             if ($childID) {
               $out.=

@@ -1,10 +1,9 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.63');
+define('VERSION_BLOCK_LAYOUT','1.0.64');
 /*
 Version History:
-  1.0.63 (2015-07-19)
-    1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
-       especially with Wowslider Gallery Image operations
+  1.0.64 (2015-07-26)
+    1) Method BL_thumbnail_image() now places hidden span with title of linked resource for Accessibility Compliance
 
 */
 class Block_Layout extends Record{
@@ -746,8 +745,9 @@ class Block_Layout extends Record{
     return
       "<div class='thumbnail'>"
      .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? $read_link : "")
-     ."<img class='thumbnail_".$image_letter."' alt=\"".$this->record['title']."\""
+     ."<img class=\"thumbnail_".$image_letter."\" role=\"presentation\" alt=\"".$this->record['title']."\""
      ." src=\"".$thumbnail_img."\" />"
+     ."<span style=\"visibility:hidden\">".$this->record['title']."</span>"
      .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? "</a>" : "")
      ."</div>";
   }
