@@ -18,7 +18,7 @@ define(
 --------------------------------------------------------------------------------
 3.3.9.2383 (2015-07-25)
 Summary:
-  1) More work on Accesibility Compliance
+  1) More work on Accesibility Compliance.
 
 Final Checksums:
   Classes     CS:d1414b2
