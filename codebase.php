@@ -16,41 +16,9 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.9.2383 (2015-07-25)
+3.3.10.2383 (2015-07-27)
 Summary:
-  1) More work on Accesibility Compliance.
-
-Final Checksums:
-  Classes     CS:d1414b2
-  Database    CS:c15014ce
-  Libraries   CS:f5e6063b
-  Reports     CS:a6a5f5c0
-
-Code Changes:
-  codebase.php                                                                                   3.3.9     (2015-07-26)
-    1) Updated version information
-  classes/class.block_layout.php                                                                 1.0.64    (2015-07-26)
-    1) Method BL_thumbnail_image() now places hidden span with title of linked resource for Accessibility Compliance
-  classes/class.displayable_item.php                                                             1.0.153   (2015-07-26)
-    1) Various anchors for 'content begins here' now have hidden text for accessibility conformance
-  classes/class.navsuite.php                                                                     1.0.35    (2015-07-25)
-    1) Menu Button images now have role of 'presentation' and a following span with text from button
-  classes/class.page.php                                                                         1.0.121   (2015-07-26)
-    1) Page::draw_detail_content() now has accessible text for 'Main content' anchor
-  classes/component/categorytabber.php                                                           1.0.6     (2015-07-26)
-    1) Add icon now correctly hidden for non-admins
-
-2383.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        3.3.9
-  classes/  (5 files changed)
-    class.block_layout.php                            1.0.64    CS:c82eb586
-    class.displayable_item.php                        1.0.153   CS:52f3296f
-    class.navsuite.php                                1.0.35    CS:913a445e
-    class.page.php                                    1.0.121   CS:9d30afb2
-    component/categorytabber.php                      1.0.6     CS:4e5e2197
+  1) Work on non-image based menus
 
 
   Bug:
