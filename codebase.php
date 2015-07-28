@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.9");
+define("CODEBASE_VERSION", "3.3.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
