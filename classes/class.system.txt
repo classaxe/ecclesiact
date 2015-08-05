@@ -1,3 +1,5 @@
+  1.0.162 (2015-04-22)
+    1) Changes following migration of Component_Customiser_Button to namespaced component
   1.0.161 (2015-03-24)
     1) Added address_substitution to tables list
   1.0.160 (2015-03-15)

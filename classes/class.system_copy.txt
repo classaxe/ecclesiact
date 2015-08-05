@@ -1,3 +1,8 @@
+  1.0.7 (2012-08-22)
+    1) Now remaps posting parents to their new copied parents
+    2) Now remaps page parents to their new copied parents
+  1.0.6 (2012-07-11)
+    1) Removed reference to 'treenodes' in non-cloned tables comment
   1.0.5 (2012-07-06)
     1) Changes to System_Copy::_copy_system() to clear out notification options,
        Bug Tracker, Piwik, Google Analytics and other customer-specific fields -

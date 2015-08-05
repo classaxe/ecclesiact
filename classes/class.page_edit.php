@@ -1,13 +1,10 @@
 <?php
-define('VERSION_PAGE_EDIT', '1.0.16');
+define('VERSION_PAGE_EDIT', '1.0.17');
 /*
 Version History:
-  1.0.16 (2015-01-03)
-    1) Now uses OPTION_SEPARATOR constant not option_separator in Page_Edit::draw() for saving
-    2) Removed 'yellow fever' correction cde - not needed with new CK Editor code
-    3) Now PSR-2 Compliant
+  1.0.17 (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
 
-  (Older version history in class.page_edit.txt)
 */
 class Page_Edit extends Page
 {
@@ -250,7 +247,7 @@ class Page_Edit extends Page
         $formSelectorLayoutSQL =        Layout::get_selector_sql();
         $formSelectorThemeSQL =         Theme::get_selector_sql();
         $formSelectorComponentSQL =     Component::get_selector_sql();
-        $formSelectorNavsuiteSQL =      Navsuite::get_selector_sql(true);
+        $formSelectorNavSuiteSQL =      \Nav\Suite::getSelectorSql(true);
         $formSelectorGroupSQL =         Group_Assign::get_selector_sql();
         $formSelectorParentIDSQL =      Page::get_selector_sql_parents($ID);
         if ($isMASTERADMIN) {
@@ -629,7 +626,7 @@ class Page_Edit extends Page
                 $navsuite1ID,
                 "selector",
                 "690",
-                $formSelectorNavsuiteSQL,
+                $formSelectorNavSuiteSQL,
                 '',
                 '',
                 '',
@@ -645,7 +642,7 @@ class Page_Edit extends Page
                 $navsuite2ID,
                 "selector",
                 "690",
-                $formSelectorNavsuiteSQL,
+                $formSelectorNavSuiteSQL,
                 '',
                 '',
                 '',
@@ -661,7 +658,7 @@ class Page_Edit extends Page
                 $navsuite3ID,
                 "selector",
                 "690",
-                $formSelectorNavsuiteSQL,
+                $formSelectorNavSuiteSQL,
                 '',
                 '',
                 '',

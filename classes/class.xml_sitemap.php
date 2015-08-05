@@ -1,10 +1,9 @@
 <?php
-define("VERSION_XML_SITEMAP", "1.0.3");
+define("VERSION_XML_SITEMAP", "1.0.4");
 /*
 Version History:
-  1.0.3 (2015-01-26)
-    1) Disallowed robots from indexing UserFiles File, Media and Video subfolders
-    2) Now PSR-2 Compliant
+  1.0.4 (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
 
 */
 class XML_Sitemap extends Record
@@ -121,8 +120,8 @@ class XML_Sitemap extends Record
     private function _get_items_recursive($childID = false)
     {
         $out = array();
-        $Obj_Navsuite =     new Navsuite($childID);
-        $buttons =          $Obj_Navsuite->get_buttons();
+        $Obj_Nav_Suite =    new \Nav\Suite($childID);
+        $buttons =          $Obj_Nav_Suite->getButtons();
         if ($buttons) {
             foreach ($buttons as $button) {
                 if ($button['sitemap_priority'] && $button['visible']) {

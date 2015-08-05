@@ -1,3 +1,5 @@
+  1.0.62 (2015-03-22)
+    1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
   1.0.61 (2015-02-14)
     1) HTML tweak for Report_Form::_draw_form_field() to correctly space tag attributes
   1.0.60 (2015-01-06)

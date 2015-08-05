@@ -1,11 +1,12 @@
 <?php
-define('VERSION_RECORD', '1.0.90');
+define('VERSION_RECORD', '1.0.91');
 /*
 Version History:
-  1.0.90 (2015-03-23)
-    1) Record::get_coords() now uses \Map\GoogleMap class
-    2) Record::on_action_set_map_location() now looks for getCoords() if it exists and uses that
-    3) Method get_version() renamed to getVersion() and made static
+  1.0.91 (2015-08-03)
+    1) Function sql_export() is now a stub class for newly added sqlExport()
+    1) Function sql_export_delete() is now a stub class for newly added sqlExportDelete()
+    1) Function sql_export_select() is now a stub class for newly added sqlExportSelect()
+    1) Function try_copy() is now a stub class for newly added sqlExport()
 
 */
 class Record extends Portal
@@ -2016,7 +2017,7 @@ class Record extends Portal
         return 0;
     }
 
-    public function sql_export(
+    public function sqlExport(
         $targetID,
         $show_fields,
         $header = "",
@@ -2028,11 +2029,11 @@ class Record extends Portal
             return "Forbidden";
         }
         return
-             $this->sql_export_delete($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select)
-            .$this->sql_export_select($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+             $this->sqlExportDelete($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select)
+            .$this->sqlExportSelect($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
     }
 
-    public function sql_export_delete(
+    public function sqlExportDelete(
         $targetID,
         $show_fields,
         $header = "",
@@ -2098,7 +2099,7 @@ class Record extends Portal
             ."`ID` IN ($targetID);\n";
     }
 
-    public function sql_export_select(
+    public function sqlExportSelect(
         $targetID,
         $show_fields,
         $header = "",
@@ -2194,6 +2195,39 @@ class Record extends Portal
             ."\n";
     }
 
+    public function sql_export(
+        $targetID,
+        $show_fields,
+        $header = "",
+        $orderBy = "",
+        $extra_delete = "",
+        $extra_select = ""
+    ) {
+        return $this->sqlExport($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+    }
+
+    public function sql_export_delete(
+        $targetID,
+        $show_fields,
+        $header = "",
+        $orderBy = "",
+        $extra_delete = "",
+        $extra_select = ""
+    ) {
+        return $this->sqlExportDelete($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+    }
+
+    public function sql_export_select(
+        $targetID,
+        $show_fields,
+        $header = "",
+        $orderBy = "",
+        $extra_delete = "",
+        $extra_select = ""
+    ) {
+        return $this->sqlExportSelect($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+    }
+
     public function sql_header($text)
     {
         global $db,$system_vars;
@@ -2237,6 +2271,11 @@ class Record extends Portal
     }
 
     public function try_copy(&$newID, &$msg, &$msg_tooltip, $name = false, $global = false)
+    {
+        return $this->tryCopy($newID, $msg, $msg_tooltip, $name, $global);
+    }
+
+    public function tryCopy(&$newID, &$msg, &$msg_tooltip, $name = false, $global = false)
     {
         $targetSystemID = (get_person_permission("MASTERADMIN") ? false : SYS_ID);
         $args =

@@ -1,10 +1,10 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.62");
+define("VERSION_REPORT_FORM", "1.0.63");
 
 /*
 Version History:
-  1.0.62 (2015-03-22)
-    1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
+  1.0.63 (2015-08-01)
+    1) References to Navbutton now \Nav\Button
 
 */
 
@@ -186,8 +186,8 @@ class Report_Form extends Report
                 if ($this->_recordID=='') {
                     switch ($this->_report_name) {
                         case 'navbuttons_for_navsuite':
-                            $Obj = new Navsuite($this->_selectID);
-                            $value=$Obj->get_next_seq();
+                            $Obj = new \Nav\Suite($this->_selectID);
+                            $value=$Obj->getNextSeq();
                             break;
                         case 'listdata_for_listtype':
                             $Obj = new Listtype($this->_selectID);
@@ -744,7 +744,7 @@ class Report_Form extends Report
         $this->_default_settings['publish_now'] =       false;
         $this->_default_settings['ratings_public'] =    false;
         if ($this->_Obj_Primary) {
-            if (is_a($this->_Obj_Primary, 'Navbutton')) {
+            if (is_a($this->_Obj_Primary, '\Nav\Button')) {
                 $this->_default_settings['all_user_perms'] =    System::has_feature('Button-default-all-user-perms');
             }
             if (is_a($this->_Obj_Primary, 'Poll')) {

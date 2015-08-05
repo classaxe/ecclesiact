@@ -1,3 +1,9 @@
+  1.0.8 (2012-12-08)
+    1) Bug fix for one accented character in Navbutton_Image::get_uppercase()
+  1.0.7 (2012-12-08)
+    1) Added Navbutton_Image::get_uppercase() to handle french accents
+       Based on code by dev dot gabiu at gmail dot com -
+       http://php.net/manual/en/function.strtoupper.php#104012
   1.0.6 (2012-06-19)
     1) Moved Navbutton::get_text_size() into here
     2) Moved Navbutton::get_button_base_size() into here

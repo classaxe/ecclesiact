@@ -1,10 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.162');
+define('VERSION_SYSTEM', '1.0.163');
 
 /*
 Version History:
-  1.0.162 (2015-04-22)
-    1) Changes following migration of Component_Customiser_Button to namespaced component
+  1.0.163 (2015-08-01)
+    1) eferences to navbutton now \Nav\Button
 
 */
 class System extends Record
@@ -330,14 +330,14 @@ class System extends Record
                     break;
                 case "navbutton_delete":
                     if ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN) {
-                        $Obj = new Navbutton($_REQUEST['targetID']);
-                        $Obj->delete_and_cleanup();
+                        $Obj = new \Nav\Button($_REQUEST['targetID']);
+                        $Obj->deleteAndCleanup();
                     }
                     break;
                 case "navsuite_seq":
                     if ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN) {
-                        $Obj = new Navsuite;
-                        $Obj->ajax_set_seq();
+                        $Obj = new \Nav\Suite;
+                        $Obj->ajaxSetSeq();
                     }
                     break;
                 case "order_issue_credit_memo":
@@ -438,8 +438,8 @@ class System extends Record
                 break;
                 case "subnav_add":
                     if ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN) {
-                        $Obj = new Navbutton($_REQUEST['targetID']);
-                        $Obj->subnav_add();
+                        $Obj = new \Nav\Button($_REQUEST['targetID']);
+                        $Obj->subnavAdd();
                     }
                     break;
                 case "upgrade":

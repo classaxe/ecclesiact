@@ -1,9 +1,9 @@
 <?php
-define('VERSION_PAGE', '1.0.121');
+define('VERSION_PAGE', '1.0.122');
 /*
 Version History:
-  1.0.121 (2015-07-26)
-    1) Page::draw_detail_content() now has accessible text for 'Main content' anchor
+  1.0.122 (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
 
   (Older version history in class.page.txt)
 */
@@ -1992,8 +1992,8 @@ class Page extends Displayable_Item
          ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
         )
         ) {
-            $navsuiteObj = new Navsuite();
-            $this->push_content('javascript_onload', $navsuiteObj->get_js_preload());
+            $navsuiteObj = new \Nav\Suite();
+            $this->push_content('javascript_onload', $navsuiteObj->getJsPreload());
         }
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $js_onload =

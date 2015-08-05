@@ -1,3 +1,5 @@
+  1.0.35 (2015-07-25)
+    1) Menu Button images now have role of 'presentation' and a following span with text from button
   1.0.34 (2015-07-21)
     1) Added title attribute to menu link images for Accessibility Compliance
   1.0.33 (2014-02-18)

@@ -1,3 +1,7 @@
+  1.0.129 (2015-03-23)
+    1) Report_Column::draw_form_field() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
   1.0.128 (2015-03-22)
     1) Report_Column::draw_form_field() - all fields in type 'fieldset_map_loc_lat_lon' now read-only,
        and have no bulk update options. Quality label also opens up map just like lat and lon already did.
