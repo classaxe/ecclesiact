@@ -1,3 +1,6 @@
+  1.0.3 (2015-01-26)
+    1) Disallowed robots from indexing UserFiles File, Media and Video subfolders
+    2) Now PSR-2 Compliant
   1.0.2 (2014-12-29)
     1) Added Crawl-delay parameter to robots.txt output
   1.0.1 (2012-11-28)

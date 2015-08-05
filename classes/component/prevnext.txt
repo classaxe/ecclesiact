@@ -1,0 +1,6 @@
+  1.0.1 (2014-08-12)
+    1) Changes to bring this component up to date and to have a configrable control panel
+    2) Added ability to take a list of pages and take links from them to splice into the
+       sequence to allow for navigation through pages not normally navigable via navsuites
+  1.0.0 (2011-12-29)
+    1) Initial release - moved from Component class

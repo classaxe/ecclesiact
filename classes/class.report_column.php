@@ -1,11 +1,9 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.129');
+define('VERSION_REPORT_COLUMN', '1.0.130');
 /*
 Version History:
-  1.0.129 (2015-03-23)
-    1) Report_Column::draw_form_field() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
-       so we can safely propagate namespace prefixes for desired types
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.130 (2015-08-03)
+    1) References to Navbutton_Style now \Nav\Style
 
 */
 class Report_Column extends Record
@@ -1854,7 +1852,7 @@ class Report_Column extends Record
                     } else {
                         switch ($report_name) {
                             case 'navsuite':
-                                $Obj =      new Navbutton_Style($row['buttonStyleID']);
+                                $Obj =      new \Nav\Style($row['buttonStyleID']);
                                 $_row =     $Obj->get_record();
                                 break;
                             default:

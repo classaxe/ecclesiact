@@ -1,0 +1,16 @@
+  1.0.5 (2014-01-28)
+    1) Newline after JS code in Component_SDMenu::_draw_js_onload()
+  1.0.4 (2012-01-23)
+    1) Changes to _setup() to harness protected method in Component_Base class
+    2) Removed local implementation of _setup_load_parameters()
+  1.0.3 (2012-01-23)
+    1) Removed _draw_control_panel() - inherits instead
+  1.0.2 (2011-10-02)
+    1) Now includes _setup_fix_ie7_spaces_bug() to remove spaces between elements
+       prevening extra gaps showing
+  1.0.1 (2011-09-24)
+    1) Big changes to work with bare minimum of modification to input tree
+    2) Removed unused support for 'memorize' in JS
+    3) Added cps to govern speed and 'one-only' selection of submenu items
+  1.0.0 (2011-09-24)
+    1) Initial release from code in Component class, with major cleanup

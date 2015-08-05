@@ -1,21 +1,46 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.10");
+define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.11");
 /*
 Version History:
-  1.0.10 (2015-07-19)
-    1) Refreshed Wow Slider to use libraries with version 5.6
-    2) Wow Slider now has Context Menus on bullets, and only sets size to be absolute on effects that need it to be.
+  1.0.11 (2015-08-04)
+    1) Fixes for PSR-2
 
 */
 class WOWSlider extends Base
 {
     protected $_first_image =   array();
     protected $_first_idx =     0;
-    protected $fx =             "basic,basic_linear,blast,blinds,blur,book,brick,collage,cube,domino,fade,flip,fly,kenburns,page,photo,rotate,seven,slices,squares,stack,stack_vertical";
-// overlay not working here
-    protected $fx_fixed_size =  "blinds,book,collage,cube,flip,slices,squares"; // these cannot be used for responsive websites
+    protected $fx =
+        array(
+            'basic',
+            'basic_linear',
+            'blast',
+            'blinds',
+            'blur',
+            'book',
+            'brick',
+            'collage',
+            'cube',
+            'domino',
+            'fade',
+            'flip',
+            'fly',
+            'kenburns',
+//            'overlay', // overlay not working here
+            'page',
+            'photo',
+            'rotate',
+            'seven',
+            'slices',
+            'squares',
+            'stack',
+            'stack_vertical'
+        );
+    // overlay not working here
+    protected $fx_fixed_size =  "blinds,book,collage,cube,flip,slices,squares";
+    // these cannot be used for responsive websites
     protected $_images =        array();
     protected $_records =       array();
 
@@ -59,9 +84,9 @@ class WOWSlider extends Base
                 'hint' =>       '0|1'
             ),
             'effect' =>                     array(
-                'match' =>      'enum|'.$this->fx,
+                'match' =>      'enum|'.implode(',', $this->fx),
                 'default' =>    'fade',
-                'hint' =>       str_replace(',', '|', $this->fx)
+                'hint' =>       implode('|', $this->fx)
             ),
             'effect_reverse' =>             array(
                 'match' =>      'enum|0,1',
@@ -239,32 +264,42 @@ class WOWSlider extends Base
         $show_pc =  ($slices * $this->_cp['secShow']) / ($this->_cp['secShow'] + $this->_cp['secFade']);
         $fade_pc =  ($slices * $this->_cp['secFade']) / ($this->_cp['secShow'] + $this->_cp['secFade']);
         $sequence = "";
-        for($i=0; $i<$images; $i++) {
+        for ($i=0; $i<$images; $i++) {
             $pc = $i*($show_pc+$fade_pc);
             $sequence.= number_format($pc, 2)."%{left:-".($i*100)."%} ";
             $sequence.= number_format($pc+$show_pc, 2) ."%{left:-".($i*100)."%} ";
         }
         // Effects requiring absolute sizing:
         print
-              (in_array($this->_cp['effect'], explode(',',$this->fx_fixed_size)) ?
+              (in_array($this->_cp['effect'], explode(',', $this->fx_fixed_size)) ?
                    "#".$this->_safe_ID." { max-width:".$this->_cp['max_width']."px; }\n"
                   ."* html #".$this->_safe_ID." { width:".$this->_cp['max_width']."px; }\n"
                :
                     ""
               )
-             ."#".$this->_safe_ID." .ws_bullets a{ background:url(".BASE_PATH."img/sysimg/bullet.png) left top;}\n"
-             ."#".$this->_safe_ID." .ws_bullets a.ws_selbull,#".$this->_safe_ID." .ws_bullets a:hover{background-position: 0 100%;}\n"
-             ."#".$this->_safe_ID." .ws_next,#".$this->_safe_ID." .ws_prev{background-image:url(".BASE_PATH."img/sysimg/arrows.png);}\n"
-             ."#".$this->_safe_ID." .ws_pause { background-image: url(".BASE_PATH."img/sysimg/pause.png);}\n"
-             ."#".$this->_safe_ID." .ws_play { background-image: url(".BASE_PATH."img/sysimg/play.png);}\n"
-             ."#".$this->_safe_ID." .ws_bullets  a img{ left:-".($this->_cp['thumbnail_width']/2)."px;}\n"
-             ."#".$this->_safe_ID." .ws_bulframe div div{ height:".$this->_cp['thumbnail_height']."px;}\n"
-             ."#".$this->_safe_ID." .ws_bulframe div{width:".$this->_cp['thumbnail_width']."px;}\n"
-             ."#".$this->_safe_ID." .ws_bulframe span{left:".($this->_cp['thumbnail_width']/2)."px;background:url(".BASE_PATH."img/sysimg/triangle.png);}\n"
-             ."#".$this->_safe_ID." .ws_images ul {	animation: wsBasic ".$dur."s infinite; -moz-animation: wsBasic ".$dur."s infinite; -webkit-animation: wsBasic ".$dur."s infinite;}\n"
-             ."@keyframes         wsBasic{".$sequence." }\n"
-             ."@-moz-keyframes    wsBasic{".$sequence." }\n"
-             ."@-webkit-keyframes wsBasic{".$sequence." }\n";
+              ."#".$this->_safe_ID." .ws_bullets a{ background:url(".BASE_PATH."img/sysimg/bullet.png) left top;}\n"
+              ."#".$this->_safe_ID." .ws_bullets a.ws_selbull,#".$this->_safe_ID." .ws_bullets a:hover{\n"
+              ."  background-position: 0 100%;\n"
+              ."}\n"
+              ."#".$this->_safe_ID." .ws_next,#".$this->_safe_ID." .ws_prev{\n"
+              ."  background-image:url(".BASE_PATH."img/sysimg/arrows.png);\n"
+              ."}\n"
+              ."#".$this->_safe_ID." .ws_pause { background-image: url(".BASE_PATH."img/sysimg/pause.png);}\n"
+              ."#".$this->_safe_ID." .ws_play { background-image: url(".BASE_PATH."img/sysimg/play.png);}\n"
+              ."#".$this->_safe_ID." .ws_bullets  a img{ left:-".($this->_cp['thumbnail_width']/2)."px;}\n"
+              ."#".$this->_safe_ID." .ws_bulframe div div{ height:".$this->_cp['thumbnail_height']."px;}\n"
+              ."#".$this->_safe_ID." .ws_bulframe div{width:".$this->_cp['thumbnail_width']."px;}\n"
+              ."#".$this->_safe_ID." .ws_bulframe span{\n"
+              ."  left:".($this->_cp['thumbnail_width']/2)."px;background:url(".BASE_PATH."img/sysimg/triangle.png);\n"
+              ."}\n"
+              ."#".$this->_safe_ID." .ws_images ul {\n"
+              ."  animation: wsBasic ".$dur."s infinite;\n"
+              ."  -moz-animation: wsBasic ".$dur."s infinite;\n"
+              ."  -webkit-animation: wsBasic ".$dur."s infinite;\n"
+              ."}\n"
+              ."@keyframes         wsBasic{".$sequence." }\n"
+              ."@-moz-keyframes    wsBasic{".$sequence." }\n"
+              ."@-webkit-keyframes wsBasic{".$sequence." }\n";
                           ;
     }
 
@@ -318,7 +353,7 @@ class WOWSlider extends Base
         for ($i=0; $i<count($this->_images); $i++) {
             $image = $this->_images[$i];
             $Obj_GI->load($image);
-            $CM = substr($Obj_GI->convert_Block_Layout("[BL]context_selection_start[/BL]"),4,-1);
+            $CM = substr($Obj_GI->convert_Block_Layout("[BL]context_selection_start[/BL]"), 4, -1);
             $this->_html.=
                  "      <a href=\"#\" title=\"".$image['title']."\""
                 .$CM.">"

@@ -1,3 +1,7 @@
+  1.0.90 (2015-03-23)
+    1) Record::get_coords() now uses \Map\GoogleMap class
+    2) Record::on_action_set_map_location() now looks for getCoords() if it exists and uses that
+    3) Method get_version() renamed to getVersion() and made static
   1.0.89 (2015-03-15)
     1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
        resulting in wrong version code being returned by extending classes

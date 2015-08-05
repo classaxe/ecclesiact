@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.9");
+define("CODEBASE_VERSION", "3.3.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,9 +16,102 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.10.2383 (2015-07-27)
+3.3.10.2384 (2015-08-05)
 Summary:
-  1) Work on non-image based menus
+  1) Moved Navbutton, Navbutton_Image, Navbutton_Style and Nav_Suite into Nav namespace and made PSR-2 compliant
+
+Final Checksums:
+  Classes     CS:1a917e41
+  Database    CS:c15014ce
+  Libraries   CS:3b1a9326
+  Reports     CS:c5c39859
+
+Code Changes:
+  codebase.php                                                                                   3.3.10    (2015-08-05)
+    1) Updated version information
+  classes/class.component_sitemap.php                                                            1.0.3     (2015-08-01)
+    1) Component_Sitemap::get_sitemap() now static, nav classes now namespaced
+  classes/class.page.php                                                                         1.0.122   (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
+  classes/class.page_edit.php                                                                    1.0.17    (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
+  classes/class.record.php                                                                       1.0.91    (2015-08-03)
+    1) Function sql_export() is now a stub class for newly added sqlExport()
+    1) Function sql_export_delete() is now a stub class for newly added sqlExportDelete()
+    1) Function sql_export_select() is now a stub class for newly added sqlExportSelect()
+    1) Function try_copy() is now a stub class for newly added sqlExport()
+  classes/class.report_column.php                                                                1.0.130   (2015-08-03)
+    1) References to Navbutton_Style now \Nav\Style
+  classes/class.report_form.php                                                                  1.0.63    (2015-08-01)
+    1) References to Navbutton now \Nav\Button
+  classes/class.system.php                                                                       1.0.163   (2015-08-01)
+    1) eferences to navbutton now \Nav\Button
+  classes/class.system_copy.php                                                                  1.0.8     (2015-08-02)
+    1) References to Navbutton now \Nav\Button
+    2) References to Navsuite now \Nav\Suite
+  classes/class.xml_sitemap.php                                                                  1.0.4     (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
+  classes/component/navlinks.php                                                                 1.0.2     (2015-08-03)
+    1) Moved here from class.component_nav_links.php
+    2) Now PSR-2 Compliant
+  classes/component/prevnext.php                                                                 1.0.6     (2015-08-03)
+    1) Moved here from class.component_nav_links.php
+    2) Now PSR-2 Compliant
+    3) Nav entity references now namespaced
+  classes/component/sdmenu.php                                                                   1.0.6     (2015-08-03)
+    1) Moved here from class.component_nav_links.php
+    2) Now PSR-2 Compliant
+  classes/component/wowslider.php                                                                1.0.11    (2015-08-04)
+    1) Fixes for PSR-2
+  classes/nav/button.php                                                                         1.0.17    (2015-08-01)
+    1) Moved here from class.navbutton.php
+    2) Now PSR-2 Compliant
+  classes/nav/buttonimage.php                                                                    1.0.9     (2015-08-04)
+    1) Moved here from class.navbutton_image.php
+  classes/nav/style.php                                                                          1.0.9     (2015-08-03)
+    1) Moved here from class.navbutton_image.php
+    2) Now PSR-2 Compliant
+  classes/nav/suite.php                                                                          1.0.36    (2015-08-02)
+    1) Moved here from class.navsuite.php
+    2) References to Navbutton now \Nav\Button
+    3) Removed hacks for IE5(!)
+
+2384.sql
+  1) Update ECL tags for classes moving to namespaces and PSR-2 methods
+  2) Update custom ECL tags for classes moving to namespaces and PSR-2 methods
+  3) Update Components for classes moving to namespaces and PSR-2 methods
+  4) Update Reports for PrimaryObject classes moving to namespaces and PSR-2 methods
+  5) Set version information
+
+Delete:
+    class.component_nav_links.php                     1.0.1
+    class.component_prev_next.php                     1.0.1
+    class.component_sdmenu.php                        1.0.5
+    class.navbutton.php                               1.0.16
+    class.navbutton_image.php                         1.0.8
+    class.navbutton_style.php                         1.0.8
+    class.navsuite.php                                1.0.35
+
+Promote:
+  codebase.php                                        3.3.10
+  classes/  (17 files changed)
+    class.component_sitemap.php                       1.0.3     CS:f85e8fd1
+    class.page.php                                    1.0.122   CS:8bd629a7
+    class.page_edit.php                               1.0.17    CS:13b84db3
+    class.record.php                                  1.0.91    CS:3965b3e2
+    class.report_column.php                           1.0.130   CS:a975072f
+    class.report_form.php                             1.0.63    CS:e5e57850
+    class.system.php                                  1.0.163   CS:91d4878a
+    class.system_copy.php                             1.0.8     CS:95a6f86
+    class.xml_sitemap.php                             1.0.4     CS:29c69ee2
+    component/navlinks.php                            1.0.2     CS:4a54df66
+    component/prevnext.php                            1.0.2     CS:a2199fc5
+    component/sdmenu.php                              1.0.6     CS:7b74710b
+    component/wowslider.php                           1.0.11    CS:62b4a069
+    nav/button.php                                    1.0.17    CS:fd3db673
+    nav/buttonimage.php                               1.0.9     CS:8d5f1ab1
+    nav/style.php                                     1.0.9     CS:9af1e060
+    nav/suite.php                                     1.0.36    CS:4029d622
 
 
   Bug:
@@ -2119,14 +2212,14 @@ function img($submode, $ID, $no_show = 0)
 
 function img_button($ID, $no_show = 0)
 {
-    $Obj = new Navbutton($ID);
+    $Obj = new Nav/Button($ID);
     return $Obj->Image($no_show);
 }
 
 function img_button_sample($ID)
 {
-    $Obj = new Navbutton_style($ID);
-    return $Obj->make_images(false);
+    $Obj = new \Nav\style($ID);
+    return $Obj->makeImages(false);
 }
 
 function lead_zero($text, $places)

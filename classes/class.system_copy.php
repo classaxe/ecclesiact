@@ -1,15 +1,11 @@
 <?php
-define('VERSION_SYSTEM_COPY','1.0.7');
+define('VERSION_SYSTEM_COPY','1.0.8');
 
 /*
 Version History:
-  1.0.7 (2012-08-22)
-    1) Now remaps posting parents to their new copied parents
-    2) Now remaps page parents to their new copied parents
-  1.0.6 (2012-07-11)
-    1) Removed reference to 'treenodes' in non-cloned tables comment
-
-  (Older version history in class.system_copy.txt)
+  1.0.8 (2015-08-02)
+    1) References to Navbutton now \Nav\Button
+    2) References to Navsuite now \Nav\Suite
 
 */
 
@@ -31,9 +27,9 @@ class System_Copy extends System {
     $this->_map['Mail_Identity'] =      array();
     $this->_map['Mail_Template'] =      array();
     $this->_map['Mail_Queue'] =         array();
-    $this->_map['Navbutton'] =          array();
-    $this->_map['Navbutton_Style'] =    array();
-    $this->_map['Navsuite'] =           array();
+    $this->_map['\Nav\Button'] =        array();
+    $this->_map['\Nav\Style'] =         array();
+    $this->_map['\Nav\Suite'] =         array();
     $this->_map['Page'] =               array();
     $this->_map['Person'] =             array();
     $this->_map['Posting'] =            array();
@@ -70,7 +66,7 @@ class System_Copy extends System {
     $this->_copy_listdata();
     $this->_copy_category_assign();
     $this->_copy_mail();
-    $this->_copy_navbutton_styles();
+    $this->_copy_navstyles();
     $this->_copy_navsuites();
     $this->_copy_navbuttons();
     $this->_copy_layouts();
@@ -97,7 +93,7 @@ class System_Copy extends System {
     if ($oldVal){
       switch($record['assign_type']){
         case 'navbuttons':
-          $type = 'Navbutton';
+          $type = '\Nav\Button';
         break;
         case 'pages':
           $type = 'Page';
@@ -145,7 +141,7 @@ class System_Copy extends System {
     if ($oldVal){
       switch($record['assign_type']){
         case 'navbuttons':
-          $type = 'Navbutton';
+          $type = '\Nav\Button';
         break;
         case 'pages':
           $type = 'Page';
@@ -224,8 +220,8 @@ class System_Copy extends System {
 
   private function _copied_item_remap_navstyles($Obj, $record){
     $oldVal =                 $record['buttonStyleID'];
-    if (isset($this->_map['Navbutton_Style'][$oldVal]['newID'])) {
-      $newVal =   $this->_map['Navbutton_Style'][$oldVal]['newID'];
+    if (isset($this->_map['\Nav\Style'][$oldVal]['newID'])) {
+      $newVal =   $this->_map['\Nav\Style'][$oldVal]['newID'];
       $Obj->set_field('buttonStyleID',$newVal,false);
     }
   }
@@ -233,8 +229,8 @@ class System_Copy extends System {
   private function _copied_item_remap_navsuites($Obj, $record){
     for ($i=1; $i<=3; $i++) {
       $oldVal =                 $record['navsuite'.$i.'ID'];
-      if (isset($this->_map['Navsuite'][$oldVal]['newID'])) {
-        $newVal =  $this->_map['Navsuite'][$oldVal]['newID'];
+      if (isset($this->_map['\Nav\Suite'][$oldVal]['newID'])) {
+        $newVal =  $this->_map['\Nav\Suite'][$oldVal]['newID'];
         $Obj->set_field('navsuite'.$i.'ID',$newVal,false);
       }
     }
@@ -246,8 +242,8 @@ class System_Copy extends System {
       $old_val_arr = explode(',',$oldVal);
       $new_val_arr = array();
       foreach ($old_val_arr as $old){
-        if (isset( $this->_map['Navbutton'][$old]['newID'])){
-          $new_val_arr[] = $this->_map['Navbutton'][$old]['newID'];
+        if (isset( $this->_map['\Nav\Button'][$old]['newID'])){
+          $new_val_arr[] = $this->_map['\Nav\Button'][$old]['newID'];
         }
       }
       $newVal = implode(',',$new_val_arr);
@@ -257,8 +253,8 @@ class System_Copy extends System {
 
   private function _copied_item_remap_navsuite_parentButtonID($Obj, $record){
     $oldVal =                 $record['parentButtonID'];
-    if (isset($this->_map['Navbutton'][$oldVal]['newID'])) {
-      $newVal = $this->_map['Navbutton'][$oldVal]['newID'];
+    if (isset($this->_map['\Nav\Button'][$oldVal]['newID'])) {
+      $newVal = $this->_map['\Nav\Button'][$oldVal]['newID'];
       $Obj->set_field('parentButtonID',$newVal,false);
     }
   }
@@ -489,32 +485,32 @@ class System_Copy extends System {
     foreach ($Items as $ID) {
       $Obj->_set_ID($ID);
       $newID = $Obj->copy("",$this->_New_SystemID);
-      $this->_map['Navbutton'][$ID] =  array('newID'=>$newID);
+      $this->_map['\Nav\Button'][$ID] =  array('newID'=>$newID);
       // Get old suiteIDs from copied records
       $Obj->_set_ID($newID);
       $record = $Obj->get_record();
       $oldVal =                 $record['suiteID'];
-      if (isset($this->_map['Navsuite'][$oldVal])) {
-        $Obj->set_field('suiteID',$this->_map['Navsuite'][$oldVal]['newID'],false);
+      if (isset($this->_map['\Nav\Suite'][$oldVal])) {
+        $Obj->set_field('suiteID',$this->_map['\Nav\Suite'][$oldVal]['newID'],false);
       }
       $this->_copied_item_remap_group_assign_csv($Obj,$record);
     }
   }
 
-  private function _copy_navbutton_styles(){
+  private function _copy_navstyles(){
     $Obj =       new Record('navstyle');
     $Items =                    $Obj->get_IDs_by_system($this->_Old_SystemID);
     foreach ($Items as $ID) {
       $Obj->_set_ID($ID);
       $newID =                  $Obj->copy("",$this->_New_SystemID);
-      $this->_map['Navbutton_Style'][$ID] =  array('newID'=>$newID);
+      $this->_map['\Nav\Style'][$ID] =  array('newID'=>$newID);
     }
     $Items =                    $Obj->get_IDs_by_system($this->_New_SystemID);
     foreach ($Items as $ID) {
       $Obj->_set_ID($ID);
       $oldVal = $Obj->get_field('subnavStyleID');
       if ($oldVal!='1') {
-        $Obj->set_field('subnavStyleID',$this->_map['Navbutton_Style'][$oldVal]['newID'],false);
+        $Obj->set_field('subnavStyleID',$this->_map['\Nav\Style'][$oldVal]['newID'],false);
       }
     }
   }
@@ -525,7 +521,7 @@ class System_Copy extends System {
     foreach ($Items as $ID) {
       $Obj->_set_ID($ID);
       $newID =                  $Obj->copy("",$this->_New_SystemID);
-      $this->_map['Navsuite'][$ID] =   array('newID'=>$newID);
+      $this->_map['\Nav\Suite'][$ID] =   array('newID'=>$newID);
       $Obj->_set_ID($newID);
       $record = $Obj->get_record();
       $this->_copied_item_remap_navstyles($Obj,$record);

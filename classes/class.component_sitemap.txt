@@ -1,0 +1,12 @@
+  1.0.2 (2012-12-19)
+    1) Changes to Component_Sitemap::get_sitemap() to handle possibility that the
+       current pages doesn't appear on the nav structure at all
+  1.0.1 (2012-12-16)
+    1) Changes to get_sitemap() in localised mode to ensure that navsuite branch
+       matches the currently viewed nav structure -
+       this ensures that correct branch is shown when multiple languages are in use.
+       Side-effect of this is that the current level is also shown (previously only
+       children were seen). This gives context to the structure shown that was not
+       previously available.
+  1.0.0 (2011-12-28)
+    1) Initial release - moved from Component class
