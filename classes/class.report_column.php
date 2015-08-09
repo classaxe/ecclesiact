@@ -1,9 +1,10 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.130');
+define('VERSION_REPORT_COLUMN', '1.0.131');
 /*
 Version History:
-  1.0.130 (2015-08-03)
-    1) References to Navbutton_Style now \Nav\Style
+  1.0.131 (2015-08-09)
+    1) Code for Report_Column::draw_form_field() types 'sample_buttonstyle' and 'sample_navsuite' now
+       moved to helper classes that only show when navstyle_type is 'Image'
 
 */
 class Report_Column extends Record
@@ -1839,71 +1840,12 @@ class Report_Column extends Record
                     $out = $Obj->draw_person_info();
                     break;
                 case "sample_buttonstyle":
+                    $out =  $this->drawNavStyleSample($field, $value, $row);
+                    break;
                 case "sample_navsuite":
-                    if ($value=="") {
-                        switch($type){
-                            case "sample_buttonstyle":
-                                $out = "(Save this Button Style first)";
-                                break;
-                            case "sample_navsuite":
-                                $out = "(Save this Button Suite first)";
-                                break;
-                        }
-                    } else {
-                        switch ($report_name) {
-                            case 'navsuite':
-                                $Obj =      new \Nav\Style($row['buttonStyleID']);
-                                $_row =     $Obj->get_record();
-                                break;
-                            default:
-                                $_row = $row;
-                                break;
-                        }
-                        $orientation =  $_row['orientation'];
-                        $height =       $_row['img_height'];
-                        $width =        $_row['img_width'];
-                        $submode =      "btn_style";
-                        $url =
-                             "url(".BASE_PATH."img/sample/".$submode."/".$value."/"
-                            .(isset($row['img_checksum']) ? $row['img_checksum'] : '')
-                            .")";
-                        switch ($orientation) {
-                            case "|":
-                                $out =
-                                     "<div>\n"
-                                    ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
-                                    ." alt='Active'/>\n"
-                                    ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
-                                    ." alt='Down'/>\n"
-                                    ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
-                                    ." alt='Normal'/>\n"
-                                    ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
-                                    ." alt='Over'/>\n"
-                                    ."</div>";
-                                break;
-                            default:
-                                $out =
-                                     "<div>\n"
-                                    ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
-                                    ." alt='Active'/>\n"
-                                    ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
-                                    ." alt='Down'/>\n"
-                                    ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
-                                    ." alt='Normal'/>\n"
-                                    ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                                    .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
-                                    ." alt='Over'/>\n"
-                                    ."</div>";
-                                break;
-                        }
-                    }
+                    $Obj =  new \Nav\Style($row['buttonStyleID']);
+                    $row =  $Obj->get_record();
+                    $out =  $this->drawNavSuiteSample($field, $value, $row);
                     break;
                 case "sample_fontface":
                     if (!isset($row['ID']) || $row['ID']=="") {
@@ -2961,6 +2903,74 @@ class Report_Column extends Record
             $ajax_popup_url,
             $primaryObject
         );
+    }
+
+    public function drawNavStyleSample($field, $value, $row)
+    {
+        if ($value=="") {
+            return "(Save this Button Style first)";
+        }
+        return $this->drawNavSample($value, "btn_style", $row);
+    }
+
+    public function drawNavSuiteSample($field, $value, $row)
+    {
+        if ($value=="") {
+            return "(Save this Button Suite first)";
+        }
+        return $this->drawNavSample($value, "btn_style", $row);
+    }
+
+    public function drawNavSample($value, $submode, $row)
+    {
+        $orientation =  $row['orientation'];
+        $height =       $row['img_height'];
+        $width =        $row['img_width'];
+        $type =         $row['type'];
+        switch ($type) {
+            case "SD Menu":
+                return "SD Menu - no images generated";
+                break;
+            case "Responsive":
+                return "Responsive Menu - no images generated";
+                break;
+        }
+        $url =
+             "url(".BASE_PATH."img/sample/".$submode."/".$value."/"
+            .(isset($row['img_checksum']) ? $row['img_checksum'] : '')
+            .")";
+        if ($orientation == '|') {
+            return
+                 "<div>\n"
+                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
+                ." alt='Active'/>\n"
+                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
+                ." alt='Down'/>\n"
+                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
+                ." alt='Normal'/>\n"
+                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
+                ." alt='Over'/>\n"
+                ."</div>";
+        }
+        return
+             "<div>\n"
+            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+            .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
+            ." alt='Active'/>\n"
+            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+            .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
+            ." alt='Down'/>\n"
+            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+            .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
+            ." alt='Normal'/>\n"
+            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+            .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
+            ." alt='Over'/>\n"
+            ."</div>";
     }
 
     public function draw_select_options($value, $sql)

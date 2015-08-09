@@ -1,12 +1,12 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_BUTTON', '1.0.17');
+define('VERSION_NS_NAV_BUTTON', '1.0.18');
 /*
 Version History:
-  1.0.17 (2015-08-01)
-    1) Moved here from class.navbutton.php
-    2) Now PSR-2 Compliant
+  1.0.18 (2015-08-09)
+    1) \Nav\Button::info() now includes navstyle.type
+    2) \Nav\Button::makeImage() now only makes image if navstyle.type is 'Image'
 
 */
 
@@ -227,6 +227,7 @@ class Button extends \Record
             ."  `navstyle`.`text2_h_offset`,\n"
             ."  `navstyle`.`text2_v_offset`,\n"
             ."  `navstyle`.`text2_uppercase`,\n"
+            ."  `navstyle`.`type`,\n"
             ."  `navsuite`.`childID_csv`,\n"
             ."  `navsuite`.`width` AS `navsuite_width`,\n"
             ."  `navbuttons`.`ID`,\n"
@@ -270,10 +271,12 @@ class Button extends \Record
 
     public function makeImage()
     {
-        $record = $this->info();
-        $filename = SYS_BUTTONS.$this->_file_prefix.$this->_get_ID().".png";
-        $Obj_Navbutton_Image = new \Nav\ButtonImage($this->_get_ID());
-        $Obj_Navbutton_Image->draw($record, $filename, 1);
+        $record =   $this->info();
+        $filename = SYS_BUTTONS.$this->_file_prefix.$record['ID'].".png";
+        if ($record['type']=='Image') {
+            $Obj_Navbutton_Image = new \Nav\ButtonImage($this->_get_ID());
+            $Obj_Navbutton_Image->draw($record, $filename, 1);
+        }
     }
 
     public function onDelete()

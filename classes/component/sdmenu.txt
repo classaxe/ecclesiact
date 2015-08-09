@@ -1,3 +1,6 @@
+  1.0.6 (2015-08-03)
+    1) Moved here from class.component_nav_links.php
+    2) Now PSR-2 Compliant
   1.0.5 (2014-01-28)
     1) Newline after JS code in Component_SDMenu::_draw_js_onload()
   1.0.4 (2012-01-23)

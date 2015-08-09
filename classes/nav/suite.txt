@@ -1,3 +1,7 @@
+  1.0.36 (2015-08-02)
+    1) Moved here from class.navsuite.php
+    2) References to Navbutton now \Nav\Button
+    3) Removed hacks for IE5(!)
   1.0.35 (2015-07-25)
     1) Menu Button images now have role of 'presentation' and a following span with text from button
   1.0.34 (2015-07-21)

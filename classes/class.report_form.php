@@ -1,10 +1,10 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.63");
+define("VERSION_REPORT_FORM", "1.0.64");
 
 /*
 Version History:
-  1.0.63 (2015-08-01)
-    1) References to Navbutton now \Nav\Button
+  1.0.64 (2015-08-09)
+    1) Bug fix for Report_Form::_field_has_inline_label() to display label for type 'sample_buttonstyle'
 
 */
 
@@ -590,6 +590,7 @@ class Report_Form extends Report
                 if ($this->_bulk_update) {
                     return false;
                 }
+                return true;
                 break;
             default:
                 return true;

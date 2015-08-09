@@ -1,17 +1,17 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_STYLE', '1.0.9');
+define('VERSION_NS_NAV_STYLE', '1.0.10');
 /*
 Version History:
-  1.0.9 (2015-08-03)
-    1) Moved here from class.navbutton_image.php
-    2) Now PSR-2 Compliant
+  1.0.10 (2015-08-09)
+    1) Added `type` to FIELDS list
+    2) \Nav\Style::sample() now unlinks sample image and quits if style type is NOT image
 
 */
 class Style extends \Record
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, button_spacing, dropdownArrow, img_checksum, img_height, img_width, name, orientation, overlay_ba_img, overlay_ba_img_align, overlay_bm_img, overlay_bm_img_align, overlay_bz_img, overlay_bz_img_align, subnavOffsetX, subnavOffsetY, subnavStyleID, templateFile, text1_effect_color_active, text1_effect_color_down, text1_effect_color_normal, text1_effect_color_over, text1_effect_level_active, text1_effect_level_down, text1_effect_level_normal, text1_effect_level_over, text1_effect_type_active, text1_effect_type_down, text1_effect_type_normal, text1_effect_type_over, text1_font_color_active, text1_font_color_down, text1_font_color_normal, text1_font_color_over, text1_font_face, text1_font_size, text1_h_align, text1_h_offset, text1_uppercase, text1_v_offset, text2_effect_color_active, text2_effect_color_down, text2_effect_color_normal, text2_effect_color_over, text2_effect_level_active, text2_effect_level_down, text2_effect_level_normal, text2_effect_level_over, text2_effect_type_active, text2_effect_type_down, text2_effect_type_normal, text2_effect_type_over, text2_font_color_active, text2_font_color_down, text2_font_color_normal, text2_font_color_over, text2_font_face, text2_font_size, text2_h_align, text2_h_offset, text2_uppercase, text2_v_offset, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const FIELDS = 'ID, archive, archiveID, deleted, systemID, button_spacing, dropdownArrow, img_checksum, img_height, img_width, name, orientation, overlay_ba_img, overlay_ba_img_align, overlay_bm_img, overlay_bm_img_align, overlay_bz_img, overlay_bz_img_align, subnavOffsetX, subnavOffsetY, subnavStyleID, templateFile, text1_effect_color_active, text1_effect_color_down, text1_effect_color_normal, text1_effect_color_over, text1_effect_level_active, text1_effect_level_down, text1_effect_level_normal, text1_effect_level_over, text1_effect_type_active, text1_effect_type_down, text1_effect_type_normal, text1_effect_type_over, text1_font_color_active, text1_font_color_down, text1_font_color_normal, text1_font_color_over, text1_font_face, text1_font_size, text1_h_align, text1_h_offset, text1_uppercase, text1_v_offset, text2_effect_color_active, text2_effect_color_down, text2_effect_color_normal, text2_effect_color_over, text2_effect_level_active, text2_effect_level_down, text2_effect_level_normal, text2_effect_level_over, text2_effect_type_active, text2_effect_type_down, text2_effect_type_normal, text2_effect_type_over, text2_font_color_active, text2_font_color_down, text2_font_color_normal, text2_font_color_over, text2_font_face, text2_font_size, text2_h_align, text2_h_offset, text2_uppercase, text2_v_offset, type, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     public $file_prefix = "btn_style_";
 
     public function __construct($ID = "")
@@ -20,8 +20,8 @@ class Style extends \Record
         $this->_set_object_name('Navbutton Style');
         $this->set_edit_params(
             array(
-            'report_rename' =>          true,
-            'report_rename_label' =>    'new name'
+                'report_rename' =>          true,
+                'report_rename_label' =>    'new name'
             )
         );
     }
@@ -34,12 +34,12 @@ class Style extends \Record
             unlink($single_button);
         }
         $sql =
-         "SELECT\n"
-        ."  `ID`\n"
-        ."FROM\n"
-        ."  `navsuite`\n"
-        ."WHERE\n"
-        ."  `buttonStyleID` IN(".$this->_get_ID().")";
+             "SELECT\n"
+            ."  `ID`\n"
+            ."FROM\n"
+            ."  `navsuite`\n"
+            ."WHERE\n"
+            ."  `buttonStyleID` IN(".$this->_get_ID().")";
         $records = $this->get_records_for_sql($sql);
         if ($records) {
             foreach ($records as $record) {
@@ -93,6 +93,13 @@ class Style extends \Record
         }
         $ID =                       $this->_get_ID();
         $data =                     $this->get_record();
+        $filename =                 ($filename ? $filename : SYS_BUTTONS.$this->file_prefix.$ID.".png");
+        if ($data['type']!=="Image") {
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
+            return;
+        }
         $data['navsuite_width'] =   0;
         $data['width'] =            $width;
         $data['text1'] =            $text1;
@@ -100,7 +107,6 @@ class Style extends \Record
         $data['childID_csv'] =      "";
         $Obj_Navbutton_Image =      new \Nav\ButtonImage;
         $navstyleID =               ($filename ? false : $ID);
-        $filename =                 ($filename ? $filename : SYS_BUTTONS.$this->file_prefix.$ID.".png");
         return $Obj_Navbutton_Image->draw($data, $filename, $no_show, $navstyleID);
     }
 

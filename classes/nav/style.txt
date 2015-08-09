@@ -1,3 +1,6 @@
+  1.0.9 (2015-08-03)
+    1) Moved here from class.navbutton_image.php
+    2) Now PSR-2 Compliant
   1.0.8 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.7 (2012-06-19)

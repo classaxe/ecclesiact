@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_SDMENU", "1.0.6");
+define("VERSION_NS_COMPONENT_SDMENU", "1.0.7");
 /*
 Version History:
-  1.0.6 (2015-08-03)
-    1) Moved here from class.component_nav_links.php
-    2) Now PSR-2 Compliant
+  1.0.7 (2015-08-08)
+    1) Now includes classname 'nav_style_xxxx' in tree root element where xxxx is navstyle name
 
 */
 class SDMenu extends Base
@@ -210,16 +209,15 @@ class SDMenu extends Base
       // see http://stackoverflow.com/questions/2923735/css-ul-li-gap-in-ie7
         $this->_tree = str_replace(
             array(
-            "</li>\n  <li>",
-            "</li>\n    <li>"
+                "</li>\n  <li>",
+                "</li>\n    <li>"
             ),
             array(
-            "</li><li>",
-            "</li><li>"
+                "</li><li>",
+                "</li><li>"
             ),
             $this->_tree
         );
-  //    print $this->_tree;
     }
 
     protected function setupLoadNavsuiteID()
@@ -232,12 +230,15 @@ class SDMenu extends Base
         if (!$this->_suiteID) {
             return;
         }
-        $this->_tree = $this->_Obj_NS->getTree(false, $this->_suiteID, 0, true);
-        $this->_tree = substr($this->_tree, 5); // strip leading <ul>\n
+        $this->_tree =  $this->_Obj_NS->getTree(false, $this->_suiteID, 0, true);
+        $ulEnd = 1+strpos($this->_tree, '>');
+        $ul = substr($this->_tree, 0, $ulEnd);
+        $firstQuote =   1+strpos($this->_tree, "'");
+        $class = substr($this->_tree, $firstQuote, strpos($this->_tree, "'", $firstQuote)-$firstQuote);
         $this->_tree =
-             "<ul id=\"".$this->_safe_ID."\" class=\"sdmenu\">"
-            ."<li class=\"border_top\">&nbsp;</li>\n"
-            .$this->_tree;
+             "<ul id=\"".$this->_safe_ID."\" class=\"sdmenu ".$class."\">\n"
+            ."  <li class=\"border_top\">&nbsp;</li>"
+            .substr($this->_tree, $ulEnd);
         $this->setupFixIe7SpacesBug();
     }
 

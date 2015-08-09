@@ -1,13 +1,13 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_SUITE', '1.0.36');
+define('VERSION_NS_NAV_SUITE', '1.0.37');
 /*
 Version History:
-  1.0.36 (2015-08-02)
-    1) Moved here from class.navsuite.php
-    2) References to Navbutton now \Nav\Button
-    3) Removed hacks for IE5(!)
+  1.0.37 (2015-08-08)
+    1) \Nav\Suite::drawNav() and \Nav\Suite::getTree() now include extra classname in containing UL in format
+       nav_style_XXXX where XXXX is the JS-friendly name of the Navstyle in use
+    2) Improvements for error handling for SD Menu elements
 
 */
 class Suite extends \Record
@@ -24,8 +24,8 @@ class Suite extends \Record
         $this->_set_message_associated('and contained Buttons have');
         $this->set_edit_params(
             array(
-            'report_rename' =>          true,
-            'report_rename_label' =>    'new suite name'
+                'report_rename' =>          true,
+                'report_rename_label' =>    'new suite name'
             )
         );
     }
@@ -121,8 +121,9 @@ class Suite extends \Record
     {
         $header =       "Selected ".$this->_get_object_name().$this->plural($targetID)." with Buttons";
         $extra_delete =
-         "DELETE FROM `navbuttons`             WHERE `suiteID` IN (".$targetID.");\n"
-        ."DELETE FROM `group_assign`           WHERE `assign_type` = 'navbuttons' AND `assignID` IN (SELECT `ID` FROM `navbuttons` WHERE `suiteID` IN(".$targetID."));\n";
+             "DELETE FROM `navbuttons`             WHERE `suiteID` IN (".$targetID.");\n"
+            ."DELETE FROM `group_assign`           WHERE `assign_type` = 'navbuttons' AND"
+            ." `assignID` IN (SELECT `ID` FROM `navbuttons` WHERE `suiteID` IN(".$targetID."));\n";
         $Obj = new \Backup;
         $extra_select =
             $Obj->db_export_sql_query(
@@ -132,7 +133,8 @@ class Suite extends \Record
             )
             .$Obj->db_export_sql_query(
                 "`group_assign`          ",
-                "SELECT * FROM `group_assign` WHERE `assign_type` = 'navbuttons' AND `assignID` IN(SELECT `ID` FROM `navbuttons` WHERE `suiteID` IN(".$targetID."));",
+                "SELECT * FROM `group_assign` WHERE `assign_type` = 'navbuttons' AND"
+                ." `assignID` IN(SELECT `ID` FROM `navbuttons` WHERE `suiteID` IN(".$targetID."));",
                 $show_fields
             )."\n";
         return parent::sqlExport($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
@@ -237,7 +239,7 @@ class Suite extends \Record
         $orientation =      $navsuite_record['orientation'];
         $p_orientation =    $navsuite_record['p_orientation'];
         $bStyleID =         $navsuite_record['buttonStyleID'];
-        $bStyleText =       $navsuite_record['navstyle_name'];
+        $bStyleName =       $navsuite_record['navstyle_name'];
         $bSubnavStyleID =   $navsuite_record['subnavStyleID'];
         switch($p_orientation) {
             case "":
@@ -264,15 +266,16 @@ class Suite extends \Record
                 $buttons_count++;
             }
         }
+        $styleClass = 'nav_style_'.get_js_safe_ID($bStyleName);
         switch ($orientation) {
             case '|':
                 $out.=
                     str_repeat('  ', $depth)
                     ."<ul id='nav_".$navsuite_record['ID']."'"
                     .($navsuiteID=='root' ?
-                        " class='vnavmenu'>\n"
+                        " class='vnavmenu ".$styleClass."'>\n"
                      :
-                        " style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\""
+                        " class='".$styleClass."' style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\""
                         .">\n"
                     );
                 foreach ($buttons as $b) {
@@ -285,8 +288,16 @@ class Suite extends \Record
                         $bPopup =   $b['popup'];
                         $bSuiteID = $b['suiteID'];
                         $bText =    $b['text1'];
-                        $bTextSafe = str_replace(array("'","\r\n","\n"), array("&rsquo;"," "," "), sanitize('html', $bText));
-                        $sNameSafe = str_replace("'", "&rsquo;", sanitize('html', $navsuite_record['name']));
+                        $bTextSafe = str_replace(
+                            array("'", "\r\n", "\n"),
+                            array("&rsquo;", " ", " "),
+                            sanitize('html', $bText)
+                        );
+                        $sNameSafe = str_replace(
+                            "'",
+                            "&rsquo;",
+                            sanitize('html', $navsuite_record['name'])
+                        );
                         $active =   \Nav\Button::isActive($bURL, $site_URL);
                         $childID =  $b['childID'];
                         $canAddSubmenu = ($childID ? -1 : ($bSubnavStyleID==1 ? 0 : 1));
@@ -294,7 +305,7 @@ class Suite extends \Record
                         $bHeight =  $b['img_height'];
                         $bWidth =   $b['img_width'];
                         $bSrc =     "url(./img/button/".$bID."/".$b['img_checksum'].")";
-                        $bOffset =  ($dropdown ? '100%' : '0')." ".($active ? '0' : -2*$bHeight).'px';
+                        $bOffset =  ($dropdown ? '100%' : '0')." ".($active ? '0' : -2 * $bHeight).'px';
                         if (substr($bURL, 0, 8)=='./?page=') {
                             $bURL = BASE_PATH.substr($bURL, 8);
                         }
@@ -321,7 +332,7 @@ class Suite extends \Record
                                 .$bStyleID.","
                                 .$canAddSubmenu.","
                                 ."'".$sNameSafe."',"
-                                ."'".sanitize('html', $bStyleText)."'"
+                                ."'".sanitize('html', $bStyleName)."'"
                                 .");"
                                 ."\""
                               :
@@ -333,7 +344,11 @@ class Suite extends \Record
                             ." height=\"".$bHeight."\""
                             ." width=\"".$bWidth."\""
                             ." style='"
-                            .($navsuiteID=='root' && $navsuite_record['button_spacing'] && $current_button<$buttons_count ?
+                            .((
+                                $navsuiteID=='root' &&
+                                $navsuite_record['button_spacing'] &&
+                                $current_button<$buttons_count
+                             ) ?
                                 "margin-bottom:".$navsuite_record['button_spacing']."px;"
                               :
                                 ""
@@ -363,9 +378,9 @@ class Suite extends \Record
                     str_repeat('  ', $depth)
                     ."<ul id='nav_".$navsuite_record['ID']."'"
                     .($navsuiteID=='root' ?
-                        " class='hnavmenu'>\n"
+                        " class='hnavmenu ".$styleClass."'>\n"
                      :
-                        " style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\">\n"
+                        " class='".$styleClass."' style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\">\n"
                     );
                 foreach ($buttons as $b) {
                     if ($b['visible'] || $isAdmin) {
@@ -376,8 +391,16 @@ class Suite extends \Record
                         $bPopup =   $b['popup'];
                         $bSuiteID = $b['suiteID'];
                         $bText =    $b['text1'];
-                        $bTextSafe = str_replace(array("'","\r\n","\n"), array("&rsquo;"," "," "), sanitize('html', $bText));
-                        $sNameSafe = str_replace("'", "&rsquo;", sanitize('html', $navsuite_record['name']));
+                        $bTextSafe = str_replace(
+                            array("'", "\r\n", "\n"),
+                            array("&rsquo;", " ", " "),
+                            sanitize('html', $bText)
+                        );
+                        $sNameSafe = str_replace(
+                            "'",
+                            "&rsquo;",
+                            sanitize('html', $navsuite_record['name'])
+                        );
                         $active =   \Nav\Button::isActive($bURL, $site_URL);
                         $childID =  $b['childID'];
                         $canAddSubmenu = ($childID ? -1 : ($bSubnavStyleID==1 ? 0 : 1));
@@ -412,7 +435,7 @@ class Suite extends \Record
                                 .$bStyleID.","
                                 .$canAddSubmenu.","
                                 ."'".$sNameSafe."',"
-                                ."'".sanitize('html', $bStyleText)."'"
+                                ."'".sanitize('html', $bStyleName)."'"
                                 .");"
                                 ."\""
                               :
@@ -424,7 +447,11 @@ class Suite extends \Record
                             ." height=\"".$bHeight."\""
                             ." width=\"".$bWidth."\""
                             ." style='"
-                            .($navsuiteID=='root' && $navsuite_record['button_spacing'] && $current_button<$buttons_count ?
+                            .((
+                                $navsuiteID=='root' &&
+                                $navsuite_record['button_spacing'] &&
+                                $current_button<$buttons_count
+                             ) ?
                                 "margin-right:".$navsuite_record['button_spacing']."px;"
                              :
                                 ""
@@ -529,7 +556,8 @@ class Suite extends \Record
             if ($suiteID!=1 && $suiteID!="") {
                 $Obj = new \Nav\Suite($suiteID);
                 if ($Obj->exists()) {
-                    $out.= "  nav_setup(".$i.",".($isAdmin ? 1 : 0).",'".BASE_PATH.trim($page_vars['path'], '/')."');\n";
+                    $out.=
+                        "  nav_setup(".$i.",".($isAdmin ? 1 : 0).",'".BASE_PATH.trim($page_vars['path'], '/')."');\n";
                 }
             }
         }
@@ -540,17 +568,51 @@ class Suite extends \Record
     {
         $sql =
              "SELECT\n"
-            ."  `navsuite`.`systemID`,\n"
-            ."  `navstyle`.`orientation`,\n"
-            ."  `navstyle`.`templateFile`,\n"
-            ."  `navstyle`.`text1_font_face`,\n"
-            ."  `navstyle`.`text1_font_size`,\n"
-            ."  `navstyle`.`text2_font_face`,\n"
-            ."  `navstyle`.`text2_font_size`,\n"
-            ."  `navsuite`.`width` `suite_width`,\n"
-            ."  (SELECT MAX(`width`) FROM `navbuttons` WHERE `navbuttons`.`suiteID`=`navsuite`.`ID`) `max_fixed_width`,\n"
-            ."  (SELECT GROUP_CONCAT(IF(`navstyle`.`text1_uppercase`,UCASE(`navbuttons`.`text1`),`navbuttons`.`text1`) SEPARATOR '\\n') FROM `navbuttons` WHERE `navbuttons`.`suiteID`=`navsuite`.`ID` AND `navbuttons`.`width`=0) `text1`,\n"
-            ."  (SELECT GROUP_CONCAT(IF(`navstyle`.`text2_uppercase`,UCASE(`navbuttons`.`text2`),`navbuttons`.`text2`) SEPARATOR '\\n') FROM `navbuttons` WHERE `navbuttons`.`suiteID`=`navsuite`.`ID` AND `navbuttons`.`width`=0) `text2`\n"
+            ."    `navsuite`.`systemID`,\n"
+            ."    `navstyle`.`orientation`,\n"
+            ."    `navstyle`.`templateFile`,\n"
+            ."    `navstyle`.`text1_font_face`,\n"
+            ."    `navstyle`.`text1_font_size`,\n"
+            ."    `navstyle`.`text2_font_face`,\n"
+            ."    `navstyle`.`text2_font_size`,\n"
+            ."    `navsuite`.`width` `suite_width`,\n"
+            ."    (SELECT\n"
+            ."        MAX(`width`)\n"
+            ."    FROM\n"
+            ."        `navbuttons`\n"
+            ."    WHERE\n"
+            ."        `navbuttons`.`suiteID`=`navsuite`.`ID`\n"
+            ."    ) `max_fixed_width`,\n"
+            ."    (SELECT\n"
+            ."        GROUP_CONCAT(\n"
+            ."            IF(\n"
+            ."                `navstyle`.`text1_uppercase`,\n"
+            ."                UCASE(`navbuttons`.`text1`),\n"
+            ."                `navbuttons`.`text1`\n"
+            ."            )\n"
+            ."            SEPARATOR '\\n'\n"
+            ."        )\n"
+            ."    FROM\n"
+            ."        `navbuttons`\n"
+            ."    WHERE\n"
+            ."        `navbuttons`.`suiteID` = `navsuite`.`ID` AND\n"
+            ."        `navbuttons`.`width` = 0\n"
+            ."    ) `text1`,\n"
+            ."    (SELECT\n"
+            ."        GROUP_CONCAT(\n"
+            ."            IF(\n"
+            ."                `navstyle`.`text2_uppercase`,\n"
+            ."                UCASE(`navbuttons`.`text2`),\n"
+            ."                `navbuttons`.`text2`\n"
+            ."            )\n"
+            ."            SEPARATOR '\\n'\n"
+            ."        )\n"
+            ."    FROM\n"
+            ."        `navbuttons`\n"
+            ."    WHERE\n"
+            ."        `navbuttons`.`suiteID` = `navsuite`.`ID` AND\n"
+            ."        `navbuttons`.`width` = 0\n"
+            ."    ) `text2`\n"
             ."FROM\n"
             ."  `navsuite`\n"
             ."INNER JOIN `navstyle` ON\n"
@@ -598,8 +660,7 @@ class Suite extends \Record
 
     public static function getSelectorSql($include_default = false)
     {
-        $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        if ($isMASTERADMIN) {
+        if (get_person_permission("MASTERADMIN")) {
             return
                  "SELECT\n"
                 ."  1 `value`,\n"
@@ -712,10 +773,11 @@ class Suite extends \Record
     public function onPreUpdate()
     {
         global $action_parameters, $msg;
-        if ($action_parameters['data']['bulk_update']) {
-            if (!isset($action_parameters['data']['parentButtonID_apply'])) {
-                return;
-            }
+        if (
+            $action_parameters['data']['bulk_update'] &&
+            !isset($action_parameters['data']['parentButtonID_apply'])
+        ) {
+            return; // The loop check only runs when parentButtonID changes occur
         }
         $ID_arr = explode(",", $action_parameters['triggerID']);
         foreach ($ID_arr as $ID) {
@@ -844,25 +906,26 @@ class Suite extends \Record
             }
             return "";
         }
-        $bStyleID =         $navsuite_record['buttonStyleID'];
-        $bStyleText =       $navsuite_record['navstyle_name'];
+        $bStyleID =     $navsuite_record['buttonStyleID'];
+        $bStyleName =   $navsuite_record['navstyle_name'];
+        $styleClass =   'nav_style_'.get_js_safe_ID($bStyleName);
         if (!$buttons===false) {
     //      y($buttons);die;
             foreach ($buttons as $button) {
                 $Obj = new \Nav\Button($button['ID']);
                 if ($button['visible']) {
-                    $bID =        $button['ID'];
-                    $bSystemID =  $button['systemID'];
-                    $bText =      $button['text1'];
-                    $bTextSafe = str_replace(array("'","\\n"), array("&rsquo;","\n"), sanitize('html', $bText));
-                    $bPos =       $button['position'];
-                    $bSuiteID =   $button['suiteID'];
-                    $sNameSafe = str_replace("'", "&rsquo;", sanitize('html', $navsuite_record['name']));
+                    $bID =          $button['ID'];
+                    $bSystemID =    $button['systemID'];
+                    $bText =        $button['text1'];
+                    $bTextSafe =    str_replace(array("'","\\n"), array("&rsquo;","\n"), sanitize('html', $bText));
+                    $bError =       '';
+                    $bPos =         $button['position'];
+                    $bSuiteID =     $button['suiteID'];
+                    $sNameSafe =    str_replace("'", "&rsquo;", sanitize('html', $navsuite_record['name']));
                     $bSubnavStyleID =   $navsuite_record['subnavStyleID'];
-                    $bPopup =     $button['popup'];
-                    $childID =    $button['childID'];
-                    $bURL =       $button['URL'];
-                    $bURL =       htmlentities(html_entity_decode($bURL));
+                    $bPopup =       $button['popup'];
+                    $childID =      $button['childID'];
+                    $bURL =         htmlentities(html_entity_decode($button['URL']));
                     if (substr($bURL, 0, 8)=='./?page=') {
                         $bURL = BASE_PATH.substr($bURL, 8);
                     }
@@ -870,18 +933,23 @@ class Suite extends \Record
                         $bURL = "";
                         if (($isAdmin && $bSystemID==SYS_ID) || $isMASTERADMIN) {
                             $bText = "[Error] ".$bText;
-                            $bTextSafe="ERROR - This item is not linkable.\nPlease right click to edit this button and remove the URL.";
+                            $bError =
+                                "ERROR - This item is not linkable.\n"
+                               ."Please right click to edit this button and remove the URL.";
                         }
                     }
                     if ($SDMenu_mode && !$bURL && $depth>1) {
                         $bURL = "./";
                         if (($isAdmin && $bSystemID==SYS_ID) || $isMASTERADMIN) {
                             $bText = "[Error] ".$bText;
-                            $bTextSafe="Error - This item MUST have a URL.\\nPlease right click to edit this button and provide a URL.";
+                            $bError =
+                                "ERROR - This item MUST have a URL.\n"
+                               ."Please right click to edit this button and provide a URL.";
                         }
                     }
                     $CM = (($isAdmin && $bSystemID==SYS_ID) || $isMASTERADMIN ?
-                         " onmouseout=\"_CM.type=''\" onmouseover=\""
+                         " onmouseout=\"_CM.type=''\""
+                        ." onmouseover=\""
                         ."CM_SDMenu_Over("
                         .$bID.","
                         ."'".str_replace("\n", " ", $bTextSafe)."',"
@@ -890,7 +958,7 @@ class Suite extends \Record
                         .$bSuiteID.","
                         ."'".$sNameSafe."',"
                         .$bStyleID.","
-                        ."'".sanitize('html', $bStyleText)."'"
+                        ."'".sanitize('html', $bStyleName)."'"
                         .");\""
                      :
                          ""
@@ -906,13 +974,14 @@ class Suite extends \Record
                             "<span id=\"btn_".$bID."\""
                         )
                         .$CM
-                        .($SDMenu_mode ? "" : " title=\"".$bTextSafe."\"")
+                        ." title=\"".($bError ? $bError : $bTextSafe)."\""
                         .">"
                         .$bText
                         .($bPopup ? \HTML::draw_icon('external') : "")
                         .($bURL ?  "</a>" : "</span>")
                         .($childID ?
-                            "\n".$this->getTree(false, $childID, $depth, $SDMenu_mode).str_repeat("  ", $depth)."</li>\n"
+                             "\n".$this->getTree(false, $childID, $depth, $SDMenu_mode).str_repeat("  ", $depth)
+                            ."</li>\n"
                          :
                             "</li>\n"
                         );
@@ -920,7 +989,7 @@ class Suite extends \Record
             }
         }
         return
-             str_repeat("  ", $depth-1)."<ul>\n"
+             str_repeat("  ", $depth-1)."<ul class='".$styleClass."'>\n"
             .implode("", $links)
             .str_repeat("  ", $depth-1)."</ul>\n";
     }

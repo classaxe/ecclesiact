@@ -1,3 +1,5 @@
+  1.0.63 (2015-08-01)
+    1) References to Navbutton now \Nav\Button
   1.0.62 (2015-03-22)
     1) Report_Form::_prepare_fields() - support for 'fieldset_map_loc_lat_lon' is now reduced to read-only
   1.0.61 (2015-02-14)
