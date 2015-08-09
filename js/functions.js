@@ -1,9 +1,9 @@
-// 1.1.268
+// 1.1.269
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.268 (2015-04-22)
-    1) Bug fix for customise_colours.save() to allow cancel of saving
+  1.0.269 (2015-08-09)
+    1) Change to nav_setup() to recognise sortable axis even if whole container classname contains more than 'hnavmenu'
 
   (Older version history in functions.txt)
 */
@@ -486,7 +486,7 @@ function nav_setup(nav,isAdmin,url){
     ul_arr = $('#nav_root_'+nav+' ul');
     for(i=0; i<ul_arr.length; i++){
       id =    ul_arr[i].id.toString();
-      axis =   (ul_arr[i].className=='hnavmenu' ? 'x' : 'y');
+      axis =   (ul_arr[i].className.substr(0,8)=='hnavmenu' ? 'x' : 'y');
       nav_setup_sortable(id,axis,url);
     }
   }

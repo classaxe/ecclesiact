@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.12");
+define("CODEBASE_VERSION", "3.3.13");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,57 +16,28 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.12.2386 (2015-08-09)
+3.3.13.2387 (2015-08-09)
 Summary:
-  1) Navstyles now have type selector that allows choice of Image, SD Menu or Responsive:
-       Image        Traditional image-based mode, results in generatyion of sample images
-       SD Menu      Used by MH - no sample images created
-       Responsive   New mode coming soon - no sample images created
+  1) Bug fix for navigation button dragging now that whole class name isn't just 'hnavmenu' or 'vnavmenu' as before
 
 Final Checksums:
   Classes     CS:94e661c9
   Database    CS:4eaa3802
-  Libraries   CS:a1fd22c6
-  Reports     CS:7e417e14
+  Libraries   CS:d6b9cb7b
+  Reports     CS:f19e2f92
 
 Code Changes:
-  codebase.php                                                                                   3.3.12    (2015-08-09)
+  codebase.php                                                                                   3.3.13    (2015-08-09)
     1) Updated version information
-  classes/class.report_column.php                                                                1.0.131   (2015-08-09)
-    1) Code for Report_Column::draw_form_field() types 'sample_buttonstyle' and 'sample_navsuite' now
-       moved to helper classes that only show when navstyle_type is 'Image'
-  classes/class.report_form.php                                                                  1.0.64    (2015-08-09)
-    1) Bug fix for Report_Form::_field_has_inline_label() to display label for type 'sample_buttonstyle'
-  classes/component/sdmenu.php                                                                   1.0.7     (2015-08-08)
-    1) Now includes classname 'nav_style_xxxx' in tree root element where xxxx is navstyle name
-  classes/nav/button.php                                                                         1.0.18    (2015-08-09)
-    1) \Nav\Button::info() now includes navstyle.type
-    2) \Nav\Button::makeImage() now only makes image if navstyle.type is 'Image'
-  classes/nav/style.php                                                                          1.0.10    (2015-08-09)
-    1) Added `type` to FIELDS list
-    2) \Nav\Style::sample() now unlinks sample image and quits if style type is NOT image
-  classes/nav/suite.php                                                                          1.0.37    (2015-08-08)
-    1) \Nav\Suite::drawNav() and \Nav\Suite::getTree() now include extra classname in containing UL in format
-       nav_style_XXXX where XXXX is the JS-friendly name of the Navstyle in use
-    2) Improvements for error handling for SD Menu elements
+  js/functions.js                                                                                1.0.269   (2015-08-09)
+    1) Change to nav_setup() to recognise sortable axis even if whole container classname contains more than 'hnavmenu'
 
-2386.sql
-  1) New fields for navstyle - css and type
-  2) Fix for Navbutton reports after they got mangled somehow in 3.3.10.2384
-  3) Removed extra 'report_update_pre' action on Navstyle report
-  4) Changes to navstyle report / form to accomodate new `type` selector
-  5) Set version information
+2387.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.3.12
-  classes/  (6 files changed)
-    class.report_column.php                           1.0.131   CS:f9063418
-    class.report_form.php                             1.0.64    CS:15b7f419
-    component/sdmenu.php                              1.0.7     CS:404f580b
-    nav/button.php                                    1.0.18    CS:3e8d7a0
-    nav/style.php                                     1.0.10    CS:3f35e166
-    nav/suite.php                                     1.0.37    CS:a9cf7732
-
+  codebase.php                                        3.3.13
+  js/functions.js                                     1.1.269   CS:134dacdb
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
