@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.3.13");
+define("CODEBASE_VERSION", "3.3.14");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,28 +16,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.3.13.2387 (2015-08-09)
+3.3.14.2388 (2015-08-12)
 Summary:
-  1) Bug fix for navigation button dragging now that whole class name isn't just 'hnavmenu' or 'vnavmenu' as before
-
-Final Checksums:
-  Classes     CS:94e661c9
-  Database    CS:4eaa3802
-  Libraries   CS:d6b9cb7b
-  Reports     CS:f19e2f92
-
-Code Changes:
-  codebase.php                                                                                   3.3.13    (2015-08-09)
-    1) Updated version information
-  js/functions.js                                                                                1.0.269   (2015-08-09)
-    1) Change to nav_setup() to recognise sortable axis even if whole container classname contains more than 'hnavmenu'
-
-2387.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        3.3.13
-  js/functions.js                                     1.1.269   CS:134dacdb
+  1) Greatly simplified setup and use of SD Menus -
+     now all CSS is derived from CSS in navstyle of primary navsuite
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1848,7 +1830,7 @@ function get_random_password()
 function get_js_safe_ID($value)
 {
     $value =  get_web_safe_ID($value);
-    return str_replace('-', '_', $value);
+    return str_replace(array('-','>'), array('_','_'),$value);
 }
 
 function get_path_safe_filename($filename)

@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_SDMENU", "1.0.7");
+define("VERSION_NS_COMPONENT_SDMENU", "1.0.8");
 /*
 Version History:
-  1.0.7 (2015-08-08)
-    1) Now includes classname 'nav_style_xxxx' in tree root element where xxxx is navstyle name
+  1.0.8 (2015-08-11)
+    1) Settings greatly simplified, CSS now derived from Navstyle CSS
 
 */
 class SDMenu extends Base
@@ -16,46 +16,16 @@ class SDMenu extends Base
     public function __construct()
     {
         $this->_ident =             "sd_menu";
-        $this->_parameter_spec =   array(
-            'border_top' =>           array(
-                'match' =>      'enum|0,1',
-                'default' =>    1,
-                'hint' =>       '0|1'
-            ),
-            'border_bottom' =>        array(
-                'match' =>      'enum|0,1',
-                'default' =>    1,
-                'hint' =>       '0|1'
-            ),
-            'buttonsuite_name' =>     array(
+        $this->_parameter_spec =    array(
+            'buttonsuite_name' =>   array(
                 'match' =>      '',
                 'default' =>    'Home',
                 'hint' =>       'name of buttonsuite to render'
             ),
-            'main_bgcolor' =>         array(
-                'match' =>      'hex3|#abbbbd',
-                'default' =>    '#abbbbd',
-                'hint' =>       '#RGB'
-            ),
-            'main_border' =>          array(
-                'match' =>      'hex3|#ffffff',
-                'default' =>    '#ffffff',
-                'hint' =>       '#RGB'
-            ),
-            'main_color' =>           array(
-                'match' =>      'hex3|#ffffff',
-                'default' =>    '#ffffff',
-                'hint' =>       '#RGB'
-            ),
-            'main_font_family' =>     array(
-                'match' =>      '',
-                'default' =>    'Verdana, Arial, sans-serif',
-                'hint' =>       'CSS Font list'
-            ),
-            'main_font_size' =>       array(
-                'match' =>      '',
-                'default' =>    11,
-                'hint' =>       'font size in px - no units'
+            'debug' =>             array(
+                'match' =>      'enum|0,1',
+                'default' =>    0,
+                'hint' =>       '0|1'
             ),
             'one_only' =>             array(
                 'match' =>      'enum|0,1',
@@ -66,51 +36,6 @@ class SDMenu extends Base
                 'match' =>      'range|0,10',
                 'default' =>    3,
                 'hint' =>       '0-10 speed for opening and closing'
-            ),
-            'sub_bgcolor_active' =>   array(
-                'match' =>      'hex3|#dae1e2',
-                'default' =>    '#dae1e2',
-                'hint' =>       '#RGB'
-            ),
-            'sub_bgcolor_normal' =>   array(
-                'match' =>      'hex3|#ffffff',
-                'default' =>    '#ffffff',
-                'hint' =>       '#RGB'
-            ),
-            'sub_bgcolor_over' =>     array(
-                'match' =>      'hex3|#e0f0f0',
-                'default' =>    '#e0f0f0',
-                'hint' =>       '#RGB'
-            ),
-            'sub_border' =>           array(
-                'match' =>      'hex3|#abbbbd',
-                'default' =>    '#abbbbd',
-                'hint' =>       '#RGB'
-            ),
-            'sub_color_active' =>     array(
-                'match' =>      'hex3|#3c4845',
-                'default' =>    '#3c4845',
-                'hint' =>       '#RGB'
-            ),
-            'sub_color_normal' =>     array(
-                'match' =>      'hex3|#3c4845',
-                'default' =>    '#3c4845',
-                'hint' =>       '#RGB'
-            ),
-            'sub_color_over' =>       array(
-                'match' =>      'hex3|#3c4845',
-                'default' =>    '#3c4845',
-                'hint' =>       '#RGB'
-            ),
-            'sub_font_family' =>      array(
-                'match' =>      '',
-                'default' =>    'Verdana, Arial, sans-serif',
-                'hint' =>       'CSS Font list'
-            ),
-            'sub_font_size' =>        array(
-                'match' =>      '',
-                'default' =>    10,
-                'hint' =>       'font size in px - no units'
             )
         );
     }
@@ -136,55 +61,9 @@ class SDMenu extends Base
 
     protected function drawCss()
     {
+
         \Page::push_content(
-            'style',
-            "/* Style for ".$this->_safe_ID." */\n"
-            ."#".$this->_safe_ID." {\n"
-            .($this->_cp['border_bottom'] ?
-                 "  background: url(".BASE_PATH."img/sysimg/_sdmenu_bottom.gif,"
-                .trim($this->_cp['main_bgcolor'], '#').") no-repeat right bottom;\n"
-                ."  padding-bottom: 10px;\n"
-             :
-                ""
-            )
-            ."  width: 180px;\n"
-            ."}\n"
-            ."#".$this->_safe_ID." .border_top {\n"
-            .($this->_cp['border_top'] ?
-                 "  background: url(".BASE_PATH."img/sysimg/_sdmenu_top.gif,"
-                .trim($this->_cp['main_bgcolor'], '#').") no-repeat right top;\n"
-                ."  height: 7px;\n"
-             :
-                "  height: 0px;\n"
-            )
-            ."}\n"
-            ."#".$this->_safe_ID." li {\n"
-            ."  background: ".$this->_cp['main_bgcolor'].";\n"
-            ."}\n"
-            ."#".$this->_safe_ID." li span {\n"
-            ."  border-bottom: 1px solid ".$this->_cp['main_border'].";\n"
-            ."  color: ".$this->_cp['main_color'].";\n"
-            ."  font: bold ".$this->_cp['main_font_size']."px ".$this->_cp['main_font_family'].";\n"
-            ."}\n"
-            ."#".$this->_safe_ID." li.collapsed {\n"
-            ."  height: ".($this->_cp['main_font_size']+12)."px;\n"
-            ."}\n"
-            ."#".$this->_safe_ID." li a {\n"
-            ."  background: ".$this->_cp['sub_bgcolor_normal'].";\n"
-            ."  color:  ".$this->_cp['sub_color_normal'].";\n"
-            ."  border: 1px solid ".$this->_cp['sub_border'].";\n"
-            ."  border-top: none;\n"
-            ."  font: normal ".$this->_cp['sub_font_size']."px ".$this->_cp['sub_font_family'].";\n"
-            ."}\n"
-            ."#".$this->_safe_ID." li a.current {\n"
-            ."  background-color: ".$this->_cp['sub_bgcolor_active'].";\n"
-            ."  color: ".$this->_cp['sub_color_active'].";\n"
-            ."}\n"
-            ."#".$this->_safe_ID." li a:hover {\n"
-            ."  background:  ".$this->_cp['sub_bgcolor_over']
-            ." url(".BASE_PATH."img/sysimg/_sdmenu_link_arrow.gif) no-repeat right center;\n"
-            ."  color: ".$this->_cp['sub_color_over'].";\n"
-            ."}\n"
+            'style', $this->css
         );
     }
 
@@ -223,6 +102,9 @@ class SDMenu extends Base
     protected function setupLoadNavsuiteID()
     {
         $this->_suiteID =           $this->_Obj_NS->get_ID_by_name($this->_cp['buttonsuite_name']);
+        $this->navSuite =           new \Nav\Suite($this->_suiteID);
+        $this->navStyle =           new \Nav\Style($this->navSuite->get_field('buttonStyleID'));
+        $this->css =                str_replace('#ID', '#'.$this->_safe_ID, $this->navStyle->get_field('css'));
     }
 
     protected function setupLoadTree()
@@ -231,14 +113,19 @@ class SDMenu extends Base
             return;
         }
         $this->_tree =  $this->_Obj_NS->getTree(false, $this->_suiteID, 0, true);
-        $ulEnd = 1+strpos($this->_tree, '>');
+        $ulEnd = strpos($this->_tree, '</ul>');
         $ul = substr($this->_tree, 0, $ulEnd);
         $firstQuote =   1+strpos($this->_tree, "'");
-        $class = substr($this->_tree, $firstQuote, strpos($this->_tree, "'", $firstQuote)-$firstQuote);
+        $firstUL =      1+strpos($this->_tree, "\n");
         $this->_tree =
-             "<ul id=\"".$this->_safe_ID."\" class=\"sdmenu ".$class."\">\n"
-            ."  <li class=\"border_top\">&nbsp;</li>"
-            .substr($this->_tree, $ulEnd);
+             "<ul id=\"".$this->_safe_ID."\" class=\"sdmenu\">\n"
+            ."  <li class=\"border_top\"></li>\n"
+            .substr($this->_tree, $firstUL, -6)
+            ."  <li class=\"border_bottom\"></li>\n"
+            ."</ul>";
+        if ($this->_cp['debug']) {
+            print "<textarea style='width:1200px;height:200px'>".$this->_tree."</textarea>";
+        }
         $this->setupFixIe7SpacesBug();
     }
 

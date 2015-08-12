@@ -1,3 +1,5 @@
+  1.0.7 (2015-08-08)
+    1) Now includes classname 'nav_style_xxxx' in tree root element where xxxx is navstyle name
   1.0.6 (2015-08-03)
     1) Moved here from class.component_nav_links.php
     2) Now PSR-2 Compliant

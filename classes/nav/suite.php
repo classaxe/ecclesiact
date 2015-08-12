@@ -1,13 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_SUITE', '1.0.37');
+define('VERSION_NS_NAV_SUITE', '1.0.38');
 /*
 Version History:
-  1.0.37 (2015-08-08)
-    1) \Nav\Suite::drawNav() and \Nav\Suite::getTree() now include extra classname in containing UL in format
-       nav_style_XXXX where XXXX is the JS-friendly name of the Navstyle in use
-    2) Improvements for error handling for SD Menu elements
+  1.0.38 (2015-08-12)
+    1) Removed extra classname for \Nav\Suite::getTree() - not necessary
 
 */
 class Suite extends \Record
@@ -908,7 +906,6 @@ class Suite extends \Record
         }
         $bStyleID =     $navsuite_record['buttonStyleID'];
         $bStyleName =   $navsuite_record['navstyle_name'];
-        $styleClass =   'nav_style_'.get_js_safe_ID($bStyleName);
         if (!$buttons===false) {
     //      y($buttons);die;
             foreach ($buttons as $button) {
@@ -989,7 +986,7 @@ class Suite extends \Record
             }
         }
         return
-             str_repeat("  ", $depth-1)."<ul class='".$styleClass."'>\n"
+             str_repeat("  ", $depth-1)."<ul>\n"
             .implode("", $links)
             .str_repeat("  ", $depth-1)."</ul>\n";
     }

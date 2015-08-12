@@ -1,3 +1,7 @@
+  1.0.37 (2015-08-08)
+    1) \Nav\Suite::drawNav() and \Nav\Suite::getTree() now include extra classname in containing UL in format
+       nav_style_XXXX where XXXX is the JS-friendly name of the Navstyle in use
+    2) Improvements for error handling for SD Menu elements
   1.0.36 (2015-08-02)
     1) Moved here from class.navsuite.php
     2) References to Navbutton now \Nav\Button

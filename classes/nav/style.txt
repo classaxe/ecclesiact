@@ -1,3 +1,6 @@
+  1.0.10 (2015-08-09)
+    1) Added `type` to FIELDS list
+    2) \Nav\Style::sample() now unlinks sample image and quits if style type is NOT image
   1.0.9 (2015-08-03)
     1) Moved here from class.navbutton_image.php
     2) Now PSR-2 Compliant
