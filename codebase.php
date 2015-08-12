@@ -21,6 +21,34 @@ Summary:
   1) Greatly simplified setup and use of SD Menus -
      now all CSS is derived from CSS in navstyle of primary navsuite
 
+Final Checksums:
+  Classes     CS:151fa815
+  Database    CS:4eaa3802
+  Libraries   CS:ef93c7ea
+  Reports     CS:9d184f66
+
+Code Changes:
+  codebase.php                                                                                   3.3.14    (2015-08-12)
+    1) Updated version information
+  classes/component/sdmenu.php                                                                   1.0.8     (2015-08-11)
+    1) Settings greatly simplified, CSS now derived from Navstyle CSS
+  classes/nav/style.php                                                                          1.0.11    (2015-08-12)
+    1) Added CSS to fields list
+  classes/nav/suite.php                                                                          1.0.38    (2015-08-12)
+    1) Removed extra classname for \Nav\Suite::getTree() - not necessary
+
+2388.sql
+  1) Navstyle now includes CSS block for SD and Responsive menus
+  2) Set version information
+
+Promote:
+  codebase.php                                        3.3.14
+  classes/  (3 files changed)
+    component/sdmenu.php                              1.0.8     CS:888fbab
+    nav/style.php                                     1.0.11    CS:e1d2e755
+    nav/suite.php                                     1.0.38    CS:7f07c021
+
+
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
