@@ -1,3 +1,8 @@
+  1.0.91 (2015-08-03)
+    1) Function sql_export() is now a stub class for newly added sqlExport()
+    2) Function sql_export_delete() is now a stub class for newly added sqlExportDelete()
+    3) Function sql_export_select() is now a stub class for newly added sqlExportSelect()
+    4) Function try_copy() is now a stub class for newly added sqlExport()
   1.0.90 (2015-03-23)
     1) Record::get_coords() now uses \Map\GoogleMap class
     2) Record::on_action_set_map_location() now looks for getCoords() if it exists and uses that

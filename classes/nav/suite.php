@@ -1,11 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_SUITE', '1.0.38');
+define('VERSION_NS_NAV_SUITE', '1.0.39');
 /*
 Version History:
-  1.0.38 (2015-08-12)
-    1) Removed extra classname for \Nav\Suite::getTree() - not necessary
+  1.0.39 (2015-08-14)
+    1) Moved Suite::drawNav() out into its own class DrawNav::draw()
 
 */
 class Suite extends \Record
@@ -138,371 +138,28 @@ class Suite extends \Record
         return parent::sqlExport($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
     }
 
-    public function drawNav($nav = "", $navsuiteID = 'root', $rootOrientation = 'notInitialisedYet', $depth = 0)
-    {
-        global $page_vars, $page;
-        $depth++;
-        $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
-        $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =        get_person_permission("SYSEDITOR");
-        $isAdmin =          ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN);
-        $path = trim(urldecode($_SERVER["REQUEST_URI"]), '/');
-        if ($nav=="") {
-            return "";
-        }
-        $suiteID = ($navsuiteID=='root' ? $page_vars['navsuite'.$nav.'ID'] : $navsuiteID);
-        if ($suiteID=="1") {
-            return "";
-        }
-        $this->_set_ID($suiteID);
-        $buttons =      $this->getButtons();
-        if ($buttons===false) {
-            return "";     // There are no buttons so stop drawing
-        }
-        // Establish range for max and min button positions in bar:
-        $visible =  false;
-        $pos_min =  false;
-        $pos_max =  false;
-        $site_URL = ($_SERVER["SERVER_PORT"]==443 ? "https://" : "http://").$_SERVER["HTTP_HOST"];
-        foreach ($buttons as $button) {
-            if ($button['visible'] || $isAdmin) {
-                $visible=true;
-                if ($pos_min===false || $pos_min > $button['position']) {
-                    $pos_min=$button['position'];
-                }
-                if ($pos_max===false || $pos_max < $button['position']) {
-                    $pos_max=$button['position'];
-                }
-            }
-        }
-        if (!$visible) {
-            return "";  // All buttons are invisible so stop drawing
-        }
-        $sql =
-             "SELECT\n"
-            ."  `ns`.`ID`,\n"
-            ."  `ns`.`buttonStyleID`,\n"
-            ."  `ns`.`name`,\n"
-            ."  `ns`.`parentButtonID`,\n"
-            ."  `ns`.`width`,\n"
-            ."  `nst`.`name` AS `navstyle_name`,\n"
-            ."  `nst`.`orientation`,\n"
-            ."  `nst`.`subnavStyleID`,\n"
-            ."  `nst`.`button_spacing`,\n"
-            ."  `p_nst`.`subnavOffsetX`,\n"
-            ."  `p_nst`.`subnavOffsetY`,\n"
-            ."  `p_nst`.`orientation` AS `p_orientation`,\n"
-            ."  `p_nb`.`img_width` AS `p_width`,\n"
-            ."  `p_nb`.`img_height` AS `p_height`\n"
-            ."FROM\n"
-            ."  `navsuite` as `ns`\n"
-            ."INNER JOIN `navstyle` AS `nst` ON\n"
-            ."  `nst`.`ID` = `ns`.`buttonStyleID`\n"
-            ."LEFT JOIN `navbuttons` AS `p_nb` ON\n"
-            ."  `p_nb`.`ID` = `ns`.`parentButtonID`\n"
-            ."LEFT JOIN `navsuite` AS `p_ns` ON\n"
-            ."  `p_ns`.`ID` = `p_nb`.`suiteID`\n"
-            ."LEFT JOIN `navstyle` AS `p_nst` ON\n"
-            ."  `p_nst`.`ID` = `p_ns`.`buttonStyleID`\n"
-            ."WHERE\n"
-            ."  `ns`.`ID` IN(".$this->_get_ID().")";
-        //    z($sql);
-        $navsuite_record = $this->get_record_for_sql($sql);
-        if ($navsuite_record===false) {
-            return "";
-        }
-        if ($navsuiteID=='root') {
-            $total_height =   0;
-            $total_width =    0;
-            foreach ($buttons as $button) {
-                if ($button['visible'] || $isAdmin) {
-                    $bURL =     $button['URL'];
-                    if ($navsuite_record['orientation']=="|") {
-                        $total_height+=$button['img_height'];
-                        $total_height+=$navsuite_record['button_spacing'];
-                    } else {
-                        $total_width+=$button['img_width'];
-                        $total_width+=$navsuite_record['button_spacing'];
-                    }
-                }
-            }
-            if ($navsuite_record['orientation']=="|") {
-                $total_width+=$buttons[0]['img_width'];
-            } else {
-                $total_height+=$buttons[0]['img_height'];
-            }
-        }
-        $ObjNB =            new \Nav\Button;
-        $orientation =      $navsuite_record['orientation'];
-        $p_orientation =    $navsuite_record['p_orientation'];
-        $bStyleID =         $navsuite_record['buttonStyleID'];
-        $bStyleName =       $navsuite_record['navstyle_name'];
-        $bSubnavStyleID =   $navsuite_record['subnavStyleID'];
-        switch($p_orientation) {
-            case "":
-                $bOffsetX = 0;
-                $bOffsetY = 0;
-                break;
-            case "|":
-                $bOffsetX = $navsuite_record['p_width']+$navsuite_record['subnavOffsetX'];
-                $bOffsetY = $navsuite_record['subnavOffsetY'];
-                break;
-            default:
-                $bOffsetX = $navsuite_record['subnavOffsetX'];
-                $bOffsetY = $navsuite_record['p_height']+$navsuite_record['subnavOffsetY'];
-                break;
-        }
-        if ($rootOrientation=='notInitialisedYet') {
-            $rootOrientation = $orientation;
-        }
-        $out = "";
-        $buttons_count = 0;
-        $current_button = 0;
-        foreach ($buttons as $button) {
-            if ($button['visible'] || $isAdmin) {
-                $buttons_count++;
-            }
-        }
-        $styleClass = 'nav_style_'.get_js_safe_ID($bStyleName);
-        switch ($orientation) {
-            case '|':
-                $out.=
-                    str_repeat('  ', $depth)
-                    ."<ul id='nav_".$navsuite_record['ID']."'"
-                    .($navsuiteID=='root' ?
-                        " class='vnavmenu ".$styleClass."'>\n"
-                     :
-                        " class='".$styleClass."' style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\""
-                        .">\n"
-                    );
-                foreach ($buttons as $b) {
-                    if ($b['visible'] || $isAdmin) {
-                        $bID =      $b['ID'];
-                        $bSystemID =      $b['systemID'];
-                        $bCS =      $b['img_checksum'];
-                        $bPos =     $b['position'];
-                        $bURL =     $b['URL'];
-                        $bPopup =   $b['popup'];
-                        $bSuiteID = $b['suiteID'];
-                        $bText =    $b['text1'];
-                        $bTextSafe = str_replace(
-                            array("'", "\r\n", "\n"),
-                            array("&rsquo;", " ", " "),
-                            sanitize('html', $bText)
-                        );
-                        $sNameSafe = str_replace(
-                            "'",
-                            "&rsquo;",
-                            sanitize('html', $navsuite_record['name'])
-                        );
-                        $active =   \Nav\Button::isActive($bURL, $site_URL);
-                        $childID =  $b['childID'];
-                        $canAddSubmenu = ($childID ? -1 : ($bSubnavStyleID==1 ? 0 : 1));
-                        $dropdown = $ObjNB->hasVisibleChildren($bID);
-                        $bHeight =  $b['img_height'];
-                        $bWidth =   $b['img_width'];
-                        $bSrc =     "url(./img/button/".$bID."/".$b['img_checksum'].")";
-                        $bOffset =  ($dropdown ? '100%' : '0')." ".($active ? '0' : -2 * $bHeight).'px';
-                        if (substr($bURL, 0, 8)=='./?page=') {
-                            $bURL = BASE_PATH.substr($bURL, 8);
-                        }
-                        $bURL = htmlentities(html_entity_decode($bURL));
-                        $out.=
-                             str_repeat('  ', $depth)
-                            ."  <li"
-                            ." id=\"btn_".$bID."\""
-                            .($b['visible'] ?
-                                ""
-                              :
-                                " class=\"invisible\""
-                               ." title=\"This button would normally be hidden,\nbut administrators can still see it.\""
-                             )
-                            .">"
-                            ."<a"
-                            .($active ? " class='nav_active'" : "")
-                            .($bPopup ? " rel='external'" : "")
-                            ." href=\"".$bURL."\""
-                            .(($isAdmin && $bSystemID==SYS_ID) || $isMASTERADMIN ?
-                                 " onmouseover=\""
-                                ."CM_Navbutton_Over("
-                                .$bID.","
-                                .$bStyleID.","
-                                .$canAddSubmenu.","
-                                ."'".$sNameSafe."',"
-                                ."'".sanitize('html', $bStyleName)."'"
-                                .");"
-                                ."\""
-                              :
-                                ""
-                             )
-                            .">"
-                            ."<img role=\"presentation\""
-                            ." src=\"".BASE_PATH."img/spacer\""
-                            ." height=\"".$bHeight."\""
-                            ." width=\"".$bWidth."\""
-                            ." style='"
-                            .((
-                                $navsuiteID=='root' &&
-                                $navsuite_record['button_spacing'] &&
-                                $current_button<$buttons_count
-                             ) ?
-                                "margin-bottom:".$navsuite_record['button_spacing']."px;"
-                              :
-                                ""
-                             )
-                            ."background:".$bSrc." no-repeat ".$bOffset."'"
-                            ." alt=\"".$bTextSafe."\"/>"
-                            ."<span style='display:none'>".$bTextSafe."</span>"
-                            ."</a>";
-                        $current_button++;
-                        if ($childID) {
-                            $out.=
-                            "\n"
-                            .$this->drawNav('submenu', $childID, $rootOrientation, $depth)
-                            .str_repeat('  ', $depth+1);
-                        }
-                        $out.=
-                        "</li>\n";
-                    }
-                }
-                $out.=
-                     str_repeat('  ', $depth)
-                    ."</ul>\n";
-                break;
-            case '---':
-                // Can ONLY be root menu - only root is permitted to be horizontal
-                $out.=
-                    str_repeat('  ', $depth)
-                    ."<ul id='nav_".$navsuite_record['ID']."'"
-                    .($navsuiteID=='root' ?
-                        " class='hnavmenu ".$styleClass."'>\n"
-                     :
-                        " class='".$styleClass."' style=\"left:".$bOffsetX."px; top:".$bOffsetY."px;\">\n"
-                    );
-                foreach ($buttons as $b) {
-                    if ($b['visible'] || $isAdmin) {
-                        $bID =      $b['ID'];
-                        $bSystemID =      $b['systemID'];
-                        $bPos =     $b['position'];
-                        $bURL =     $b['URL'];
-                        $bPopup =   $b['popup'];
-                        $bSuiteID = $b['suiteID'];
-                        $bText =    $b['text1'];
-                        $bTextSafe = str_replace(
-                            array("'", "\r\n", "\n"),
-                            array("&rsquo;", " ", " "),
-                            sanitize('html', $bText)
-                        );
-                        $sNameSafe = str_replace(
-                            "'",
-                            "&rsquo;",
-                            sanitize('html', $navsuite_record['name'])
-                        );
-                        $active =   \Nav\Button::isActive($bURL, $site_URL);
-                        $childID =  $b['childID'];
-                        $canAddSubmenu = ($childID ? -1 : ($bSubnavStyleID==1 ? 0 : 1));
-                        $dropdown = $ObjNB->hasVisibleChildren($bID);
-                        $bHeight =  $b['img_height'];
-                        $bWidth =   $b['img_width'];
-                        $bSrc =     "url(./img/button/".$bID."/".$b['img_checksum'].")";
-                        $bOffset =  ($dropdown ? '100%' : '0')." ".($active ? '0' : -2*$bHeight).'px';
-                        if (substr($bURL, 0, 8)=='./?page=') {
-                            $bURL = BASE_PATH.substr($bURL, 8);
-                        }
-                        $bURL = htmlentities(html_entity_decode($bURL));
-                        $out.=
-                             str_repeat('  ', $depth)
-                            ."  <li"
-                            ." id=\"btn_".$bID."\""
-                            .($b['visible'] ?
-                                ""
-                             :
-                                " class=\"invisible\""
-                               ." title=\"This button would normally be hidden,\nbut administrators can still see it.\""
-                             )
-                            .">"
-                            ."<a"
-                            ." href=\"".$bURL."\""
-                            .($active ? " class='nav_active'" : "")
-                            .($bPopup ? " rel='external'" : "")
-                            .(($isAdmin && $bSystemID==SYS_ID) || $isMASTERADMIN ?
-                                 " onmouseover=\""
-                                ."CM_Navbutton_Over("
-                                .$bID.","
-                                .$bStyleID.","
-                                .$canAddSubmenu.","
-                                ."'".$sNameSafe."',"
-                                ."'".sanitize('html', $bStyleName)."'"
-                                .");"
-                                ."\""
-                              :
-                                ""
-                             )
-                            .">"
-                            ."<img role=\"presentation\""
-                            ." src=\"".BASE_PATH."img/spacer\""
-                            ." height=\"".$bHeight."\""
-                            ." width=\"".$bWidth."\""
-                            ." style='"
-                            .((
-                                $navsuiteID=='root' &&
-                                $navsuite_record['button_spacing'] &&
-                                $current_button<$buttons_count
-                             ) ?
-                                "margin-right:".$navsuite_record['button_spacing']."px;"
-                             :
-                                ""
-                             )
-                            ."background:".$bSrc." no-repeat ".$bOffset."'"
-                            ." alt=\"".$bTextSafe."\"/>"
-                            ."<span style='display:none'>".$bTextSafe."</span>"
-                            ."</a>";
-                        if ($childID) {
-                            $out.=
-                                 "\n"
-                                .$this->drawNav('submenu', $childID, $rootOrientation, $depth)
-                                .str_repeat('  ', $depth+1);
-                        }
-                        $out.= "</li>\n";
-                    }
-                }
-                $out.=
-                    str_repeat('  ', $depth)
-                    ."</ul>\n";
-                break;
-        }
-        return ($navsuiteID=='root' ?
-            "<div id='nav_root_".$nav."' style='width:".$total_width."px;height:".$total_height."px;'>\n"
-            .$out
-            ."</div>\n"
-         :
-            $out
-        );
-    }
-
     public function getButtons($all = false, $no_cache = false, $SDMenuMode = false)
     {
-        $key =              $this->_get_ID()."_".($all?1:0);
-        if (isset(\Nav\Suite::$cache_buttons_array[$key]) && !$no_cache) {
-            return \Nav\Suite::$cache_buttons_array[$key];
+        $key = $this->_get_ID()."_".($all?1:0);
+        if (isset(static::$cache_buttons_array[$key]) && !$no_cache) {
+            return static::$cache_buttons_array[$key];
         }
       // Need to get all fields as this is used for \Nav\Suite::copy()
         $sql =
-         "SELECT\n"
-        ."  `nb`.*,\n"
-        ."  (SELECT\n"
-        ."    COALESCE(GROUP_CONCAT(`ns`.`ID`),0)\n"
-        ."  FROM\n"
-        ."    `navsuite` `ns`\n"
-        ."  WHERE\n"
-        ."    `nb`.`ID` = `ns`.`parentButtonID`\n"
-        ."  ) `childID`\n"
-        ."FROM\n"
-        ."  `navbuttons` `nb`\n"
-        ."WHERE\n"
-        ."  `suiteID` IN(".$this->_get_ID().")"
-        .($SDMenuMode ? "\nORDER BY `position`" : "");
+             "SELECT\n"
+            ."  `nb`.*,\n"
+            ."  (SELECT\n"
+            ."    COALESCE(GROUP_CONCAT(`ns`.`ID`),0)\n"
+            ."  FROM\n"
+            ."    `navsuite` `ns`\n"
+            ."  WHERE\n"
+            ."    `nb`.`ID` = `ns`.`parentButtonID`\n"
+            ."  ) `childID`\n"
+            ."FROM\n"
+            ."  `navbuttons` `nb`\n"
+            ."WHERE\n"
+            ."  `suiteID` IN(".$this->_get_ID().")"
+            .($SDMenuMode ? "\nORDER BY `position`" : "");
         $records = $this->get_records_for_sql($sql);
         $buttons = array();
         $childID_csv =  $this->get_field('childID_csv');
@@ -523,7 +180,7 @@ class Suite extends \Record
                 }
             }
         }
-        \Nav\Suite::$cache_buttons_array[$key] = $buttons;
+        static::$cache_buttons_array[$key] = $buttons;
         if (!$buttons) {
             return false;
         }
@@ -533,7 +190,7 @@ class Suite extends \Record
         foreach ($buttons as &$button) {
             $button['visible'] = $this->is_visible($button);
         }
-        \Nav\Suite::$cache_buttons_array[$key] = $buttons;
+        static::$cache_buttons_array[$key] = $buttons;
         return $buttons;
     }
 

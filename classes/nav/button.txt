@@ -1,3 +1,6 @@
+  1.0.18 (2015-08-09)
+    1) \Nav\Button::info() now includes navstyle.type
+    2) \Nav\Button::makeImage() now only makes image if navstyle.type is 'Image'
   1.0.17 (2015-08-01)
     1) Moved here from class.navbutton.php
     2) Now PSR-2 Compliant

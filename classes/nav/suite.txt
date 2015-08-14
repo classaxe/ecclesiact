@@ -1,3 +1,5 @@
+  1.0.38 (2015-08-12)
+    1) Removed extra classname for \Nav\Suite::getTree() - not necessary
   1.0.37 (2015-08-08)
     1) \Nav\Suite::drawNav() and \Nav\Suite::getTree() now include extra classname in containing UL in format
        nav_style_XXXX where XXXX is the JS-friendly name of the Navstyle in use

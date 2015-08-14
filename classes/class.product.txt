@@ -1,3 +1,9 @@
+  1.0.77 (2015-02-01)
+    1) Changes to Product::get_records() to rename some expected arguments to conform to other classes:
+         Old: order_by,      limit
+         New: results_order, results_limit
+    2) Class constant Product::fields renamed to Product::FIELDS
+    2) Now PSR-2 Compliant
   1.0.76 (2014-04-16)
     1) Product::draw_push_products() now sets safeID before drawing listings -
        prevents warning for unset safe_ID property

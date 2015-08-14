@@ -1,12 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_BUTTON', '1.0.18');
+define('VERSION_NS_NAV_BUTTON', '1.0.19');
 /*
 Version History:
-  1.0.18 (2015-08-09)
-    1) \Nav\Button::info() now includes navstyle.type
-    2) \Nav\Button::makeImage() now only makes image if navstyle.type is 'Image'
+  1.0.19 (2015-08-14)
+    1) Method Button::hasVisibleChildren() is now static
 
 */
 
@@ -109,7 +108,7 @@ class Button extends \Record
         return parent::tryCopy($newID, $msg, $msg_tooltip, false);
     }
 
-    public function hasVisibleChildren($ID)
+    public static function hasVisibleChildren($ID)
     {
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
         $isSYSADMIN =       get_person_permission("SYSADMIN");
@@ -133,12 +132,12 @@ class Button extends \Record
             ."  `ns`.`parentButtonID` = `np`.`ID`\n"
             ."WHERE\n"
             ."  `np`.`ID` = ".$ID;
-        $buttons = $this->get_records_for_sql($sql);
+        $buttons = static::get_records_for_sql($sql);
         if ($buttons==false || count($buttons)==0) {
             return false;
         }
         foreach ($buttons as $button) {
-            if ($this->is_visible($button) || $isAdmin) {
+            if (static::is_visible($button) || $isAdmin) {
                 return true;
             }
         }

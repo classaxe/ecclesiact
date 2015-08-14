@@ -1,12 +1,9 @@
 <?php
-define('VERSION_RECORD', '1.0.91');
+define('VERSION_RECORD', '1.0.92');
 /*
 Version History:
-  1.0.91 (2015-08-03)
-    1) Function sql_export() is now a stub class for newly added sqlExport()
-    1) Function sql_export_delete() is now a stub class for newly added sqlExportDelete()
-    1) Function sql_export_select() is now a stub class for newly added sqlExportSelect()
-    1) Function try_copy() is now a stub class for newly added sqlExport()
+  1.0.92 (2015-08-14)
+    1) Record::is_visible() is now statically declared
 
 */
 class Record extends Portal
@@ -1626,7 +1623,7 @@ class Record extends Portal
         return $this->_get_ID();
     }
 
-    public function is_visible($record)
+    public static function is_visible($record)
     {
         $group_assign_csv = (isset($record['group_assign_csv']) ? $record['group_assign_csv'] : "");
         $isMASTERADMIN =    get_person_permission("MASTERADMIN", $group_assign_csv);
@@ -1669,6 +1666,7 @@ class Record extends Portal
 
     public function is_visible_to_groups($record_csv, $group_csv)
     {
+        // Unused?
         $groups = explode(",", $group_csv);
         $record_groups = explode(",", $record_csv);
         foreach ($groups as $group) {

@@ -1,13 +1,9 @@
 <?php
-define('VERSION_PRODUCT', '1.0.77');
+define('VERSION_PRODUCT', '1.0.78');
 /*
 Version History:
-  1.0.77 (2015-02-01)
-    1) Changes to Product::get_records() to rename some expected arguments to conform to other classes:
-         Old: order_by,      limit
-         New: results_order, results_limit
-    2) Class constant Product::fields renamed to Product::FIELDS
-    2) Now PSR-2 Compliant
+  1.0.78 (2015-08-14)
+    1) Product::is_visible() is now declared and implemented statically
 
   (Older version history in class.product.txt)
 */
@@ -1482,11 +1478,11 @@ class Product extends Displayable_Item
         return false;
     }
 
-    public function is_visible($record)
+    public static function is_visible($record)
     {
         return (
-            Product::is_enabled($record) &&
-            Product::is_in_active_date_range($record) &&
+            static::is_enabled($record) &&
+            static::is_in_active_date_range($record) &&
             parent::is_visible($record)
         );
     }
@@ -1494,8 +1490,8 @@ class Product extends Displayable_Item
     protected static function is_available($record)
     {
         return (
-            Product::is_enabled($record) &&
-            Product::is_in_active_date_range($record) &&
+            static::is_enabled($record) &&
+            static::is_in_active_date_range($record) &&
             Product::is_visible($record)
         );
     }
