@@ -1,11 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_DRAWNAV', '1.0.0');
+define('VERSION_NS_NAV_DRAWNAV', '1.0.1');
 /*
 Version History:
-  1.0.0 (2015-08-13)
-    1) Drawing now delegated to this new helper class
+  1.0.1 (2015-08-14)
+    1) Fix for DrawNav::setupGetDimensions() to ensure that root nav always has both height and width
 
 */
 class DrawNav
@@ -329,7 +329,11 @@ class DrawNav
                 }
             }
         }
-
+        if ($this->navsuite['orientation']=="---") {
+            $this->height = $this->buttons[0]['img_height'];
+        } else {
+            $this->width = $this->buttons[0]['img_width'];
+        }
     }
 
     protected function setupGetOffsets()

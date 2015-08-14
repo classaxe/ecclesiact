@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.4.0");
+define("CODEBASE_VERSION", "3.4.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,42 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.4.0.2389 (2015-08-14)
+3.4.1.2390 (2015-08-14)
 Summary:
-  1) Refactored drawing of standard nav menus into its own class
+  1) DrawNav::setupGetDimensions() fix to ensure that we always have both height and width
 
 Final Checksums:
-  Classes     CS:d8d60d86
+  Classes     CS:1580a4bd
   Database    CS:4eaa3802
-  Libraries   CS:e543ec9f
+  Libraries   CS:a830346f
   Reports     CS:9d184f66
 
 Code Changes:
-  codebase.php                                                                                   3.4.0     (2015-08-14)
+  codebase.php                                                                                   3.4.1     (2015-08-14)
     1) Updated version information
-  classes/class.product.php                                                                      1.0.78    (2015-08-14)
-    1) Product::is_visible() is now declared and implemented statically
-  classes/class.record.php                                                                       1.0.92    (2015-08-14)
-    1) Record::is_visible() is now statically declared
-  classes/nav/button.php                                                                         1.0.19    (2015-08-14)
-    1) Method Button::hasVisibleChildren() is now static
-  classes/nav/drawnav.php                                                                        1.0.0     (2015-08-13)
-    1) Drawing now delegated to this new helper class
-  classes/nav/suite.php                                                                          1.0.39    (2015-08-14)
-    1) Moved Suite::drawNav() out into its own class DrawNav::draw()
+  classes/nav/drawnav.php                                                                        1.0.1     (2015-08-14)
+    1) Fix for DrawNav::setupGetDimensions() to ensure that root nav always has both height and width
 
-2389.sql
-  1) Updated ECL tags draw_nav(1), draw_nav(2) and draw_nav(3) to reference new draw class
-  2) Set version information
+2390.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.4.0
-  classes/  (5 files changed)
-    class.product.php                                 1.0.78    CS:dc24cf9d
-    class.record.php                                  1.0.92    CS:2fe4ff04
-    nav/button.php                                    1.0.19    CS:30468f6
-    nav/drawnav.php                                   1.0.0     CS:c5cbc2c5
-    nav/suite.php                                     1.0.39    CS:74297380
+  codebase.php                                        3.4.1
+  classes/  (1 file changed)
+    nav/drawnav.php                                   1.0.1     CS:b9fb736
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
