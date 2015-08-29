@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.4.1");
+define("CODEBASE_VERSION", "3.4.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.4.1.2390 (2015-08-14)
+3.4.2.2391 (2015-08-29)
 Summary:
-  1) DrawNav::setupGetDimensions() fix to ensure that we always have both height and width
+  1) CRON heartbeat now gives additional debug info and uses much less memory when called early
+  2) Changes to DrawNav::setupGetDimensions() to silently handle unknown navsuite issues
 
 Final Checksums:
-  Classes     CS:1580a4bd
+  Classes     CS:2d7ac9dc
   Database    CS:4eaa3802
-  Libraries   CS:a830346f
+  Libraries   CS:16e617b2
   Reports     CS:9d184f66
 
 Code Changes:
-  codebase.php                                                                                   3.4.1     (2015-08-14)
+  codebase.php                                                                                   3.4.2     (2015-08-29)
     1) Updated version information
-  classes/nav/drawnav.php                                                                        1.0.1     (2015-08-14)
-    1) Fix for DrawNav::setupGetDimensions() to ensure that root nav always has both height and width
+  classes/class.cron.php                                                                         1.0.11    (2015-08-29)
+    1) Message now gives information about job run time
+  classes/nav/drawnav.php                                                                        1.0.2     (2015-08-20)
+    1) DrawNav::setupGetDimensions() now silently handles errors caused by specifying a nav suite that doesn't exist
+  img.php                                                                                        2.0.84    (2015-08-29)
+    1) PSR-2 tidyup
+    2) Handling of CRON mode no longer includes codebase between job windows - Footprint went from 4.4MB to 0.7MB
 
-2390.sql
+2391.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        3.4.1
-  classes/  (1 file changed)
-    nav/drawnav.php                                   1.0.1     CS:b9fb736
+  codebase.php                                        3.4.2
+  classes/  (2 files changed)
+    class.cron.php                                    1.0.11    CS:40735360
+    nav/drawnav.php                                   1.0.2     CS:951b2cf1
+  img.php                                             2.0.84    CS:afaa4fcb
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

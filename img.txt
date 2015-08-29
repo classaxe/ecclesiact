@@ -1,3 +1,7 @@
+  2.0.83 (2015-07-19)
+    1) Supports additional wowslider effects
+  2.0.82 (2015-01-11)
+    1) Now has Unix-style line endings
   2.0.81 (2014-01-29)
     1) Tweak to older version history include file description
   2.0.80 (2014-01-27)

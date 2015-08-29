@@ -1,11 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_DRAWNAV', '1.0.1');
+define('VERSION_NS_NAV_DRAWNAV', '1.0.2');
 /*
 Version History:
-  1.0.1 (2015-08-14)
-    1) Fix for DrawNav::setupGetDimensions() to ensure that root nav always has both height and width
+  1.0.2 (2015-08-20)
+    1) DrawNav::setupGetDimensions() now silently handles errors caused by user specifying a nav suite that doesn't exist
 
 */
 class DrawNav
@@ -316,6 +316,9 @@ class DrawNav
     protected function setupGetDimensions()
     {
         if ($this->navsuiteID!=='root') {
+            return;
+        }
+        if (!$this->buttons) {
             return;
         }
         foreach ($this->buttons as $button) {
