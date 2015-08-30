@@ -1,7 +1,7 @@
-/* 1.0.45
+/* 1.0.46
 Version History:
-  1.0.45 (2015-03-24)
-    1) Added tbl_address_substitution
+  1.0.46 (2015-08-29)
+    1) Added SD-Exclusive and SD-Speed
 
 */
 .lbl_actions{
@@ -438,6 +438,12 @@ Version History:
 }
 .lbl_unit-cost{
   background-position:-2200px 0; width:11px; height:57px;
+}
+.lbl_SD-Exclusive{
+  background-position:-2211px 0; width:11px; height:100px;
+}
+.lbl_SD-Speed{
+  background-position:-2222px 0; width:11px; height:100px;
 }
 .lbl_refund-awarded{
   background-position:-2233px 0; width:22px; height:55px;

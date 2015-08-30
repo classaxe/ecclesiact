@@ -1,3 +1,5 @@
+  1.0.45 (2015-03-24)
+    1) Added tbl_address_substitution
   1.0.44 (2015-02-02)
     1) Now with unix-style line endings
   1.0.43 (2014-12-29)
