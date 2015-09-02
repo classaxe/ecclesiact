@@ -1,9 +1,10 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.64');
+define('VERSION_BLOCK_LAYOUT','1.0.65');
 /*
 Version History:
-  1.0.64 (2015-07-26)
-    1) Method BL_thumbnail_image() now places hidden span with title of linked resource for Accessibility Compliance
+  1.0.65 (2015-09-01)
+    1) BL_Link now includes title of linked resource in title tag, BL_thumbnail_image() no longer has hidden span
+       with title as this messes up layouts sometimes.
 
 */
 class Block_Layout extends Record{
@@ -493,7 +494,7 @@ class Block_Layout extends Record{
     }
     if (isset($this->_cp['links_switch_video']) && $this->_cp['links_switch_video']==1 && isset($this->record['video']) && $this->record['video']!='') {
       $URL =        $this->record['video'];
-      $URL_title =  " title=\"View Video\"";
+      $URL_title =  " title=\"View Video for ".$this->record['title']."\"";
       return
          "<a href=\"".$URL."\""
         ." onclick=\"return video_setup('lyo_video_large','".$URL."')\""
@@ -502,7 +503,7 @@ class Block_Layout extends Record{
     }
     $URL =        $this->get_URL($this->record);
     $URL_popup =  $this->record['systemID']!=SYS_ID;
-    $URL_title =  " title=\"View Details".($URL_popup ? " (opens in a new window)" : "")."\"";
+    $URL_title =  " title=\"View Details for ".$this->record['title'].($URL_popup ? " (opens in a new window)" : "")."\"";
     return
        "<a href=\"".BASE_PATH.trim($URL,'/')."\""
       .$URL_title
@@ -747,7 +748,6 @@ class Block_Layout extends Record{
      .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? $read_link : "")
      ."<img class=\"thumbnail_".$image_letter."\" role=\"presentation\" alt=\"".$this->record['title']."\""
      ." src=\"".$thumbnail_img."\" />"
-     ."<span style=\"visibility:hidden\">".$this->record['title']."</span>"
      .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? "</a>" : "")
      ."</div>";
   }

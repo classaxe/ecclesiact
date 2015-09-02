@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "3.4.3");
+define("CODEBASE_VERSION", "3.4.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,42 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-3.4.3.2392 (2015-08-29)
+3.4.4.2393 (2015-09-01)
 Summary:
-  1) Major refactoring of Nav drawing functions - SD Menus now generated along with other methods
 
 Final Checksums:
-  Classes     CS:14c75849
+  Classes     CS:fff88fc
   Database    CS:cdbabc00
-  Libraries   CS:7043b6f1
+  Libraries   CS:4969ba60
   Reports     CS:c9b98aba
 
 Code Changes:
-  codebase.php                                                                                   3.4.3     (2015-08-29)
+  codebase.php                                                                                   3.4.4     (2015-09-01)
     1) Updated version information
-  classes/nav/drawnav.php                                                                        1.0.3     (2015-08-29)
-    1) Major refactoring to streamline code for drawing horizontal and vertical nav menus into one function
-  classes/nav/style.php                                                                          1.0.12    (2015-08-29)
-    1) Added sdmenu_exclusive and sdmenu_speed to field list
-  style/labels.css                                                                               1.0.46    (2015-08-29)
-    1) Added SD-Exclusive and SD-Speed
+  classes/class.block_layout.php                                                                 1.0.65    (2015-09-01)
+    1) BL_Link now includes title of linked resource in title tag, BL_thumbnail_image() no longer has hidden span
+       with title as this messes up layouts sometimes.
 
-2392.sql
-  1) New fields for navstyle - sdmenu_exclusive and sdmenu_speed
-  2) New columns / fields for navstyles for new SD attributes
-  3) Deleted ECL tag for SD Menu
-  4) Set version information
-
-Delete:
-    component/sdmenu.php                              1.0.8
+2393.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        3.4.3
-  classes/  (2 files changed)
-    nav/drawnav.php                                   1.0.3     CS:c64a9256
-    nav/style.php                                     1.0.12    CS:478dcd43
-  images/labels.gif                                             CS:d25f7ff6
-  style/labels.css                                    1.0.46    CS:e79035d9
+  codebase.php                                        3.4.4
+  classes/  (1 file changed)
+    class.block_layout.php                            1.0.65    CS:6e89178
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

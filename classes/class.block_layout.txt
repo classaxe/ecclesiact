@@ -1,3 +1,5 @@
+  1.0.64 (2015-07-26)
+    1) Method BL_thumbnail_image() now places hidden span with title of linked resource for Accessibility Compliance
   1.0.63 (2015-07-19)
     1) Method BL_context_selection_start() now forces context-replace on and off for more reliable operation,
        especially with Wowslider Gallery Image operations
