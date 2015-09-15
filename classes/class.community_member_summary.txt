@@ -1,3 +1,5 @@
+  1.0.20 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.19 (2015-02-20)
     1) Added new Fax number
   1.0.18 (2015-02-17)

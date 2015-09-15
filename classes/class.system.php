@@ -1,10 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.163');
+define('VERSION_SYSTEM', '1.0.164');
 
 /*
 Version History:
-  1.0.163 (2015-08-01)
-    1) eferences to navbutton now \Nav\Button
+  1.0.164 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class System extends Record
@@ -604,7 +604,7 @@ class System extends Record
                 }
             }
         }
-        Page::push_content(
+        Output::push(
             "javascript_onload",
             "geid('btn_reload').disabled=0;"
         );
@@ -625,7 +625,7 @@ class System extends Record
             .'&idSite='.$system_vars['piwik_id'];
         $js =
             "popWin('".$url."','Piwik','location=0,status=0,scrollbars=1,resizable=1',1000,800,1);";
-        Page::push_content("javascript_onload", $js);
+        Output::push("javascript_onload", $js);
         return
              "<p><a rel=\"external\" "
             ."href=\"".str_replace('&', '&amp;', $url)."\""

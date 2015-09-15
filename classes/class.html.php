@@ -1,10 +1,9 @@
 <?php
-define('VERSION_HTML', '1.0.90');
+define('VERSION_HTML', '1.0.91');
 /*
 Version History:
-  1.0.90 (2015-04-19)
-    1) Moved support for HTML::draw_icon() out into separate classes for:
-         bookmark, print_friendly, sitemap, text_sizer
+  1.0.91 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
 
 */
 class HTML extends Record
@@ -314,7 +313,7 @@ class HTML extends Record
         ) {
             $selected_section = $ID_arr[0];
         }
-        Page::push_content('javascript', "window.spans_".$divider_prefix." = ['".implode("','", $ID_arr)."'];\n");
+        Output::push('javascript', "window.spans_".$divider_prefix." = ['".implode("','", $ID_arr)."'];\n");
         $out = "<div class='section_tabs'>\n";
         foreach ($arr as $value) {
             if ($value['label']!="") {
@@ -354,7 +353,7 @@ class HTML extends Record
         ) {
             $selected_section = $ID_arr[0];
         }
-        Page::push_content('javascript', "window.spans_".$divider_prefix." = ['".implode("','", $ID_arr)."'];\n");
+        Output::push('javascript', "window.spans_".$divider_prefix." = ['".implode("','", $ID_arr)."'];\n");
         $out = "<div class='section_tabs'>\n";
         foreach ($arr as $value) {
             if ($value['label']!="") {
@@ -419,7 +418,7 @@ class HTML extends Record
             ."\"form_status_".$ID."\",\"".str_replace('/', '\/', $msg)."\",".$severity.",".$noclose
             .");\n";
         if (!$ajax_mode) {
-            \Page::push_content('javascript_onload', $js);
+            \Output::push('javascript_onload', $js);
             return $html;
         }
         return array(

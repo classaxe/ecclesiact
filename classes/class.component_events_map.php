@@ -1,14 +1,10 @@
 <?php
-  define("VERSION_COMPONENT_EVENTS_MAP", "1.0.2");
+  define("VERSION_COMPONENT_EVENTS_MAP", "1.0.3");
 /*
 Version History:
-  1.0.2 (2015-01-31)
-    1) Changes to internally used parameters in Component_Events_Map::_setup_load_event_IDs():
-         Old: limit,         order_by
-         New: results_limit, results_order
-    2) Now PSR-2 Compliant
+  1.0.3 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_events_map.txt)
 */
 class Component_Events_Map extends Component_Base
 {
@@ -145,7 +141,7 @@ class Component_Events_Map extends Component_Base
             ."#google_map_".$this->_safe_ID."_listing .when {\n"
             ."  display:inline-block; width:10.5em; font-weight: 900;\n"
             ."}\n";
-        Page::push_content('style', $css);
+        Output::push('style', $css);
     }
 
     protected function _draw_map()

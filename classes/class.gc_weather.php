@@ -1,17 +1,17 @@
 <?php
-define("VERSION_GC_WEATHER","1.0.0");
+define("VERSION_GC_WEATHER","1.0.1");
 /*
 Version History:
-  1.0.0 (2010-12-10)
-    Initial release
-  0.
+  1.0.1 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
+
 */
 
 class GC_Weather{
   private function _weather_css(){
     static $done = false;
     if (!$done){
-      Page::push_content(
+      Output::push(
         'head_top',
          "<link href=\"http://www.weatheroffice.gc.ca/city/styles/newcity.css\" "
         ."media=\"screen, print\" rel=\"stylesheet\" type=\"text/css\" />"

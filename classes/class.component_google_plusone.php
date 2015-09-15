@@ -1,9 +1,10 @@
 <?php
-define ("VERSION_COMPONENT_GOOGLE_PLUSONE","1.0.0");
+define ("VERSION_COMPONENT_GOOGLE_PLUSONE","1.0.1");
 /*
 Version History:
-  1.0.0 (2012-01-25)
-    1) Initial release
+  1.0.1 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 
 class Component_Google_Plusone extends Component_Base {
@@ -27,7 +28,7 @@ class Component_Google_Plusone extends Component_Base {
        "<div class=\"g-plusone\""
       .($this->_cp['size']!='standard' ? " data-size=\"".$this->_cp['size']."\"" : "")
       ."></div>";
-    Page::push_content(
+    Output::push(
        "javascript_onload",
        "  (function(){\n"
       ."    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;\n"

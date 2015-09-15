@@ -1,3 +1,5 @@
+  1.0.64 (2015-08-09)
+    1) Bug fix for Report_Form::_field_has_inline_label() to display label for type 'sample_buttonstyle'
   1.0.63 (2015-08-01)
     1) References to Navbutton now \Nav\Button
   1.0.62 (2015-03-22)

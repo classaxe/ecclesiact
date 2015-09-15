@@ -1,3 +1,6 @@
+  1.0.1 (2013-10-28)
+    1) Added CP for filter_sp to filter on state / province
+    2) CP for filter_category now defaults to '*' meaning everything
   1.0.0 (2013-10-27)
     1) New class containing code previously in Component_Person_Category_Map
     2) Modified to conformm to latest modular standards

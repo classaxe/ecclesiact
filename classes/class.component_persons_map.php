@@ -1,12 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_PERSONS_MAP","1.0.1");
+  define ("VERSION_COMPONENT_PERSONS_MAP","1.0.2");
 /*
 Version History:
-  1.0.1 (2013-10-28)
-    1) Added CP for filter_sp to filter on state / province
-    2) CP for filter_category now defaults to '*' meaning everything
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_persons_map.txt)
 */
 class Component_Persons_Map extends Component_Base {
   protected $_person_IDs;
@@ -43,7 +41,7 @@ class Component_Persons_Map extends Component_Base {
     }
     $css =
       "#google_map_".$this->_safe_ID."_listing { height: ".$this->_cp['height']."px; overflow:auto; }\n";
-    Page::push_content('style',$css);
+    Output::push('style',$css);
   }
 
   protected function _draw_map(){

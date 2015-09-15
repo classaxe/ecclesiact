@@ -1,3 +1,5 @@
+  1.0.6 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.5 (2013-05-19)
     1) Tweak to Cart::get_items) to prevent inclusion of any item with no productID
   1.0.4 (2011-12-15)

@@ -1,3 +1,5 @@
+  1.0.41 (2015-03-30)
+    1) Bug fix for showing Christmas, Easter and Special Events and now colour codes these in red
   1.0.40 (2015-03-28)
     1) Now includes cps for separate Christmas, Easter and Special events
     2) Moved dropbox checking code into here from parent class

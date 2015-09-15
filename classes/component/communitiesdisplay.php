@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define('COMPONENT_NS_COMMUNITIES_DISPLAY_VERSION', '1.0.6');
+define('COMPONENT_NS_COMMUNITIES_DISPLAY_VERSION', '1.0.7');
 /*
 Version History:
-  1.0.6 (2015-03-17)
-    1) Moved from Component_Change_Password and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.7 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -82,7 +81,7 @@ class CommunitiesDisplay extends Base
             ."#".$this->_safe_ID."_listing ul li.inactive a{\n"
             ."  color: #888 !important;\n"
             ."}\n";
-        \Page::push_content('style', $css);
+        \Output::push('style', $css);
     }
 
     protected function drawList()

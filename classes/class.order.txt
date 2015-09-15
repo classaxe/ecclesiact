@@ -1,3 +1,5 @@
+  1.0.68 (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
   1.0.67 (2013-08-06)
     1) Changes to Order::get_registered_event_tickets() following field name changes
        in registerevent report

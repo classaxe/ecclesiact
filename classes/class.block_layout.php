@@ -1,10 +1,9 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.65');
+define('VERSION_BLOCK_LAYOUT','1.0.66');
 /*
 Version History:
-  1.0.65 (2015-09-01)
-    1) BL_Link now includes title of linked resource in title tag, BL_thumbnail_image() no longer has hidden span
-       with title as this messes up layouts sometimes.
+  1.0.66 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Block_Layout extends Record{
@@ -881,7 +880,7 @@ class Block_Layout extends Record{
       return;
     }
     $crc32 = dechex(crc32($this->record[$field]));
-    Page::push_content(
+    Output::push(
       'style_include',
        "<link rel=\"stylesheet\" type=\"text/css\""
       ." href=\"/css/block_layout_".$type."/".$ID."/".$crc32."\" />"

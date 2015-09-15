@@ -1,5 +1,5 @@
 <?php
-define('MODULE_TREB_VERSION', '1.0.25');
+define('MODULE_TREB_VERSION', '1.0.26');
 define('TREB_PROXY', 0);
 define('TREB_DEBUG', 0);
 define('TREB_PHOTOS_PATH', './UserFiles/Image/listings/');
@@ -10,18 +10,9 @@ define('TREB_DATA_PASSWORD', 'Rs3618');
 
 /*
 Version History:
-  1.0.25 (2015-01-31)
-    1) Renamed function
-         from TREB::_get_records_sort_records_using_filter_order_by()
-         to   TREB::_get_records_sort_records_using_results_order()
-    2) Changed call in TREB::_get_records_sort_records()
-         from $this->_get_records_sort_records_using_filter_order_by()
-         to   $this->_get_records_sort_records_using_results_order()
-    3) Changes to internal arguments for TREB::_get_records_sort_records_using_results_order()
-         Old: order_by
-         New: results_order
+  1.0.26 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in module.treb.txt)
 */
 
 class TREB extends Gallery_Image
@@ -316,7 +307,7 @@ class TREB extends Gallery_Image
         ."  \$('treb_photo_main').src = \"".str_replace('&amp;', '&', $thumbnail_path)."\"+photos[i];\n"
         ."  return false;\n"
         ."}\n";
-        Page::push_content('javascript', $js);
+        Output::push('javascript', $js);
         $html =
         "<div>\n"
         ."<img id=\"treb_photo_main\" alt=\"".$this->record['title']."\" src=\"".$thumbnail_path.$thumbnail_file."\" /><br />\n"

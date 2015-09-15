@@ -1,9 +1,13 @@
 <?php
-define('VERSION_DISPLAYABLE_ITEM', '1.0.153');
+define('VERSION_DISPLAYABLE_ITEM', '1.0.154');
 /*
 Version History:
-  1.0.153 (2015-07-26)
-    1) Various anchors for 'content begins here' now have hidden text for accessibility conformance
+  1.0.154 (2015-09-13)
+    1) Many changes following move of output streaming from Page into Output class:
+         Page::push_content()           ->      Output::push()
+         Page::pop_content()            ->      Output::pull()
+         Page::$content = array()       ->      Output::reset()
+         isset(Page::$content[$part])   ->      Output::present($part)
 
 */
 class Displayable_Item extends Block_Layout
@@ -345,7 +349,7 @@ class Displayable_Item extends Block_Layout
         if (strlen($summary)>1000) {
             $summary = substr($summary, 0, 1000)."...";
         }
-        Page::push_content(
+        Output::push(
             'head_top',
             "<meta property=\"og:description\" content=\"".str_replace('"', '&quot;', $summary)."\" />\n"
             .($img ?
@@ -662,39 +666,46 @@ class Displayable_Item extends Block_Layout
     {
         global $system_vars;
         $out = array(
-        'css' =>  '',
-        'js' =>   '',
-        'html' => ''
+            'css' =>  '',
+            'js' =>   '',
+            'html' => ''
         );
         $base = trim($system_vars['URL'], '/').'/';
         $cs_icons =   dechex(crc32(file_get_contents(SYS_IMAGES."icons.gif")));
-        Page::$content = array(); // flush existing content
-        Page::push_content('javascript_onload', "ecc.externalLinks()");
-        Page::push_content(
+        \Output::reset();
+        \Output::push('javascript_onload', "ecc.externalLinks()");
+        \Output::push(
             'style_include',
             "<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/".System::get_item_version('css')."\" />"
         );
-        Page::push_content(
+        \Output::push(
             'style',
             "img.icon              { background-image:url(".$base."img/sysimg/icons.gif/".$cs_icons.");}\r\n"
             ."div.rating .img       { background-image:url(".$base."img/sysimg/icon_ratings_13x13.gif);}\r\n"
             .".icons                { background-image:url(".$base."img/sysimg/icons.gif/".$cs_icons.");}\r\n"
         );
         $html = convert_safe_to_php($this->draw_listings($instance, $args, $cp_are_fixed));
-        if (isset(Page::$content['style'])) {
-            $html.= "<style type='text/css'>".implode("\n", Page::$content['style'])."</style>";
-        }
-        if (isset(Page::$content['style_include'])) {
-            $html.= implode("\n", Page::$content['style_include']);
-        }
-        if (isset(Page::$content['javascript_onload'])) {
-            $out['js'] = implode("\n", Page::$content['javascript_onload']);
+        $html =
+             Output::pull('style_include')
+            .(Output::isPresent('style') ? "<style type='text/css'>".Output::pull('style')."</style>" : "")
+            .$html;
+        if (Output::isPresent('javascript_onload')) {
+            $out['js'] = Output::pull('javascript_onload');
         }
         $html = absolute_path($html, $base);
-        $html = preg_replace("/ onmouseover=[^\>]+\>/", ">", $html);
-        $html = preg_replace("/<a class=\"icon_add_new\"(.+)><\/a>/", "", $html);
+        $html = preg_replace(
+            array(
+                "/ onmouseover=[^\>]+\>/",
+                "/<a class=\"icon_add_new\"(.+)><\/a>/"
+            ),
+            array(
+                ">",
+                ""
+            ),
+            $html
+        );
         $out['html'] = $html;
-  //    $out['html'] = "<textarea style='width:100%;height:600px;'>".print_r($out,true)."</textarea>";
+  //    $out['html'] = "<textarea style='width:100%;height:600px;'>".print_r($out, true)."</textarea>";
         return $out;
     }
 
@@ -894,7 +905,7 @@ class Displayable_Item extends Block_Layout
             ." of ".$this->_records_total
             ."</div>";
         if (!isset($_REQUEST['command']) || $_REQUEST['command']!=$this->_safe_ID."_load") {
-            Page::push_content(
+            Output::push(
                 "javascript",
                 "function ".$this->_safe_ID."_paging(offset) {\n"
                 ."  var post_vars='command=".$this->_safe_ID."_load&offset='+offset;\n"
@@ -1487,7 +1498,7 @@ class Displayable_Item extends Block_Layout
         if (!$this->_map_maximize) {
             return;
         }
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "popup_map_general_maximize('".$this->_ident."');"
             ."\$J(window).bind('resize', function(){popup_map_general_maximize('".$this->_ident."');});"
@@ -2015,8 +2026,8 @@ class Displayable_Item extends Block_Layout
         header('Content-Type: application/json');
         $this->_html =  convert_safe_to_php($this->_html);
         $this->_js.=
-            Page::pop_content('javascript')."\n"
-           .Page::pop_content('javascript_onload');
+            Output::pull('javascript')."\n"
+           .Output::pull('javascript_onload');
         print $Obj_JSON->encode(
             array(
                 'css' =>  $this->_css,
@@ -2057,7 +2068,7 @@ class Displayable_Item extends Block_Layout
         $msg =
          "<b>Error</b><br /><br />"
         ."You have insufficient rights to delete this ".$this->_get_object_name().".";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  popup_msg=\"".$msg."\";"
             ."popup_dialog('Item Delete',\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'OK','','');"

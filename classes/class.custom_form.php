@@ -1,12 +1,10 @@
 <?php
-define ("VERSION_CUSTOM_FORM","1.0.41");
+define ("VERSION_CUSTOM_FORM","1.0.42");
 /*
 Version History:
-  1.0.41 (2014-02-07)
-    1) JS callback functions for ajax fedex rate lookups now contained within sajax
-       object to reduce namespace clutter
+  1.0.42 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.custom_form.txt)
 */
 
 class Custom_Form extends Record {
@@ -427,7 +425,7 @@ class Custom_Form extends Record {
         'canProxy'=> $canProxy
       );
     $this->xml_form_prepare($args);
-    Page::push_content(
+    Output::push(
       'javascript',
       $this->get_js()
     );

@@ -1,16 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_TIME_TRACKER","1.0.3");
+  define ("VERSION_COMPONENT_TIME_TRACKER","1.0.4");
 /*
 Version History:
-  1.0.3 (2012-10-28)
-    1) Changes to use jquery for elemet selection, not prototypejs
-  1.0.2 (2012-10-09)
-    1) Now has link to edit categories used
-  1.0.1 (2012-10-05)
-    1) Better error handling for missing listtype
-    2) Improved formatting of form data
-  1.0.0 (2012-10-05)
-    1) Initial release
+  1.0.4 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Time_Tracker extends Component_Base {
   protected $_categories;
@@ -61,7 +55,7 @@ class Component_Time_Tracker extends Component_Base {
   }
 
   protected function _draw_css(){
-    Page::push_content(
+    Output::push(
        'style',
        "#".$this->_safe_ID." h2                          { margin: 0.25em 0; }"
       ."#".$this->_safe_ID." table                       { border-collapse: collapse; width: 100%; }"
@@ -226,7 +220,7 @@ class Component_Time_Tracker extends Component_Base {
       ."}\n"
 
       ."var tt = new tt();\n";
-    Page::push_content('javascript', $js);
+    Output::push('javascript', $js);
   }
 
   protected function _do_save(){

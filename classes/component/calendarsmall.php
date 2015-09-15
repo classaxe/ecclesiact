@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define('VERSION_NS_COMPONENT_CALENDAR_SMALL', '1.0.4');
+define('VERSION_NS_COMPONENT_CALENDAR_SMALL', '1.0.5');
 /*
 Version History:
-  1.0.4 (2014-03-08)
-    1) Moved in here from class.component_calendar_small.php
+  1.0.5 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class CalendarSmall extends Base
@@ -108,7 +108,7 @@ class CalendarSmall extends Base
             "var calendar_special_days = {\n"
             ."  ".implode(",\n  ", $sd_arr)."\n"
             ."};\n";
-        \Page::push_content('javascript', $js);
+        \Output::push('javascript', $js);
         $flatCallback = false;
         switch($this->_cp['show']){
             case "days":
@@ -129,7 +129,7 @@ class CalendarSmall extends Base
             ."    showOthers:         true,\n"
             ."    weekNumbers:        ".($this->_cp['weeks'] ? 'true' : 'false')."\n"
             ."  });\n";
-        \Page::push_content('javascript_onload', $js_onload);
+        \Output::push('javascript_onload', $js_onload);
         return
              $this->_html
             ."<div id=\"".$this->_safe_ID."\""

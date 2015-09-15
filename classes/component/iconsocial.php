@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_ICONSOCIAL", "1.0.2");
+define("VERSION_NS_COMPONENT_ICONSOCIAL", "1.0.3");
 /*
 Version History:
-  1.0.2 (2015-04-16)
-    1) Moved from Component_Social_Icon and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.3 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class IconSocial extends Base
@@ -95,7 +94,7 @@ class IconSocial extends Base
                 ."}\n";
             $sections['base_'.$this->_cp['size'].'_'.$this->_cp['icon']] = true;
         }
-        \Page::pushContent('style', $this->_css);
+        \Output::push('style', $this->_css);
     }
 
     public static function getVersion()

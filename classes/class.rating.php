@@ -1,11 +1,10 @@
 <?php
-define('VERSION_RATING','1.0.5');
+define('VERSION_RATING','1.0.6');
 /*
 Version History:
-  1.0.5 (2014-01-28)
-    1) Includes newlines after JS blocks in Rating::draw()
+  1.0.6 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.rating.txt)
 */
 class Rating extends Record {
   static $img =         "icon_ratings_13x13.gif";
@@ -102,17 +101,17 @@ class Rating extends Record {
     }
     if (!Rating::$shown_css) {
       $width = Rating::$size*Rating::$max;
-      Page::push_content(
+      Output::push(
         "style",
          "div.rating div.bg { position:relative;width:".$width."px; }\n"
         ."div.rating ul { left: -".($width)."px;}\n"
         ."div.rating div.current  { left: -".(2*$width)."px;}\n"
       );
-      Page::push_content("javascript_onload","  rating_blocks_init();\n");
+      Output::push("javascript_onload","  rating_blocks_init();\n");
       Rating::$shown_css = true;
     }
     if (!$voted) {
-      Page::push_content('javascript',"rating_blocks.push('".$id."');\n");
+      Output::push('javascript',"rating_blocks.push('".$id."');\n");
     }
     $out =
        ($voted ?

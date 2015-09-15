@@ -1,10 +1,9 @@
 <?php
-define('VERSION_PERSON', '1.0.124');
+define('VERSION_PERSON', '1.0.125');
 /*
 Version History:
-  1.0.124 (2015-03-22)
-    1) Added AMap_geocode_address and WMap_geocode_address to fields list
-    2) Person::get_coords() now includes map_geocode_address
+  1.0.125 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Person extends Displayable_Item
@@ -1350,7 +1349,7 @@ class Person extends Displayable_Item
             ."alert('Please enter your email address');return false; };geid('btnSubmit').value='Please Wait';"
             ."this.disabled=1;geid('command').value='new_password';geid('form').submit();\"/>"
             ."  </div>\n";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  geid('email').focus();\n"
         );

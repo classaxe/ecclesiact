@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_CUSTOMISER_BUTTON", "1.0.3");
+define("VERSION_NS_COMPONENT_CUSTOMISER_BUTTON", "1.0.4");
 /*
 Version History:
-  1.0.3 (2015-04-22)
-    1) Moved from class.component_customiser_button.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.4 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class CustomiserButton extends Base
@@ -63,16 +62,16 @@ class CustomiserButton extends Base
                 .");return false;\">"
                 ."<img src='".BASE_PATH."img/spacer' class='toolbar_icon' alt='".$this->_cp['title']."'/></a>"
                 ."</span>";
-            \Page::pushContent('javascript_top', '<script type="text/javascript" src="/sysjs/spectrum"></script>'."\n");
-            \Page::pushContent('style_include', '<link rel="stylesheet" href="/css/spectrum" />'."\n");
-            \Page::pushContent(
+            \Output::push('javascript_top', '<script type="text/javascript" src="/sysjs/spectrum"></script>'."\n");
+            \Output::push('style_include', '<link rel="stylesheet" href="/css/spectrum" />'."\n");
+            \Output::push(
                 'style',
                 ".customiser label{ display: block; float: left; padding: 0 0.5em 0 0; }\n"
                 .".customiser input.swatch { display: block; float: left; }\n"
                 .".customiser input.spectrum { display: block; float: left; width:5em; height: 14px; line-height:14px;"
                 ." padding: 0px; font-family: courier-new, monospace; font-size:8pt; }\n"
             );
-            \page::pushContent('javascript', "customise_colours_presets = \"".$this->_cp['presets']."\";\n");
+            \Output::push('javascript', "customise_colours_presets = \"".$this->_cp['presets']."\";\n");
         }
     }
 
@@ -93,7 +92,7 @@ class CustomiserButton extends Base
             $parameters[] = 'draw_customiser_button.presets='.urldecode(get_var('targetValue'));
         }
         $Obj_System->set_field('component_parameters', addslashes(implode(OPTION_SEPARATOR, $parameters)));
-        \Page::pushContent(
+        \Output::push(
             'javascript_onload',
             "geid_set('command','');\n"
             ."geid('form').submit();\n"

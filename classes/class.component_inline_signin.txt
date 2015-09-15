@@ -1,0 +1,6 @@
+  1.0.2 (2014-01-28)
+    1) Newline after js onload code
+  1.0.1 (2012-06-14)
+    1) Changed maxlength of username to 50 chars (was 20), and password to 25 (was 20)
+  1.0.0 (2011-12-29)
+    1) Initial release - moved from Component class

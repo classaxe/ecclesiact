@@ -1,13 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_CALENDAR_YEARLY", "1.0.1");
+define("VERSION_NS_COMPONENT_CALENDAR_YEARLY", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-03-14)
-    1) Moved in here from class.component_calendar_yearly.php
-    2) Some refactoring to separate setup and draw operations
-    3) Now fully PSR-2 Compliant
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class CalendarYearly extends Base
@@ -73,7 +71,7 @@ class CalendarYearly extends Base
                     ."background-color:#".$item['color_background'].";} /* ".$item['text']." *"."/\n";
             }
         }
-        \Page::push_content('style', "/* Style for category highlighting */\n".$this->_css);
+        \Output::push('style', "/* Style for category highlighting */\n".$this->_css);
     }
 
     protected function drawHtml()

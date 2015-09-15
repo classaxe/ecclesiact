@@ -1,14 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_POLL_ARCHIVE","1.0.1");
+  define ("VERSION_COMPONENT_POLL_ARCHIVE","1.0.2");
 /*
 Version History:
-  1.0.1 (2012-11-03)
-    1) Big changes to allow for use of standard methods for setup and control panel
-       and refactoring to reduce stament nesting
-    2) Changes to deal with fields being renamed in poll_choice table in preparation
-       for moving to postings table
-  1.0.0 (2011-12-31)
-    1) Initial release - moved from Component class
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Poll_Archive extends Component_Base {
   protected $_Obj_Poll;
@@ -53,17 +49,17 @@ class Component_Poll_Archive extends Component_Base {
   protected function _draw_css(){
     $css =
        ".poll_archives {}\n"
-      ."  .poll_archive_active       { color:".$this->_cp['colour_question_active']."; padding: 10px 0; }\n"
-      ."  .poll_archive_inactive     { color:".$this->_cp['colour_question_inactive']."; padding: 10px 0; }\n"
-      ."    .poll_archive_date       { float:left; width:".$this->_cp['date_width']."px; font-weight: bold; }\n"
-      ."    .poll_archive_question   { float:left; width:".$this->_cp['question_width']."px; font-weight: bold; }\n"
+      ."  .poll_archive_active        { color:".$this->_cp['colour_question_active']."; padding: 10px 0; }\n"
+      ."  .poll_archive_inactive      { color:".$this->_cp['colour_question_inactive']."; padding: 10px 0; }\n"
+      ."    .poll_archive_date        { float:left; width:".$this->_cp['date_width']."px; font-weight: bold; }\n"
+      ."    .poll_archive_question    { float:left; width:".$this->_cp['question_width']."px; font-weight: bold; }\n"
       ."    .poll_archive_c           { list-style-type:none; margin:3px 0px 0px ".$this->_cp['choice_indent']."px ; padding:0; color:".$this->_cp['colour_choice_loser'].";}\n"
       ."    .poll_archive_c_winner    { font-weight: bold; color: ".$this->_cp['colour_choice_winner']."; }\n"
       ."      .poll_archive_c_text    { float:left; width:".$this->_cp['choice_width']."px; }\n"
       ."      .poll_archive_c_percent { float:left; width:30px; text-align:right }\n"
       ."      .poll_archive_c_votes   { float:left; width:40px; text-align:right }\n"
       ."  .poll_archive_separator     { height: ".($this->_cp['separator_spacing']/2)."px; border-bottom: ".$this->_cp['separator_thickness']."px solid ".$this->_cp['separator_colour']."; margin-bottom: ".($this->_cp['separator_spacing']/2)."px;  }\n";
-    Page::push_content('style',$css);
+    Output::push('style',$css);
   }
 
   protected function _draw_poll($poll){

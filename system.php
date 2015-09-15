@@ -2,14 +2,16 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY","Ecclesiact");
 define("SYSTEM_FAMILY_URL","http://www.ecclesiact.com");
-define("SYSTEM_VERSION","1.0.34 (ECC)");
+define("SYSTEM_VERSION","1.0.35 (ECC)");
 
 /*
 Version History:
-  1.0.34 (2014-04-03)
-    1) Updated info section
+  1.0.35 (2015-09-14)
+    1) References to the following methods changed:
+          Page::prepare_html_head()         ->  Layout::prepareXhtmlHead()
+          Page::Layout::prepareXhtmlHead()  ->  Output::push()
+          Page::prepare_html_foot()         ->  Output::prepareXhtmlFoot()
 
-  (Older version history in system_ecc.txt)
 */
 if (get_magic_quotes_gpc()) {
   hvFF9mrhFbntrDgfGb9wc1gf("magic_quotes");
@@ -86,7 +88,7 @@ function main($mode) {
       return $Obj->do_signin();
     break;
     case XOREncryption(base64_decode('GBITFFhY'),'jweq946jh'):
-      Page::push_content('javascript_onload',
+      Output::push('javascript_onload',
          "  \$(\"".addslashes(convert_ecl_tags(XOREncryption(base64_decode(
          "VFddEkcJWVVERg5UFQAJV1sTRw5cR1ZYURoBHQlHXQsJTRVHQ0xfFltPBVJGAw4EDwYHRUtTVlMOXFoQXV"
         ."sFBBIVUgEPCQQfRwUJGRhHUkdaFUFWVFEKWAVUfFpRWkEeBxwBXFpYSAgLCBhXDU8EGkgcCjAPA0YURFxH"
@@ -120,10 +122,9 @@ function main($mode) {
   }
   switch ($mode) {
     case "details":
-      $Obj = new Page;
-      $Obj->prepare_html_head();
-      $Obj->push_content('body',draw_html_content());
-      $Obj->prepare_html_foot();
+      Layout::prepareXhtmlHead();
+      Output::push('body', draw_html_content());
+      Layout::prepareXhtmlFoot();
       Layout::render();
     break;
     case "db_export":

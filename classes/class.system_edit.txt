@@ -1,3 +1,5 @@
+  1.0.33 (2015-03-08)
+    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
   1.0.32 (2015-03-01)
     1) Call to System_Health::get_config() is now System_Health::getConfig()
     2) System_Edit::get_version() now System_Edit::getVersion()

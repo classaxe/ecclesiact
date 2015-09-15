@@ -1,3 +1,6 @@
+  1.0.65 (2015-09-01)
+    1) BL_Link now includes title of linked resource in title tag, BL_thumbnail_image() no longer has hidden span
+       with title as this messes up layouts sometimes.
   1.0.64 (2015-07-26)
     1) Method BL_thumbnail_image() now places hidden span with title of linked resource for Accessibility Compliance
   1.0.63 (2015-07-19)

@@ -1,9 +1,9 @@
 <?php
-define('VERSION_ACTION','1.0.22');
+define('VERSION_ACTION','1.0.23');
 /*
 Version History:
-  1.0.22 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.23 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Action extends Record {
@@ -233,8 +233,8 @@ class Action extends Record {
           ."[\"".str_replace("\"","'",$row['text'])."\",".$row['value'].",\"#".$row['color_background']."\"];\n";
       }
     }
-    Page::push_content('javascript',$js);
-    Page::push_content('javascript_onload','  set_action_operation_options();');
+    Output::push('javascript',$js);
+    Output::push('javascript_onload','  set_action_operation_options();');
     return $html;
   }
 

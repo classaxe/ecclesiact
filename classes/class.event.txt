@@ -1,3 +1,6 @@
+  1.0.104 (2015-02-06)
+    1) New CP for listings - results_order - previously not possible to change display order
+    2) Now PSR-2 Compliant
   1.0.103 (2014-06-07)
     1) Changes to these block layout tags to enable manual setting for time and date format:
        BL_date($format=false)

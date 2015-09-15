@@ -1,11 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_IMAGE_FADER","1.0.1");
+  define ("VERSION_COMPONENT_IMAGE_FADER","1.0.2");
 /*
 Version History:
-  1.0.1 (2014-01-28)
-    1) Newline after js onload code
-  1.0.0 (2011-12-30)
-    1) Initial release - moved from Component class
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Image_Fader extends Component_Base {
 
@@ -83,7 +82,7 @@ class Component_Image_Fader extends Component_Base {
     }
     $firstImageIndex =  ($cp['random_start']==1 ? rand(0, count($image_js)-1) : 0);
     $id =               $ident."_".$instance;
-    Page::push_content(
+    Output::push(
       "javascript",
         "var obj_".$id." =\n"
        ."  new image_rotator(\n"
@@ -93,7 +92,7 @@ class Component_Image_Fader extends Component_Base {
        ."    ]\n"
        ."  );\n"
     );
-    Page::push_content('javascript_onload',"  obj_".$id.".do_setup();\n");
+    Output::push('javascript_onload',"  obj_".$id.".do_setup();\n");
     $out=
        "<div id=\"".$ident."_".$instance."\">"
       .$_out

@@ -1,11 +1,10 @@
 <?php
-define('VERSION_PRODUCT', '1.0.78');
+define('VERSION_PRODUCT', '1.0.79');
 /*
 Version History:
-  1.0.78 (2015-08-14)
-    1) Product::is_visible() is now declared and implemented statically
+  1.0.79 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.product.txt)
 */
 class Product extends Displayable_Item
 {
@@ -390,7 +389,7 @@ class Product extends Displayable_Item
             return;
         }
         $safeID = $this->_ident."_".$this->_instance;
-        Page::push_content(
+        Output::push(
             "javascript",
             "function ".$safeID."_cart(productID,qty,offset,related_object,related_objectID) {\n"
             ."  if(parseInt(this.value,10)<0){"
@@ -424,7 +423,7 @@ class Product extends Displayable_Item
         ) {
             return;
         }
-        Page::push_content(
+        Output::push(
             "javascript",
             "function ".$this->_ident."_".$this->_instance."_cart(productID,qty,offset) {\n"
             ."  if(parseInt(this.value,10)<0){"
@@ -1561,7 +1560,7 @@ class Product extends Displayable_Item
             $msg =
                 "<b>Error</b><br /><br />This Product is referenced in ".$orders." order".($orders==1 ? '' : 's')
                 ." - your deletion has been cancelled.";
-            Page::push_content(
+            Output::push(
                 'javascript_onload',
                 "  popup_msg=\"".$msg."\";popup_dialog("
                 ."'Item Delete',\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'OK','',''"

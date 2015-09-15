@@ -1,12 +1,11 @@
 <?php
 namespace Map;
 
-define('VERSION_NS_GOOGLE_MAP', '1.0.0');
+define('VERSION_NS_GOOGLE_MAP', '1.0.1');
 /*
 Version History:
-  1.0.0 (2015-03-23)
-    1) Moved here from class.google_map.php which is now just a stub class
-    2) References to class Geocode_Cache now point to map\geocodeCache
+  1.0.1 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class GoogleMap
@@ -352,7 +351,7 @@ class GoogleMap
 
         $this->jsSetup();
         if (!$system_vars['debug_no_internet']) {
-            \Page::pushContent(
+            \Output::push(
                 'javascript_onload',
                 "  ".$this->id."_code.push(new function(){\n"
                 .$this->function_code_loader."\n"
@@ -811,20 +810,20 @@ class GoogleMap
     {
         global $system_vars;
         if ($system_vars['debug_no_internet']) {
-            \Page::pushContent(
+            \Output::push(
                 'javascript',
                 "var ".$this->id."_code=[];\n"
             );
             return "";
         }
         if (!GoogleMap::$js_lib_included) {
-            \Page::pushContent(
+            \Output::push(
                 'javascript_top',
                 "<script type=\"text/javascript\" src=\"//maps.google.com/maps/api/js?sensor=false\"></script>\n"
             );
             GoogleMap::$js_lib_included = true;
         }
-        \Page::pushContent(
+        \Output::push(
             'javascript',
             "var ".$this->id."_code=[];\n"
             ."function ".$this->id."_load(){\n"
@@ -839,7 +838,7 @@ class GoogleMap
             ."  }\n"
             ."}\n"
         );
-        \Page::pushContent("javascript_onload", "  try{".$this->id."_load();}catch(err){}\n");
+        \Output::push("javascript_onload", "  try{".$this->id."_load();}catch(err){}\n");
     }
 
     public function mapLoad()

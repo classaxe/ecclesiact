@@ -1,14 +1,10 @@
 <?php
-  define ("VERSION_REPORT_FORM_FIELD_LOOKUP","1.0.2");
+  define ("VERSION_REPORT_FORM_FIELD_LOOKUP","1.0.3");
 /*
 Version History:
-  1.0.2 (2014-03-17)
-    1) Now if multiple options are provided as XML for report_field, mode can also
-       be specified for each option
-       Report_Form_Field_Lookup::_setup_get_filter_criteria() now looks for mode
-       items as well as field
+  1.0.3 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.report_form_field_lookup.txt)
 */
 class Report_Form_Field_Lookup extends Report_Column {
   protected $_field;
@@ -49,7 +45,7 @@ class Report_Form_Field_Lookup extends Report_Column {
          $this->_args['nomatch_js']
        );
     if ($this->_value!=''){
-      Page::push_content(
+      Output::push(
         'javascript_onload',
          "  sajax.request_".$this->_args['control_num']."();\n"
       );

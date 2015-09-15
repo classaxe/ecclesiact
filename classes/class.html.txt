@@ -1,3 +1,6 @@
+  1.0.90 (2015-04-19)
+    1) Moved support for HTML::draw_icon() out into separate classes for:
+         bookmark, print_friendly, sitemap, text_sizer
   1.0.89 (2015-03-29)
     1) Added HTML::drawToolbar() method that deprecates HTML::draw_toolbar()
   1.0.88 (2015-03-17)

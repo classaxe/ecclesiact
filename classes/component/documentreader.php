@@ -1,12 +1,12 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_DOCUMENT_READER", "1.0.1");
+define("VERSION_NS_COMPONENT_DOCUMENT_READER", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-04-22)
-    1) Moved from class.component_document_reader.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class DocumentReader extends Base
 {
@@ -77,7 +77,7 @@ class DocumentReader extends Base
             $tmp_page_arr[] = "    ".pad("'".$tmp_arr[0]."':", 6)."'".$tmp_arr[1]."'";
         }
         $this->_cp['named_pages'] = implode(",\n", $tmp_page_arr);
-        \Page::push_content(
+        \Output::push(
             "javascript",
             "\n// Support for document_reader:\n"
             ."var doc = {\n"

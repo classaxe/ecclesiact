@@ -1,9 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_IMAGE_GALLERY","1.0.0");
+  define ("VERSION_COMPONENT_IMAGE_GALLERY","1.0.1");
 /*
 Version History:
-  1.0.0 (2011-12-30)
-    1) Initial release - moved from Component class
+  1.0.1 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Image_Gallery extends Component_Base {
 
@@ -33,14 +34,14 @@ class Component_Image_Gallery extends Component_Base {
       $out.="<b>Error:</b> we expected a folder - ".$cp['folder']." looks a lot like a file.";
       return $out;
     }
-    Page::push_content(
+    Output::push(
        "javascript",
        "function ".$safe_ID."(src) {\n"
       ."  geid('".$safe_ID."_main_img').src = src;\n"
       ."  return false;\n"
       ."}"
     );
-    Page::push_content(
+    Output::push(
       "style",
        "#".$safe_ID." {\n"
       ."}\n"

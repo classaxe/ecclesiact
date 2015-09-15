@@ -1,9 +1,9 @@
 <?php
-define('VERSION_BUGTRACKER','1.0.7');
+define('VERSION_BUGTRACKER','1.0.8');
 /*
 Version History:
-  1.0.7 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.8 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class BugTracker{
@@ -219,7 +219,7 @@ class BugTracker{
       );
       die;
     }
-    Page::push_content('javascript_onload',$js);
+    Output::push('javascript_onload',$js);
     return $html;
   }
 

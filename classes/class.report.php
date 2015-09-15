@@ -1,12 +1,10 @@
 <?php
-define("VERSION_REPORT", "1.0.86");
+define("VERSION_REPORT", "1.0.87");
 
 /*
 Version History:
-  1.0.86 (2015-03-23)
-    1) Report::handle_copy() now looks for $Obj->handleReportCopy() and uses that if it exists in place of old
-       camelCased variant $Obj->handle_report_copy()
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.87 (2015-09-12)
+    1) Report::handle_delete() now provides support for PSR-2 compliant named method handleReportDelete()
 
 */
 
@@ -1454,6 +1452,10 @@ class Report extends Displayable_Item
         if ($primaryObject_name = $this->get_field('primaryObject')) {
             $Obj = new $primaryObject_name;
             $Obj->_set_ID($targetID);
+
+            if (method_exists($Obj, 'handleReportDelete')) {
+                return $Obj->handleReportDelete($msg);
+            }
             return $Obj->handle_report_delete($msg);
         }
         $Obj = new Record($this->get_field('primaryTable'), $targetID);

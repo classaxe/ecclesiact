@@ -1,2 +1,6 @@
+  1.0.1 (2015-03-14)
+    1) Moved in here from class.component_calendar_yearly.php
+    2) Some refactoring to separate setup and draw operations
+    3) Now fully PSR-2 Compliant
   1.0.0 (2012-02-27)
     1) Initial release

@@ -1,11 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_PASSWORD_PROTECT","1.0.3");
+  define ("VERSION_COMPONENT_PASSWORD_PROTECT","1.0.4");
 /*
 Version History:
-  1.0.3 (2014-01-28)
-    1) Newline and semicolon after js in Component_Password_Protect::_draw_js()
+  1.0.4 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_collection_viewer.txt)
 */
 class Component_Password_Protect extends Component_Base {
 
@@ -63,7 +62,7 @@ class Component_Password_Protect extends Component_Base {
   }
 
   protected function _draw_js(){
-    Page::push_content('javascript_onload',"  geid(\"password\").focus();\n");
+    Output::push('javascript_onload',"  geid(\"password\").focus();\n");
   }
 
   public static function getVersion(){

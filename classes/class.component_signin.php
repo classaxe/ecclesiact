@@ -1,13 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_SIGNIN","1.0.2");
+  define ("VERSION_COMPONENT_SIGNIN","1.0.3");
 /*
 Version History:
-  1.0.2 (2014-01-28)
-    1) Newline and semicolun after JS code in Component_Signin::_draw_signin()
-  1.0.1 (2013-05-24)
-    1) Updated code to make it conformant to modern component specification
-  1.0.0 (2012-01-01)
-    1) Initial release - moved from Component class
+  1.0.3 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Signin extends Component_Base {
   protected $_msg;
@@ -68,7 +65,7 @@ class Component_Signin extends Component_Base {
       ."  </div>\n";
     $this->_html.=
         HTML::draw_form_box($this->_cp['text_title'],$content,($this->_cp['show_help'] ? $this->_cp['help_page'] : ""),$this->_cp['shadow']);
-    Page::push_content(
+    Output::push(
       'javascript_onload',
       "  geid('username').focus();\n"
     );

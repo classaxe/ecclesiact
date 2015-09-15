@@ -1,3 +1,6 @@
+  1.0.11 (2015-03-17)
+    1) Moved from Component_Combo_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
   1.0.10 (2015-03-08)
     1) Now uses namespaced \Component\CalendarSmall for calendar display, not Component_Calendar_Small
     2) Was potentially guity of 'magic-this' passing - corrected that now :-)

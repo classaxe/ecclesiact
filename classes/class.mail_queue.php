@@ -1,12 +1,10 @@
 <?php
-define('VERSION_MAIL_QUEUE','1.0.37');
+define('VERSION_MAIL_QUEUE','1.0.38');
 /*
 Version History:
-  1.0.37 (2014-03-11)
-    1) Mail_Queue::_draw_wizard_preview() now URL decodes content supplied to it
-       because the javascript that packages the content now first URL encodes it.
+  1.0.38 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.mail_queue.txt)
 */
 class Mail_Queue extends Record {
   const fields = 'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
@@ -362,7 +360,7 @@ class Mail_Queue extends Record {
         ."You cannot use the Email Wizard until you have one.</p>";
       return $html;
     }
-    Page::push_content(
+    Output::push(
       'javascript',
        "function email_wizard_reload(){\n"
       ."  geid('form').submit();\n"

@@ -1,3 +1,6 @@
+  2.0.84 (2015-08-29)
+    1) PSR-2 tidyup
+    2) Handling of CRON mode no longer includes codebase between job windows - Footprint went from 4.4MB to 0.7MB
   2.0.83 (2015-07-19)
     1) Supports additional wowslider effects
   2.0.82 (2015-01-11)

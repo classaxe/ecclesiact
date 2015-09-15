@@ -1,17 +1,10 @@
 <?php
-define ("VERSION_PHP_EXCEL","1.0.2");
+define ("VERSION_PHP_EXCEL","1.0.3");
 /*
 Version History:
-  1.0.2 (2012-05-01)
-    1) Changes to constructor:
-       Greatly improved error handling if Pear date library isn't present -
-       Now provides instructions to correct the issue
-  1.0.1 (2011-03-02)
-    1) Now includes PHPExcel.php from path supplied when package is installed
-       via PEAR channel installer
-  1.0.0 (2011-03-01)
-    1) Initial release -
-       Implements PEAR version of libraries at http://www.phpexcel.net
+  1.0.3 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 
 @include_once("PHPExcel/PHPExcel.php");
@@ -28,7 +21,7 @@ if (class_exists('PHPExcel')){
 else {
   class PHP_Excel{
     function __construct(){
-      Page::push_content(
+      Output::push(
         'javascript_onload',
          "showPopWin("
         ."\"Missing Library\","

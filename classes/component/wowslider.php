@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.11");
+define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.12");
 /*
 Version History:
-  1.0.11 (2015-08-04)
-    1) Fixes for PSR-2
+  1.0.12 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class WOWSlider extends Base
@@ -246,7 +246,7 @@ class WOWSlider extends Base
     {
         global $page_vars;
         $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&amp;targetValue='.$this->_safe_ID;
-        \Page::push_content(
+        \Output::push(
             'head_top',
             "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_PATH."css/ws\" />\n"
             ."<link rel=\"stylesheet\" type=\"text/css\" href=\"".$url."\" />\n"
@@ -371,12 +371,12 @@ class WOWSlider extends Base
 
     protected function drawJs()
     {
-        \Page::push_content(
+        \Output::push(
             "body_bottom",
             "<script type=\"text/javascript\" src=\"".BASE_PATH."lib/ws/common/wowslider.js\"></script>\n"
             ."<script type=\"text/javascript\" src=\"/lib/ws/effects/".$this->_cp['effect']."\"></script>\n"
         );
-        \Page::push_content(
+        \Output::push(
             "javascript_onload",
             "  jQuery('#".$this->_safe_ID."').wowSlider({\n"
             ."    autoPlay:         true,\n"

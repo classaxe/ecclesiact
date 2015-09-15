@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_EMAIL_NEWSLETTER_SIGNUP", "1.0.1");
+define("VERSION_NS_COMPONENT_EMAIL_NEWSLETTER_SIGNUP", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-04-24)
-    1) Moved from class.component_email_newsletter_signup.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class EmailNewsletterSignup extends Base
@@ -235,7 +234,7 @@ class EmailNewsletterSignup extends Base
 
     protected function drawJs()
     {
-        Page::push_content(
+        Output::push(
             'javascript',
             "function email_newsletter_signup_validate() {\n"
             ."  var err = [];\n"

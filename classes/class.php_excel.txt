@@ -1,0 +1,10 @@
+  1.0.2 (2012-05-01)
+    1) Changes to constructor:
+       Greatly improved error handling if Pear date library isn't present -
+       Now provides instructions to correct the issue
+  1.0.1 (2011-03-02)
+    1) Now includes PHPExcel.php from path supplied when package is installed
+       via PEAR channel installer
+  1.0.0 (2011-03-01)
+    1) Initial release -
+       Implements PEAR version of libraries at http://www.phpexcel.net

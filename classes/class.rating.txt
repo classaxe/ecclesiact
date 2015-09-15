@@ -1,3 +1,5 @@
+  1.0.5 (2014-01-28)
+    1) Includes newlines after JS blocks in Rating::draw()
   1.0.4 (2012-10-07)
     1) Tweak to anchor around each star to use onclick rather than malformed
        href to prevent link activation

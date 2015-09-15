@@ -1,34 +1,17 @@
 <?php
-define('VERSION_PAGE', '1.0.122');
+define('VERSION_PAGE', '1.0.123');
 /*
 Version History:
-  1.0.122 (2015-08-03)
-    1) References to Navsuite now \Nav\Suite
+  1.0.123 (2015-09-14)
+    1) Moved Page::prepare_html_head() and Page::prepare_html_foot() into Layout class
+    2) Page streaming now performed by Output class - stub methods remain for backwards compatability:
+           Page::push_content($part, $code)
+           Page::pop_content($part)
 
-  (Older version history in class.page.txt)
 */
 class Page extends Displayable_Item
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, memberID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    public static $content = array(
-        'body' =>                     array(),
-        'body_bottom' =>              array(),
-        'body_top' =>                 array(),
-        'head_bottom' =>              array(),
-        'head_include' =>             array(),
-        'head_top' =>                 array(),
-        'html_bottom' =>              array(),
-        'html_top' =>                 array(),
-        'javascript_top' =>           array(),
-        'javascript' =>               array(),
-        'javascript_onload'=>         array(),
-        'javascript_onload_bottom'=>  array(),
-        'javascript_onunload' =>      array(),
-        'javascript_bottom' =>        array(),
-        'style' =>                    array(),
-        'style_bottom' =>             array(),
-        'style_include' =>            array(),
-    );
     public static $javascript =  array();
     public static $style = "";
     public static $css_colors =  array();
@@ -544,23 +527,31 @@ class Page extends Displayable_Item
                 break;
         }
         $anchor_ID = System::get_item_version('system_family').'_main_content';
-
+        $responsive = $page_vars['layout']['responsive'];
         return
-         "<div style=\"visibility:hidden\"><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\">Main content begins here</a></div>\r\n"
-        .$page_heading_title
-        ."<div class='content'>"
-        .($status_msg ? HTML::draw_status('form_edit_inpage', $status_msg) : "")
-        .($page_vars['componentID_post']!=1 ?
-            draw_component($page_vars['componentID_post'])
-         :
-            $page_vars['content_zones'][0]
-         )
-        ."</div>"
-  //            .($page_vars['comments_allow'] ? "<a href=\"#anchor_comments_list\">View Comments</a>" : "")
-        .($ratings_allow ? Rating::draw_block() : "")
-        .$this->draw_related_block()
-        .$this->draw_comments_block($page_vars['comments_allow'])
-        ;
+            ($responsive ?
+                 ""
+              :
+                 "<div style=\"visibility:hidden\"><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\">Main content begins here</a></div>\r\n"
+                .$page_heading_title
+                ."<div class='content'>"
+             )
+            .($status_msg ? HTML::draw_status('form_edit_inpage', $status_msg) : "")
+            .($page_vars['componentID_post']!=1 ?
+                draw_component($page_vars['componentID_post'])
+             :
+                $page_vars['content_zones'][0]
+             )
+            .($responsive ?
+                 ""
+              :
+                 "</div>"
+             )
+            .(!$responsive && $page_vars['comments_allow'] ? "<a href=\"#anchor_comments_list\">View Comments</a>" : "")
+            .($ratings_allow ? Rating::draw_block() : "")
+            .$this->draw_related_block()
+            .$this->draw_comments_block($page_vars['comments_allow'])
+            ;
     }
 
     public static function draw_http_error($status)
@@ -830,7 +821,7 @@ class Page extends Displayable_Item
         'color' =>      strToUpper($color),
         'bgcolor' =>    strToUpper($bgcolor)
         );
-        Page::push_content(
+        Output::push(
             "style",
             ($idx==1 ? "/* [Option colours] */\r\n" : "")
             .".color_".$idx." {"
@@ -1466,27 +1457,23 @@ class Page extends Displayable_Item
         return $sql_out;
     }
 
-    public function handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name)
+    public function handleReportCopy(&$newID, &$msg, &$msg_tooltip, $name)
     {
-        if ($name=="") {
+        if (trim($name) === "") {
             $msg = "<b>Error:</b> New page must have a name.";
-
             return false;
         }
         $targetSystemID = $this->get_field('systemID');
         if ($this->exists_named($name, $targetSystemID)) {
-            $msg = "<b>Error:</b> a Page named $name already exists for the site.";
-
+            $msg = "<b>Error:</b> a Page named ".$name." already exists for the site.";
             return false;
         }
         $newID = $this->copy($name);
         if ($newID) {
             $msg =         status_message(0, true, 'Page', '', "been copied to ".$name.".", $this->_get_ID());
             $msg_tooltip = status_message(0, false, 'Page', '', "been copied to ".$name.".", $this->_get_ID());
-
             return true;
         }
-
         return false;
     }
 
@@ -1670,14 +1657,7 @@ class Page extends Displayable_Item
 
     public static function pop_content($part)
     {
-        if (!isset(Page::$content[$part])) {
-            return "";
-        }
-        if (Page::$content[$part]=='') {
-            return "";
-        }
-
-        return implode("", Page::$content[$part]);
+        return Output::pull($part);
     }
 
     public function print_form_data()
@@ -1733,361 +1713,9 @@ class Page extends Displayable_Item
         print $out;
     }
 
-    public static function pushContent($part, $code)
-    {
-      // Parts list:
-      /*
-        head_top
-        head_bottom
-        javascript
-        javascript_top
-        javascript_bottom
-        javascript_onload
-        javascript_onload_end
-        javascript_onunload
-        style_include
-        style
-        style_bottom
-        body
-        body_bottom
-        html_bottom
-      */
-        Page::$content[$part][] = $code;
-    }
-
-
     public static function push_content($part, $code)
     {
-        static::pushContent($part, $code);
-    }
-
-    public function prepare_html_foot()
-    {
-        global $system_vars;
-        $this->push_content(
-            'body_bottom',
-            "<div id='CM'></div>\n"
-        );
-        $this->push_content(
-            'html_bottom',
-            "</form>\n"
-            ."</body>\n"
-            ."</html>"
-        );
-    }
-
-    public function prepare_html_head()
-    {
-        global $page_vars, $system_vars, $print, $report_name, $ID, $mode;
-        global $anchor, $bulk_update, $component_help, $DD, $limit, $memberID, $offset, $page, $sortBy;
-        global $MM, $YYYY, $selectID,$selected_section;
-        global $search_categories, $search_date_end, $search_date_start, $search_keywords;
-        global $search_name, $search_offset, $search_text, $search_type;
-        global $filterExact,$filterField,$filterValue;
-        $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isUSERADMIN =      get_person_permission("USERADMIN");
-        $isSYSADMIN =       get_person_permission("SYSADMIN");
-        $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =      get_person_permission("SYSEDITOR");
-        $CM_level =
-            $isMASTERADMIN ? 3 : ($isSYSADMIN ? 2 : ($isUSERADMIN || $isSYSAPPROVER || $isSYSEDITOR ? 1 : 0));
-        $isIE =                strpos(getenv("HTTP_USER_AGENT"), "MSIE");
-        $isAdmin =
-         get_person_permission("GROUPEDITOR") ||
-         get_person_permission("SYSEDITOR") ||
-         get_person_permission("SYSADMIN") ||
-         get_person_permission("SYSAPPROVER") ||
-         get_person_permission("MASTERADMIN");
-        if (isset($page_vars)) {
-            $layoutID =       ($page_vars['layoutID']!='1' ? $page_vars['layoutID'] : $system_vars['defaultLayoutID']);
-        } else {
-            $layoutID =       $system_vars['defaultLayoutID'];
-        }
-        switch ($print) {
-            case 1:
-                $Obj_Layout = new layout();
-                $layoutID = $Obj_Layout->get_ID_by_name("_print", SYS_ID.',1');
-                break;
-            case 2:
-                $Obj_Layout = new layout();
-                $layoutID = $Obj_Layout->get_ID_by_name("_popup", SYS_ID.',1');
-                break;
-        }
-        $page_vars['layoutID'] = $layoutID;
-        $favicon =          (isset($system_vars['favicon']) ? $system_vars['favicon'] : "");
-        $Obj_System =       new System();
-        $Obj_Layout =       new Layout();
-        $cs_layout =        $Obj_Layout->get_css_checksum($page_vars['layoutID']);
-        $showCM =           $isAdmin && (!isset($mode) || ($mode!='details' && $mode!='print_form'));
-        $showLoading =      $isAdmin && ($page_vars['layoutID']!=2);
-        $this->push_content(
-            'html_top',
-            str_replace('%HOST%', trim($system_vars['URL'], '/'), DOCTYPE)."\n"
-            ."<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"".$system_vars['defaultLanguage']."\""
-            ." xml:lang=\"".$system_vars['defaultLanguage']."\">\n"
-            ."<head>\n"
-            ."<title>".strip_tags(convert_safe_to_php($page_vars['title']))."</title>\n"
-            ."<meta http-equiv=\"content-type\" content=\"text/html;"
-            ." charset=".(ini_get('default_charset') ? ini_get('default_charset') : "UTF-8")."\"/>\n"
-            ."<meta http-equiv=\"generator\" content=\"".System::get_item_version('system_family')." "
-            .System::get_item_version('codebase').".".$system_vars['db_version']."\"/>\n"
-            .($page_vars['meta_description'] ?
-                "<meta name=\"description\" content=\"".$page_vars['meta_description']."\"/>\n"
-             :
-                ""
-             )
-            .($page_vars['meta_keywords'] ?
-                "<meta name=\"keywords\" content=\"".$page_vars['meta_keywords']."\"/>\n"
-             :
-                ""
-             )
-        );
-        $this->push_content(
-            'head_top',
-            ($favicon ? "<link rel=\"shortcut icon\" href=\"".BASE_PATH."img/sysimg/".$favicon."\"/>\n" : "")
-            ."<link rel=\"search\" type=\"application/opensearchdescription+xml\""
-            ." title=\"".$system_vars['textEnglish']." Search\" href=\"".BASE_PATH."osd/\" />\n"
-            .(System::has_feature('Articles') ?
-                 "<link rel=\"alternate\" type=\"application/rss+xml\""
-                ." title=\"".$system_vars['textEnglish']." RSS Articles Feed\""
-                ." href=\"".BASE_PATH."rss/articles\" />\n"
-             :
-                ""
-             )
-            .(System::has_feature('Events') ?
-                 "<link rel=\"alternate\" type=\"application/rss+xml\""
-                ." title=\"".$system_vars['textEnglish']." RSS Events Feed\""
-                ." href=\"".BASE_PATH."rss/events\" />\n"
-             :
-                ""
-             )
-            .(System::has_feature('Jobs') ?
-                 "<link rel=\"alternate\" type=\"application/rss+xml\""
-                ." title=\"".$system_vars['textEnglish']." RSS Job Postings Feed\""
-                ." href=\"".BASE_PATH."rss/jobs\" />\n"
-             :
-                ""
-             )
-            .(System::has_feature('News') ?
-                 "<link rel=\"alternate\" type=\"application/rss+xml\""
-                ." title=\"".$system_vars['textEnglish']." RSS News Feed\""
-                ." href=\"".BASE_PATH."rss/news\" />\n"
-             :
-                ""
-             )
-            .(System::has_feature('Podcasting') ?
-                 "<link rel=\"alternate\" type=\"application/rss+xml\""
-                ." title=\"".$system_vars['textEnglish']." RSS Podcasts Feed\""
-                ." href=\"".BASE_PATH."rss/podcasts\" />\n"
-            :
-                ""
-            )
-        );
-        $this->push_content(
-            'style_include',
-            $Obj_System->draw_css_include()
-            .($mode!='details' ?
-                 "<link rel=\"stylesheet\" type=\"text/css\""
-                ." href=\"".BASE_PATH."css/layout/".$page_vars['layoutID']."/".$cs_layout."\" />"
-             :
-                ""
-             )
-            .(isset($page_vars) && trim($page_vars['theme']['style'])!='' ?
-                 "<link rel=\"stylesheet\" type=\"text/css\""
-                ." href=\"".BASE_PATH."css/theme/".$page_vars['theme']['ID']."/"
-                .dechex(crc32($page_vars['theme']['style']))."\" />"
-             :
-                ""
-             )
-        );
-        $this->push_content(
-            'style',
-            (isset($report_name) && $report_name=='system' ?
-                "@media screen { // Only appears for system report\n"
-                ."  .scrollbox { height: 140px; media: screen; overflow: auto; border: none; }\n"
-                ."}\n"
-             :
-                ""
-            )
-            .($isIE ?
-                 ".css3, .form_box,"
-                ." .shadow { behavior: url(".BASE_PATH."css/pie/".System::get_item_version('css_pie')."); }\n"
-            :
-                ""
-            )
-            .".zoom_text { font-size: "
-            .(isset($_COOKIE['textsize']) && $_COOKIE['textsize']=='big' ? "120" : "80")
-            ."%;}\r\n"
-            // Page
-            .(isset($page_vars) && trim($page_vars['style'])!='' ?
-            "\r\n"
-            ."/* [Page Style] */\r\n"
-            .$page_vars['style']
-            : "")
-            // Theme
-        );
-        $this->push_content('javascript_top', $Obj_System->draw_js_include(false, $CM_level));
-        $this->push_content(
-            'javascript',
-            "var \$J, _gaq, _paq, _onload, _onunload, ap_instances, base_url, currency_symbol,\n"
-            ."  currentLanguage, defaultDateFormat, defaultTimeFormat, fck_version, option_separator,\n"
-            ."  pwd_len_min, rating_blocks, site_title, system_family, valid_prefix;\n"
-            ."\$J =               jQuery;\n"
-            ."ap_instances =      [];\n"
-            ."base_url =          \"".BASE_PATH."\";\n"
-            ."cke_posting_fonts = ".(System::has_feature('Postings-allow-fonts-and-sizes') ? 1 : 0).";\n"
-            ."currency_symbol =   \"".$system_vars['defaultCurrencySymbol']."\";\n"
-            ."currentLanguage =   \""
-            .(isset($_SESSION['lang']) ? $_SESSION['lang'] : $system_vars['defaultLanguage'])."\"\n"
-            ."defaultDateFormat = \"".addslashes($system_vars['defaultDateFormat'])."\";\n"
-            ."defaultTimeFormat = \"".$system_vars['defaultTimeFormat']."\";\n"
-            ."option_separator =  \"".OPTION_SEPARATOR."\";\n"
-            ."pwd_len_min =       ".PWD_LEN_MIN.";\n"
-            ."rating_blocks =     [];\n"
-            ."site_title =        \"".$system_vars['textEnglish']."\";\n"
-            ."system_family =     \"".System::get_item_version('system_family')."\";\n"
-            ."valid_prefix =      \"vp_\"; // Used with controls in Custom_Form class\n"
-            .(
-                $system_vars['debug_no_internet']!=1 &&
-                $system_vars['google_analytics_key']!='' &&
-                $mode!='details' &&
-                $mode!='report' ?
-                    "(function (i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function () {\n"
-                    ."(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n"
-                    ."m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n"
-                    ."})(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n"
-                    ."ga('create', '".$system_vars['google_analytics_key']."');\n"
-                    ."ga('send', 'pageview');\n"
-                : ""
-             )
-            .(
-                $system_vars['debug_no_internet']!=1 &&
-                $system_vars['piwik_id'] &&
-                $mode!='details' &&
-                $mode!='report' ?
-                     "var _paq = _paq || [];\n"
-                    ."(function () {\n"
-                    ."  var u=document.location.protocol+\"//\"+document.location.hostname+\"/piwik/\";\n"
-                    ."  _paq.push(['setSiteId', ".$system_vars['piwik_id']."]);\n"
-                    ."  _paq.push(['setTrackerUrl', u+'piwik.php']);\n"
-                    ."  _paq.push(['trackPageView']);\n"
-                    ."  _paq.push(['enableLinkTracking']);\n"
-                    ."  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n"
-                    ."  g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'piwik.js';\n"
-                    ."  s.parentNode.insertBefore(g,s);\n"
-                    ."})();\n"
-                :
-                    ""
-            )
-        );
-        $this->push_content(
-            'javascript_bottom',
-            "addEvent(window,\"load\",_onload);\n"
-            ."addEvent(window,\"unload\",_onunload);\n"
-        );
-        if (
-        $print!=1 && (
-         ($page_vars['navsuite1ID']!='' && $page_vars['navsuite1ID']!='1') ||
-         ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
-         ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
-        )
-        ) {
-            $navsuiteObj = new \Nav\Suite();
-            $this->push_content('javascript_onload', $navsuiteObj->getJsPreload());
-        }
-        $anchor_ID = System::get_item_version('system_family').'_main_content';
-        $js_onload =
-        "  externalLinks();\n"
-        ."  initialise_tooltips();\n"
-        .($isIE ? "  initialise_constraints();\n" : "")
-        ."  ToolTips.attachBehavior();\n"
-        .($CM_level>0 ? "  CM_load();\n" : "")
-        .($showLoading ? "  if (popup_msg==='') { popup_hide_on_loaded(); }\n" : "");
-        $this->push_content('javascript_onload', $js_onload);
-        $this->push_content(
-            'javascript_onunload',
-            "  ToolTips.out();\n"
-            ."  EventCache.flush();\n"
-            ."  if (window.GUnload) {window.GUnload();}\n"
-        );
-        $this->push_content('head_bottom', "</head>\r\n");
-        $this->push_content(
-            'body_top',
-            "<body class=\""
-            .(isset($_COOKIE['textsize']) && $_COOKIE['textsize']=='big' ? "zoom_big" : "zoom_small")
-            ."\">"
-        );
-        $this->push_content(
-            'body',
-            "<form id='form' enctype='multipart/form-data' method='post' action='./' style='padding:0;margin:0;'>\r\n"
-            ."<div id='top' class='margin_none padding_none'>\r\n"
-            ."<a href=\"#".$anchor_ID."\" title=\"Main content begins here\" class='fl' style=\"display:none\">"
-            ."Skip to Main Content</a>\r\n"
-            .draw_form_field('limit', $limit, 'hidden')."\r\n"
-            .draw_form_field('offset', $offset, 'hidden')."\r\n"
-            .draw_form_field('filterExact', $filterExact, 'hidden')."\r\n"
-            .draw_form_field('filterField', $filterField, 'hidden')."\r\n"
-            .draw_form_field('filterValue', $filterValue, 'hidden')."\r\n"
-            .draw_form_field('anchor', $anchor, 'hidden')."\r\n"
-            .draw_form_field('bulk_update', $bulk_update, 'hidden')."\r\n"
-            .draw_form_field('command', '', 'hidden')."\r\n"
-            .draw_form_field('component_help', $component_help, 'hidden')."\r\n"
-            .draw_form_field('DD', $DD, 'hidden')."\r\n"
-            .draw_form_field('goto', $page, 'hidden')."\r\n"
-            .draw_form_field('mode', $mode, 'hidden')."\r\n"
-            .draw_form_field('MM', $MM, 'hidden')."\r\n"
-            .draw_form_field('print', $print, 'hidden')."\r\n"
-            .draw_form_field('report_name', $report_name, 'hidden')."\r\n"
-            .draw_form_field('rnd', dechex(mt_rand(0, mt_getrandmax())), 'hidden')."\r\n"
-            .draw_form_field('search_categories', $search_categories, 'hidden')."\r\n"
-            .draw_form_field('search_date_end', $search_date_end, 'hidden')."\r\n"
-            .draw_form_field('search_date_start', $search_date_start, 'hidden')."\r\n"
-            .draw_form_field('search_keywords', $search_keywords, 'hidden')."\r\n"
-            .draw_form_field('search_name', $search_name, 'hidden')."\r\n"
-            .draw_form_field('search_offset', $search_offset, 'hidden')."\r\n"
-            .draw_form_field('search_text', $search_text, 'hidden')."\r\n"
-            .draw_form_field('search_type', $search_type, 'hidden')."\r\n"
-            .draw_form_field('selectID', $selectID, 'hidden')."\r\n"
-            .draw_form_field('selected_section', $selected_section, 'hidden')."\r\n"
-            .draw_form_field('sortBy', $sortBy, 'hidden')."\r\n"
-            .draw_form_field('source', '', 'hidden')."\r\n"
-            .draw_form_field('submode', '', 'hidden')."\r\n"
-            .draw_form_field('targetID', '', 'hidden')."\r\n"
-            .draw_form_field('targetField', '', 'hidden')."\r\n"
-            .draw_form_field('targetFieldID', '', 'hidden')."\r\n"
-            .draw_form_field('targetReportID', '', 'hidden')."\r\n"
-            .draw_form_field('targetValue', '', 'hidden')."\r\n"
-            .draw_form_field('YYYY', $YYYY, 'hidden')."\r\n"
-            ."</div>"
-            ."\n<!-- Modal Popup mask -->\n"
-            ."<div id=\"popupMask\" style=\"display:none;\"></div>\n"
-            ."<div id=\"popupContainer\" style=\"display:none;\">\n"
-            ."  <div id=\"popupInner\">\n"
-            ."    <div id=\"popupTitleBar\">\n"
-            ."      <div id=\"popupTitle\"></div>\n"
-            ."      <div id=\"popupControls\">"
-            ."<img src=\"".BASE_PATH."img/spacer\" class=\"icons\" height=\"10\" width=\"10\""
-            ." style='background-position:-2590px 0px;' onclick=\"hidePopWin(null)\" alt='Close' /></div>"
-            ."    </div>\n"
-            ."    <div id=\"popupBody\"></div>\n"
-            ."  </div>\n"
-            ."</div>\n"
-            .($showLoading ? "<script type='text/javascript'>show_popup_please_wait();</script>\n" : "")
-        );
-        if (
-            Base::module_test('Church') &&
-            $system_vars['debug_no_internet']!=1 &&
-            $mode!='details' &&
-            $mode!='report'
-        ) {
-            $Obj_CBL = new \Component\BibleLinks;
-            $this->push_content('body', $Obj_CBL->draw());
-        }
-    }
-
-    public static function set_content($part, $content)
-    {
-        Page::$content[$part] = $content;
+        Output::push($part, $code);
     }
 
     public function serve_content()

@@ -1,14 +1,10 @@
 <?php
-define("VERSION_COMPONENT_GALLERY_THUMBNAILS", "1.0.35");
+define("VERSION_COMPONENT_GALLERY_THUMBNAILS", "1.0.36");
 /*
 Version History:
-  1.0.35 (2014-01-31)
-    1) Changes to internally used parameters in Component_Gallery_Thumbnails::_setup_load_images():
-         Old: filter_limit,  filter_order_by
-         New: results_limit, results_order
-    2) Now PSR-2 Compliant
+  1.0.36 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_gallery_thumbnails.txt)
 */
 class Component_Gallery_Thumbnails extends Component_Base
 {
@@ -296,7 +292,7 @@ class Component_Gallery_Thumbnails extends Component_Base
             return;
         }
         $this->_Obj_JL->setup_code();
-        Page::push_content('javascript', $this->_Obj_JL->get_js());
+        Output::push('javascript', $this->_Obj_JL->get_js());
         $this->_html.=  $this->_Obj_JL->get_html()."<br class='clear' />";
     }
 
@@ -359,7 +355,7 @@ class Component_Gallery_Thumbnails extends Component_Base
             ."#".$this->_safe_ID."_images div table td.gi_caption {\n"
             ."  height:".($this->_cp['caption_height'])."px;\n"
             ."}\n";
-        Page::push_content('style', $this->_css);
+        Output::push('style', $this->_css);
     }
 
     protected function _draw_image_centered($image)
@@ -527,13 +523,13 @@ class Component_Gallery_Thumbnails extends Component_Base
             ."',\n"
             ."  images :  ".$this->_safe_ID."_image_list\n"
             ."}\n";
-        Page::push_content('javascript', $js);
+        Output::push('javascript', $js);
         if (count($this->_images)) {
             $js_onload =
                  "  gallery_album_sortable_setup(\"".$this->_safe_ID."\","
                 ."\"".$this->_images[0]['parentID']."\","
                 ."\"".BASE_PATH.trim($page_vars['path'], '/')."\");\n";
-            Page::push_content('javascript_onload', $js_onload);
+            Output::push('javascript_onload', $js_onload);
         }
     }
 

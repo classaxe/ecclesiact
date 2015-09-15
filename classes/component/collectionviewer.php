@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.52');
+define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.53');
 /*
 Version History:
-  1.0.52 (2015-03-07)
-    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
+  1.0.53 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class CollectionViewer extends Base
@@ -479,7 +479,7 @@ class CollectionViewer extends Base
             return;
         }
         $this->_Obj_JL->setup_code();
-        \Page::push_content('javascript', $this->_Obj_JL->get_js());
+        \Output::push('javascript', $this->_Obj_JL->get_js());
         $this->_html.=  $this->_Obj_JL->get_html();
     }
 
@@ -543,7 +543,7 @@ class CollectionViewer extends Base
         $this->drawNavigationPodcastAlbums();
         $this->drawNavigationPodcastAuthors();
         $this->_html.= "</div>\n";
-        \Page::push_content('javascript_onload', "list_set_onclick_items('".$this->_safe_ID."_nav');\n");
+        \Output::push('javascript_onload', "list_set_onclick_items('".$this->_safe_ID."_nav');\n");
     }
 
     protected function drawNavigationPodcastAlbums()
@@ -1099,7 +1099,7 @@ class CollectionViewer extends Base
             ." of ".$this->_records_total
             ."</div>";
         if (!isset($_REQUEST['command']) || $_REQUEST['command']!=$this->_safe_ID."_load") {
-            \Page::push_content(
+            \Output::push(
                 "javascript",
                 "function ".$this->_safe_ID."_paging(offset) {\n"
                 ."  var post_vars='command=".$this->_safe_ID."_load&offset='+offset;\n"
@@ -1258,7 +1258,7 @@ class CollectionViewer extends Base
     protected function render()
     {
         global $print;
-        \Page::push_content('style', $this->_css);
+        \Output::push('style', $this->_css);
         $Obj_Podcast = new \Podcast;
         return $Obj_Podcast->draw_panel_box(
             $this->_cp['box'],

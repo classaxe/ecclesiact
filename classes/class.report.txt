@@ -1,3 +1,7 @@
+  1.0.86 (2015-03-23)
+    1) Report::handle_copy() now looks for $Obj->handleReportCopy() and uses that if it exists in place of old
+       camelCased variant $Obj->handle_report_copy()
+    2) Method get_version() renamed to getVersion() and made static
   1.0.85 (2015-01-04)
     1) Now uses OPTION_SEPARATOR constant not option_separator in Report::draw_form_view()
     2) Now PSR-2 Compliant

@@ -1,18 +1,10 @@
 <?php
-define ("VERSION_COMPONENT_FACEBOOK_LIKE","1.0.4");
+define ("VERSION_COMPONENT_FACEBOOK_LIKE","1.0.5");
 /*
 Version History:
-  1.0.4 (2012-11-02)
-    1) Bug fix for jquery call - was unescaped
-  1.0.3 (2012-10-28)
-    1) Component_Facebook_Like::_draw_content() now uses jquery to select target
-       element, not prototypejs
-  1.0.2 (2012-08-16)
-    1) Uses new API method and supports new options, such as 'show faces'
-  1.0.1 (2012-02-29)
-    1) Component_Facebook_Like::_draw_content() changed frameborder to 0
-  1.0.0 (2012-01-25)
-    1) Initial release
+  1.0.5 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 
 class Component_Facebook_Like extends Component_Base {
@@ -37,7 +29,7 @@ class Component_Facebook_Like extends Component_Base {
 
   protected function _draw_content(){
     global $page_vars;
-    Page::push_content('javascript',
+    Output::push('javascript',
        "function fb_like_button(key){\n"
       ."  var div, fjs, js;\n"
       ."  fjs = document.getElementsByTagName('script')[0];\n"
@@ -56,10 +48,10 @@ class Component_Facebook_Like extends Component_Base {
       ."  fjs.parentNode.insertBefore(js, fjs);\n"
       ."};\n"
     );
-    Page::push_content('javascript_onload',
+    Output::push('javascript_onload',
       "  fb_like_button('2393249470');\n"
     );
-    Page::push_content('body_top',
+    Output::push('body_top',
       "<div id=\"fb-root\"></div>"
     );
     $this->_html.= "<div id=\"fb_like\" class=\"fb-like\"></div>";

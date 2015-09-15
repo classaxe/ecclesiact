@@ -1,11 +1,10 @@
 <?php
-define('VERSION_PAYMENT_METHOD','1.0.10');
+define('VERSION_PAYMENT_METHOD','1.0.11');
 /*
 Version History:
-  1.0.10 (2014-01-29)
-    1) Payment_Method::draw_selector() changes to JS for loadTotalCost() to add extra newline
+  1.0.11 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.payment_method.txt)
 */
 class Payment_Method extends Record{
 
@@ -137,7 +136,7 @@ class Payment_Method extends Record{
     $label_width =          200;
     $field_width =          300;
     $pm =                   $this->draw_selector('TMethod',$field_width,$type);
-    Page::push_content('javascript',$pm['js']);
+    Output::push('javascript',$pm['js']);
     if ($this->get_method_count()==1){
       $this->get_first_method($method_text,$method_value);
     }

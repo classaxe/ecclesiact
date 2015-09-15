@@ -1,19 +1,11 @@
 <?php
-define('MODULE_FORUM_VERSION','1.0.24');
+define('MODULE_FORUM_VERSION','1.0.25');
 
 /*
 Version History:
-  1.0.24 (2012-10-02)
-    1) Tweak to call to Forum::do_submode() for case 'save_your_settings' -
-       Call to Person::get_field() implied that this function takes two parameters,
-       it only takes one.
-  1.0.23 (2012-09-09)
-    1) Changes to Forum::install() and Forum::uninstall() to avoid native DB access
-  1.0.22 (2011-07-17)
-    1) Changed five references from Component::function_name() to
-       Forum::render()
+  1.0.25 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in module.forum.txt)
 */
 
 class Forum extends Posting {
@@ -986,13 +978,13 @@ INSTALL_SQL;
     $msg = implode("",$msg);
     $ObjFS = new FileSystem;
     $css_version = trim(substr($ObjFS->get_line(SYS_MODULES."module.forum.css"),3));
-    Page::push_content(
+    Output::push(
       'head_top',
       '<link rel="stylesheet" type="text/css" href="'
       .$page.'?'
       .'submode=css&amp;v='.$css_version.'" />'
     );
-    Page::push_content(
+    Output::push(
       'javascript',
        "function forum_action(request,div,instance) {\n"
       ."  if (geid('forum_status_'+instance)) {\n"

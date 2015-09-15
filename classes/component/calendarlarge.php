@@ -1,13 +1,15 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_CALENDAR_LARGE", "1.0.29");
+define("VERSION_NS_COMPONENT_CALENDAR_LARGE", "1.0.30");
 /*
 Version History:
-  1.0.29 (2015-03-11)
-    1) Moved in here from class.component_calendar_large.php
-    2) Extensivly refactored, and now uses Block Layout renderer for context menu
-    3) Now fully PSR-2 Compliant
+  1.0.30 (2015-09-13)
+    1) Many changes following move of output streaming from Page into Output class:
+         Page::push_content()           ->      Output::push()
+         Page::pop_content()            ->      Output::pull()
+         Page::$content = array()       ->      Output::reset()
+         isset(Page::$content[$part])   ->      Output::present($part)
 
 */
 class CalendarLarge extends Base
@@ -86,14 +88,14 @@ class CalendarLarge extends Base
             'html' => ''
         );
         $html = $this->draw($instance, $args, $disable_params);
-        if (isset(\Page::$content['style'])) {
+        if (\Output::isPresent('style')) {
             $html.=
                  "<style type='text/css'>"
-                .implode("\n", \Page::$content['style'])
+                .\Output::pull('style')
                 ."</style>";
         }
-        if (isset(\Page::$content['style_include'])) {
-            $html.= implode("\n", \Page::$content['style_include']);
+        if (\Output::isPresent('style_include')) {
+            $html.= \Output::pull('style_include');
         }
         $html = absolute_path($html, $base);
         $html = str_replace(
@@ -110,7 +112,7 @@ class CalendarLarge extends Base
         $html = preg_replace("/ onmouseover=[^\>]+\>/", ">", $html);
         $html = preg_replace("/<a class=\"icon_add_new\"(.+)><\/a\>/", "", $html);
 
-  //    $html = "<textarea style='width:100%;height:600px;'>".print_r(\Page::$content,true)."</textarea>";
+  //    $html = "<textarea style='width:100%;height:600px;'>".print_r(\Output::$content, true)."</textarea>";
         $out['html'] = $html;
         return $out;
     }
@@ -309,8 +311,8 @@ class CalendarLarge extends Base
             ."    geid_set('show_'+cal_large_categories[i],state);\n"
             ."  }\n"
             ."}";
-        \Page::push_content('javascript', $js);
-        \Page::push_content('javascript_onload', "  cal_setup();\n");
+        \Output::push('javascript', $js);
+        \Output::push('javascript_onload', "  cal_setup();\n");
     }
 
     protected function drawUserControls()
@@ -541,7 +543,7 @@ class CalendarLarge extends Base
                     ."background-color:#".$item['color_background'].";} /* ".$item['textEnglish']." */";
             }
         }
-        \Page::push_content(
+        \Output::push(
             'style',
             "/* Style for category highlighting */\n".$this->_css
         );

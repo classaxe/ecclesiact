@@ -1,9 +1,9 @@
 <?php
-define ("VERSION_CART","1.0.6");
+define ("VERSION_CART","1.0.7");
 /*
 Version History:
-  1.0.6 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.7 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -18,7 +18,7 @@ class Cart {
   public static function draw_cart_controls_noskin($safeID,$productID,$quantity,$offset){
     $field =    "cart_".$productID;
     $value =    $quantity;
-    Page::push_content('javascript_onload',"  afb('".$field."','qty','');");
+    Output::push('javascript_onload',"  afb('".$field."','qty','');");
     return
        "<div class='cart_noskin'><input id=\"".$field."\" name=\"".$field."\" type=\"text\""
       ." value=\"".$value."\" class=\"formField\" size='2'"
@@ -43,7 +43,7 @@ class Cart {
     $field =    "cart_".$productID;
     $value =    $quantity;
     Cart::_draw_cart_controls_skin_css($cart_skin);
-    Page::push_content('javascript_onload',"  afb('".$field."','cart','');");
+    Output::push('javascript_onload',"  afb('".$field."','cart','');");
     return
        "<div class='cart_skin'>\n"
       ."  <img id=\"".$field."_up\" alt='+' src=\"".BASE_PATH."img/spacer\" class='cart_skin_bg cart_up' />\n"
@@ -72,7 +72,7 @@ class Cart {
          ".cart_skin_bg {\n"
         ."  background-image:url(".BASE_PATH.trim($cart_skin,"./").");\n"
         ."}\n";
-      Page::push_content('style',$css);
+      Output::push('style',$css);
       $shown = true;
     }
   }

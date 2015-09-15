@@ -1,3 +1,5 @@
+  1.0.10 (2014-01-21)
+    1) Changes to allow for searching by communityID
   1.0.9 (2011-12-08)
     1) Changes to Search::draw() combine functions of 'name' and 'text' fields
        into one when searching to simplify interface

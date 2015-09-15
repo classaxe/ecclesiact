@@ -1,0 +1,9 @@
+  1.0.3 (2012-10-28)
+    1) Changes to use jquery for elemet selection, not prototypejs
+  1.0.2 (2012-10-09)
+    1) Now has link to edit categories used
+  1.0.1 (2012-10-05)
+    1) Better error handling for missing listtype
+    2) Improved formatting of form data
+  1.0.0 (2012-10-05)
+    1) Initial release

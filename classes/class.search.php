@@ -1,12 +1,11 @@
 <?php
-define('VERSION_SEARCH','1.0.10');
+define('VERSION_SEARCH','1.0.11');
 
 /*
 Version History:
-  1.0.10 (2014-01-21)
-    1) Changes to allow for searching by communityID
+  1.0.11 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.search.txt)
 */
 class Search extends System {
   private $_cp;
@@ -99,7 +98,7 @@ class Search extends System {
     $search_keywordIDs =                    Keyword::get_keywordIDs_list_by_keywords_list($search_keywords);
     $systemIDs_csv =                        System::get_IDs_for_URLs($cp['sites_list']);
     $global_date_range =                    System::get_global_date_range($systemIDs_csv);
-    Page::push_content(
+    Output::push(
        "javascript",
        "// Used with Search Controls:\n"
       ."_global_date_range_min = '".$global_date_range['min']."';\n"
@@ -151,7 +150,7 @@ class Search extends System {
        ."<script type='text/javascript'>search_setup_date_range()</script>"
        ."    </td>"
        ."  </tr>\n";
-    Page::push_content(
+    Output::push(
        "javascript",
        "addEvent(window,\"load\",function(e){ date_selector_onchange('_search_date_start');date_selector_onchange('_search_date_end')});"
     );

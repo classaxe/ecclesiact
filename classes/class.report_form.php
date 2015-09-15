@@ -1,10 +1,10 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.64");
+define("VERSION_REPORT_FORM", "1.0.65");
 
 /*
 Version History:
-  1.0.64 (2015-08-09)
-    1) Bug fix for Report_Form::_field_has_inline_label() to display label for type 'sample_buttonstyle'
+  1.0.65 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -360,7 +360,7 @@ class Report_Form extends Report
     protected function _draw_js()
     {
         global $msg;
-        Page::push_content(
+        Output::push(
             'javascript',
             $this->_get_js_form_code(
                 $this->_mode,

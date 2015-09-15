@@ -1,28 +1,10 @@
 <?php
-define ("VERSION_PRODUCT_CATALOGUE","1.0.31");
+define ("VERSION_PRODUCT_CATALOGUE","1.0.32");
 /*
 Version History:
-  1.0.31 (2012-10-17)
-    1) Product_Catalogue::_draw_setup_load_product_groupings() now sets item field
-       'has_second_row' for each item loaded
-    2) Product_Catalogue::_draw_item_description() now checks each item's
-       'has_second_row' value to decide whether or not to skip.
-    3) Product_Catalogue::_has_catalogue_row_description() now only returns true
-       where an entry HAS an image value, the column list includes Image and
-       the $this->_image flag is set indicating that images are to be shown
-    4) Product_Catalogue::_draw_item_credit_memo() now spans one additional column
-       since quantity was removed from columns count now it spans two rows.
-  1.0.30 (2012-09-19)
-    1) Product_Catalogue::_draw_calc_colspan() no longer includes quantity column
-       when calculating colspan since this field now spans two rows
-  1.0.29 (2012-09-03)
-    1) Changes to Product_Catalogue::_draw_item_credit_memo() to use
-       Person object to discover username for tooltip message, not codebase
-       function get_userPUsername_by_ID() as before
-  1.0.28 (2012-01-11)
-    1) Removed debug code in Product_Catalogue::_draw_refund_items()
+  1.0.32 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.product_catalogue.txt)
 */
 
 class Product_Catalogue {
@@ -345,7 +327,7 @@ class Product_Catalogue {
         }
       }
     }
-    Page::push_content(
+    Output::push(
       'javascript',
       "var ref_items_arr = [".implode(",",$ref_arr)."];\n"
     );

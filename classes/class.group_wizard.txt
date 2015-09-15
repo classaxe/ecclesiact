@@ -1,3 +1,6 @@
+  1.0.13 (2013-10-27)
+    1) Group_Wizard::_setup_get_targetIDs() now uses Record::set_group_concat_max_len()
+       to change MYSQL session variable group_concat_max_len
   1.0.12 (2013-05-07)
     1) Now sets group membership descriptions on affected users and contacts
   1.0.11 (2013-05-01)

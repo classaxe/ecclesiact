@@ -1,12 +1,11 @@
 <?php
-define("VERSION_REPORT_REPORT", "1.0.29");
+define("VERSION_REPORT_REPORT", "1.0.30");
 
 /*
 Version History:
-  1.0.29 (2015-01-10)
-    1) Now PSR-2 Compliant
+  1.0.30 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.report_report.txt)
 */
 
 class Report_Report extends Report
@@ -1187,7 +1186,7 @@ class Report_Report extends Report
         if ($ajax_mode) {
             return array('html'=>$this->_html,'js'=>$this->_js);
         }
-        Page::push_content('javascript', $this->_js);
+        Output::push('javascript', $this->_js);
         return $this->_html;
     }
 

@@ -1,13 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_INLINE_SIGNIN","1.0.2");
+  define ("VERSION_COMPONENT_INLINE_SIGNIN","1.0.3");
 /*
 Version History:
-  1.0.2 (2014-01-28)
-    1) Newline after js onload code
-  1.0.1 (2012-06-14)
-    1) Changed maxlength of username to 50 chars (was 20), and password to 25 (was 20)
-  1.0.0 (2011-12-29)
-    1) Initial release - moved from Component class
+  1.0.3 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Inline_Signin extends Component_Base {
 
@@ -62,7 +59,7 @@ class Component_Inline_Signin extends Component_Base {
       break;
     }
     if ($cp['autocomplete_disabled']==1){
-      Page::push_content('javascript_onload',"  autocomplete_off();\n");
+      Output::push('javascript_onload',"  autocomplete_off();\n");
     }
     $out.=
        "<div id=\"topbar_signin\">\n"

@@ -1,9 +1,9 @@
 <?php
-define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.20');
+define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.21');
 /*
 Version History:
-  1.0.20 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.21 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -217,7 +217,7 @@ class Community_Member_Summary extends Community_Member
             ."  table.summary_data .ctrl,    table.summary_data .hide_hint    { display: none; }\n"
             ."  table.summary_signoff .ctrl, table.summary_signoff .hide_hint { display: none; }\n"
             ."}\n";
-        Page::push_content('style', $css);
+        Output::push('style', $css);
     }
 
     protected function _draw_js()
@@ -270,7 +270,7 @@ class Community_Member_Summary extends Community_Member
             ."    }\n"
             ."  }\n"
             ."}\n";
-        Page::push_content('javascript', $js);
+        Output::push('javascript', $js);
     }
 
     protected function _draw_nav()

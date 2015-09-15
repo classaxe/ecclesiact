@@ -1,10 +1,9 @@
 <?php
-define("VERSION", "2.0.84");
+define("VERSION", "2.0.85");
 /*
 Version History:
-  2.0.84 (2015-08-29)
-    1) PSR-2 tidyup
-    2) Handling of CRON mode no longer includes codebase between job windows - Footprint went from 4.4MB to 0.7MB
+  2.0.85 (2015-09-10)
+    1) Added animate.css and bootstrap.css to css list
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -443,6 +442,16 @@ function css()
     img_set_cache(3600*24*7); // expire in one year
     header("Content-type: text/css");
     switch ($_REQUEST['submode']){
+        case "community":
+        case "labels":
+        case "spectrum":
+        case "tcal":
+            readfile(SYS_STYLE.($_REQUEST['submode']).'.css');
+            break;
+        case "animate.css":
+        case "jquery.fancybox.css":
+            readfile(SYS_STYLE.($_REQUEST['submode']));
+            break;
         case "breadcrumbs":
             if (!isset($_REQUEST['ID'])) {
                 return "";
@@ -469,12 +478,6 @@ function css()
             }
             $record =     get_css_for_block_layout($_REQUEST['ID']);
             print $record['listings_css'];
-            break;
-        case "community":
-            readfile(SYS_STYLE."community.css");
-            break;
-        case "labels":
-            readfile(SYS_STYLE."labels.css");
             break;
         case "layout":
             if (!isset($_REQUEST['ID'])) {
@@ -512,9 +515,6 @@ function css()
         case "pie":
             header('Content-type: text/x-component');
             readfile(SYS_STYLE."pie.htc");
-            break;
-        case "spectrum":
-            readfile(SYS_STYLE."spectrum.css");
             break;
         case "system":
             $isIE_lt7 = (
@@ -609,18 +609,12 @@ function css()
                  : "");
             return;
         break;
-        case "tcal":
-            readfile(SYS_STYLE."tcal.css");
-            break;
         case "theme":
             if (!isset($_REQUEST['ID'])) {
                 return "";
             }
             $record =     get_css_for_theme($_REQUEST['ID']);
             print $record['style'];
-            break;
-        case "tcal":
-            readfile(SYS_STYLE."tcal.css");
             break;
         case "ws":
             header('Content-Type: text/css');

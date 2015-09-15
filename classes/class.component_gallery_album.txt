@@ -1,3 +1,6 @@
+  1.0.71 (2014-04-03)
+    1) Last build prevented valid configuration of NO root folder which caused some issues
+       This build now correctly handles that circumstance
   1.0.70 (2014-03-20)
     1) Changes to exit cleanly if specified root album doesn't exist and to issue
        404 if root album or extended path fail to find a valid match to keep

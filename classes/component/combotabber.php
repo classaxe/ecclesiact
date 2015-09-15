@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_COMBO_TABBER", "1.0.11");
+define("VERSION_NS_COMPONENT_COMBO_TABBER", "1.0.12");
 /*
 Version History:
-  1.0.11 (2015-03-17)
-    1) Moved from Component_Combo_Tabber and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.12 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class ComboTabber extends Base
@@ -335,7 +334,7 @@ class ComboTabber extends Base
         if ($this->_cp['calendar_small.show']) {
             $this->_html.= "<div style='padding:5px 0;'></div>";
         }
-        \Page::pushContent(
+        \Output::push(
             'javascript_onload',
             "  $('#section_".$this->_selected_section."').parent()."
             ."height($('#section_".$this->_selected_section."').height());\n"

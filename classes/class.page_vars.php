@@ -1,13 +1,11 @@
 <?php
-define('VERSION_PAGE_VARS', '1.0.25');
+define('VERSION_PAGE_VARS', '1.0.26');
 /*
 Version History:
-  1.0.24 (2015-01-02)
-    1) Added provision to ban msnbot and bingbot if load is too high
-    2) Now Page_Vars::_get_vars_for_mode() sets ID for details, export, print_form and report
-    3) Now PSR-2 Compliant
+  1.0.26 (2015-09-12)
+    1) Page_Vars::_swap_layout_if_other_language() call to Layout::get_language_options() now getLanguageOptions()
+    2) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.page_vars.txt)
 */
 class Page_Vars extends Page
 {
@@ -94,8 +92,8 @@ class Page_Vars extends Page
                         $this->_vars['path']
                     );
                     $this->_vars['content'] = $out['html'];
-                    Page::push_content('javascript', $out['javascript']);
-                    Page::push_content('javascript_onload_bottom', $out['javascript_onload_bottom']);
+                    Output::push('javascript', $out['javascript']);
+                    Output::push('javascript_onload_bottom', $out['javascript_onload_bottom']);
                 } else {
                     History::track();
                 }
@@ -517,7 +515,7 @@ class Page_Vars extends Page
         if ($_SESSION['lang']==$Obj_Layout->get_field('language')) {
             return;
         }
-        $options = $Obj_Layout->get_language_options();
+        $options = $Obj_Layout->getLanguageOptions();
         foreach ($options as $option) {
             if ($_SESSION['lang']==$option['language']) {
                 $this->_vars['layoutID'] =    $option['ID'];

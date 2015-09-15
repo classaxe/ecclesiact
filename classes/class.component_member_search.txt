@@ -1,3 +1,11 @@
+  1.0.12 (2014-03-28)
+    1) Now has additional CPs:
+         'filter_type'
+         'show_range_ring'
+         'show_start_ring'
+    2) Component_Member_Search::_get_query_limit_for_filter() now filters on type
+    2) Component_Member_Search::_setup_lookup_search_location() now remembers
+       search_area to provide for range ring indicating certainty of search location
   1.0.11 (2013-12-04)
     1) Tweaks to search dialog to remove extra HR
     2) Simplified draw() routine with new draw_results() method

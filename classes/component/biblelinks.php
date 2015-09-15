@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define('VERSION_NS_COMPONENT_BIBLE_LINKS', '1.0.1');
+define('VERSION_NS_COMPONENT_BIBLE_LINKS', '1.0.2');
 /*
 Version History:
-  1.0.1 (2015-03-04)
-    1) Moved from Component_Bible_Links and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -40,7 +39,7 @@ class BibleLinks extends Base
     {
         $this->setup($instance, $args, $disable_params);
         $this->drawControlPanel(true);
-        \Page::push_content(
+        \Output::push(
             'style',
             "a.rtBibleRef       { text-decoration: none; "
             .($this->_cp['link_bold'] ? "font-weight: bold; " : "")
@@ -48,7 +47,7 @@ class BibleLinks extends Base
             ."}\n"
             ."a.lbsBibleRef:hover { text-decoration: underline; }\n"
         );
-        \Page::push_content(
+        \Output::push(
             "body_bottom",
             "<script type=\"text/javascript\">\n"
             ."var refTagger = {\n"

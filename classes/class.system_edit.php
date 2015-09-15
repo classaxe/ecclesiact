@@ -1,10 +1,11 @@
 <?php
-define('VERSION_SYSTEM_EDIT', '1.0.33');
+define('VERSION_SYSTEM_EDIT', '1.0.34');
 
 /*
 Version History:
-  1.0.33 (2015-03-08)
-    1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
+  1.0.34 (2015-09-12)
+    1) Call to Layout::get_selector_sql() now  Layout::getSelectorSql()
+    2) References to Page::push_content() now changed to Output::push()
 
 */
 class System_Edit extends System
@@ -293,12 +294,12 @@ class System_Edit extends System
     private function _drawCss()
     {
         $base_path = ($this->record['ID']==SYS_ID ? "/" : trim($this->record['URL'], '/')."/");
-        Page::push_content(
+        Output::push(
             'style_include',
             "<link rel=\"stylesheet\" type=\"text/css\""
             ." href=\"".$base_path."css/system/nocache/".dechex(mt_rand(0, mt_getrandmax()))."\" />"
         );
-        Page::push_content(
+        Output::push(
             'style',
             ".settings_group_header { padding:1px 2px 1px 2px; font-size: 80%; }\n"
             .".settings_group { margin: 0 2px 10px 2px; padding:1px; border:1px solid #c0c0c0;"
@@ -320,7 +321,7 @@ class System_Edit extends System
             break;
             case 'save_and_close':
                 if ($this->_msg=='') {
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  if (window.opener && window.opener.geid('form')){\n"
                         ."    window.opener.geid('anchor').value='row_".$this->_get_ID()."';\n"
@@ -332,7 +333,7 @@ class System_Edit extends System
                 }
                 break;
             default:
-                Page::push_content(
+                Output::push(
                     'javascript_onload',
                     "  if (window.opener && window.opener.geid('form')){\n"
                     ."    window.opener.geid('anchor').value='row_".$this->_get_ID()."';\n"
@@ -1034,7 +1035,7 @@ class System_Edit extends System
                 $this->record['defaultLayoutID'],
                 "selector",
                 "608px",
-                Layout::get_selector_sql(false)
+                Layout::getSelectorSql(false)
             )
             ."</div>\n"
             ."    <div class='clr_b'></div>\n"

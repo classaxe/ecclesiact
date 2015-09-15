@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define('VERSION_NS_COMPONENT_BREADCRUMBS', '1.0.5');
+define('VERSION_NS_COMPONENT_BREADCRUMBS', '1.0.6');
 /*
 Version History:
-  1.0.5 (2015-03-08)
-    1) Moved from class.component_breadcrumbs.php and reworked to use namespaces
-    2) Now with much more modern component setup
+  1.0.6 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Breadcrumbs extends Base
@@ -76,7 +75,7 @@ class Breadcrumbs extends Base
             .$this->_cp['color_text'].','
             .$this->_cp['color_text_over']
             ;
-            \Page::push_content("style_include", "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css."\" />");
+            \Output::push("style_include", "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css."\" />");
         }
         $URL = \Page::get_URL($page_vars);
         $URL = (substr($URL, 0, strlen(BASE_PATH))==BASE_PATH ?

@@ -1,11 +1,11 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_DRAWNAV', '1.0.3');
+define('VERSION_NS_NAV_DRAWNAV', '1.0.4');
 /*
 Version History:
-  1.0.3 (2015-08-29)
-    1) Major refactoring to streamline code for drawing horizontal and vertical nav menus into one function
+  1.0.4 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class DrawNav
@@ -66,7 +66,7 @@ class DrawNav
         if (!$this->navsuite['navstyle_css']) {
             return;
         }
-        \Page::push_content(
+        \Output::push(
             'style',
             str_replace(
                 '#ID',
@@ -201,7 +201,7 @@ class DrawNav
 
     protected function drawSDMenuJS()
     {
-        \Page::push_content(
+        \Output::push(
             'javascript_onload',
             "  new SDMenu("
             ."'nav_root_".$this->nav."',"

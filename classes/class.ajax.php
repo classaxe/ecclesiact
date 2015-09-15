@@ -1,5 +1,5 @@
 <?php
-define('VERSION_AJAX','1.0.24');
+define('VERSION_AJAX','1.0.25');
 /*
 http://laptop.cicbv.ca/ajax/?rs=serve_lookup_report&rst=&rsrnd=12342c424&rsargs[]=1933367189&rsargs[]=%60PUsername%60&rsargs[]=3&rsargs[]=an
 http://laptop.cicbv.ca/ajax/?rs=serve_config&rsrnd=12342c424&rsargs[]=http://www.ecclesiact.com
@@ -8,9 +8,8 @@ http://testportal.auroraonline.com/cicbv/ajax/?rs=serve_lookup_report&rst=&rsrnd
 
 
 Version History:
-  1.0.24 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-    2) Fix to internal reference for get_version() to getVersion()
+  1.0.25 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Ajax {
@@ -120,7 +119,7 @@ class Ajax {
       $modes[] =  $match_typeID;
     }
     // Begin assembling output:
-    Page::push_content(
+    Output::push(
       'javascript',
        "sajax.request_".$_control_num." = function(){\n"
       ."  sajax.lookup_wait(".$_control_num.",1);\n"
@@ -236,7 +235,7 @@ class Ajax {
     $total_ship_taxes = (isset($total_ship_taxes) ? sanitize('html',$total_ship_taxes) : 0);
     switch ($method) {
       case 'FEDEX':
-        Page::push_content(
+        Output::push(
           'javascript',
            "sajax.callback_".$id." = function(_data) {\n"
           ."  geid('ajax_result_fees_shipping_wait').style.display = 'inline';\n"

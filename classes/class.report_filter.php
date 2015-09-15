@@ -1,11 +1,10 @@
 <?php
-define('VERSION_REPORT_FILTER','1.0.16');
+define('VERSION_REPORT_FILTER','1.0.17');
 /*
 Version History:
-  1.0.16 (2014-02-18)
-    1) Refreshed fields list - now declared as a class constant
+  1.0.17 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.report_filter.txt)
 */
 class Report_Filter extends Record {
   const fields = 'ID, archive, archiveID, deleted, systemID, destinationID, destinationType, label, reportID, seq, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
@@ -314,7 +313,7 @@ class Report_Filter extends Record {
     $resource_url =         BASE_PATH.trim($page_vars['path'],'/');
     $js = "";
     if (!$js_started){
-      Page::push_content('javascript_onload',"  report_filter_setup();\n");
+      Output::push('javascript_onload',"  report_filter_setup();\n");
       $js.=
          "// ***********************\n"
         ."// * Report Filters data *\n"
@@ -357,7 +356,7 @@ class Report_Filter extends Record {
       ."s:".($this->_isSYSADMIN    && count($this->_filters_arr['system'])>1 ? 1: 0).", "
       ."p:".(                         count($this->_filters_arr['person'])>1 ? 1: 0)
       ."}\n";
-    Page::push_content('javascript',$js);
+    Output::push('javascript',$js);
   }
 
   private function _draw_filters_setup($reportID,$report_name){

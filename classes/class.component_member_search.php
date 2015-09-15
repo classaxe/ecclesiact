@@ -1,17 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_MEMBER_SEARCH","1.0.12");
+  define ("VERSION_COMPONENT_MEMBER_SEARCH","1.0.13");
 /*
 Version History:
-  1.0.12 (2014-03-28)
-    1) Now has additional CPs:
-         'filter_type'
-         'show_range_ring'
-         'show_start_ring'
-    2) Component_Member_Search::_get_query_limit_for_filter() now filters on type
-    2) Component_Member_Search::_setup_lookup_search_location() now remembers
-       search_area to provide for range ring indicating certainty of search location
+  1.0.13 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_member_search.txt)
 */
 class Component_Member_Search extends Component_Base {
   protected $_Obj_Map;
@@ -225,7 +218,7 @@ class Component_Member_Search extends Component_Base {
 
   protected function _draw_js(){
     $dist_arr = explode(',',$this->_cp['radius_distances']);
-    Page::push_content(
+    Output::push(
       'javascript',
        "function ".$this->_safe_ID."_search(btn){\n"
       ."  if(\n"

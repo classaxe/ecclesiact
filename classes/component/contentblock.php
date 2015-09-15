@@ -1,12 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_CONTENT_BLOCK", "1.0.1");
+define("VERSION_NS_COMPONENT_CONTENT_BLOCK", "1.0.2");
 /*
 Version History:
-  1.0.1 (2015-03-17)
-    1) Moved from Component_Content_Block and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class ContentBlock extends Base
@@ -41,7 +40,7 @@ class ContentBlock extends Base
             $this->_record['style'] &&
             preg_replace('/\s+/', '', $this->_record['style'])!='.content_block_'.$this->_record['name'].'{}'
         ) {
-            \Page::push_content(
+            \Output::push(
                 'style',
                 "/* [Content Block: ".$this->_cp['name']."] */\r\n"
                 .$this->_record['style']

@@ -1,3 +1,5 @@
+  1.0.44 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.43 (2014-02-06)
     1) Now invokes Report_Form_Field_Lookup class to handle Ajax lookup
   1.0.42 (2014-01-06)

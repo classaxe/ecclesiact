@@ -1,10 +1,9 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.131');
+define('VERSION_REPORT_COLUMN', '1.0.132');
 /*
 Version History:
-  1.0.131 (2015-08-09)
-    1) Code for Report_Column::draw_form_field() types 'sample_buttonstyle' and 'sample_navsuite' now
-       moved to helper classes that only show when navstyle_type is 'Image'
+  1.0.132 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Report_Column extends Record
@@ -21,7 +20,7 @@ class Report_Column extends Record
 
     public function attach_behaviour($field, $type, $args = "")
     {
-        Page::push_content('javascript_onload', "  afb(\"".$field."\",\"".$type."\",\"".$args."\");\n");
+        Output::push('javascript_onload', "  afb(\"".$field."\",\"".$type."\",\"".$args."\");\n");
     }
 
     public function bulk_update(&$data, $bulk_update, $field, $value)
@@ -52,7 +51,7 @@ class Report_Column extends Record
                 break;
             }
         }
-        Page::push_content('javascript_onload', "  combo_selector_set('$field','$width');\n");
+        Output::push('javascript_onload', "  combo_selector_set('$field','$width');\n");
         return
              draw_form_field($field, '', 'hidden')
             ."<table class='minimal' style='width:".$width."'>\n"
@@ -909,7 +908,7 @@ class Report_Column extends Record
                     asort($value);
                     $value =      implode("\n", $value);
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
                     );
@@ -1280,7 +1279,7 @@ class Report_Column extends Record
                     for ($i=0; $i<$formFieldSpecial; $i++) {
                         $spans[] = "'".$field."_".$i."'";
                     }
-                    Page::push_content('javascript', "var spans_mb_".$field." = [".implode(",", $spans)."];");
+                    Output::push('javascript', "var spans_mb_".$field." = [".implode(",", $spans)."];");
                     $out = "<div class='section_sub_tabs'>\n";
                     for ($i=0; $i<$formFieldSpecial; $i++) {
                         $out.=
@@ -1364,7 +1363,7 @@ class Report_Column extends Record
                             }
                         }
                     }
-                    Page::push_content('javascript', "var spans_html_".$field." = [".implode(",", $spans)."];");
+                    Output::push('javascript', "var spans_html_".$field." = [".implode(",", $spans)."];");
                     $out =
                         "<div class='section_sub_tabs'>\n";
                     for ($i=0; $i<count($supported); $i++) {
@@ -1684,7 +1683,7 @@ class Report_Column extends Record
                 case "notes":
                     $height = (int)($height ? $height : 200);
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
                     );
@@ -1708,7 +1707,7 @@ class Report_Column extends Record
                     asort($value);
                     $value = implode("\n", $value);
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
                     );
@@ -1730,7 +1729,7 @@ class Report_Column extends Record
                     break;
                 case "php":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
                     );
@@ -2086,7 +2085,7 @@ class Report_Column extends Record
                         ." onclick=\"CKFinder.Popup('"
                         .BASE_PATH."js/ckfinder/"
                         ."',null,null,set_serverfile_".get_js_safe_ID($field).")\" />";
-                    Page::push_content(
+                    Output::push(
                         'javascript',
                         "function set_serverfile_".get_js_safe_ID($field)."(fileUrl){"
                         ." geid('".$field."').value = fileUrl; }"
@@ -2101,7 +2100,7 @@ class Report_Column extends Record
                         ." onclick=\"CKFinder.Popup('"
                         .BASE_PATH."js/ckfinder/"
                         ."',null,null,set_serverfilefolder_".get_js_safe_ID($field).")\" />";
-                    Page::push_content(
+                    Output::push(
                         'javascript',
                         "function set_serverfilefolder_".get_js_safe_ID($field)."(fileUrl){"
                         ." var fileUrl_arr = fileUrl.split('/');fileUrl_arr.pop();"
@@ -2156,7 +2155,7 @@ class Report_Column extends Record
                          :
                             ""
                         );
-                    Page::push_content(
+                    Output::push(
                         'javascript',
                         "function set_serverfile_".$field."(fileUrl){ geid('".$field."').value = fileUrl; }"
                     );
@@ -2166,15 +2165,15 @@ class Report_Column extends Record
                     static $_swatch_code_seen=false;
                     if (!$_swatch_code_seen) {
                         $_swatch_code_seen = true;
-                        Page::push_content(
+                        Output::push(
                             'javascript_onload',
                             'setupSwatches();'
                         );
-                        Page::push_content(
+                        Output::push(
                             'javascript_top',
                             '<script type="text/javascript" src="/sysjs/spectrum"></script>'
                         );
-                        Page::push_content(
+                        Output::push(
                             'style_include',
                             '<link rel="stylesheet" href="/css/spectrum" />'
                         );
@@ -2214,7 +2213,7 @@ class Report_Column extends Record
                     break;
                 case "textarea":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
                         .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
@@ -2227,7 +2226,7 @@ class Report_Column extends Record
                     break;
                 case "textarea_big":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
                         .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
@@ -2240,7 +2239,7 @@ class Report_Column extends Record
                     break;
                 case "textarea_readonly":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
-                    Page::push_content(
+                    Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
                         .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
@@ -2807,7 +2806,7 @@ class Report_Column extends Record
                 ""
              )
             ."</div>";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "\n  // Set up list_selector for ".$field.":\n"
             ."  ".$field."_opt = new OptionTransfer(\"".$field."_list1\",\"".$field."_list2\");\n"
@@ -2816,7 +2815,7 @@ class Report_Column extends Record
             ."  ".$field."_opt.saveNewRightOptions(\"$field\");\n"
             ."  ".$field."_opt.init(geid('form'));\n"
         );
-        Page::push_content('javascript', "var ".$field."_opt; // for list selector");
+        Output::push('javascript', "var ".$field."_opt; // for list selector");
         return $out;
     }
 
@@ -3056,7 +3055,7 @@ class Report_Column extends Record
         $value_arr =    explode(",", $value);
         $list_arr =     array();
 
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  selector_csv_show(\"".$field."\",".($hasWeight ? "1" : "0").");\n"
         );
@@ -3369,7 +3368,7 @@ class Report_Column extends Record
     //      y($out);die;
             return $out;
         }
-        Page::push_content('javascript', $js);
+        Output::push('javascript', $js);
         return $html;
     }
 

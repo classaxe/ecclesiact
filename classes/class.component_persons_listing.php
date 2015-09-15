@@ -1,12 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_PERSONS_LISTING","1.0.1");
+  define ("VERSION_COMPONENT_PERSONS_LISTING","1.0.2");
 /*
 Version History:
-  1.0.1 (2014-01-17)
-    1) Change to Component_Persons_Listing::_draw_entry() map info-window code
-       to use new ecc_map.point.i() helper function
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_persons_listing.txt)
 */
 class Component_Persons_Listing extends Component_Base {
   protected $_records = array();
@@ -78,7 +76,7 @@ class Component_Persons_Listing extends Component_Base {
   }
 
   protected function _draw_css(){
-    Page::push_content(
+    Output::push(
       'style',
        "#".$this->_safe_ID." p{\n"
       ."  margin:1em auto; text-align: center; width: 60%;\n"

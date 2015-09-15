@@ -1,3 +1,12 @@
+  1.0.24 (2012-10-02)
+    1) Tweak to call to Forum::do_submode() for case 'save_your_settings' -
+       Call to Person::get_field() implied that this function takes two parameters,
+       it only takes one.
+  1.0.23 (2012-09-09)
+    1) Changes to Forum::install() and Forum::uninstall() to avoid native DB access
+  1.0.22 (2011-07-17)
+    1) Changed five references from Component::function_name() to
+       Forum::render()
   1.0.21 (2011-06-15)
     1) Removed hard-coded csv list in Forum::get_structure()
   1.0.20 (2011-04-21)

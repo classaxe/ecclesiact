@@ -1,9 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_RSS_HEADLINES","1.0.0");
+  define ("VERSION_COMPONENT_RSS_HEADLINES","1.0.1");
 /*
 Version History:
-  1.0.0 (2011-12-31)
-    1) Initial release - moved from Component class
+  1.0.1 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_RSS_Headlines extends Component_Base {
 
@@ -26,11 +27,11 @@ class Component_RSS_Headlines extends Component_Base {
     $out.=
        "<a rel=\"rssreader\" href=\"".$cp['url']."#".$cp['limit']."|".$cp['show_title']."\"></a>";
     if (!$shown_js){
-      Page::push_content(
+      Output::push(
         "javascript_top",
         "<script type=\"text/javascript\" src=\"".BASE_PATH."sysjs/rss_reader\"></script>"
       );
-      Page::push_content(
+      Output::push(
         "body_bottom",
          "<script type=\"text/javascript\">\n"
         ."//<![CDATA[\n"

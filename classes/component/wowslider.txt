@@ -1,3 +1,5 @@
+  1.0.11 (2015-08-04)
+    1) Fixes for PSR-2
   1.0.10 (2015-07-19)
     1) Refreshed Wow Slider to use libraries with version 5.6
     2) Wow Slider now has Context Menus on bullets, and only sets size to be absolute on effects that need it to be.

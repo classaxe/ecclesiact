@@ -1,11 +1,10 @@
 <?php
-define('VERSION_SURVEY','1.0.17');
+define('VERSION_SURVEY','1.0.18');
 /*
 Version History:
-  1.0.17 (2013-03-08)
-    1) Changes to standard CPs to include options such as showing title or date
+  1.0.18 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.survey.txt)
 */
 class Survey extends Posting {
   protected $_blocks = false;
@@ -99,7 +98,7 @@ class Survey extends Posting {
       }
     }
     if (count($required)){
-      Page::Push_Content(
+      Output::push(
          'javascript',
           "function survey_test_".$this->_get_ID()."_required(){\n"
          ."  var disabled = false;\n"

@@ -1,13 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_VERSION', '1.0.107');
+define('COMMUNITY_MEMBER_VERSION', '1.0.108');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.107 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.108 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
 
 */
 
@@ -263,6 +263,7 @@ class Community_Member extends Displayable_Item
             .$report['events']['js']
             .$report['news-items']['js']
             .$report['podcasts']['js'];
+
         $out['html'].=
              "<div id='module_community'>\n"
             ."  <div class='content'>\n"
@@ -340,7 +341,9 @@ class Community_Member extends Displayable_Item
                ."],";
         }
         $out['css'] = $this->module_community_member_dashboard_css."]";
-        $out['js'].=Page::pop_content('javascript')."\n".Page::pop_content('javascript_onload');
+        $out['js'].=
+             Output::pull('javascript')."\n"
+            .Output::pull('javascript_onload');
         return $out;
     }
 

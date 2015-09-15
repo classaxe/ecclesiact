@@ -1,3 +1,5 @@
+  1.0.28 (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
   1.0.27 (2014-01-29)
     1) Extra newline before javascript_bottom is added to page in Layout::render()
   1.0.26 (2013-06-17)

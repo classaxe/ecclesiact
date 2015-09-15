@@ -1,14 +1,10 @@
 <?php
-define ("VERSION_COMPONENT_TWITTER","1.0.2");
+define ("VERSION_COMPONENT_TWITTER","1.0.3");
 /*
 Version History:
-  1.0.2 (2012-05-04)
-    1) Added Component_Twitter::draw_tweets()
-  1.0.1 (2012-04-05)
-    1) Changes to Component_Twitter::draw() to exit cleanly if running in
-       debug_no_internet mode
-  1.0.0 (2011-03-11)
-    1) Initial release
+  1.0.3 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_Twitter extends Component_Base {
   public function draw_profile($instance='', $args=array(), $disable_params=false){
@@ -37,7 +33,7 @@ class Component_Twitter extends Component_Base {
       return $out;
     }
     $js_top =       "<script type=\"text/javascript\" src=\"http://widgets.twimg.com/j/2/widget.js\"></script>";
-    Page::push_content('javascript_top',$js_top);
+    Output::push('javascript_top',$js_top);
 
     $out.=
        "<script type='text/javascript'>\n"
@@ -85,7 +81,7 @@ class Component_Twitter extends Component_Base {
       return $out;
     }
     $js_top =       "<script type=\"text/javascript\" src=\"http://twitterjs.googlecode.com/svn/trunk/src/twitter.min.js\"></script>";
-    Page::push_content('javascript_top',$js_top);
+    Output::push('javascript_top',$js_top);
     $js_onload =
        "getTwitters(\n"
       ."  '".$this->_safe_ID."_tweets',{\n"
@@ -103,7 +99,7 @@ class Component_Twitter extends Component_Base {
       ."    timeout: ".$this->_cp['timeout']."\n"
       ."  }\n"
       .");";
-    Page::push_content('javascript_onload',$js_onload);
+    Output::push('javascript_onload',$js_onload);
     $out.=
        "<div id=\"".$this->_safe_ID."_tweets\" class=\"css3 twitter_tweets\">\n"
       ."Loading tweets...\n"

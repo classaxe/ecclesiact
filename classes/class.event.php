@@ -1,12 +1,10 @@
 <?php
-define('VERSION_EVENT', '1.0.104');
+define('VERSION_EVENT', '1.0.105');
 /*
 Version History:
-  1.0.104 (2015-02-06)
-    1) New CP for listings - results_order - previously not possible to change display order
-    2) Now PSR-2 Compliant
+  1.0.105 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.event.txt)
 */
 class Event extends Posting
 {
@@ -975,7 +973,7 @@ class Event extends Posting
             :
                 0
         );
-        Page::push_content('javascript_onload', "  onclick_alldayevent(".$value_ade.");\n");
+        Output::push('javascript_onload', "  onclick_alldayevent(".$value_ade.");\n");
         return
             ($bulk_update ?
                  "<input id=\"".$field_eds."_apply\" name=\"".$field_eds."_apply\""
@@ -1788,7 +1786,7 @@ class Event extends Posting
             ."geid_set('submode','delete_event_delete_series');"
             ."geid('form').submit();\\\""
             ." />";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  popup_msg=\"".$msg."\";\n"
             ."  popup_dialog('Event Delete',\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'','','');\n"
@@ -1804,7 +1802,7 @@ class Event extends Posting
             ."Please cancel "
             .($registrant_count==1 ? "this registration" : "these registrations")
             ." first, then try your operation again.";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  popup_msg=\"".$msg."\";popup_dialog('Event Delete',"
             ."\"<div style='padding:4px;'>\"+popup_msg+\"</div>\",'300',120,'OK','','');\n"
@@ -1816,7 +1814,7 @@ class Event extends Posting
         $msg =
          "<b>Event Series Deleted</b><br /><br />"
         ."The Master Event and all Recurrences have been deleted.";
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  popup_msg=\"".$msg."\";popup_dialog('Event Delete',"
             ."\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'Done','','');\n"
@@ -1836,7 +1834,7 @@ class Event extends Posting
                 .($child_count>3 ? $child_count : '')
                 ." remaining Recurrences."
             );
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  popup_msg=\"".$msg."\";popup_dialog('Event Delete',"
             ."\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'Done','','');\n"

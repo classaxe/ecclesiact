@@ -1,14 +1,10 @@
 <?php
-define("VERSION_COMPONENT_GALLERY_FADER", "1.0.42");
+define("VERSION_COMPONENT_GALLERY_FADER", "1.0.43");
 /*
 Version History:
-  1.0.42 (2015-01-31)
-    1) Changes to internally used parameters in Component_Gallery_Fader::_setup_load_records():
-         Old: filter_limit,  filter_order_by
-         New: results_limit, results_order
-    2) Now PSR-2 Compliant
+  1.0.43 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_gallery_fader.txt)
 */
 class Component_Gallery_Fader extends Component_Base
 {
@@ -282,7 +278,7 @@ class Component_Gallery_Fader extends Component_Base
                 $btn_size = 50;
                 break;
         }
-        Page::push_content(
+        Output::push(
             'style',
             "#".$this->_safe_ID." {\n"
             ."  position:relative; margin:auto;"
@@ -334,7 +330,7 @@ class Component_Gallery_Fader extends Component_Base
 
     protected function _draw_js()
     {
-        Page::push_content(
+        Output::push(
             "javascript",
             "var obj_".$this->_safe_ID." =\n"
             ."  new image_rotator(\n"
@@ -356,7 +352,7 @@ class Component_Gallery_Fader extends Component_Base
             ."".($this->_cp['cover_image'] ? '1' : '0')."\n"
             .");\n"
         );
-        Page::push_content('javascript_onload', "  obj_".$this->_safe_ID.".do_setup();\n");
+        Output::push('javascript_onload', "  obj_".$this->_safe_ID.".do_setup();\n");
     }
 
     protected function _draw_status()

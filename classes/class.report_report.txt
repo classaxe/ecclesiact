@@ -1,3 +1,5 @@
+  1.0.29 (2015-01-10)
+    1) Now PSR-2 Compliant
   1.0.28 (2014-06-22)
     1) Report_Report::draw() added support for operations of types 'set_email_opt_in' and
        'set_email_opt_out'

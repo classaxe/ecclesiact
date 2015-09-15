@@ -1,3 +1,8 @@
+  1.0.2 (2015-01-31)
+    1) Changes to internally used parameters in Component_Events_Map::_setup_load_event_IDs():
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Now PSR-2 Compliant
   1.0.1 (2014-01-18)
     1) Changes to Component_Events_Map::_draw_css() to style time and date in css
   1.0.0 (2014-01-16)

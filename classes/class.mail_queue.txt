@@ -1,3 +1,6 @@
+  1.0.37 (2014-03-11)
+    1) Mail_Queue::_draw_wizard_preview() now URL decodes content supplied to it
+       because the javascript that packages the content now first URL encodes it.
   1.0.36 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.35 (2013-10-03)

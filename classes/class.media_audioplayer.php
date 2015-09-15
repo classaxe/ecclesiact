@@ -1,11 +1,10 @@
 <?php
-define('VERSION_MEDIA_AUDIOPLAYER','1.0.9');
+define('VERSION_MEDIA_AUDIOPLAYER','1.0.10');
 /*
 Version History:
-  1.0.9 (2014-01-28)
-    1) Newline after code in JS onload code in Media_Audioplayer::draw_clip()
+  1.0.10 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.media_audioplayer.txt)
 */
 class Media_Audioplayer {
   // Implements swf mp3 player from http://www.1pixelout.net/code/audio-player-wordpress-plugin
@@ -22,15 +21,15 @@ class Media_Audioplayer {
     if (!$libraries_shown){
       $version = System::get_item_version('js_jdplayer');
       $path =   BASE_PATH."sysjs/jdplayer/".$version."/";
-      page::push_content(
+      Output::push(
         'javascript_top',
         "<script type=\"text/javascript\" src=\"".$path."mediaelement-and-player.min.js\"></script>"
       );
-      page::push_content(
+      Output::push(
         'style_include',
         "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$path."mediaelementplayer.css\" />"
       );
-      page::push_content(
+      Output::push(
         'javascript_onload',
         "  \$('audio').mediaelementplayer();\n"
       );

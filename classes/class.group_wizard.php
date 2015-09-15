@@ -1,12 +1,10 @@
 <?php
-define('VERSION_GROUP_WIZARD','1.0.13');
+define('VERSION_GROUP_WIZARD','1.0.14');
 /*
 Version History:
-  1.0.13 (2013-10-27)
-    1) Group_Wizard::_setup_get_targetIDs() now uses Record::set_group_concat_max_len()
-       to change MYSQL session variable group_concat_max_len
+  1.0.14 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
 
-  (Older version history in class.group_wizard.txt)
 */
 class Group_Wizard extends Group{
 
@@ -30,7 +28,7 @@ class Group_Wizard extends Group{
         ."</div>\n";
       return $this->_draw_frame($out);
     }
-    Page::push_content(
+    Output::push(
       'javascript',
       "var global_groups_current_vals  = [];"
     );

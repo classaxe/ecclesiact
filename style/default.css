@@ -1,7 +1,7 @@
-/* 1.0.168
+/* 1.0.169
 Version History:
-  1.0.168 (2015-04-25)
-    1) Integrated support for customiser icon
+  1.0.169 (2015-09-12)
+    1) Strenthened definitions relating to admin menu to prevent bootstrap from messing with them
 
 */
 
@@ -109,6 +109,10 @@ Version History:
 #am {
     font-family: arial;
 }
+#am * {
+    box-sizing: content-box; -webkit-box-sizing: content-box; -moz-box-sizing: content-box;
+}
+
 #am .admin_toolbartable{
 	float: none;
     display:inline-block;
@@ -117,14 +121,14 @@ Version History:
     /* http://flipc.blogspot.com/2009/02/damn-ie7-and-inline-block.html */
 }
 #am ul {
-	float: left; padding: 0; margin: 0; z-index: 190;
+	float: left; padding: 0; margin: 0; z-index: 1000;
 	list-style: none; line-height: 1;
 }
 #am ul ul {
 	background: #E8E8FF; border: solid #A0A0A0;	border-width: 1px 0;
 }
 #am label {
-    margin: 0; padding: 0.25em 0.5em; line-height: 20px;
+    margin: 0; padding: 0.25em 0.5em; line-height: 20px; display: inline;
     font-size: 100%; font-weight: normal; color: #202040;
 }
 #am a {

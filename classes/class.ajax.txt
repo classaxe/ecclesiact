@@ -1,3 +1,6 @@
+  1.0.24 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Fix to internal reference for get_version() to getVersion()
   1.0.23 (2014-03-18)
     1) Ajax::get_report() now accepts
   1.0.22 (2014-02-10)

@@ -1,11 +1,10 @@
 <?php
-  define ("VERSION_COMPONENT_RSS_DISPLAYER","1.0.1");
+  define ("VERSION_COMPONENT_RSS_DISPLAYER","1.0.2");
 /*
 Version History:
-  1.0.1 (2014-01-28)
-    1) Added newline and semicolon after JS onload code
-  1.0.0 (2013-05-15
-    1) Initial release - uses zrssfeed and Google Feeds API
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Component_RSS_Displayer extends Component_Base {
 
@@ -30,13 +29,13 @@ class Component_RSS_Displayer extends Component_Base {
     $this->_setup($instance,$args,$disable_params);
     $this->_draw_control_panel(true);
     if (!$shown_js){
-      Page::push_content(
+      Output::push(
         "javascript_top",
         "<script type=\"text/javascript\" src=\"".BASE_PATH."sysjs/zrssfeed\"></script>"
       );
       $shown_js = true;
     }
-    Page::push_content(
+    Output::push(
       "javascript",
         "function ".$this->_safe_ID."_init(){\n"
        ."  \$('#".$this->_safe_ID."').rssfeed(\n"
@@ -56,11 +55,11 @@ class Component_RSS_Displayer extends Component_Base {
        ."  );\n"
        ."}\n"
     );
-    Page::push_content(
+    Output::push(
         "javascript_onload",
         "  ".$this->_safe_ID."_init();\n"
     );
-    Page::push_content(
+    Output::push(
         "style",
         "  #".$this->_safe_ID." ul { list-style: none; margin: 1em; padding: 0; }\n"
        ."  #".$this->_safe_ID." ul li { padding: 0.5em 0; }\n"

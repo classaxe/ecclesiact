@@ -1,11 +1,10 @@
 <?php
-define('VERSION_FCK','1.0.22');
+define('VERSION_FCK','1.0.23');
 /*
 Version History:
-  1.0.22 (2014-04-17)
-    1) Changes to include indenting rules for parsed code
+  1.0.23 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
 
-  (Older version history in class.fck.txt)
 */
 
 
@@ -13,7 +12,7 @@ class FCK extends Record{
   function attach_ckfinder(){
     static $ckfinder_js_included = false;
     if (!$ckfinder_js_included){
-      Page::push_content('javascript_top',"<script type='text/javascript' src='".BASE_PATH."js/ckfinder/ckfinder.js'></script>\n");
+      Output::push('javascript_top',"<script type='text/javascript' src='".BASE_PATH."js/ckfinder/ckfinder.js'></script>\n");
       $ckfinder_js_included = true;
     }
   }
@@ -35,7 +34,7 @@ class FCK extends Record{
     static $js_included = false;
     if (!$js_included){
       $js_included=true;
-      Page::push_content(
+      Output::push(
         'javascript_top',
          "<script type=\"text/javascript\""
         ." src=\"".BASE_PATH."sysjs/ckeditor/ckeditor.js\">"
@@ -44,7 +43,7 @@ class FCK extends Record{
     }
     $sanitized = str_replace('[','{{[}}',str_replace('textarea','sanitizedtextarea',$value));
     $jq_field =   str_replace(array('.',':'),array('\\\\.','\\\\:'),$field);
-    Page::push_content(
+    Output::push(
       'javascript_onload',
        "  \$J('#".$jq_field."')[0].value=".json_encode($sanitized).";\n"
       ."  CKEDITOR.timestamp = '".VERSION_FCK."';\n"

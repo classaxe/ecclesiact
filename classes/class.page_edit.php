@@ -1,9 +1,10 @@
 <?php
-define('VERSION_PAGE_EDIT', '1.0.17');
+define('VERSION_PAGE_EDIT', '1.0.18');
 /*
 Version History:
-  1.0.17 (2015-08-03)
-    1) References to Navsuite now \Nav\Suite
+  1.0.18 (2015-09-12)
+    1) Call to Layout::get_selector_sql() now Layout::getSelectorSql()
+    2) References to Page::push_content() now changed to Output::push()
 
 */
 class Page_Edit extends Page
@@ -171,7 +172,7 @@ class Page_Edit extends Page
             (isset($action) ? $action : false)
         );
         if ($js!='') {
-            Page::push_content('javascript', $js);
+            Output::push('javascript', $js);
         }
         if ($submode=='save_and_close' && $msg=='') {
             return "";
@@ -244,7 +245,7 @@ class Page_Edit extends Page
                 ."</ul>"
             );
         }
-        $formSelectorLayoutSQL =        Layout::get_selector_sql();
+        $formSelectorLayoutSQL =        \Layout::getSelectorSql();
         $formSelectorThemeSQL =         Theme::get_selector_sql();
         $formSelectorComponentSQL =     Component::get_selector_sql();
         $formSelectorNavSuiteSQL =      \Nav\Suite::getSelectorSql(true);

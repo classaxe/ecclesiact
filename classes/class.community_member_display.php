@@ -1,14 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.42');
+define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.43');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.42 (2015-03-28)
-    1) Now includes Special Events, Easter Events and Christmas Events whenever they are there to see
-       and uses separate tab indexes for each so that #easter for example goes directly to that tab
+  1.0.43 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -78,7 +77,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawCss()
     {
-        Page::push_content(
+        Output::push(
             'style_include',
             "<link rel=\"stylesheet\" type=\"text/css\""
             ." href=\"/css/community/".System::get_item_version('css_community')."\" />"
@@ -90,7 +89,7 @@ class Community_Member_Display extends Community_Member
             .(($this->_cp['profile_photo_width']))."px; height:".(($this->_cp['profile_photo_height']))."px; }\n"
             ."#section_special_heading { background-color: #ffd0d0; }\n"
             ."#section_special_heading.tab_selected { background-color: #ffa0a0; }\n";
-        Page::push_content('style', $css);
+        Output::push('style', $css);
     }
 
     protected function drawJs()
@@ -100,7 +99,7 @@ class Community_Member_Display extends Community_Member
         :
             $this->_section_tabs_arr[0]['ID']
         );
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  show_section_onhashchange_setup(spans_".$this->_safe_ID.");\n"
             ."  window.setTimeout(\n"
@@ -417,7 +416,7 @@ class Community_Member_Display extends Community_Member
             ."    '\\n\\nPress [OK] to continue.'\n"
             ."  );\n"
             ."}\n";
-        Page::push_content('javascript', $js);
+        Output::push('javascript', $js);
     }
 
     protected function drawContactFormResult()
@@ -1274,7 +1273,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawSectionContainerOpen()
     {
-        Page::push_content(
+        Output::push(
             'javascript_onload',
             "  show_section_tab('spans_".$this->_safe_ID."','".$this->_selected_section."');\n"
         );

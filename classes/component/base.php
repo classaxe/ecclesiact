@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_BASE", "1.0.3");
+define("VERSION_NS_COMPONENT_BASE", "1.0.4");
 /*
 Version History:
-  1.0.3 (2015-03-17)
-    1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
+  1.0.4 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 
@@ -47,7 +47,7 @@ class Base extends \Record
 
     protected function drawSectionContainerOpen()
     {
-        \Page::push_content(
+        \Output::push(
             'javascript_onload',
             "  show_section_tab('".$this->_safe_ID."','".$this->_selected_section."');\n"
         );
@@ -360,12 +360,12 @@ class Base extends \Record
             'item' =>       $cp_item
         );
         if ($ID_safe_name==0) {
-            \Page::push_content(
+            \Output::push(
                 'javascript',
                 "cp_params=[];\n"
             );
         }
-        \Page::push_content(
+        \Output::push(
             'javascript',
             "cp_params[".$ID_safe_name."] = ".json_encode($cp_args).";\n"
         );
@@ -486,7 +486,7 @@ class Base extends \Record
         $original_arr = explode(OPTION_SEPARATOR, $page_vars['component_parameters']);
         $merged_arr =   $this->setParametersMerge($original_arr, $change_arr);
         $Obj->set_field('component_parameters', addslashes(implode(OPTION_SEPARATOR, $merged_arr)));
-        \Page::push_content(
+        \Output::push(
             'javascript_onload',
             "geid_set('command','');\n"
             ."geid('form').submit();\n"

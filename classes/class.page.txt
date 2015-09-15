@@ -1,3 +1,5 @@
+  1.0.122 (2015-08-03)
+    1) References to Navsuite now \Nav\Suite
   1.0.121 (2015-07-26)
     1) Page::draw_detail_content() now has accessible text for 'Main content' anchor
   1.0.120 (2015-03-04)

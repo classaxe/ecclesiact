@@ -1,3 +1,6 @@
+  1.0.41 (2014-02-07)
+    1) JS callback functions for ajax fedex rate lookups now contained within sajax
+       object to reduce namespace clutter
   1.0.40 (2014-01-06)
     1) Custom_Form::xml_form_process() section handing user signing in as newly created
        user now uses User class since contacts cannot be signed in

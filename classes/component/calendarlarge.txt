@@ -1,3 +1,7 @@
+  1.0.29 (2015-03-11)
+    1) Moved in here from class.component_calendar_large.php
+    2) Extensivly refactored, and now uses Block Layout renderer for context menu
+    3) Now fully PSR-2 Compliant
   1.0.28 (2014-01-28)
     1) Newline after JS onload code in Component_Calendar_Large::_draw_js()
   1.0.27 (2013-12-14)

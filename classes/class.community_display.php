@@ -1,12 +1,12 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION', '1.0.41');
+define('COMMUNITY_DISPLAY_VERSION', '1.0.42');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.41 (2015-03-30)
-    1) Bug fix for showing Christmas, Easter and Special Events and now colour codes these in red
+  1.0.42 (2015-09-13)
+    1) References to Page::pushContent() now changed to Output::push()
 
 */
 
@@ -912,7 +912,7 @@ class Community_Display extends Community
 
     protected function drawCss()
     {
-        Page::pushContent(
+        Output::push(
             'style_include',
             "<link rel=\"stylesheet\" type=\"text/css\""
             ." href=\"/css/community/".System::get_item_version('css_community')."\" />"
@@ -953,14 +953,14 @@ class Community_Display extends Community
             .".community_frame .member_gallery_entry_update_status .green{\n"
             ."  background: url(".BASE_PATH."img/sysimg/leds.png);\n"
             ."}\n";
-        Page::pushContent('style', $css);
+        Output::push('style', $css);
     }
 
     protected function drawJs()
     {
         global $page_vars;
         if ($this->_cp['members_show_map']) {
-            Page::pushContent(
+             Output::push(
                 "javascript",
                 "function map_highlight(id){\n"
                 ."  show_section_tab(spans_".$this->_safe_ID.",'map');\n"
@@ -969,7 +969,7 @@ class Community_Display extends Community
             );
         }
         if ($this->_current_user_rights['canEdit']) {
-            Page::pushContent(
+             Output::push(
                 "javascript_onload",
                 "community_dropbox_check('".BASE_PATH.$page_vars['relative_URL']."');"
             );
@@ -979,7 +979,7 @@ class Community_Display extends Community
          :
             $this->_section_tabs_arr[0]['ID']
         );
-        Page::pushContent(
+         Output::push(
             'javascript_onload',
             "  show_section_onhashchange_setup(spans_".$this->_safe_ID.");\n"
             ."  window.setTimeout(\"var tab='".$selected_section."';"
@@ -2018,7 +2018,7 @@ class Community_Display extends Community
 
     protected function drawSectionContainerOpen()
     {
-        Page::pushContent(
+         Output::push(
             'javascript_onload',
             "  show_section_tab('spans_".$this->_safe_ID."','".$this->_selected_section."');"
         );

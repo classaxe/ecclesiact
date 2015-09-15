@@ -1,3 +1,5 @@
+  1.0.52 (2015-03-07)
+    1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
   1.0.51 (2015-02-12)
     1) Now outputs bare-bones HTML page when displaying 404 - resource not found
   1.0.50 (2015-02-11)

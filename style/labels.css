@@ -1,7 +1,7 @@
-/* 1.0.46
+/* 1.0.47
 Version History:
-  1.0.46 (2015-08-29)
-    1) Added SD-Exclusive and SD-Speed
+  1.0.47 (2015-09-12)
+    1) Added lbl_responsive
 
 */
 .lbl_actions{
@@ -351,6 +351,9 @@ Version History:
 }
 .lbl_num-sold{
   background-position:-1672px 0; width:11px; height:39px;
+}
+.lbl_responsive{
+  background-position:-1683px 0; width:11px; height:72px;
 }
 .lbl_PEACH-num-products{
   background-position:-1716px 0; width:11px; height:68px;

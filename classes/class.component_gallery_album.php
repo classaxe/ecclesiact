@@ -1,12 +1,10 @@
 <?php
-define ("VERSION_COMPONENT_GALLERY_ALBUM","1.0.71");
+define ("VERSION_COMPONENT_GALLERY_ALBUM","1.0.72");
 /*
 Version History:
-  1.0.71 (2014-04-03)
-    1) Last build prevented valid configuration of NO root folder which caused some issues
-       This build now correctly handles that circumstance
+  1.0.72 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
-  (Older version history in class.component_gallery_album.txt)
 */
 
 class Component_Gallery_Album extends Component_Base {
@@ -326,8 +324,8 @@ class Component_Gallery_Album extends Component_Base {
             $page_vars['path']
           );
           $this->_html.= $out['html'];
-          Page::push_content('javascript',$out['javascript']);
-          Page::push_content('javascript_onload_bottom',$out['javascript_onload_bottom']);
+          Output::push('javascript',$out['javascript']);
+          Output::push('javascript_onload_bottom',$out['javascript_onload_bottom']);
         }
         else {
           History::track();
@@ -378,7 +376,7 @@ class Component_Gallery_Album extends Component_Base {
       ."#".$this->_safe_ID."_slideshow_viewer_content    { position:absolute; width:".($this->_cp['slideshow_width']-20)."px; height:50px; left:0px; top:".($this->_cp['slideshow_height']-58)."px; z-index:2; padding:5px; color:#fff; }\n"
       ."#".$this->_safe_ID."_slideshow_viewer_content_bg { position:absolute; width:".($this->_cp['slideshow_width']-10)."px; height:50px; left:0px; top:".($this->_cp['slideshow_height']-60)."px; z-index:1; padding:5px; opacity:0.7; filter: alpha(opacity=70); background:#404040;}\n"
       ;
-    Page::push_content('style',$css);
+    Output::push('style',$css);
   }
 
   protected function _draw_gallery_album_cover($album){
@@ -542,8 +540,8 @@ class Component_Gallery_Album extends Component_Base {
     }
     $js =           "var ".$this->_safe_ID." = new list_folder_expander('".$this->_safe_ID."_expander',".($this->_cp['show_folder_icons'] ? '1' : '0').");";
     $js_onload =    "  ".$this->_safe_ID.".init(".$this->_cp['folder_tree_speed'].");\n";
-    Page::push_content('javascript',$js);
-    Page::push_content('javascript_onload',$js_onload);
+    Output::push('javascript',$js);
+    Output::push('javascript_onload',$js_onload);
     $path = BASE_PATH.trim($this->_cp['path_prefix'] ? $this->_cp['path_prefix'] : $page_vars['path_real'],'/');
     $this->_html.=
        "<div id='".$this->_safe_ID."_folders'>"
@@ -669,7 +667,7 @@ class Component_Gallery_Album extends Component_Base {
       .implode(",\n",$js_arr)
       ."\n];\n"
       ;
-    Page::push_content('javascript',$js);
+    Output::push('javascript',$js);
     if ($this->_isAdmin){
       $js_onload =
          "  gallery_album_sortable_setup(\n"
@@ -677,7 +675,7 @@ class Component_Gallery_Album extends Component_Base {
         ."    \"".$this->_images[0]['parentID']."\",\n"
         ."    \"".BASE_PATH.trim($page_vars['path'],'/')."\"\n"
         ."  );\n";
-      Page::push_content('javascript_onload',$js_onload);
+      Output::push('javascript_onload',$js_onload);
     }
   }
 
@@ -687,7 +685,7 @@ class Component_Gallery_Album extends Component_Base {
       return;
     }
     $this->_Obj_JL->setup_code();
-    Page::push_content('javascript',$this->_Obj_JL->get_js());
+    Output::push('javascript',$this->_Obj_JL->get_js());
     $this->_html.=  $this->_Obj_JL->get_html();
   }
 

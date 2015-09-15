@@ -1,19 +1,10 @@
 <?php
-define('VERSION_PRODUCT_RELATIONSHIP','1.0.4');
+define('VERSION_PRODUCT_RELATIONSHIP','1.0.5');
 /*
 Version History:
-  1.0.4 (2011-10-19)
-    1) Change to Product_Relationship::draw_combo_product_relationship() to
-       reference `effective_date_start`
-  1.0.3 (2011-09-08)
-    1) Bug fix for Product_Relationship::draw_combo_product_relationship() on
-       Gallery Image choices
-  1.0.2 (2011-09-08)
-    1) Added Product_Relationship::draw_combo_product_relationship()
-  1.0.1 (2011-09-07)
-    1) Bug fix for cloning Product Relationship without rename prompt
-  1.0.0 (2011-09-07)
-    1) Initial release
+  1.0.5 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
+
 */
 class Product_Relationship extends Record {
 
@@ -187,8 +178,8 @@ class Product_Relationship extends Record {
           ."[\"".str_replace("\"","'",$row['text'])."\",".$row['value'].",\"#".$row['color_background']."\"];\n";
       }
     }
-    Page::push_content('javascript',$js);
-    Page::push_content('javascript_onload','  set_product_relationship_options();');
+    Output::push('javascript',$js);
+    Output::push('javascript_onload','  set_product_relationship_options();');
     return $html;
   }
 

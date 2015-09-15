@@ -1,9 +1,9 @@
 <?php
-define('VERSION_CHECKOUT','1.0.44');
+define('VERSION_CHECKOUT','1.0.45');
 /*
 Version History:
-  1.0.44 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
+  1.0.45 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
 
 */
 class Checkout extends Component_Base{
@@ -220,7 +220,7 @@ class Checkout extends Component_Base{
   }
 
   private function _draw_js_verify_checkout($checkout_person_details_component){
-    Page::push_content(
+    Output::push(
       'javascript',
        "function verify_checkout(){\n"
       ."  var err_msg = [];\n"

@@ -1,0 +1,12 @@
+  1.0.4 (2011-10-19)
+    1) Change to Product_Relationship::draw_combo_product_relationship() to
+       reference `effective_date_start`
+  1.0.3 (2011-09-08)
+    1) Bug fix for Product_Relationship::draw_combo_product_relationship() on
+       Gallery Image choices
+  1.0.2 (2011-09-08)
+    1) Added Product_Relationship::draw_combo_product_relationship()
+  1.0.1 (2011-09-07)
+    1) Bug fix for cloning Product Relationship without rename prompt
+  1.0.0 (2011-09-07)
+    1) Initial release
