@@ -1,3 +1,8 @@
+  1.0.123 (2015-09-14)
+    1) Moved Page::prepare_html_head() and Page::prepare_html_foot() into Layout class
+    2) Page streaming now performed by Output class - stub methods remain for backwards compatability:
+           Page::push_content($part, $code)
+           Page::pop_content($part)
   1.0.122 (2015-08-03)
     1) References to Navsuite now \Nav\Suite
   1.0.121 (2015-07-26)

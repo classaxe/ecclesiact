@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.85");
+define("VERSION", "2.0.86");
 /*
 Version History:
-  2.0.85 (2015-09-10)
-    1) Added animate.css and bootstrap.css to css list
+  2.0.86 (2015-09-19)
+    1) Added support for sysjs/jquerymigrate
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -1367,10 +1367,15 @@ function sysjs()
             header('Content-Type: text/javascript');
             print file_get_contents(SYS_JS.'jquery-ui.min.js');
             break;
+        case "jquerymigrate":
+            img_set_cache(3600*24*7); // expire in one week
+            header('Content-Type: text/javascript');
+            print file_get_contents(SYS_JS.'jquery-migrate.min.js');
+            break;
         case "jqueryjson":
             img_set_cache(3600*24*7); // expire in one week
             header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery.json-2.4.min.js');
+            print file_get_contents(SYS_JS.'jquery.json.min.js');
             break;
         case "zrssfeed":
             img_set_cache(3600*24*7); // expire in one week

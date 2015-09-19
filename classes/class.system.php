@@ -1,10 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.164');
+define('VERSION_SYSTEM', '1.0.165');
 
 /*
 Version History:
-  1.0.164 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.165 (2015-09-19)
+    1) Moved System::draw_css_include() and System::draw_js_include() to Output class
 
 */
 class System extends Record
@@ -460,65 +460,6 @@ class System extends Record
         }
     }
 
-    public function draw_css_include()
-    {
-        global $mode,$report_name,$page_vars,$system_vars;
-        $editing_system =   ($mode=='details' && $report_name=='system');
-        $cs_system =        $this->get_css_checksum(SYS_ID);
-        return
-             "<link rel=\"stylesheet\" type=\"text/css\""
-            ." href=\"".BASE_PATH."css/".System::get_item_version('css')."\" />\n"
-            ."<link rel=\"stylesheet\" type=\"text/css\""
-            ." href=\"".BASE_PATH."css/labels/".System::get_item_version('css_labels')."\" />\n"
-            .(!$editing_system ?
-                "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_PATH."css/system/".$cs_system."\" />\n"
-             :
-                ''
-            );
-    }
-
-    public function draw_js_include($full = false, $context_adminLevel = 0)
-    {
-        global $system_vars;
-        return
-         "<script type=\"text/javascript\""
-        ." src=\""
-         .($system_vars['debug_no_internet']==1 ?
-            BASE_PATH."sysjs/jquery/1.11.0"
-          :
-            "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"
-         )
-        ."\"></script>\r\n"
-        ."<script type=\"text/javascript\""
-        ." src=\""
-        .($system_vars['debug_no_internet']==1 ?
-            BASE_PATH."sysjs/jqueryui/1.10.4"
-         :
-            "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"
-        )
-        ."\">"
-        ."</script>\r\n"
-        ."<script type=\"text/javascript\""
-        ." src=\"".BASE_PATH."sysjs/jqueryjson/2.4"."\">"
-        ."</script>\r\n"
-        ."<script type=\"text/javascript\""
-        ." src=\"".BASE_PATH."sysjs/sys/".System::get_item_version('js_functions')."\">"
-        ."</script>\r\n"
-        .($full || get_userID() ?
-             "<script type=\"text/javascript\""
-            ." src=\"".BASE_PATH."sysjs/member/".System::get_item_version('js_member')."\">"
-            ."</script>\r\n"
-         :
-            ''
-        )
-        .($context_adminLevel>0 ?
-             "<script type=\"text/javascript\""
-            ." src=\"".BASE_PATH."sysjs/context/".$context_adminLevel."/".System::get_item_version('codebase')."\">"
-            ."</script>\r\n"
-         :
-            ''
-        );
-    }
     public static function draw_popup_layer()
     {
         global $system_vars;

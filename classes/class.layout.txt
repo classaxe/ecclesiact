@@ -1,3 +1,9 @@
+  1.0.29 (2015-09-12)
+    1) Added 'responsive' to fields list
+    2) Layout::prepare() now looks at 'responsive' flag to determine how to prepare the output
+    3) Added methods Layout::prepareResponsiveHead() and Layout::prepareResponsiveFoot()
+    4) References to Page streaming method now changes to use Output class instead
+    5) Made largely PSR-2 compliant
   1.0.28 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.27 (2014-01-29)

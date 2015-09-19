@@ -1,11 +1,10 @@
-// 1.0.142
+// 1.0.143
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.142 (2015-02-02)
-    1) Now with unix-style line endings
+  1.0.143 (2015-09-19)
+    1) Replaced references of $J with $ since we no longer have to deal with prototype in here as well.
 
-  (Older version history in member.txt)
 */
 
 // ************************************
@@ -137,7 +136,7 @@ function CM_label(ID,text,disabled){
   var obj;
   text =     (typeof text!='undefined' ? text : '');
   disabled = (typeof disabled!='undefined' ? disabled : 0);
-  obj = $J('#'+ID);
+  obj = $('#'+ID);
   if (obj && typeof obj[0]!='undefined'){
     obj[0].innerHTML=(disabled ? "<span class='disabled'>"+text+"</span>": text);
   }
@@ -145,7 +144,7 @@ function CM_label(ID,text,disabled){
 
 function CM_show(ID,show){
   var obj;
-  obj = $J('#'+ID);
+  obj = $('#'+ID);
   if (obj && typeof obj[0]!='undefined'){
     obj[0].style.display=(show ? '': 'none');
   }
@@ -239,7 +238,7 @@ function CM_SDMenu_Over(
 }
 
 function community_dropbox_check(url){
-  $J.ajax({
+  $.ajax({
     data:       {check_dropbox: 1},
     dataType:   'json',
     type:       'POST',
@@ -258,7 +257,7 @@ function community_dropbox_check(url){
           css = 'red';
         break;
       }
-      img = $J('#dropbox_status_'+result[i]['i'])[0];
+      img = $('#dropbox_status_'+result[i]['i'])[0];
       img.setAttribute('src',base_url+'img/spacer');
       img.setAttribute('class',css);
       img.setAttribute('title',result[i]['t']);
@@ -313,7 +312,7 @@ function cp_matrix_dosave(id){
       out.item.push(args.ident+args.params[i/columns]+'='+value);
     }
   }
-  geid_set('targetValue',$J.toJSON(out));
+  geid_set('targetValue',$.toJSON(out));
   geid_set('command','set_parameters');
   geid('form').submit();
 }
@@ -629,11 +628,11 @@ function gallery_album_sortable_setup(name,parentID,url,onChange_fn){
   args = {
     opacity: 0.9,
     update: function(event, ui){
-      var items = $J(this).sortable('toArray');
-      $J.each(items,function(index,item){items[index] = item.split('_').pop();});
+      var items = $(this).sortable('toArray');
+      $.each(items,function(index,item){items[index] = item.split('_').pop();});
       seq = items.toString();
       window[name+'_sequence']=seq;
-      $J.post(
+      $.post(
         url,{
           submode:      'gallery_sequence',
           source:       name,
@@ -646,7 +645,7 @@ function gallery_album_sortable_setup(name,parentID,url,onChange_fn){
   if (typeof onChange_fn=='function'){
     args.change = onChange_fn;
   }
-  $J('#'+name+'_images').sortable(args);
+  $('#'+name+'_images').sortable(args);
 }
 
 function gallery_album_sortable_setup_onmouseover(obj, item, name){
@@ -695,7 +694,7 @@ function gallery_image_edit_click(obj,params,title_h,caption_h){
         "</textarea>";
     break;
   }
-  $J('#'+obj.id).focus().select();
+  $('#'+obj.id).focus().select();
 }
 
 function gallery_image_edit_keydown(obj,params){
@@ -734,7 +733,7 @@ function gallery_image_edit_blur(obj,params,title_h,caption_h){
     targetValue:    value,
     targetID:       obj.id.substr(2)
   }
-  $J.ajax({
+  $.ajax({
     data: postvars,
     type: 'POST',
     url:  window[params].url

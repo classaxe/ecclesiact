@@ -1,13 +1,12 @@
 <?php
-define('VERSION_LAYOUT', '1.0.29');
+define('VERSION_LAYOUT', '1.0.30');
 /*
 Version History:
-  1.0.29 (2015-09-12)
-    1) Added 'responsive' to fields list
-    2) Layout::prepare() now looks at 'responsive' flag to determine how to prepare the output
-    3) Added methods Layout::prepareResponsiveHead() and Layout::prepareResponsiveFoot()
-    4) References to Page streaming method now changes to use Output class instead
-    5) Made largely PSR-2 compliant
+  1.0.30 (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
+    3) Corrected Meta Generator tag - wasn't valid as an 'equiv' entity
+    4) Big changes to Output::prepareResponsiveHead() to include all support for Ecclesiact in Responsive layouts
 
 */
 
@@ -254,7 +253,7 @@ class Layout extends Record
             ."<title>".strip_tags(convert_safe_to_php($page_vars['title']))."</title>\n"
             ."<meta http-equiv=\"content-type\" content=\"text/html;"
             ." charset=".(ini_get('default_charset') ? ini_get('default_charset') : "UTF-8")."\"/>\n"
-            ."<meta http-equiv=\"generator\" content=\"".System::get_item_version('system_family')." "
+            ."<meta name=\"generator\" content=\"".System::get_item_version('system_family')." "
             .System::get_item_version('codebase').".".$system_vars['db_version']."\"/>\n"
             .($page_vars['meta_description'] ?
                 "<meta name=\"description\" content=\"".$page_vars['meta_description']."\"/>\n"
@@ -310,7 +309,7 @@ class Layout extends Record
         );
         Output::push(
             'style_include',
-            $Obj_System->draw_css_include()
+            Output::drawCssInclude()
             .($mode!='details' ?
                  "<link rel=\"stylesheet\" type=\"text/css\""
                 ." href=\"".BASE_PATH."css/layout/".$page_vars['layoutID']."/".$cs_layout."\" />\n"
@@ -351,7 +350,7 @@ class Layout extends Record
             : "")
             // Theme
         );
-        Output::push('javascript_top', $Obj_System->draw_js_include(false, $CM_level));
+        Output::push('javascript_top', Output::drawJsInclude(false, $CM_level));
         Output::push(
             'javascript',
             "var \$J, _gaq, _paq, _onload, _onunload, ap_instances, base_url, currency_symbol,\n"
@@ -564,7 +563,7 @@ class Layout extends Record
             ."    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"
             ."    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             // The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
-            ."    <meta http-equiv=\"generator\" content=\""
+            ."    <meta name=\"generator\" content=\""
             .System::get_item_version('system_family')." "
             .System::get_item_version('codebase')."."
             .$system_vars['db_version']
@@ -585,14 +584,11 @@ class Layout extends Record
             ."\n"
             ."    <link href=\"/css/jquery.fancybox.css\" rel=\"stylesheet\">\n"
             ."\n"
+            ."    <link href=\"/custom_css/animate.css\" rel=\"stylesheet\">\n"
             ."    <link href=\"/custom_css/bootstrap.css\" rel=\"stylesheet\">\n"
-            ."    <link href=\"/custom_css/search.css\" rel=\"stylesheet\">\n"
             ."    <link href=\"/custom_css/camera.css\" rel=\"stylesheet\">\n"
+            ."    <link href=\"/custom_css/search.css\" rel=\"stylesheet\">\n"
             ."    <link href=\"/custom_css/mailform.css\" rel=\"stylesheet\">\n"
-            ."\n"
-            ."    <!--JS-->\n"
-            ."    <script src=\"/sysjs/jquery\"></script>\n"
-            ."    <script src=\"/js/jquery-migrate-1.2.1.min.js\"></script>\n"
             ."\n"
             ."    <!--[if lt IE 9]>\n"
             ."    <div style=' clear: both; text-align:center; position: relative;'>\n"
@@ -607,24 +603,6 @@ class Layout extends Record
             ."    <script src=\"/js/html5shiv.js\"></script>\n"
             ."    <![endif]-->\n"
             ."    <script src=\"/js/device.min.js\"></script>\n"
-        );
-
-        Output::push(
-            'style_include',
-            $Obj_System->draw_css_include()
-            .($mode!='details' ?
-                 "<link rel=\"stylesheet\" type=\"text/css\""
-                ." href=\"".BASE_PATH."css/layout/".$page_vars['layoutID']."/".$cs_layout."\" />\n"
-             :
-                ""
-             )
-            .(isset($page_vars) && trim($page_vars['theme']['style'])!='' ?
-                 "<link rel=\"stylesheet\" type=\"text/css\""
-                ." href=\"".BASE_PATH."css/theme/".$page_vars['theme']['ID']."/"
-                .dechex(crc32($page_vars['theme']['style']))."\" />"
-             :
-                ""
-             )
         );
 
         Output::push(
@@ -668,17 +646,225 @@ class Layout extends Record
                 ""
             )
         );
+
+        Output::push(
+            'style_include',
+            Output::drawCssInclude()
+            .($mode!='details' ?
+                 "<link rel=\"stylesheet\" type=\"text/css\""
+                ." href=\"".BASE_PATH."css/layout/".$page_vars['layoutID']."/".$cs_layout."\" />\n"
+             :
+                ""
+             )
+            .(isset($page_vars) && trim($page_vars['theme']['style'])!='' ?
+                 "<link rel=\"stylesheet\" type=\"text/css\""
+                ." href=\"".BASE_PATH."css/theme/".$page_vars['theme']['ID']."/"
+                .dechex(crc32($page_vars['theme']['style']))."\" />"
+             :
+                ""
+             )
+        );
+        Output::push(
+            'style',
+            (isset($report_name) && $report_name=='system' ?
+                "@media screen { // Only appears for system report\n"
+                ."  .scrollbox { height: 140px; media: screen; overflow: auto; border: none; }\n"
+                ."}\n"
+             :
+                ""
+            )
+            .($isIE ?
+                 ".css3, .form_box,"
+                ." .shadow { behavior: url(".BASE_PATH."css/pie/".System::get_item_version('css_pie')."); }\n"
+            :
+                ""
+            )
+            .".zoom_text { font-size: "
+            .(isset($_COOKIE['textsize']) && $_COOKIE['textsize']=='big' ? "120" : "80")
+            ."%;}\r\n"
+            // Page
+            .(isset($page_vars) && trim($page_vars['style'])!='' ?
+            "\r\n"
+            ."/* [Page Style] */\r\n"
+            .$page_vars['style']
+            : "")
+            // Theme
+        );
+        Output::push('javascript_top', Output::drawJsInclude(false, $CM_level));
+        Output::push(
+            'javascript',
+            "var \$J, _gaq, _paq, _onload, _onunload, ap_instances, base_url, currency_symbol,\n"
+            ."  currentLanguage, defaultDateFormat, defaultTimeFormat, fck_version, option_separator,\n"
+            ."  pwd_len_min, rating_blocks, site_title, system_family, valid_prefix;\n"
+            ."\$J =               jQuery;\n"
+            ."ap_instances =      [];\n"
+            ."base_url =          \"".BASE_PATH."\";\n"
+            ."cke_posting_fonts = ".(System::has_feature('Postings-allow-fonts-and-sizes') ? 1 : 0).";\n"
+            ."currency_symbol =   \"".$system_vars['defaultCurrencySymbol']."\";\n"
+            ."currentLanguage =   \""
+            .(isset($_SESSION['lang']) ? $_SESSION['lang'] : $system_vars['defaultLanguage'])."\"\n"
+            ."defaultDateFormat = \"".addslashes($system_vars['defaultDateFormat'])."\";\n"
+            ."defaultTimeFormat = \"".$system_vars['defaultTimeFormat']."\";\n"
+            ."option_separator =  \"".OPTION_SEPARATOR."\";\n"
+            ."pwd_len_min =       ".PWD_LEN_MIN.";\n"
+            ."rating_blocks =     [];\n"
+            ."site_title =        \"".$system_vars['textEnglish']."\";\n"
+            ."system_family =     \"".System::get_item_version('system_family')."\";\n"
+            ."valid_prefix =      \"vp_\"; // Used with controls in Custom_Form class\n"
+            .(
+                $system_vars['debug_no_internet']!=1 &&
+                $system_vars['google_analytics_key']!='' &&
+                $mode!='details' &&
+                $mode!='report' ?
+                    "(function (i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function () {\n"
+                    ."(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n"
+                    ."m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n"
+                    ."})(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n"
+                    ."ga('create', '".$system_vars['google_analytics_key']."');\n"
+                    ."ga('send', 'pageview');\n"
+                : ""
+             )
+            .(
+                $system_vars['debug_no_internet']!=1 &&
+                $system_vars['piwik_id'] &&
+                $mode!='details' &&
+                $mode!='report' ?
+                     "var _paq = _paq || [];\n"
+                    ."(function () {\n"
+                    ."  var u=document.location.protocol+\"//\"+document.location.hostname+\"/piwik/\";\n"
+                    ."  _paq.push(['setSiteId', ".$system_vars['piwik_id']."]);\n"
+                    ."  _paq.push(['setTrackerUrl', u+'piwik.php']);\n"
+                    ."  _paq.push(['trackPageView']);\n"
+                    ."  _paq.push(['enableLinkTracking']);\n"
+                    ."  var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n"
+                    ."  g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'piwik.js';\n"
+                    ."  s.parentNode.insertBefore(g,s);\n"
+                    ."})();\n"
+                :
+                    ""
+            )
+        );
+        Output::push(
+            'javascript_bottom',
+            "addEvent(window,\"load\",_onload);\n"
+            ."addEvent(window,\"unload\",_onunload);\n"
+        );
+        if (
+        $print!=1 && (
+         ($page_vars['navsuite1ID']!='' && $page_vars['navsuite1ID']!='1') ||
+         ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
+         ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
+        )
+        ) {
+            $navsuiteObj = new \Nav\Suite();
+            Output::push('javascript_onload', $navsuiteObj->getJsPreload());
+        }
+        $anchor_ID = System::get_item_version('system_family').'_main_content';
+        $js_onload =
+        "  externalLinks();\n"
+        ."  initialise_tooltips();\n"
+        .($isIE ? "  initialise_constraints();\n" : "")
+        ."  ToolTips.attachBehavior();\n"
+        .($CM_level>0 ? "  CM_load();\n" : "")
+        .($showLoading ? "  if (popup_msg==='') { popup_hide_on_loaded(); }\n" : "");
+        Output::push('javascript_onload', $js_onload);
+        Output::push(
+            'javascript_onunload',
+            "  ToolTips.out();\n"
+            ."  EventCache.flush();\n"
+            ."  if (window.GUnload) {window.GUnload();}\n"
+        );
+
         Output::push("head_bottom", "</head>\n");
+
+        Output::push(
+            'body_top',
+            "<body class=\""
+            .(isset($_COOKIE['textsize']) && $_COOKIE['textsize']=='big' ? "zoom_big" : "zoom_small")
+            ."\">"
+        );
+        Output::push(
+            'body',
+            "<form id='form' enctype='multipart/form-data' method='post' action='./' style='padding:0;margin:0;'>\r\n"
+            ."<div id='top' class='margin_none padding_none'>\r\n"
+            ."<a href=\"#".$anchor_ID."\" title=\"Main content begins here\" class='fl' style=\"display:none\">"
+            ."Skip to Main Content</a>\r\n"
+
+            .draw_form_field('limit', $limit, 'hidden')."\r\n"
+            .draw_form_field('offset', $offset, 'hidden')."\r\n"
+            .draw_form_field('filterExact', $filterExact, 'hidden')."\r\n"
+            .draw_form_field('filterField', $filterField, 'hidden')."\r\n"
+            .draw_form_field('filterValue', $filterValue, 'hidden')."\r\n"
+            .draw_form_field('anchor', $anchor, 'hidden')."\r\n"
+            .draw_form_field('bulk_update', $bulk_update, 'hidden')."\r\n"
+            .draw_form_field('command', '', 'hidden')."\r\n"
+            .draw_form_field('component_help', $component_help, 'hidden')."\r\n"
+            .draw_form_field('DD', $DD, 'hidden')."\r\n"
+            .draw_form_field('goto', $page, 'hidden')."\r\n"
+            .draw_form_field('mode', $mode, 'hidden')."\r\n"
+            .draw_form_field('MM', $MM, 'hidden')."\r\n"
+            .draw_form_field('print', $print, 'hidden')."\r\n"
+            .draw_form_field('report_name', $report_name, 'hidden')."\r\n"
+            .draw_form_field('rnd', dechex(mt_rand(0, mt_getrandmax())), 'hidden')."\r\n"
+            .draw_form_field('search_categories', $search_categories, 'hidden')."\r\n"
+            .draw_form_field('search_date_end', $search_date_end, 'hidden')."\r\n"
+            .draw_form_field('search_date_start', $search_date_start, 'hidden')."\r\n"
+            .draw_form_field('search_keywords', $search_keywords, 'hidden')."\r\n"
+            .draw_form_field('search_name', $search_name, 'hidden')."\r\n"
+            .draw_form_field('search_offset', $search_offset, 'hidden')."\r\n"
+            .draw_form_field('search_text', $search_text, 'hidden')."\r\n"
+            .draw_form_field('search_type', $search_type, 'hidden')."\r\n"
+            .draw_form_field('selectID', $selectID, 'hidden')."\r\n"
+            .draw_form_field('selected_section', $selected_section, 'hidden')."\r\n"
+            .draw_form_field('sortBy', $sortBy, 'hidden')."\r\n"
+            .draw_form_field('source', '', 'hidden')."\r\n"
+            .draw_form_field('submode', '', 'hidden')."\r\n"
+            .draw_form_field('targetID', '', 'hidden')."\r\n"
+            .draw_form_field('targetField', '', 'hidden')."\r\n"
+            .draw_form_field('targetFieldID', '', 'hidden')."\r\n"
+            .draw_form_field('targetReportID', '', 'hidden')."\r\n"
+            .draw_form_field('targetValue', '', 'hidden')."\r\n"
+            .draw_form_field('YYYY', $YYYY, 'hidden')."\r\n"
+            ."</div>"
+
+            ."\n<!-- Modal Popup mask -->\n"
+            ."<div id=\"popupMask\" style=\"display:none;\"></div>\n"
+            ."<div id=\"popupContainer\" style=\"display:none;\">\n"
+            ."  <div id=\"popupInner\">\n"
+            ."    <div id=\"popupTitleBar\">\n"
+            ."      <div id=\"popupTitle\"></div>\n"
+            ."      <div id=\"popupControls\">"
+            ."<img src=\"".BASE_PATH."img/spacer\" class=\"icons\" height=\"10\" width=\"10\""
+            ." style='background-position:-2590px 0px;' onclick=\"hidePopWin(null)\" alt='Close' /></div>"
+            ."    </div>\n"
+            ."    <div id=\"popupBody\"></div>\n"
+            ."  </div>\n"
+            ."</div>\n"
+            .($showLoading ? "<script type='text/javascript'>show_popup_please_wait();</script>\n" : "")
+
+        );
+        if (
+            Base::module_test('Church') &&
+            $system_vars['debug_no_internet']!=1 &&
+            $mode!='details' &&
+            $mode!='report'
+        ) {
+            $Obj_CBL = new \Component\BibleLinks;
+            Output::push('body', $Obj_CBL->draw());
+        }
     }
 
     public static function prepareResponsiveFoot()
     {
         Output::push(
+            'body_bottom',
+            "<div id='CM'></div>\n"
+        );
+        Output::push(
             'html_bottom',
-            "</form>\n"
-            ."<script src=\"/js/bootstrap.min.js\"></script>\n"
+            "<script src=\"/js/bootstrap.min.js\"></script>\n"
             ."<script src=\"/js/tm-scripts.js\"></script>\n"
-            ."</body>\n"
+            ."</form></body>\n"
             ."</html>"
         );
     }

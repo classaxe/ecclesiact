@@ -1,13 +1,9 @@
 <?php
-define('VERSION_DISPLAYABLE_ITEM', '1.0.154');
+define('VERSION_DISPLAYABLE_ITEM', '1.0.155');
 /*
 Version History:
-  1.0.154 (2015-09-13)
-    1) Many changes following move of output streaming from Page into Output class:
-         Page::push_content()           ->      Output::push()
-         Page::pop_content()            ->      Output::pull()
-         Page::$content = array()       ->      Output::reset()
-         isset(Page::$content[$part])   ->      Output::present($part)
+  1.0.155 92015-09-19)
+    1) draw_comments_block() anchor now has only ID attribute, not name (name is deprecated)
 
 */
 class Displayable_Item extends Block_Layout
@@ -1142,7 +1138,7 @@ class Displayable_Item extends Block_Layout
         return
              "<div class='clr_b'></div>\n"
             ."<div id='comments_list' class='comments_list'>"
-            ."<a name='anchor_comments_list' id='anchor_comments_list'><span style=\"visibility:hidden\">Comments list begins</span></a>"
+            ."<a id='anchor_comments_list'><span style=\"visibility:hidden\">Comments list begins</span></a>"
             .$Obj->get_comments_all_html($this->_get_object_name(), $this->_get_ID(), $allow_add)
             ."<div class='clr_b'></div>\n"
             ."</div>"

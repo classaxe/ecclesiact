@@ -1,3 +1,9 @@
+  1.0.154 (2015-09-13)
+    1) Many changes following move of output streaming from Page into Output class:
+         Page::push_content()           ->      Output::push()
+         Page::pop_content()            ->      Output::pull()
+         Page::$content = array()       ->      Output::reset()
+         isset(Page::$content[$part])   ->      Output::present($part)
   1.0.153 (2015-07-26)
     1) Various anchors for 'content begins here' now have hidden text for accessibility conformance
   1.0.152 (2015-03-23)

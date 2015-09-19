@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.12");
+define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.13");
 /*
 Version History:
-  1.0.12 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.13 (2015-09-19)
+    1) WOWSlider::drawImageBullets() now includes alt attribute for image preview bullets
 
 */
 class WOWSlider extends Base
@@ -358,7 +358,8 @@ class WOWSlider extends Base
                  "      <a href=\"#\" title=\"".$image['title']."\""
                 .$CM.">"
                 ."<img src=\"".htmlentities($image['thumbnail'])."\""
-                ." title=\"".$image['title']."\""
+                ." alt=\"Thumbnail of ".$image['title']."\""
+                ." title=\"Thumbnail of ".$image['title']."\""
                 ." height=\"".$image['thumbnail_h']."\""
                 ." width=\"".$image['thumbnail_w']."\""
                 ."/>".($i+1)

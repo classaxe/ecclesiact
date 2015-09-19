@@ -1,0 +1,2 @@
+  1.0.0 (2015-09-13)
+    1) Initial release - performs streaming operations previously handled by Page class

@@ -1,12 +1,9 @@
 <?php
-define('VERSION_PAGE', '1.0.123');
+define('VERSION_PAGE', '1.0.124');
 /*
 Version History:
-  1.0.123 (2015-09-14)
-    1) Moved Page::prepare_html_head() and Page::prepare_html_foot() into Layout class
-    2) Page streaming now performed by Output class - stub methods remain for backwards compatability:
-           Page::push_content($part, $code)
-           Page::pop_content($part)
+  1.0.124 (2015-09-17)
+    1) Page::draw_detail_content() now only shows 'Show comments' link if there are any to see
 
 */
 class Page extends Displayable_Item
@@ -547,7 +544,7 @@ class Page extends Displayable_Item
               :
                  "</div>"
              )
-            .(!$responsive && $page_vars['comments_allow'] ? "<a href=\"#anchor_comments_list\">View Comments</a>" : "")
+            .(!$responsive && $page_vars['comments_count']>0 ? "<a href=\"#anchor_comments_list\">View Comments</a>" : "")
             .($ratings_allow ? Rating::draw_block() : "")
             .$this->draw_related_block()
             .$this->draw_comments_block($page_vars['comments_allow'])

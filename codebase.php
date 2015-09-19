@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.0");
+define("CODEBASE_VERSION", "4.0.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,303 +16,67 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.0.2394 (2015-09-14)
+4.0.1.2395 (2015-09-19)
 Summary:
-A Massive build to move us towards true responsive layouts
-  1) Content streaming now handled via Output::push() and Output::pull()
-     MANY file changes:
-        Page::push_content($part, $code)    ->      Output::push($part, $code)
-        Page::pop_content($part)            ->      Output::part($code)
-  2) Begun support for responsive layouts:
-     Now layouts have 'responsive' flag and switch code preparation based upon that setting.
-
-4.0.0.2394 (2015-09-14)
-Summary:
-  (Provide top-level summary here)
+  1) More work on responsive layout integration with standard Ecclesiact functionality such as in-page edit,
+     Context Menus and Component Parameters
 
 Final Checksums:
-  Classes     CS:7e2b8f85
-  Database    CS:f4d5de57
-  Libraries   CS:54880c40
+  Classes     CS:f74bf6fe
+  Database    CS:2c1b27a7
+  Libraries   CS:43eeef82
   Reports     CS:859ef4c6
 
 Code Changes:
-  codebase.php                                                                                   4.0.0     (2015-09-14)
+  codebase.php                                                                                   4.0.1     (2015-09-19)
     1) Updated version information
-  classes/class.action.php                                                                       1.0.23    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.ajax.php                                                                         1.0.25    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.block_layout.php                                                                 1.0.66    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.bugtracker.php                                                                   1.0.8     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.cart.php                                                                         1.0.7     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.checkout.php                                                                     1.0.45    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.community_display.php                                                            1.0.42    (2015-09-13)
-    1) References to Page::pushContent() now changed to Output::push()
-  classes/class.community_member.php                                                             1.0.108   (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.community_member_display.php                                                     1.0.43    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.community_member_summary.php                                                     1.0.21    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_events_map.php                                                         1.0.3     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_facebook_like.php                                                      1.0.5     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_gallery_album.php                                                      1.0.72    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_gallery_fader.php                                                      1.0.43    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_gallery_thumbnails.php                                                 1.0.36    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_google_plusone.php                                                     1.0.1     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_image_fader.php                                                        1.0.2     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_image_gallery.php                                                      1.0.1     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_inline_signin.php                                                      1.0.3     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_member_search.php                                                      1.0.13    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_password_protect.php                                                   1.0.4     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_persons_listing.php                                                    1.0.2     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_persons_map.php                                                        1.0.2     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_poll_archive.php                                                       1.0.2     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_rss_displayer.php                                                      1.0.2     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_rss_headlines.php                                                      1.0.1     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_signin.php                                                             1.0.3     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_time_tracker.php                                                       1.0.4     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.component_twitter.php                                                            1.0.3     (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.custom_form.php                                                                  1.0.42    (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.displayable_item.php                                                             1.0.154   (2015-09-13)
-    1) Many changes following move of output streaming from Page into Output class:
-         Page::push_content()           ->      Output::push()
-         Page::pop_content()            ->      Output::pull()
-         Page::$content = array()       ->      Output::reset()
-         isset(Page::$content[$part])   ->      Output::present($part)
-  classes/class.event.php                                                                        1.0.105   (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.fck.php                                                                          1.0.23    (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.gc_weather.php                                                                   1.0.1     (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.group_wizard.php                                                                 1.0.14    (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.html.php                                                                         1.0.91    (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.jumploader.php                                                                   1.0.8     (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-  classes/class.layout.php                                                                       1.0.29    (2015-09-12)
-    1) Added 'responsive' to fields list
-    2) Layout::prepare() now looks at 'responsive' flag to determine how to prepare the output
-    3) Added methods Layout::prepareResponsiveHead() and Layout::prepareResponsiveFoot()
-    4) References to Page streaming method now changes to use Output class instead
-    5) Made largely PSR-2 compliant
-  classes/class.mail_queue.php                                                                   1.0.38    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.media_audioplayer.php                                                            1.0.10    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.order.php                                                                        1.0.69    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.page.php                                                                         1.0.123   (2015-09-14)
-    1) Moved Page::prepare_html_head() and Page::prepare_html_foot() into Layout class
-    2) Page streaming now performed by Output class - stub methods remain for backwards compatability:
-           Page::push_content($part, $code)
-           Page::pop_content($part)
-  classes/class.page_edit.php                                                                    1.0.18    (2015-09-12)
-    1) Call to Layout::get_selector_sql() now Layout::getSelectorSql()
-    2) References to Page::push_content() now changed to Output::push()
-  classes/class.page_vars.php                                                                    1.0.26    (2015-09-12)
-    1) Page_Vars::_swap_layout_if_other_language() call to Layout::get_language_options() now getLanguageOptions()
-    2) References to Page::push_content() now changed to Output::push()
-  classes/class.payment_method.php                                                               1.0.11    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.person.php                                                                       1.0.125   (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.php_excel.php                                                                    1.0.3     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.product.php                                                                      1.0.79    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.product_catalogue.php                                                            1.0.32    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.product_relationship.php                                                         1.0.5     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.rating.php                                                                       1.0.6     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.report.php                                                                       1.0.87    (2015-09-12)
-    1) Report::handle_delete() now provides support for PSR-2 compliant named method handleReportDelete()
-  classes/class.report_column.php                                                                1.0.132   (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.report_filter.php                                                                1.0.17    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.report_form.php                                                                  1.0.65    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.report_form_field_lookup.php                                                     1.0.3     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.report_report.php                                                                1.0.30    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.search.php                                                                       1.0.11    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.survey.php                                                                       1.0.18    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.system.php                                                                       1.0.164   (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/class.system_edit.php                                                                  1.0.34    (2015-09-12)
-    1) Call to Layout::get_selector_sql() now  Layout::getSelectorSql()
-    2) References to Page::push_content() now changed to Output::push()
-  classes/component/base.php                                                                     1.0.4     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/biblelinks.php                                                               1.0.2     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/breadcrumbs.php                                                              1.0.6     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/calendarlarge.php                                                            1.0.30    (2015-09-13)
-    1) Many changes following move of output streaming from Page into Output class:
-         Page::push_content()           ->      Output::push()
-         Page::pop_content()            ->      Output::pull()
-         Page::$content = array()       ->      Output::reset()
-         isset(Page::$content[$part])   ->      Output::present($part)
-  classes/component/calendarsmall.php                                                            1.0.5     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/calendaryearly.php                                                           1.0.2     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/collectionviewer.php                                                         1.0.53    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/combotabber.php                                                              1.0.12    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/communitiesdisplay.php                                                       1.0.7     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/contentblock.php                                                             1.0.2     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/customiserbutton.php                                                         1.0.4     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/documentreader.php                                                           1.0.2     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/emailnewslettersignup.php                                                    1.0.2     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/iconsocial.php                                                               1.0.3     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/component/wowslider.php                                                                1.0.12    (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/map/googlemap.php                                                                      1.0.1     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/nav/drawnav.php                                                                        1.0.4     (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-  classes/output.php                                                                             1.0.0     (2015-09-13)
-    1) Initial release - performs streaming operations previously handled by Page class
-  img.php                                                                                        2.0.85    (2015-09-10)
-    1) Added animate.css and bootstrap.css to css list
-  style/default.css                                                                              1.0.169   (2015-09-12)
-    1) Strenthened definitions relating to admin menu to prevent bootstrap from messing with them
-  style/labels.css                                                                               1.0.47    (2015-09-12)
-    1) Added lbl_responsive
+  classes/class.displayable_item.php                                                             1.0.155   92015-09-19)
+    1) draw_comments_block() anchor now has only ID attribute, not name (name is deprecated)
+  classes/class.layout.php                                                                       1.0.30    (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
+    3) Corrected Meta Generator tag - wasn't valid as an 'equiv' entity
+    4) Big changes to Output::prepareResponsiveHead() to include all support for Ecclesiact in Responsive layouts
+  classes/class.page.php                                                                         1.0.124   (2015-09-17)
+    1) Page::draw_detail_content() now only shows 'Show comments' link if there are any to see
+  classes/class.podcast.php                                                                      1.0.47    (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
+  classes/class.system.php                                                                       1.0.165   (2015-09-19)
+    1) Moved System::draw_css_include() and System::draw_js_include() to Output class
+  classes/component/wowslider.php                                                                1.0.13    (2015-09-19)
+    1) WOWSlider::drawImageBullets() now includes alt attribute for image preview bullets
+  classes/output.php                                                                             1.0.1     (2015-09-19)
+    1) Now includes Output::drawCssInclude() and Output::drawJsInclude() taken from System class
+    2) Updated version for sysjs/jqueryjson included and changed CDN for JS from Google to code.jquery.com
+  img.php                                                                                        2.0.86    (2015-09-19)
+    1) Added support for sysjs/jquerymigrate
+  js/member.js                                                                                   1.0.143   (2015-09-19)
+    1) Replaced references of $J with $ since we no longer have to deal with prototype in here as well.
 
-2394.sql
-  1) Added `responsive` field to layout table
-  2) Added responsive column / field for layouts
-  3) Set version information
+2395.sql
+  1) Style field for layout is now longtext type
+  2) Set version information
+
+Delete:
+  js/jquery.json-2.4.min.js
 
 Promote:
-  codebase.php                                        4.0.0
-  classes/  (79 files changed)
-    class.action.php                                  1.0.23    CS:98e9e733
-    class.ajax.php                                    1.0.25    CS:c53de5fb
-    class.block_layout.php                            1.0.66    CS:c2433d80
-    class.bugtracker.php                              1.0.8     CS:5e3f1001
-    class.cart.php                                    1.0.7     CS:480b230a
-    class.checkout.php                                1.0.45    CS:e09f417c
-    class.community_display.php                       1.0.42    CS:19b1df44
-    class.community_member.php                        1.0.108   CS:bfdb53a4
-    class.community_member_display.php                1.0.43    CS:9c9e902d
-    class.community_member_summary.php                1.0.21    CS:69179469
-    class.component_events_map.php                    1.0.3     CS:c00affc0
-    class.component_facebook_like.php                 1.0.5     CS:dbd31416
-    class.component_gallery_album.php                 1.0.72    CS:bfba4ef1
-    class.component_gallery_fader.php                 1.0.43    CS:c62a8f54
-    class.component_gallery_thumbnails.php            1.0.36    CS:3ec8cbe7
-    class.component_google_plusone.php                1.0.1     CS:aa58bd45
-    class.component_image_fader.php                   1.0.2     CS:a5654a7e
-    class.component_image_gallery.php                 1.0.1     CS:cde322d4
-    class.component_inline_signin.php                 1.0.3     CS:c0c696f6
-    class.component_member_search.php                 1.0.13    CS:f690e66
-    class.component_password_protect.php              1.0.4     CS:f3a11b0
-    class.component_persons_listing.php               1.0.2     CS:c364832d
-    class.component_persons_map.php                   1.0.2     CS:ade69cbe
-    class.component_poll_archive.php                  1.0.2     CS:2a685f9b
-    class.component_rss_displayer.php                 1.0.2     CS:87b7ac7a
-    class.component_rss_headlines.php                 1.0.1     CS:e86e552
-    class.component_signin.php                        1.0.3     CS:d812fbd7
-    class.component_time_tracker.php                  1.0.4     CS:66888f42
-    class.component_twitter.php                       1.0.3     CS:bf5b5fdc
-    class.custom_form.php                             1.0.42    CS:1aa39fa8
-    class.displayable_item.php                        1.0.154   CS:6607a3d3
-    class.event.php                                   1.0.105   CS:fcd7573e
-    class.fck.php                                     1.0.23    CS:b4b09221
-    class.gc_weather.php                              1.0.1     CS:ed1f3db7
-    class.group_wizard.php                            1.0.14    CS:26beb6e8
-    class.html.php                                    1.0.91    CS:7b653c73
-    class.jumploader.php                              1.0.8     CS:fc93928b
-    class.layout.php                                  1.0.29    CS:f451b3ce
-    class.mail_queue.php                              1.0.38    CS:faf4f85
-    class.media_audioplayer.php                       1.0.10    CS:d5994bf9
-    class.order.php                                   1.0.69    CS:b7daefed
-    class.page.php                                    1.0.123   CS:491a5d41
-    class.page_edit.php                               1.0.18    CS:433bfcef
-    class.page_vars.php                               1.0.26    CS:6adfeb01
-    class.payment_method.php                          1.0.11    CS:20bfa6ae
-    class.person.php                                  1.0.125   CS:e2be25ec
-    class.php_excel.php                               1.0.3     CS:b56aee05
-    class.product.php                                 1.0.79    CS:7cf3f614
-    class.product_catalogue.php                       1.0.32    CS:d9002ba2
-    class.product_relationship.php                    1.0.5     CS:40d5281e
-    class.rating.php                                  1.0.6     CS:3c82c959
-    class.report.php                                  1.0.87    CS:fd0e7470
-    class.report_column.php                           1.0.132   CS:5122c5f8
-    class.report_filter.php                           1.0.17    CS:c728434f
-    class.report_form.php                             1.0.65    CS:ff87a301
-    class.report_form_field_lookup.php                1.0.3     CS:aaa48c7f
-    class.report_report.php                           1.0.30    CS:13839563
-    class.search.php                                  1.0.11    CS:3efc47fd
-    class.survey.php                                  1.0.18    CS:d9977b9b
-    class.system.php                                  1.0.164   CS:7dea2975
-    class.system_edit.php                             1.0.34    CS:6cf57ffb
-    component/base.php                                1.0.4     CS:c11436df
-    component/biblelinks.php                          1.0.2     CS:9ff43f27
-    component/breadcrumbs.php                         1.0.6     CS:3071ff2f
-    component/calendarlarge.php                       1.0.30    CS:c9928630
-    component/calendarsmall.php                       1.0.5     CS:ad170c53
-    component/calendaryearly.php                      1.0.2     CS:8cc49562
-    component/collectionviewer.php                    1.0.53    CS:f4d6a81d
-    component/combotabber.php                         1.0.12    CS:bdd79c4c
-    component/communitiesdisplay.php                  1.0.7     CS:aa3379ac
-    component/contentblock.php                        1.0.2     CS:53184587
-    component/customiserbutton.php                    1.0.4     CS:d33c84d6
-    component/documentreader.php                      1.0.2     CS:2f810e54
-    component/emailnewslettersignup.php               1.0.2     CS:22d3e85d
-    component/iconsocial.php                          1.0.3     CS:d24fe303
-    component/wowslider.php                           1.0.12    CS:5dd00798
-    map/googlemap.php                                 1.0.1     CS:3d50bc81
-    nav/drawnav.php                                   1.0.4     CS:1f745356
-    output.php                                        1.0.0     CS:30e7faa8
-  img.php                                             2.0.85    CS:6d3ced2e
-  images/labels.gif                                             CS:62267341
-  style/default.css                                   1.0.169   CS:5ab4feba
-  style/labels.css                                    1.0.47    CS:5efc4797
+  codebase.php                                        4.0.1
+  classes/  (7 files changed)
+    class.displayable_item.php                        1.0.155   CS:6741318f
+    class.layout.php                                  1.0.30    CS:ab124ce0
+    class.page.php                                    1.0.124   CS:149e88b4
+    class.podcast.php                                 1.0.47    CS:771cefdd
+    class.system.php                                  1.0.165   CS:7e23dc0d
+    component/wowslider.php                           1.0.13    CS:2b21905d
+    output.php                                        1.0.1     CS:deb149a1
+  img.php                                             2.0.86    CS:74791af9
+  js/member.js                                        1.0.143   CS:796ab27
+  js/jquery-migrate.min.js                            1.2.1
+  js/jquery.json.min.js                               2.5.1
+
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,11 +1,11 @@
 <?php
-define('VERSION_PODCAST', '1.0.46');
+define('VERSION_PODCAST', '1.0.47');
 /*
 Version History:
-  1.0.46 (2015-02-06)
-    1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
+  1.0.47 (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
 
-  (Older version history in class.podcast.txt)
 */
 class Podcast extends Posting_Contained
 {
@@ -456,7 +456,6 @@ class Podcast extends Posting_Contained
         if ($record['enclosure_url']=='') {
             return "";
         }
-        $Obj_System = new System(SYS_ID);
         $media_URL = ($record['systemID']!=SYS_ID && substr($record['enclosure_url'], 0, 4)!="http" ?
             trim($record['systemURL'], "/")."/".trim($record['enclosure_url'], "/")
          :
@@ -469,8 +468,8 @@ class Podcast extends Posting_Contained
             "<html>\n"
             ."<head>\n"
             ."<title>".$this->_get_object_name().": ".$record['title']."</title>\n"
-            .$Obj_System->draw_css_include()
-            .$Obj_System->draw_js_include()
+            .Output::drawCssInclude()
+            .Output::drawJsInclude()
             ."<script type=\"text/javascript\" src=\"".$path."mediaelement-and-player.min.js\"></script>\n"
             ."<link rel=\"stylesheet\" type=\"text/css\" href=\"".$path."mediaelementplayer.css\" />\n"
             ."</head>\n"

@@ -1,3 +1,5 @@
+  1.0.46 (2015-02-06)
+    1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
   1.0.45 (2015-02-01)
     1) Changed call in Podcast::_get_records_sort_records()
          from $this->_get_records_sort_records_using_filter_order_by()
