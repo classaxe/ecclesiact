@@ -20,9 +20,10 @@ define(
 Summary:
   1) Responsive Menus now use Legacy sequence based ordeing of menu position, so for now at least drag and drop is
      no longer an essential feature.
+  2) Function y() now sets background and text colours for easier debug on sites where background is black.
 
 Final Checksums:
-  Classes     CS:ea3e598d
+  Classes     CS:761bd946
   Database    CS:2c1b27a7
   Libraries   CS:9173fbf2
   Reports     CS:e154d375
@@ -52,12 +53,9 @@ Promote:
   codebase.php                                        4.0.3
   classes/  (3 files changed)
     class.layout.php                                  1.0.32    CS:11e2db96
-    nav/drawnav.php                                   1.0.6     CS:2221b368
-    nav/suite.php                                     1.0.41    CS:53aa0141
+    nav/drawnav.php                                   1.0.6     CS:b5d88af2
+    nav/suite.php                                     1.0.41    CS:fab58b9
   js/functions.js                                     1.1.270   CS:c135f04a
-
-
-
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -2888,7 +2886,7 @@ function y()
     $args = func_get_args();
     $out = "";
     foreach ($args as $var) {
-        $out.="<pre>".print_r($var, true)."</pre>\n";
+        $out.="<pre style='background:white;color:black;'>".print_r($var, true)."</pre>\n";
     }
     print $out;
     return $out;

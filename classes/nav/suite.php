@@ -172,7 +172,7 @@ class Suite extends \Record
 
     }
 
-    public function getButtons($all = false, $no_cache = false, $SDMenuMode = false)
+    public function getButtons($all = false, $no_cache = false, $legacyMode = false)
     {
         $key = $this->_get_ID()."_".($all?1:0);
         if (isset(static::$cache_buttons_array[$key]) && !$no_cache) {
@@ -193,12 +193,12 @@ class Suite extends \Record
             ."  `navbuttons` `nb`\n"
             ."WHERE\n"
             ."  `suiteID` IN(".$this->_get_ID().")"
-            .($SDMenuMode ? "\nORDER BY `position`" : "");
+            .($legacyMode ? "\nORDER BY `position`" : "");
         $records = $this->get_records_for_sql($sql);
         $buttons = array();
         $childID_csv =  $this->get_field('childID_csv');
         $csv_arr =  explode(',', $childID_csv);
-        if ($SDMenuMode) {
+        if ($legacyMode) {
             $buttons = $records;
         } else {
             foreach ($csv_arr as $ID) {

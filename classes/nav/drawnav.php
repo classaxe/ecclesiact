@@ -330,16 +330,16 @@ class DrawNav
         $this->setupLoadNavsuite();
         switch ($this->navsuite['navstyle_type']) {
             case "Image":
-                $dragable = true;
+                $legacyMode = false;
                 break;
             case "Responsive":
-                $dragable = false;
+                $legacyMode = true;
                 break;
             case "SD Menu":
-                $dragable = false;
+                $legacyMode = true;
                 break;
         }
-        $this->buttons =        $this->objNavSuite->getButtons(false, false, $dragable);
+        $this->buttons =        $this->objNavSuite->getButtons(false, false, $legacyMode);
     }
 
     protected function checkHasVisible()
