@@ -1,11 +1,11 @@
 <?php
-define('VERSION_CONTEXT_MENU','1.0.75');
+define('VERSION_CONTEXT_MENU','1.0.76');
 /*
 Version History:
-  1.0.75 (2014-03-29)
-    1) Context_Menu::_cm_community_member() now sets communityID when adding new items
+  1.0.76 (2015-09-20)
+    1) Context_Menu::draw_JS() now sets z-index of 2000 to avoid being hidden by Bootstrap layered menus
+    2) Changes to make cm_navbutton work correctly with Responsive menus that have no image
 
-  (Older version history in class.context_menu.txt)
 */
 
 class Context_Menu extends Base{
@@ -978,25 +978,41 @@ class Context_Menu extends Base{
       ."CM_label('".$CM."8',_CM.navsuiteName);\n"
       ."CM_label('".$CM."9',_CM.navstyleName);\n"
       ."CM_label('".$CM."10',_CM.navstyleName);\n"
-      ."btn = geid('btn_'+_CM.navbuttonID);\n"
-      ."if (btn){\n"
-      ."  img = btn.childNodes[0].childNodes[0];\n"
-      ."  if (img){\n"
-      ."    b_src = img.style.backgroundImage;\n"
-      ."    b_url = b_src.split('\"')[1];\n"
-      ."    CM_label('CM_navbutton_t11',\n"
-      ."      \"<div>\"+\n"
-      ."      \"  <div class='fl' style='width:40px;line-height:\"+img.height+\"px;'>Active</div><img src='\"+base_url+\"img/spacer' style='margin:1px;background:\"+b_src+\" no-repeat \"+(_CM.hasSubmenu ? '100%' : '0')+\" 0px' width='\"+img.width+\"' height='\"+img.height+\"' alt='Active'/><br class='clr_b'/>\\n\"+\n"
-      ."      \"  <div class='fl' style='width:40px;line-height:\"+img.height+\"px;'>Down</div><img src='\"+base_url+\"img/spacer' style='margin:1px;background:\"+b_src+\" no-repeat \"+(_CM.hasSubmenu ? '100%' : '0')+\" \"+(-1*img.height)+\"px' width='\"+img.width+\"' height='\"+img.height+\"' alt='Down'/><br class='clr_b'/>\\n\"+\n"
-      ."      \"  <div class='fl' style='width:40px;line-height:\"+img.height+\"px;'>Normal</div><img src='\"+base_url+\"img/spacer' style='margin:1px;background:\"+b_src+\" no-repeat \"+(_CM.hasSubmenu ? '100%' : '0')+\" \"+(-2*img.height)+\"px' width='\"+img.width+\"' height='\"+img.height+\"' alt='Normal'/><br class='clr_b'/>\\n\"+\n"
-      ."      \"  <div class='fl' style='width:40px;line-height:\"+img.height+\"px;'>Over</div><img src='\"+base_url+\"img/spacer' style='margin:1px;background:\"+b_src+\" no-repeat \"+(_CM.hasSubmenu ? '100%' : '0')+\" \"+(-3*img.height)+\"px' width='\"+img.width+\"' height='\"+img.height+\"' alt='Over'/>\\n\"+\n"
-      ."      \"</div>\\n\"+\n"
-      ."      \"<p class='clr_b' style='margin:0;' align='center'>(Width: \"+img.width+\"px, Height: \"+img.height+\"px, [<a target='_blank' href='\"+b_url+\"'>image</a>])</p>\"\n"
-      ."    );\n"
-      ."  }\n"
-      ."  else {\n"
-      ."    CM_label('CM_navbutton_t11','(None - this button is not an image)');\n"
-      ."  }\n"
+      ."CM_show('CM_navbutton_s11',false);\n"
+      ."img = $('#btn_'+_CM.navbuttonID+' a img');\n"
+      ."if (img.length){\n"
+      ."  b_src = img.css('background-image');\n"
+      ."  b_url = b_src.split('\"')[1];\n"
+      ."  CM_label('CM_navbutton_t11',\n"
+      ."    \"<div>\"+\n"
+      ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Active</div>\\n\"+\n"
+      ."    \"  <img alt='Active' src='\"+base_url+\"img/spacer'\"+\n"
+      ."    \" style='margin:1px;background:\"+b_src+\" no-repeat \"+\n"
+      ."    (_CM.hasSubmenu ? '100%' : '0')+\" 0px'\\n\"+\n"
+      ."    \" width='\"+img.width()+\"' height='\"+img.height()+\"'/>\\n\"+\n"
+      ."    \"  <br class='clr_b'/>\\n\"+\n"
+      ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Down</div>\\n\"+\n"
+      ."    \"  <img alt='Down' src='\"+base_url+\"img/spacer'\"+\n"
+      ."    \" style='margin:1px;background:\"+b_src+\" no-repeat \"+\n"
+      ."    (_CM.hasSubmenu ? '100%' : '0')+\" \"+(-1*img.height())+\"px'\\n\"+\n"
+      ."    \" width='\"+img.width()+\"' height='\"+img.height()+\"'/>\\n\"+\n"
+      ."    \"  <br class='clr_b'/>\\n\"+\n"
+      ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Normal</div>\\n\"+\n"
+      ."    \"  <img alt='Normal' src='\"+base_url+\"img/spacer'\"+\n"
+      ."    \" style='margin:1px;background:\"+b_src+\" no-repeat \"+\n"
+      ."    (_CM.hasSubmenu ? '100%' : '0')+\" \"+(-2*img.height())+\"px'\\n\"+\n"
+      ."    \" width='\"+img.width()+\"' height='\"+img.height()+\"'/>\\n\"+\n"
+      ."    \"  <br class='clr_b'/>\\n\"+\n"
+      ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Over</div>\\n\"+\n"
+      ."    \"  <img alt='Over' src='\"+base_url+\"img/spacer' style='margin:1px;background:\"+b_src+\" no-repeat \"+\n"
+      ."    (_CM.hasSubmenu ? '100%' : '0')+\" \"+(-3*img.height())+\"px'\\n\"+\n"
+      ."    \" width='\"+img.width()+\"' height='\"+img.height()+\"'/>\\n\"+\n"
+      ."    \"</div>\\n\"+\n"
+      ."    \"<p class='clr_b' style='margin:0;' align='center'>\\n\"+\n"
+      ."    \"(Width: \"+img.width()+\"px, Height: \"+img.height()+\"px, \\n\"+\n"
+      ."    \"[<a target='_blank' href='\"+b_url+\"'>image</a>])</p>\"\n"
+      ."  );\n"
+      ."  CM_show('CM_navbutton_s11', true);\n"
       ."}\n"
     );
     return $this->draw_cm(
@@ -1033,7 +1049,7 @@ class Context_Menu extends Base{
            ."    alert('The '+_CM.navstyleName.replace(/&amp;quot;/ig,'&quot;')+' buttonstyle has no submenu style defined.');"
            ."    break;"
            ."  default:"
-           ."    if (confirm('Add submenu to '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button?')){"
+           ."    if (confirm('Add menu to '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button?')){"
            ."      CM_CloseContext();geid_set('command','subnav_add');"
            ."      geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
            ."    }"
@@ -1094,7 +1110,7 @@ class Context_Menu extends Base{
        : ""
        )
      .$this->draw_div_tip('navbutton')
-     .$this->draw_div_sample('Image states for this button:',"<span id='CM_navbutton_t11'></span>")
+     .$this->draw_div_sample('CM_navbutton_s11', 'Image states for this button:',"<span id='CM_navbutton_t11'></span>")
     );
   }
 
@@ -2097,9 +2113,9 @@ class Context_Menu extends Base{
      ."title=\"".$what[3]."\" alt=\"".$what[3]."\" /></div>\n";
   }
 
-  function draw_div_sample($title,$content) {
+  function draw_div_sample($ID, $title, $content) {
     return
-       "  <div class='cm_panel cm_sample'>\n"
+       "  <div class='cm_panel cm_sample' id='".$ID."'>\n"
       .$this->draw_cm_icon('11|11|2600|(i)')
       ."    <div class='cm_panel_content'>\n"
       ."      <div class='cm_panel_title'>".$title."</div>\n"
@@ -2187,7 +2203,7 @@ class Context_Menu extends Base{
       ."  divContext.style.display = 'none';\n"
       ."  divContext.style.left = event.clientX + scrollLeft + 'px';\n"
       ."  divContext.style.top = event.clientY + scrollTop + 'px';\n"
-      ."  divContext.style.zIndex = 210;\n"
+      ."  divContext.style.zIndex = 2000;\n"
       ."  divContext.style.display = 'block';\n"
       ."  _replaceContext = false;\n"
       ."  return false;\n"

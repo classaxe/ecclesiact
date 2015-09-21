@@ -1,9 +1,9 @@
-// 1.0.143
+// 1.0.144
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.143 (2015-09-19)
-    1) Replaced references of $J with $ since we no longer have to deal with prototype in here as well.
+  1.0.144 (2015-09-20)
+    1) Added CM_Responsive_Over()
 
 */
 
@@ -218,6 +218,28 @@ function CM_Navbutton_Over(
   _CM.navsuiteName='&quot;'+bSuiteName+'&quot;';
   _CM.navstyleName='&quot;'+bStyleName+'&quot;';
 }
+
+function CM_Responsive_Over(
+  bID,bStyleID,bcanAddSubnav,bSuiteName,bStyleName
+){
+  var bHasSubmenu, bSuiteID;
+  if (CM_visible('CM_navbutton')) {
+    return;
+  }
+  btn = geid('btn_'+bID);
+  bSuiteID = btn.parentNode.id.substr(4);
+  bHasSubmenu = btn.getElementsByTagName('UL').length > 0 ? 1 : 0;
+  _CM.type='navbutton';
+  _CM.navbuttonID=bID;
+  _CM.navsuiteID=bSuiteID;
+  _CM.navstyleID=bStyleID;
+  _CM.hasSubmenu=bHasSubmenu;
+  _CM.canAddSubnav=bcanAddSubnav;
+  _CM.navbuttonText='&quot;'+btn.childNodes[0].innerHTML+'&quot;';
+  _CM.navsuiteName='&quot;'+bSuiteName+'&quot;';
+  _CM.navstyleName='&quot;'+bStyleName+'&quot;';
+}
+
 
 function CM_SDMenu_Over(
   bID,bText,bHasSubmenu,bSubNavStyleID, bSuiteID,bSuiteName,bStyleID, bStyleName

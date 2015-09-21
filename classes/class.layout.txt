@@ -1,3 +1,8 @@
+  1.0.30 (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
+    3) Corrected Meta Generator tag - wasn't valid as an 'equiv' entity
+    4) Big changes to Output::prepareResponsiveHead() to include all support for Ecclesiact in Responsive layouts
   1.0.29 (2015-09-12)
     1) Added 'responsive' to fields list
     2) Layout::prepare() now looks at 'responsive' flag to determine how to prepare the output

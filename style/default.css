@@ -1,7 +1,7 @@
-/* 1.0.169
+/* 1.0.170
 Version History:
-  1.0.169 (2015-09-12)
-    1) Strenthened definitions relating to admin menu to prevent bootstrap from messing with them
+  1.0.170 (2015-09-20)
+    1) Strengthened definitions of context menus to prevent bootstrap from messing with them
 
 */
 
@@ -1152,6 +1152,13 @@ table.ajax_report td {
 	display: none;
 	background-color: #fff;
 }
+.context_menu * {
+    opacity: 1;
+    filter: none;
+    box-sizing: content-box;
+    font-weight:normal;
+}
+
 .context_menu .context {
 	clear: both;
 	float: none;

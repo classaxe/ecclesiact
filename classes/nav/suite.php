@@ -1,11 +1,12 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_SUITE', '1.0.39');
+define('VERSION_NS_NAV_SUITE', '1.0.40');
 /*
 Version History:
-  1.0.39 (2015-08-14)
-    1) Moved Suite::drawNav() out into its own class DrawNav::draw()
+  1.0.40 (2015-09-20)
+    1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
+    2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts
 
 */
 class Suite extends \Record
@@ -73,27 +74,44 @@ class Suite extends \Record
         $newID =    parent::copy($new_name, $new_systemID, $new_date);
         $buttons =  $this->getButtons(true);
         $Obj =      new \Nav\button;
+        $mapping = array();
         foreach ($buttons as $data) {
             $oldButtonID = $data['ID'];
-            unset($data['ID']);
-            unset($data['archive']);
-            unset($data['archiveID']);
+            unset(
+                $data['ID'],
+                $data['archive'],
+                $data['archiveID'],
+                $data['childID']
+            );
             if ($new_date) {
-                unset($data['history_created_by']);
-                unset($data['history_created_date']);
-                unset($data['history_created_IP']);
-                unset($data['history_modified_by']);
-                unset($data['history_modified_date']);
-                unset($data['history_modified_IP']);
+                unset(
+                    $data['history_created_by'],
+                    $data['history_created_date'],
+                    $data['history_created_IP'],
+                    $data['history_modified_by'],
+                    $data['history_modified_date'],
+                    $data['history_modified_IP']
+                );
             }
-            unset($data['childID']);
+            $data['suiteID'] = $newID;
             if ($new_systemID) {
                 $data['systemID'] = $new_systemID;
             }
             $newButtonID = $Obj->insert($data);
+            $mapping[$oldButtonID] = $newButtonID;
             $Obj->_set_ID($oldButtonID);
             $Obj->copy_group_assign($newButtonID);
         }
+        $Obj = new \Nav\Suite($newID);
+        $newIds =   array();
+        $childIDs = explode(',', $Obj->get_field('childID_csv'));
+        foreach ($childIDs as $childID) {
+            if (isset($mapping[$childID])) {
+                $newIDs[] = $mapping[$childID];
+            }
+        }
+        $childIDs = implode(',', $newIDs);
+        $Obj->set_field('childID_csv', $childIDs, true, false);
         return $newID;
     }
 
@@ -136,6 +154,22 @@ class Suite extends \Record
                 $show_fields
             )."\n";
         return parent::sqlExport($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
+    }
+
+    public static function drawJsPreload()
+    {
+        global $print, $page_vars;
+        if ($print==1) {
+            return;
+        }
+        if (
+            ($page_vars['navsuite1ID']!='' && $page_vars['navsuite1ID']!='1') ||
+            ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
+            ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
+        ) {
+            \Output::push('javascript_onload', static::getJsPreload());
+        }
+
     }
 
     public function getButtons($all = false, $no_cache = false, $SDMenuMode = false)
@@ -194,16 +228,16 @@ class Suite extends \Record
         return $buttons;
     }
 
-    public function getJsPreload()
+    public static function getJsPreload()
     {
         global $page_vars, $print;
         if ($print=='1' || $print=='2') {
             return "";
         }
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
+        $isSYSADMIN =       get_person_permission("SYSADMIN");
         $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =        get_person_permission("SYSEDITOR");
+        $isSYSEDITOR =      get_person_permission("SYSEDITOR");
         $isAdmin =          ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN ? 1 : 0);
         $out = "";
         for ($i=1; $i<=3; $i++) {

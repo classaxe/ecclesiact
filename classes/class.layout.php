@@ -1,12 +1,9 @@
 <?php
-define('VERSION_LAYOUT', '1.0.30');
+define('VERSION_LAYOUT', '1.0.31');
 /*
 Version History:
-  1.0.30 (2015-09-19)
-    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
-    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
-    3) Corrected Meta Generator tag - wasn't valid as an 'equiv' entity
-    4) Big changes to Output::prepareResponsiveHead() to include all support for Ecclesiact in Responsive layouts
+  1.0.31 (2015-09-20)
+    1) Job of creating preload JS for navsuites now by Nav\Suite::drawJsPreload() directly
 
 */
 
@@ -409,16 +406,7 @@ class Layout extends Record
             "addEvent(window,\"load\",_onload);\n"
             ."addEvent(window,\"unload\",_onunload);\n"
         );
-        if (
-        $print!=1 && (
-         ($page_vars['navsuite1ID']!='' && $page_vars['navsuite1ID']!='1') ||
-         ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
-         ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
-        )
-        ) {
-            $navsuiteObj = new \Nav\Suite();
-            Output::push('javascript_onload', $navsuiteObj->getJsPreload());
-        }
+        \Nav\Suite::drawJsPreload();
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $js_onload =
         "  externalLinks();\n"
@@ -749,16 +737,7 @@ class Layout extends Record
             "addEvent(window,\"load\",_onload);\n"
             ."addEvent(window,\"unload\",_onunload);\n"
         );
-        if (
-        $print!=1 && (
-         ($page_vars['navsuite1ID']!='' && $page_vars['navsuite1ID']!='1') ||
-         ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
-         ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
-        )
-        ) {
-            $navsuiteObj = new \Nav\Suite();
-            Output::push('javascript_onload', $navsuiteObj->getJsPreload());
-        }
+ //       \Nav\Suite::drawJsPreload();
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $js_onload =
         "  externalLinks();\n"

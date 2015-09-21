@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.1");
+define("CODEBASE_VERSION", "4.0.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,65 +16,51 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.1.2395 (2015-09-19)
+4.0.2.2396 (2015-09-20)
 Summary:
-  1) More work on responsive layout integration with standard Ecclesiact functionality such as in-page edit,
-     Context Menus and Component Parameters
+  1) Fix for cloning of navsuite to put buttons into new suite, not original parent
+  2) Fixed permissions and system source selection for navsuites report
+  3) Fixed context menus for Responsive Nav editing
+TODO:
+  Fix sortable drag editing for responsive nav
 
 Final Checksums:
-  Classes     CS:f74bf6fe
+  Classes     CS:8c03430
   Database    CS:2c1b27a7
-  Libraries   CS:43eeef82
-  Reports     CS:859ef4c6
+  Libraries   CS:33e48d1a
+  Reports     CS:10e5547e
 
 Code Changes:
-  codebase.php                                                                                   4.0.1     (2015-09-19)
+  codebase.php                                                                                   4.0.2     (2015-09-20)
     1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.155   92015-09-19)
-    1) draw_comments_block() anchor now has only ID attribute, not name (name is deprecated)
-  classes/class.layout.php                                                                       1.0.30    (2015-09-19)
-    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
-    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
-    3) Corrected Meta Generator tag - wasn't valid as an 'equiv' entity
-    4) Big changes to Output::prepareResponsiveHead() to include all support for Ecclesiact in Responsive layouts
-  classes/class.page.php                                                                         1.0.124   (2015-09-17)
-    1) Page::draw_detail_content() now only shows 'Show comments' link if there are any to see
-  classes/class.podcast.php                                                                      1.0.47    (2015-09-19)
-    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
-    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
-  classes/class.system.php                                                                       1.0.165   (2015-09-19)
-    1) Moved System::draw_css_include() and System::draw_js_include() to Output class
-  classes/component/wowslider.php                                                                1.0.13    (2015-09-19)
-    1) WOWSlider::drawImageBullets() now includes alt attribute for image preview bullets
-  classes/output.php                                                                             1.0.1     (2015-09-19)
-    1) Now includes Output::drawCssInclude() and Output::drawJsInclude() taken from System class
-    2) Updated version for sysjs/jqueryjson included and changed CDN for JS from Google to code.jquery.com
-  img.php                                                                                        2.0.86    (2015-09-19)
-    1) Added support for sysjs/jquerymigrate
-  js/member.js                                                                                   1.0.143   (2015-09-19)
-    1) Replaced references of $J with $ since we no longer have to deal with prototype in here as well.
+  classes/class.context_menu.php                                                                 1.0.76    (2015-09-20)
+    1) Context_Menu::draw_JS() now sets z-index of 2000 to avoid being hidden by Bootstrap layered menus
+    2) Changes to make cm_navbutton work correctly with Responsive menus that have no image
+  classes/class.layout.php                                                                       1.0.31    (2015-09-20)
+    1) Job of creating preload JS for navsuites now by Nav\Suite::drawJsPreload() directly
+  classes/nav/drawnav.php                                                                        1.0.5     (2015-09-20)
+    1) Now handles drawing of responsive menus
+  classes/nav/suite.php                                                                          1.0.40    (2015-09-20)
+    1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
+    2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts
+  js/member.js                                                                                   1.0.144   (2015-09-20)
+    1) Added CM_Responsive_Over()
+  style/default.css                                                                              1.0.170   (2015-09-20)
+    1) Strengthened definitions of context menus to prevent bootstrap from messing with them
 
-2395.sql
-  1) Style field for layout is now longtext type
+2396.sql
+  1) Fix for Navsuites report showing suites from all sites - missed somehow during report fix in 3.3.12.2386
   2) Set version information
 
-Delete:
-  js/jquery.json-2.4.min.js
-
 Promote:
-  codebase.php                                        4.0.1
-  classes/  (7 files changed)
-    class.displayable_item.php                        1.0.155   CS:6741318f
-    class.layout.php                                  1.0.30    CS:ab124ce0
-    class.page.php                                    1.0.124   CS:149e88b4
-    class.podcast.php                                 1.0.47    CS:771cefdd
-    class.system.php                                  1.0.165   CS:7e23dc0d
-    component/wowslider.php                           1.0.13    CS:2b21905d
-    output.php                                        1.0.1     CS:deb149a1
-  img.php                                             2.0.86    CS:74791af9
-  js/member.js                                        1.0.143   CS:796ab27
-  js/jquery-migrate.min.js                            1.2.1
-  js/jquery.json.min.js                               2.5.1
+  codebase.php                                        4.0.2
+  classes/  (4 files changed)
+    class.context_menu.php                            1.0.76    CS:135d643b
+    class.layout.php                                  1.0.31    CS:44753c5c
+    nav/drawnav.php                                   1.0.5     CS:ef3f3bfc
+    nav/suite.php                                     1.0.40    CS:e1e672b9
+  js/member.js                                        1.0.144   CS:52519b2a
+  style/default.css                                   1.0.170   CS:5242729
 
 
 

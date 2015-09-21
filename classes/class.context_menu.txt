@@ -1,3 +1,5 @@
+  1.0.75 (2014-03-29)
+    1) Context_Menu::_cm_community_member() now sets communityID when adding new items
   1.0.74 (2013-12-14)
     1) Context_Menu::_cm_community_member() now events for adding Christmas and
        Easter service times
