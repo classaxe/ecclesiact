@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.2");
+define("CODEBASE_VERSION", "4.0.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,51 +16,46 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.2.2396 (2015-09-20)
+4.0.3.2397 (2015-09-21)
 Summary:
-  1) Fix for cloning of navsuite to put buttons into new suite, not original parent
-  2) Fixed permissions and system source selection for navsuites report
-  3) Fixed context menus for Responsive Nav editing
-TODO:
-  Fix sortable drag editing for responsive nav
+  1) Responsive Menus now use Legacy sequence based ordeing of menu position, so for now at least drag and drop is
+     no longer an essential feature.
 
 Final Checksums:
-  Classes     CS:8c03430
+  Classes     CS:ea3e598d
   Database    CS:2c1b27a7
-  Libraries   CS:33e48d1a
-  Reports     CS:10e5547e
+  Libraries   CS:9173fbf2
+  Reports     CS:e154d375
 
 Code Changes:
-  codebase.php                                                                                   4.0.2     (2015-09-20)
+  codebase.php                                                                                   4.0.3     (2015-09-21)
     1) Updated version information
-  classes/class.context_menu.php                                                                 1.0.76    (2015-09-20)
-    1) Context_Menu::draw_JS() now sets z-index of 2000 to avoid being hidden by Bootstrap layered menus
-    2) Changes to make cm_navbutton work correctly with Responsive menus that have no image
-  classes/class.layout.php                                                                       1.0.31    (2015-09-20)
-    1) Job of creating preload JS for navsuites now by Nav\Suite::drawJsPreload() directly
-  classes/nav/drawnav.php                                                                        1.0.5     (2015-09-20)
-    1) Now handles drawing of responsive menus
-  classes/nav/suite.php                                                                          1.0.40    (2015-09-20)
-    1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
-    2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts
-  js/member.js                                                                                   1.0.144   (2015-09-20)
-    1) Added CM_Responsive_Over()
-  style/default.css                                                                              1.0.170   (2015-09-20)
-    1) Strengthened definitions of context menus to prevent bootstrap from messing with them
+  classes/class.layout.php                                                                       1.0.32    (2015-09-21)
+    1) Layout::prepareXhtmlHead() now has additional parameter of false passed into \Nav\Suite::drawJsPreload()
+    2) Layout::prepareResponsiveHead() now has additional parameter of true passed into \Nav\Suite::drawJsPreload()
+  classes/nav/drawnav.php                                                                        1.0.6     (2015-09-21)
+    1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
+       to make Context Menu go away whern clicking outside after moving over a tracked menu item.
+       Container has size constraints removed.
+    2) DrawNav::setup() now specifies legacy manual button sequence for SD Menu and Responsive Menu types, neither
+       of which presently support drag and drop ordering or sequence
+  classes/nav/suite.php                                                                          1.0.41    (2015-09-21)
+    1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
+       responsive or not
+  js/functions.js                                                                                1.0.270   (2015-09-21)
+    1) Function nav_setup() now accepts new parameter for responsive that omits code for IE suckerfish augmentation
 
-2396.sql
-  1) Fix for Navsuites report showing suites from all sites - missed somehow during report fix in 3.3.12.2386
-  2) Set version information
+2397.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.0.2
-  classes/  (4 files changed)
-    class.context_menu.php                            1.0.76    CS:135d643b
-    class.layout.php                                  1.0.31    CS:44753c5c
-    nav/drawnav.php                                   1.0.5     CS:ef3f3bfc
-    nav/suite.php                                     1.0.40    CS:e1e672b9
-  js/member.js                                        1.0.144   CS:52519b2a
-  style/default.css                                   1.0.170   CS:5242729
+  codebase.php                                        4.0.3
+  classes/  (3 files changed)
+    class.layout.php                                  1.0.32    CS:11e2db96
+    nav/drawnav.php                                   1.0.6     CS:2221b368
+    nav/suite.php                                     1.0.41    CS:53aa0141
+  js/functions.js                                     1.1.270   CS:c135f04a
+
 
 
 

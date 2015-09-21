@@ -1,9 +1,10 @@
 <?php
-define('VERSION_LAYOUT', '1.0.31');
+define('VERSION_LAYOUT', '1.0.32');
 /*
 Version History:
-  1.0.31 (2015-09-20)
-    1) Job of creating preload JS for navsuites now by Nav\Suite::drawJsPreload() directly
+  1.0.32 (2015-09-21)
+    1) Layout::prepareXhtmlHead() now has additional parameter of false passed into \Nav\Suite::drawJsPreload()
+    2) Layout::prepareResponsiveHead() now has additional parameter of true passed into \Nav\Suite::drawJsPreload()
 
 */
 
@@ -406,7 +407,7 @@ class Layout extends Record
             "addEvent(window,\"load\",_onload);\n"
             ."addEvent(window,\"unload\",_onunload);\n"
         );
-        \Nav\Suite::drawJsPreload();
+        \Nav\Suite::drawJsPreload(false);
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $js_onload =
         "  externalLinks();\n"
@@ -737,7 +738,7 @@ class Layout extends Record
             "addEvent(window,\"load\",_onload);\n"
             ."addEvent(window,\"unload\",_onunload);\n"
         );
- //       \Nav\Suite::drawJsPreload();
+        \Nav\Suite::drawJsPreload(true);
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $js_onload =
         "  externalLinks();\n"

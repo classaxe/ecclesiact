@@ -3,13 +3,17 @@ namespace Nav;
 
 /*
 Version History:
-  1.0.5 (2015-09-20)
-    1) Now handles drawing of responsive menus
+  1.0.6 (2015-09-21)
+    1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
+       to make Context Menu go away whern clicking outside after moving over a tracked menu item.
+       Container has size constraints removed.
+    2) DrawNav::setup() now specifies legacy manual button sequence for SD Menu and Responsive Menu types, neither
+       of which presently support drag and drop ordering or sequence
 
 */
 class DrawNav
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     protected $buttons;
     protected $buttonsCount = 0;
@@ -190,14 +194,14 @@ class DrawNav
         $this->depth++;
         $this->html.=
              str_repeat('  ', $this->depth)
-            ."        <ul class=\""
+            ."        <ul"
             .($this->navsuiteID=='root' ?
-                ($this->navsuite['orientation']==='|' ? 'rvnavmenu' : 'rhnavmenu')
-                .' navbar-nav sf-menu navbar-left'
-                ."\" "
-                ."data-type=\"navbar\""
+                 " class='"
+                .($this->navsuite['orientation']==='|' ? 'rvnavmenu' : 'rhnavmenu')
+                ." navbar-nav sf-menu navbar-left'"
+                ." data-type='navbar'"
              :
-                "dropdown-menu\""
+                " class='dropdown-menu'"
              )
             ." id='nav_".$this->navsuite['ID']."'"
             .">\n";
@@ -247,10 +251,9 @@ class DrawNav
         $this->html.=
              str_repeat('  ', $this->depth)
             ."</ul>\n";
-        return $this->html;
         return
             ($this->navsuiteID=='root' ?
-                 "<div id='nav_root_".$this->nav."' style='width:".$this->width."px;height:".$this->height."px;'>\n"
+                 "<div id='nav_root_".$this->nav."'>\n"
                 .$this->html
                 ."</div>\n"
              :
@@ -324,8 +327,19 @@ class DrawNav
             return;
         }
         $this->objNavSuite =    new \Nav\Suite($suiteID);
-        $this->buttons =        $this->objNavSuite->getButtons();
         $this->setupLoadNavsuite();
+        switch ($this->navsuite['navstyle_type']) {
+            case "Image":
+                $dragable = true;
+                break;
+            case "Responsive":
+                $dragable = false;
+                break;
+            case "SD Menu":
+                $dragable = false;
+                break;
+        }
+        $this->buttons =        $this->objNavSuite->getButtons(false, false, $dragable);
     }
 
     protected function checkHasVisible()

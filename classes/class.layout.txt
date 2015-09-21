@@ -1,3 +1,5 @@
+  1.0.31 (2015-09-20)
+    1) Job of creating preload JS for navsuites now by Nav\Suite::drawJsPreload() directly
   1.0.30 (2015-09-19)
     1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
     2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()

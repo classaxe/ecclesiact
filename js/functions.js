@@ -1,9 +1,9 @@
-// 1.1.269
+// 1.1.270
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.269 (2015-08-09)
-    1) Change to nav_setup() to recognise sortable axis even if whole container classname contains more than 'hnavmenu'
+  1.0.270 (2015-09-21)
+    1) Function nav_setup() now accepts new parameter for responsive that omits code for IE suckerfish augmentation
 
   (Older version history in functions.txt)
 */
@@ -470,32 +470,37 @@ function hhmm_format(hhmm){
   return hh+":"+mm+ampm;
 }
 
-function nav_setup(nav,isAdmin,url){
-  var li_arr, a_arr, mouseout_state, i, j, ul_arr, axis;
-  li_arr = $('#nav_root_'+nav+' ul li');
-  for(i=0; i<li_arr.length; i++){
-    a_arr = li_arr[i].childNodes;
-    for(j=0; j<a_arr.length; j++){
-      if (typeof a_arr[j].tagName!=='undefined' && a_arr[j].tagName.toLowerCase()==='a'){
-        mouseout_state = a_arr[j].className==='nav_active' ? 'a' : 'n';
-        nav_setup_attach(li_arr[i],mouseout_state);
-      }
+function nav_setup(nav, isAdmin, url, responsive){
+    var li_arr, a_arr, mouseout_state, i, j, ul_arr, axis;
+    li_arr = $('#nav_root_'+nav+' ul li');
+        for(i=0; i<li_arr.length; i++){
+        a_arr = li_arr[i].childNodes;
+        for(j=0; j<a_arr.length; j++){
+            if (typeof a_arr[j].tagName!=='undefined' && a_arr[j].tagName.toLowerCase()==='a'){
+                mouseout_state = a_arr[j].className==='nav_active' ? 'a' : 'n';
+                nav_setup_attach(li_arr[i], mouseout_state, responsive);
+            }
+        }
     }
-  }
-  if (isAdmin){
-    ul_arr = $('#nav_root_'+nav+' ul');
-    for(i=0; i<ul_arr.length; i++){
-      id =    ul_arr[i].id.toString();
-      axis =   (ul_arr[i].className.substr(0,8)=='hnavmenu' ? 'x' : 'y');
-      nav_setup_sortable(id,axis,url);
+    if (isAdmin && !responsive){
+        ul_arr = $('#nav_root_'+nav+' ul');
+        for(i=0; i<ul_arr.length; i++){
+            id =    ul_arr[i].id.toString();
+            axis =   (ul_arr[i].className.substr(0,8)=='hnavmenu' || ul_arr[i].className.substr(0,8)=='rhnavmenu' ? 'x' : 'y');
+            nav_setup_sortable(id, axis, url);
+        }
     }
-  }
 }
 
-function nav_setup_attach(obj,mouseout_state){
-  addEvent(obj, 'mousedown', function(e){ return nav_setup_state(obj,'d');});
-  addEvent(obj, 'mouseover', function(e){ applets_hide(); nav_setup_state(obj,'o')});
-  addEvent(obj, 'mouseout',  function(e){ applets_show(); _CM.type=''; return nav_setup_state(obj,mouseout_state)});
+function nav_setup_attach(obj, mouseout_state, responsive){
+    if (responsive) {
+        addEvent(obj, 'mouseout',  function(e){ applets_show(); _CM.type='';});
+        addEvent(obj, 'mouseover', function(e){ applets_hide();});
+        return;
+    }
+    addEvent(obj, 'mousedown', function(e){ return nav_setup_state(obj,'d');});
+    addEvent(obj, 'mouseover', function(e){ applets_hide(); nav_setup_state(obj,'o')});
+    addEvent(obj, 'mouseout',  function(e){ applets_show(); _CM.type=''; return nav_setup_state(obj,mouseout_state)});
 }
 
 function nav_setup_sortable(id,axis,url){

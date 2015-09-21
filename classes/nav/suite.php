@@ -1,12 +1,12 @@
 <?php
 namespace Nav;
 
-define('VERSION_NS_NAV_SUITE', '1.0.40');
+define('VERSION_NS_NAV_SUITE', '1.0.41');
 /*
 Version History:
-  1.0.40 (2015-09-20)
-    1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
-    2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts
+  1.0.41 (2015-09-21)
+    1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
+       responsive or not
 
 */
 class Suite extends \Record
@@ -156,7 +156,7 @@ class Suite extends \Record
         return parent::sqlExport($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
     }
 
-    public static function drawJsPreload()
+    public static function drawJsPreload($responsive=false)
     {
         global $print, $page_vars;
         if ($print==1) {
@@ -167,7 +167,7 @@ class Suite extends \Record
             ($page_vars['navsuite2ID']!='' && $page_vars['navsuite2ID']!='1') ||
             ($page_vars['navsuite3ID']!='' && $page_vars['navsuite3ID']!='1')
         ) {
-            \Output::push('javascript_onload', static::getJsPreload());
+            \Output::push('javascript_onload', static::getJsPreload($responsive));
         }
 
     }
@@ -228,7 +228,7 @@ class Suite extends \Record
         return $buttons;
     }
 
-    public static function getJsPreload()
+    public static function getJsPreload($responsive=false)
     {
         global $page_vars, $print;
         if ($print=='1' || $print=='2') {
@@ -246,7 +246,7 @@ class Suite extends \Record
                 $Obj = new \Nav\Suite($suiteID);
                 if ($Obj->exists()) {
                     $out.=
-                        "  nav_setup(".$i.",".($isAdmin ? 1 : 0).",'".BASE_PATH.trim($page_vars['path'], '/')."');\n";
+                        "  nav_setup(".$i.",".($isAdmin ? 1 : 0).",'".BASE_PATH.trim($page_vars['path'], '/')."',".($responsive ? '1' : '0').");\n";
                 }
             }
         }

@@ -1,3 +1,6 @@
+  1.0.40 (2015-09-20)
+    1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
+    2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts
   1.0.39 (2015-08-14)
     1) Moved Suite::drawNav() out into its own class DrawNav::draw()
   1.0.38 (2015-08-12)
