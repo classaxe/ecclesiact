@@ -1,10 +1,9 @@
 <?php
-define('VERSION_CONTEXT_MENU','1.0.76');
+define('VERSION_CONTEXT_MENU','1.0.77');
 /*
 Version History:
-  1.0.76 (2015-09-20)
-    1) Context_Menu::draw_JS() now sets z-index of 2000 to avoid being hidden by Bootstrap layered menus
-    2) Changes to make cm_navbutton work correctly with Responsive menus that have no image
+  1.0.77 (2015-09-21)
+    1) Context_Menu::_cm_navbutton() now implements sequence up / down modes for SD and Responsive menus
 
 */
 
@@ -969,21 +968,31 @@ class Context_Menu extends Base{
     $this->register_js(
       $CM,
        "CM_label('".$CM."1',_CM.navbuttonText);\n"
-      ."CM_label('".$CM."2','Delete',_CM.hasSubmenu);\n"
-      ."CM_label('".$CM."3',_CM.navbuttonText,_CM.hasSubmenu);\n"
-      ."CM_label('".$CM."4','Add Submenu to ',_CM.canAddSubnav<1);\n"
-      ."CM_label('".$CM."5',_CM.navbuttonText,_CM.canAddSubnav<1);\n"
-      ."CM_label('".$CM."6',_CM.navbuttonText);\n"
-      ."CM_label('".$CM."7',_CM.navsuiteName);\n"
-      ."CM_label('".$CM."8',_CM.navsuiteName);\n"
-      ."CM_label('".$CM."9',_CM.navstyleName);\n"
-      ."CM_label('".$CM."10',_CM.navstyleName);\n"
-      ."CM_show('CM_navbutton_s11',false);\n"
+      ."CM_label('".$CM."2','Move up / left');\n"
+      ."CM_label('".$CM."3',_CM.navsuiteName);\n"
+      ."CM_label('".$CM."4','Move down / right');\n"
+      ."CM_label('".$CM."5',_CM.navsuiteName);\n"
+      ."CM_label('".$CM."6','Delete',_CM.hasSubmenu);\n"
+      ."CM_label('".$CM."7',_CM.navbuttonText,_CM.hasSubmenu);\n"
+      ."CM_label('".$CM."8','Add Submenu to ',_CM.canAddSubnav<1);\n"
+      ."CM_label('".$CM."9',_CM.navbuttonText,_CM.canAddSubnav<1);\n"
+      ."CM_label('".$CM."10',_CM.navbuttonText);\n"
+      ."CM_label('".$CM."11',_CM.navsuiteName);\n"
+      ."CM_label('".$CM."12',_CM.navsuiteName);\n"
+      ."CM_label('".$CM."13',_CM.navstyleName);\n"
+      ."CM_label('".$CM."14',_CM.navstyleName);\n"
+      ."CM_show('".$CM."15',false);\n"
+      ."CM_show('".$CM."16',false);\n"
+
+      ."CM_show('".$CM."2',_CM.seq);\n"
+      ."CM_show('".$CM."3',_CM.seq);\n"
+      ."CM_show('".$CM."4',_CM.seq);\n"
+      ."CM_show('".$CM."5',_CM.seq);\n"
       ."img = $('#btn_'+_CM.navbuttonID+' a img');\n"
       ."if (img.length){\n"
       ."  b_src = img.css('background-image');\n"
       ."  b_url = b_src.split('\"')[1];\n"
-      ."  CM_label('CM_navbutton_t11',\n"
+      ."  CM_label('".$CM."16',\n"
       ."    \"<div>\"+\n"
       ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Active</div>\\n\"+\n"
       ."    \"  <img alt='Active' src='\"+base_url+\"img/spacer'\"+\n"
@@ -1012,7 +1021,8 @@ class Context_Menu extends Base{
       ."    \"(Width: \"+img.width()+\"px, Height: \"+img.height()+\"px, \\n\"+\n"
       ."    \"[<a target='_blank' href='\"+b_url+\"'>image</a>])</p>\"\n"
       ."  );\n"
-      ."  CM_show('CM_navbutton_s11', true);\n"
+      ."  CM_show('".$CM."15', true);\n"
+      ."  CM_show('".$CM."16', true);\n"
       ."}\n"
     );
     return $this->draw_cm(
@@ -1027,8 +1037,21 @@ class Context_Menu extends Base{
            .$this->popup_size_arr[$reports[0]]['h'].",".$this->popup_size_arr[$reports[0]]['w'].",'','');",
             true
           )
+
          .$this->draw_cm_action(
             'm',$CM.'2','','s',$CM.'3',
+            "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',-1);"
+           ."geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
+          )
+         .$this->draw_cm_action(
+            'm',$CM.'4','','s',$CM.'5',
+            "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',1);"
+           ."geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
+          )
+
+
+         .$this->draw_cm_action(
+            'm',$CM.'6','','s',$CM.'7',
             "if (_CM.hasSubmenu==1){"
            ." alert('The '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button has a submenu attached to it.\\nYou cannot delete a button that has a buttonsuite attached.');\n"
            ."}\n"
@@ -1040,7 +1063,7 @@ class Context_Menu extends Base{
            ."}"
           )
          .$this->draw_cm_action(
-            'm',$CM.'4','','s',$CM.'5',
+            'm',$CM.'8','','s',$CM.'9',
             "switch(_CM.canAddSubnav){"
            ."  case -1:"
            ."    alert('The '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button already has a submenu attached');"
@@ -1058,7 +1081,7 @@ class Context_Menu extends Base{
           )
          .($this->admin_level==3 ?
             $this->draw_cm_action(
-              'm','','Export SQL for','s',$CM.'6',
+              'm','','Export SQL for','s',$CM.'10',
               "CM_CloseContext();export_sql('".$reports[0]."',_CM.navbuttonID)"
             )
            : ""
@@ -1070,7 +1093,7 @@ class Context_Menu extends Base{
         $icons[1],
         $this->draw_cm_actions(
           $this->draw_cm_action(
-            'm','','Edit','s',$CM.'7',
+            'm','','Edit','s',$CM.'11',
             "CM_CloseContext();void details('".$reports[1]."',_CM.navsuiteID,"
            .$this->popup_size_arr[$reports[1]]['h'].",".$this->popup_size_arr[$reports[1]]['w'].",'','');"
           )
@@ -1081,7 +1104,7 @@ class Context_Menu extends Base{
           )
          .($this->admin_level==3 ?
             $this->draw_cm_action(
-              'm','','Export SQL for','s',$CM.'8',
+              'm','','Export SQL for','s',$CM.'12',
               "CM_CloseContext();export_sql('".$reports[1]."',_CM.navsuiteID)"
             )
           : ""
@@ -1094,13 +1117,13 @@ class Context_Menu extends Base{
           $icons[2],
           $this->draw_cm_actions(
             $this->draw_cm_action(
-              'm','','Edit','s',$CM.'9',
+              'm','','Edit','s',$CM.'13',
               "CM_CloseContext();void details('".$reports[3]."',_CM.navstyleID,"
              .$this->popup_size_arr[$reports[3]]['h'].",".$this->popup_size_arr[$reports[3]]['w'].",'','');"
             )
           .($this->admin_level==3 ?
              $this->draw_cm_action(
-               'm','','Export SQL for','s',$CM.'10',
+               'm','','Export SQL for','s',$CM.'14',
                "CM_CloseContext();export_sql('".$reports[3]."',_CM.navstyleID)"
              )
            : ""
@@ -1110,7 +1133,7 @@ class Context_Menu extends Base{
        : ""
        )
      .$this->draw_div_tip('navbutton')
-     .$this->draw_div_sample('CM_navbutton_s11', 'Image states for this button:',"<span id='CM_navbutton_t11'></span>")
+     .$this->draw_div_sample($CM.'15', 'Image states for this button:',"<span id='".$CM."16'></span>")
     );
   }
 

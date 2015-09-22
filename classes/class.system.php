@@ -1,10 +1,10 @@
 <?php
-define('VERSION_SYSTEM', '1.0.165');
+define('VERSION_SYSTEM', '1.0.166');
 
 /*
 Version History:
-  1.0.165 (2015-09-19)
-    1) Moved System::draw_css_include() and System::draw_js_include() to Output class
+  1.0.166 (2015-09-21)
+    1) Implemented mode 'navbutton_seq' in System::do_commands()
 
 */
 class System extends Record
@@ -332,6 +332,12 @@ class System extends Record
                     if ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN) {
                         $Obj = new \Nav\Button($_REQUEST['targetID']);
                         $Obj->deleteAndCleanup();
+                    }
+                    break;
+                case "navbutton_seq":
+                    if ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN){
+                        $Obj = new \Nav\button($_REQUEST['targetID']);
+                        $Obj->seq($_REQUEST['targetValue']);
                     }
                     break;
                 case "navsuite_seq":

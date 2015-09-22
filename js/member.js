@@ -1,9 +1,9 @@
-// 1.0.144
+// 1.0.145
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.144 (2015-09-20)
-    1) Added CM_Responsive_Over()
+  1.0.145 (2015-09-20)
+    1) CM_SDMenu_Over() and CM_Responsive_Over() now set _CM.seq to active seq operations in context menus
 
 */
 
@@ -209,6 +209,7 @@ function CM_Navbutton_Over(
   bSuiteID = geid('btn_'+bID).parentNode.id.substr(4);
   bHasSubmenu = geid('btn_'+bID).getElementsByTagName('UL').length>0 ? 1 : 0;
   _CM.type='navbutton';
+  _CM.seq=0;
   _CM.navbuttonID=bID;
   _CM.navsuiteID=bSuiteID;
   _CM.navstyleID=bStyleID;
@@ -230,6 +231,7 @@ function CM_Responsive_Over(
   bSuiteID = btn.parentNode.id.substr(4);
   bHasSubmenu = btn.getElementsByTagName('UL').length > 0 ? 1 : 0;
   _CM.type='navbutton';
+  _CM.seq=1;
   _CM.navbuttonID=bID;
   _CM.navsuiteID=bSuiteID;
   _CM.navstyleID=bStyleID;
@@ -249,6 +251,7 @@ function CM_SDMenu_Over(
     return;
   }
   _CM.type='navbutton';
+  _CM.seq=1;
   _CM.navbuttonID=bID;
   _CM.navsuiteID=bSuiteID;
   _CM.navstyleID=bStyleID;

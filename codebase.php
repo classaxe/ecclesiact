@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.3");
+define("CODEBASE_VERSION", "4.0.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,46 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.3.2397 (2015-09-21)
+4.0.4.2398 (2015-09-21)
 Summary:
-  1) Responsive Menus now use Legacy sequence based ordeing of menu position, so for now at least drag and drop is
-     no longer an essential feature.
-  2) Function y() now sets background and text colours for easier debug on sites where background is black.
+  1) Reimplemented original 'move up / move down' sequence modes for navbutton context menus but ONLY
+     for SD Menu and Responsive Menu collections.
 
 Final Checksums:
-  Classes     CS:761bd946
+  Classes     CS:6caf7637
   Database    CS:2c1b27a7
-  Libraries   CS:9173fbf2
+  Libraries   CS:202b5445
   Reports     CS:e154d375
 
 Code Changes:
-  codebase.php                                                                                   4.0.3     (2015-09-21)
+  codebase.php                                                                                   4.0.4     (2015-09-21)
     1) Updated version information
-  classes/class.layout.php                                                                       1.0.32    (2015-09-21)
-    1) Layout::prepareXhtmlHead() now has additional parameter of false passed into \Nav\Suite::drawJsPreload()
-    2) Layout::prepareResponsiveHead() now has additional parameter of true passed into \Nav\Suite::drawJsPreload()
-  classes/nav/drawnav.php                                                                        1.0.6     (2015-09-21)
-    1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
-       to make Context Menu go away whern clicking outside after moving over a tracked menu item.
-       Container has size constraints removed.
-    2) DrawNav::setup() now specifies legacy manual button sequence for SD Menu and Responsive Menu types, neither
-       of which presently support drag and drop ordering or sequence
-  classes/nav/suite.php                                                                          1.0.41    (2015-09-21)
-    1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
-       responsive or not
-  js/functions.js                                                                                1.0.270   (2015-09-21)
-    1) Function nav_setup() now accepts new parameter for responsive that omits code for IE suckerfish augmentation
+  classes/class.context_menu.php                                                                 1.0.77    (2015-09-21)
+    1) Context_Menu::_cm_navbutton() now implements sequence up / down modes for SD and Responsive menus
+  classes/class.system.php                                                                       1.0.166   (2015-09-21)
+    1) Implemented mode 'navbutton_seq' in System::do_commands()
+  js/member.js                                                                                   1.0.145   (2015-09-20)
+    1) CM_SDMenu_Over() and CM_Responsive_Over() now set _CM.seq to active seq operations in context menus
 
-2397.sql
+2398.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.0.3
-  classes/  (3 files changed)
-    class.layout.php                                  1.0.32    CS:11e2db96
-    nav/drawnav.php                                   1.0.6     CS:b5d88af2
-    nav/suite.php                                     1.0.41    CS:fab58b9
-  js/functions.js                                     1.1.270   CS:c135f04a
+  codebase.php                                        4.0.4
+  classes/  (2 files changed)
+    class.context_menu.php                            1.0.77    CS:4f9199cf
+    class.system.php                                  1.0.166   CS:125d886b
+  js/member.js                                        1.0.145   CS:7b6f4f3
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

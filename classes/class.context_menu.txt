@@ -1,3 +1,6 @@
+  1.0.76 (2015-09-20)
+    1) Context_Menu::draw_JS() now sets z-index of 2000 to avoid being hidden by Bootstrap layered menus
+    2) Changes to make cm_navbutton work correctly with Responsive menus that have no image
   1.0.75 (2014-03-29)
     1) Context_Menu::_cm_community_member() now sets communityID when adding new items
   1.0.74 (2013-12-14)
