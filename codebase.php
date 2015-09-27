@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.4");
+define("CODEBASE_VERSION", "4.0.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,36 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.4.2398 (2015-09-21)
+4.0.5.2399 (2015-09-27)
 Summary:
-  1) Reimplemented original 'move up / move down' sequence modes for navbutton context menus but ONLY
-     for SD Menu and Responsive Menu collections.
+  1) Component/EmailForm now reports IP and browser used, and prevents blank form submissions
 
 Final Checksums:
-  Classes     CS:6caf7637
+  Classes     CS:3a0b7c6b
   Database    CS:2c1b27a7
-  Libraries   CS:202b5445
+  Libraries   CS:f89e9f7b
   Reports     CS:e154d375
 
 Code Changes:
-  codebase.php                                                                                   4.0.4     (2015-09-21)
+  codebase.php                                                                                   4.0.5     (2015-09-27)
     1) Updated version information
-  classes/class.context_menu.php                                                                 1.0.77    (2015-09-21)
-    1) Context_Menu::_cm_navbutton() now implements sequence up / down modes for SD and Responsive menus
-  classes/class.system.php                                                                       1.0.166   (2015-09-21)
-    1) Implemented mode 'navbutton_seq' in System::do_commands()
-  js/member.js                                                                                   1.0.145   (2015-09-20)
-    1) CM_SDMenu_Over() and CM_Responsive_Over() now set _CM.seq to active seq operations in context menus
+  classes/component/emailform.php                                                                1.0.2     (2015-09-27)
+    1) Now reports IP address and browser details of person submitting form
+    2) Now prevents continuation if email, name or content are expected but are not valid
 
-2398.sql
+2399.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.0.4
-  classes/  (2 files changed)
-    class.context_menu.php                            1.0.77    CS:4f9199cf
-    class.system.php                                  1.0.166   CS:125d886b
-  js/member.js                                        1.0.145   CS:7b6f4f3
+  codebase.php                                        4.0.5
+  classes/  (1 file changed)
+    component/emailform.php                           1.0.2     CS:e42af8e1
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

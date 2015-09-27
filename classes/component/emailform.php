@@ -1,12 +1,12 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_EMAIL_FORM", "1.0.1");
+define("VERSION_NS_COMPONENT_EMAIL_FORM", "1.0.2");
 /*
 Version History:
-  1.0.1 (2013-10-29)
-    1) Brought component up to date with latest standards
-    2) Now sets 'reply to' address to Email field if given
+  1.0.2 (2015-09-27)
+    1) Now reports IP address and browser details of person submitting form
+    2) Now prevents continuation if email, name or content are expected but are not valid
 
 */
 class EmailForm extends Base
@@ -52,8 +52,11 @@ class EmailForm extends Base
         if (!get_var('submode')=='send') {
             return false;
         }
-        $this->doSubmodePrepareMessage();
-        $this->doSubmodeSendEmail();
+        $this->validate();
+        if ($this->_email_errors==='') {
+            $this->prepareMessage();
+            $this->sendEmail();
+        }
         if ($this->_email_errors!='') {
             $this->_msg = "<b>Error:</b><br />".str_replace("\n", '', trim(nl2br($this->_email_errors), "\n"));
             return false;
@@ -62,7 +65,7 @@ class EmailForm extends Base
         die();
     }
 
-    protected function doSubmodePrepareMessage()
+    protected function prepareMessage()
     {
         global $system_vars, $page_vars;
         $this->_email_subject = ($this->_cp['title']!='Form submission from (system) via (page)' ?
@@ -70,17 +73,53 @@ class EmailForm extends Base
          :
             "Form submission from ".$system_vars['textEnglish']." via ".trim($page_vars['path'], '/')
         );
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $browser = get_browser($_SERVER['HTTP_USER_AGENT']);
+        }
         $this->_email_body_html =
              "<h1>".$this->_email_subject."</h1>\n"
+            .(isset($_SERVER['REMOTE_ADDR']) || isset($_SERVER["HTTP_REFERER"]) || isset($_SERVER['HTTP_USER_AGENT']) ?
+                 "<ul>\n"
+                .(isset($_SERVER['REMOTE_ADDR']) ?
+                     "  <li>Email from IP Address ".$_SERVER['REMOTE_ADDR']
+                    ." (Hostname: ".gethostbyaddr($_SERVER['REMOTE_ADDR']).")</li>\n"
+                 :
+                    ""
+                 )
+                .(isset($_SERVER['HTTP_USER_AGENT']) ?
+                     "  <li>Browser used: ".$browser->parent
+                    ." running on ".$browser->platform." (UA string is ".$_SERVER['HTTP_USER_AGENT'].")</li>\n"
+                 :
+                    ""
+                 )
+                .(isset($_SERVER["HTTP_REFERER"]) ?
+                    "  <li>Referer: ".$_SERVER["HTTP_REFERER"]."</li>\n"
+                 :
+                    ""
+                 )
+                ."</ul>\n"
+            :
+                ""
+            )
             ."<table cellpadding='2' cellspacing='0' border='1' bordercolor='#808080' bgcolor='#ffffff'>\n"
             ."  <tr>\n"
             ."    <th align='left' style='text-align:left;background-color:#e0e0e0;'>Field</th>\n"
             ."    <th align='left' style='text-align:left;background-color:#e0e0e0;'>Value</th>\n"
             ."  </tr>\n";
         $this->_email_body_text =
-        $this->_email_subject."\n"
-        .pad("FIELD", 25)."VALUE\n"
-        ."---------------------------------------------------------\n";
+            $this->_email_subject."\n"
+            .(isset($_SERVER['REMOTE_ADDR']) ?
+                "Email from IP Address ".$_SERVER['REMOTE_ADDR']."\n"
+             :
+                ""
+             )
+            .(isset($_SERVER["HTTP_REFERER"]) ?
+                "Referer: ".$_SERVER["HTTP_REFERER"]."\n"
+             :
+                ""
+             )
+            .pad("FIELD", 25)."VALUE\n"
+            ."---------------------------------------------------------\n";
         $ignore_arr =   explode(",", SYS_STANDARD_FIELDS);
         foreach ($_POST as $field => $value) {
             if ($value!=="" && !in_array($field, $ignore_arr) && substr($field, 0, 19)!='poll_max_votes_for_') {
@@ -96,7 +135,7 @@ class EmailForm extends Base
         $this->_email_body_html.= "</table>";
     }
 
-    protected function doSubmodeSendEmail()
+    protected function sendEmail()
     {
         global $system_vars;
         get_mailsender_to_component_results(); // Use system default mail sender details
@@ -127,6 +166,23 @@ class EmailForm extends Base
     {
         parent::setup($instance, $args, $disable_params);
         $this->doSubmode();
+    }
+
+    protected function validate()
+    {
+        $email = get_var('Email');
+        if ($email !== false && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->_email_errors.= "Invalid Email address ".$email."\n";
+        }
+        $name = get_var('Name');
+        if ($name !== false && strlen(trim($name)) < 3) {
+            $this->_email_errors.= "Please provide your name.\n";
+        }
+        $message = get_var('Message');
+        if ($name !== false && strlen(trim($message)) < 3) {
+            $this->_email_errors.= "Please enter a useful message in the space provided.\n";
+        }
+
     }
 
     public static function getVersion()
