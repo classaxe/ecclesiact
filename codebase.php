@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.5");
+define("CODEBASE_VERSION", "4.0.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,30 +16,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.5.2399 (2015-09-27)
+4.0.6.2400 (2015-09-27)
 Summary:
-  1) Component/EmailForm now reports IP and browser used, and prevents blank form submissions
+  1) Now minifies standard CSS files - reduces footprint by around 17KB for sites with Wowslider
 
 Final Checksums:
-  Classes     CS:3a0b7c6b
+  Classes     CS:a99c5438
   Database    CS:2c1b27a7
-  Libraries   CS:f89e9f7b
+  Libraries   CS:438b75cf
   Reports     CS:e154d375
 
 Code Changes:
-  codebase.php                                                                                   4.0.5     (2015-09-27)
+  codebase.php                                                                                   4.0.6     (2015-09-27)
     1) Updated version information
-  classes/component/emailform.php                                                                1.0.2     (2015-09-27)
-    1) Now reports IP address and browser details of person submitting form
-    2) Now prevents continuation if email, name or content are expected but are not valid
+  classes/matthiasmullie/minify/css.php                                                          1.0.0     (2015-09-27)
+    1) Initial release
+  classes/matthiasmullie/minify/js.php                                                           1.0.0     (2015-09-27)
+    1) Initial release
+  classes/matthiasmullie/minify/minify.php                                                       1.0.0     (2015-09-27)
+    1) Initial release
+  classes/matthiasmullie/pathconverter/converter.php                                             1.0.0     (2015-09-27)
+    1) Initial release
+  img.php                                                                                        2.0.87    (2015-09-27)
+    1) Now supports CSS compression
 
-2399.sql
+2400.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.0.5
-  classes/  (1 file changed)
-    component/emailform.php                           1.0.2     CS:e42af8e1
+  codebase.php                                        4.0.6
+  classes/  (4 files changed)
+    matthiasmullie/minify/css.php                     1.0.0     CS:58f1b374
+    matthiasmullie/minify/js.php                      1.0.0     CS:435fe068
+    matthiasmullie/minify/minify.php                  1.0.0     CS:c2626985
+    matthiasmullie/pathconverter/converter.php        1.0.0     CS:90533c43
+  img.php                                             2.0.87    CS:dedba2af
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

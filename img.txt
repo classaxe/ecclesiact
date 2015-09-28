@@ -1,3 +1,5 @@
+  2.0.86 (2015-09-19)
+    1) Added support for sysjs/jquerymigrate
   2.0.85 (2015-09-10)
     1) Added animate.css and bootstrap.css to css list
   2.0.84 (2015-08-29)

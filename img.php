@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.86");
+define("VERSION", "2.0.87");
 /*
 Version History:
-  2.0.86 (2015-09-19)
-    1) Added support for sysjs/jquerymigrate
+  2.0.87 (2015-09-27)
+    1) Now supports CSS compression
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -446,11 +446,11 @@ function css()
         case "labels":
         case "spectrum":
         case "tcal":
-            readfile(SYS_STYLE.($_REQUEST['submode']).'.css');
+            css_compress_cache(SYS_STYLE.($_REQUEST['submode']).'.css');
             break;
         case "animate.css":
         case "jquery.fancybox.css":
-            readfile(SYS_STYLE.($_REQUEST['submode']));
+            css_compress_cache(SYS_STYLE.($_REQUEST['submode']));
             break;
         case "breadcrumbs":
             if (!isset($_REQUEST['ID'])) {
@@ -485,31 +485,31 @@ function css()
             }
             $record =     get_layout($_REQUEST['ID']);
             $out =
-            ($record['colour1'] ?
-             ".t_bgcol1 { background-color: #".$record['colour1']."; }\r\n"
-            .".t_col1   { color: #".$record['colour1']."; }\r\n"
-            .".t_bdcol1 { border: solid 1px #".$record['colour1']."; }\r\n"
-            : "")
-            .($record['colour2'] ?
-             ".t_bgcol2 { background-color: #".$record['colour2']."; }\r\n"
-            .".t_col2   { color: #".$record['colour2']."; }\r\n"
-            .".t_bdcol2 { border: solid 1px #".$record['colour2']."; }\r\n"
-            : "")
-            .($record['colour3'] ?
-             ".t_bgcol3 { background-color: #".$record['colour3']."; }\r\n"
-            .".t_col3   { color: #".$record['colour3']."; }\r\n"
-            .".t_bdcol3 { border: solid 1px #".$record['colour3']."; }\r\n"
-            : "")
-            .($record['colour4'] ?
-             ".t_bgcol4 { background-color: #".$record['colour4']."; }\r\n"
-            .".t_col4   { color: #".$record['colour4']."; }\r\n"
-            .".t_bdcol4 { border: solid 1px #".$record['colour4']."; }\r\n"
-            : "")
-            .($record['style']!="" ? "\r\n".$record['style'] : "")
-            ;
-            if (trim($out)!='') {
-                $out = "/* [Layout Style] */\r\n".$out;
-            }
+                ($record['colour1'] ?
+                 ".t_bgcol1 { background-color: #".$record['colour1']."; }\r\n"
+                .".t_col1   { color: #".$record['colour1']."; }\r\n"
+                .".t_bdcol1 { border: solid 1px #".$record['colour1']."; }\r\n"
+                : "")
+                .($record['colour2'] ?
+                 ".t_bgcol2 { background-color: #".$record['colour2']."; }\r\n"
+                .".t_col2   { color: #".$record['colour2']."; }\r\n"
+                .".t_bdcol2 { border: solid 1px #".$record['colour2']."; }\r\n"
+                : "")
+                .($record['colour3'] ?
+                 ".t_bgcol3 { background-color: #".$record['colour3']."; }\r\n"
+                .".t_col3   { color: #".$record['colour3']."; }\r\n"
+                .".t_bdcol3 { border: solid 1px #".$record['colour3']."; }\r\n"
+                : "")
+                .($record['colour4'] ?
+                 ".t_bgcol4 { background-color: #".$record['colour4']."; }\r\n"
+                .".t_col4   { color: #".$record['colour4']."; }\r\n"
+                .".t_bdcol4 { border: solid 1px #".$record['colour4']."; }\r\n"
+                : "")
+                .($record['style']!="" ? "\r\n".$record['style'] : "")
+                ;
+                if (trim($out)!='') {
+                    $out = "/* [Layout Style] */\r\n".$out;
+                }
             print $out;
             break;
         case "pie":
@@ -617,15 +617,34 @@ function css()
             print $record['style'];
             break;
         case "ws":
-            header('Content-Type: text/css');
-            img_set_cache(3600*24*7); // expire in one week
-            readfile(SYS_WS."ws.css");
+            //header('Content-Type: text/css');
+            css_compress_cache(SYS_WS."ws.css");
             break;
         default:
-            readfile(SYS_STYLE."default.css");
+            css_compress_cache(SYS_STYLE."default.css");
             break;
     }
     die;
+}
+function css_compress($file)
+{
+    use_codebase();
+    $minifier = new \MatthiasMullie\Minify\CSS($file);
+    return $minifier->minify();
+}
+
+
+function css_compress_cache($file)
+{
+    $submode =      $_REQUEST['submode'];
+    $ID =           (isset($_REQUEST['ID']) ? $_REQUEST['ID'] : false);
+    $filename =     SYS_STYLE."cache/".str_replace('.', '_', $submode).($ID ? '_'.$ID : "").'.cache';
+    if (file_exists($filename)) {
+        readfile($filename);
+        return;
+    }
+    file_put_contents($filename, css_compress($file));
+    readfile($filename);
 }
 
 function custom_button()
