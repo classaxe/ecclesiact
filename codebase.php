@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.6");
+define("CODEBASE_VERSION", "4.0.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,42 +16,28 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.6.2400 (2015-09-27)
+4.0.7.2401 (2015-10-05)
 Summary:
-  1) Now minifies standard CSS files - reduces footprint by around 17KB for sites with Wowslider
+  1) New version of ckeditor that works better with Microsoft Edge web browser
 
 Final Checksums:
   Classes     CS:a99c5438
   Database    CS:2c1b27a7
-  Libraries   CS:438b75cf
+  Libraries   CS:1f9e2108
   Reports     CS:e154d375
 
 Code Changes:
-  codebase.php                                                                                   4.0.6     (2015-09-27)
+  codebase.php                                                                                   4.0.7     (2015-10-05)
     1) Updated version information
-  classes/matthiasmullie/minify/css.php                                                          1.0.0     (2015-09-27)
-    1) Initial release
-  classes/matthiasmullie/minify/js.php                                                           1.0.0     (2015-09-27)
-    1) Initial release
-  classes/matthiasmullie/minify/minify.php                                                       1.0.0     (2015-09-27)
-    1) Initial release
-  classes/matthiasmullie/pathconverter/converter.php                                             1.0.0     (2015-09-27)
-    1) Initial release
-  img.php                                                                                        2.0.87    (2015-09-27)
-    1) Now supports CSS compression
+  js/ckeditor/ckeditor.js                                                                        4.5.3     (2015-10-05)
+    1) Latest version, with support for Microsoft Edge browser
 
-2400.sql
+2401.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.0.6
-  classes/  (4 files changed)
-    matthiasmullie/minify/css.php                     1.0.0     CS:58f1b374
-    matthiasmullie/minify/js.php                      1.0.0     CS:435fe068
-    matthiasmullie/minify/minify.php                  1.0.0     CS:c2626985
-    matthiasmullie/pathconverter/converter.php        1.0.0     CS:90533c43
-  img.php                                             2.0.87    CS:dedba2af
-
+  codebase.php                                        4.0.7
+  js/ckeditor/ckeditor.js                             4.5.3  CS:374f2caf
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
