@@ -1,11 +1,9 @@
 <?php
-define('VERSION_REPORT_COLUMN_REPORT_FIELD', '1.0.29');
+define('VERSION_REPORT_COLUMN_REPORT_FIELD', '1.0.30');
 /*
 Version History:
-  1.0.29 (2015-03-23)
-    1) Report_Column_Report_Field::draw() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
-       so we can safely propagate namespace prefixes for desired types
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.30 (2015-10-06)
+    1) Specific support aded for column type 'link_view_tickets'
 
 */
 
@@ -583,6 +581,18 @@ class Report_Column_Report_Field extends Record
                     .str_replace('& ', '&amp; ', $_link_text)
                     ."</a>"
                     ."</td>\n";
+                break;
+            case "link_view_tickets":
+                $out.=
+                     "    <td>"
+                    .($row['ID_csv'] ?
+                         "<a rel=\"external\" href=\"/_ticket?ID=".$row['ID_csv']."\">"
+                        ."[ICON]20 20 3762 View Tickets[/ICON]"
+                        ."</a>"
+                        ." (".$row['count_tickets'].")"
+                     :
+                        ""
+                     );
                 break;
             case "option_list":
                 $out.=    "    <td>".convert_html_to_safe_view($value, 250)."</td>\n";

@@ -1,10 +1,9 @@
 <?php
-define('VERSION_EXPORT', '1.0.25');
+define('VERSION_EXPORT', '1.0.26');
 /*
 Version History:
-  1.0.25 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-    2) Export::draw() now looks for exportSql() and then tries export_sql() if the former method isn't found
+  1.0.26 (2015-10-06)
+    1) Added specific support for link_view_tickets
 
 */
 class Export extends Record
@@ -155,24 +154,27 @@ class Export extends Record
             ->setCellValue('A1', $ObjTitle)
             ->setCellValue('A2', $ObjSubtitle);
         $headerStyle = array(
-        'font' =>       array(
-            'bold' => true,
-            'color' => array('rgb' => 'FFFFFF')
-        ),
-        'alignment' =>  array(
-            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-            'rotation' => -90,
-            'wrapText' => true
-        ),
-        'borders' =>    array(
-            'allborders' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('rgb' => '404040')),
-        ),
-        'fill' =>       array(
-        'type' =>       PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-        'rotation' =>   45,
-        'startcolor' => array('argb' => 'FF808080'),
-        'endcolor' =>   array('argb' => 'FFA0A0A0')
-        )
+            'font' =>       array(
+                'bold' => true,
+                'color' => array('rgb' => 'FFFFFF')
+            ),
+            'alignment' =>  array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                'rotation' => -90,
+                'wrapText' => true
+            ),
+            'borders' =>    array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN,
+                    'color' => array('rgb' => '404040')
+                ),
+            ),
+            'fill' =>       array(
+            'type' =>       PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+            'rotation' =>   45,
+            'startcolor' => array('argb' => 'FF808080'),
+            'endcolor' =>   array('argb' => 'FFA0A0A0')
+            )
         );
         $cellStyle = array(
             'borders' =>    array(
@@ -228,12 +230,12 @@ class Export extends Record
                             $file_params = $this->get_embedded_file_properties($value);
                             $value = "Download";
                             $url =
-                             trim($system_vars['URL'], '/')
-                            .BASE_PATH
-                            ."?command=download_data"
-                            ."&reportID=".$targetReportID
-                            ."&targetID=".$records[$row]['ID']
-                            ."&targetValue=".$columns[$col]['reportField'];
+                                 trim($system_vars['URL'], '/')
+                                .BASE_PATH
+                                ."?command=download_data"
+                                ."&reportID=".$targetReportID
+                                ."&targetID=".$records[$row]['ID']
+                                ."&targetValue=".$columns[$col]['reportField'];
                             $ObjWorksheet->getCell($cell)
                                 ->getHyperlink()
                                 ->setURL($url);
@@ -249,6 +251,29 @@ class Export extends Record
                     case 'int':
                         $width = 5;
                         break;
+                    case 'link_view_tickets':
+                        if ($value) {
+                            $ID_csv = $records[$row]['ID_csv'];
+                            $isHyperlink =  true;
+                            $value = "View Tickets (".strip_tags($value).")";
+                            $url =
+                                 trim($system_vars['URL'], '/')
+                                .BASE_PATH
+                                ."_ticket?ID=".$ID_csv;
+                            $ObjWorksheet->getCell($cell)->getHyperlink()->setURL($url);
+                            $ObjWorksheet->getCell($cell)->getHyperlink()->setTooltip('View Tickets');
+                        }
+                        $ObjWorksheet->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);;
+                        break;
+                    case 'view_order_details':
+                        $isHyperlink =  true;
+                        $url =
+                             trim($system_vars['URL'], '/')
+                            .BASE_PATH
+                            ."view_order/?print=2&ID=".$value;
+                        $ObjWorksheet->getCell($cell)->getHyperlink()->setURL($url);
+                        $ObjWorksheet->getCell($cell)->getHyperlink()->setTooltip('View Order Details');
+                        break;
                     case 'view_record_pdf':
                         $isHyperlink =  true;
                         $value = 'PDF';
@@ -260,15 +285,6 @@ class Export extends Record
                         ."&columnID=".$columns[$col]['ID'];
                         $ObjWorksheet->getCell($cell)->getHyperlink()->setURL($url);
                         $ObjWorksheet->getCell($cell)->getHyperlink()->setTooltip('Open PDF');
-                        break;
-                    case 'view_order_details':
-                        $isHyperlink =  true;
-                        $url =
-                         trim($system_vars['URL'], '/')
-                        .BASE_PATH
-                        ."view_order/?print=2&ID=".$value;
-                        $ObjWorksheet->getCell($cell)->getHyperlink()->setURL($url);
-                        $ObjWorksheet->getCell($cell)->getHyperlink()->setTooltip('View Order Details');
                         break;
                 }
                 if ($isHyperlink) {

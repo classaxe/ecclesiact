@@ -1,3 +1,7 @@
+  1.0.29 (2015-03-23)
+    1) Report_Column_Report_Field::draw() for type 'fieldset_map_loc_lat_lon' now url encodes type parameter in link
+       so we can safely propagate namespace prefixes for desired types
+    2) Method get_version() renamed to getVersion() and made static
   1.0.28 (2015-03-21)
     1) Now gives map link as 'Map' if no value is actually given for the text
     2) Now mainly PSR-2 Compliant

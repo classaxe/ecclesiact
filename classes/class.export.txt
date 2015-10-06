@@ -1,3 +1,6 @@
+  1.0.25 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
+    2) Export::draw() now looks for exportSql() and then tries export_sql() if the former method isn't found
   1.0.24 (2015-01-04)
     1) Now always sets show_fields to true whe exporting sql results
     2) Now conforms to PSR-2

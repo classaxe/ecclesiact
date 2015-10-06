@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.7");
+define("CODEBASE_VERSION", "4.0.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,28 +16,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.7.2401 (2015-10-05)
+4.0.8.2402 (2015-10-06)
 Summary:
-  1) New version of ckeditor that works better with Microsoft Edge web browser
+  1) Added support in Excel export for 'link_view_tickets'
 
 Final Checksums:
-  Classes     CS:a99c5438
+  Classes     CS:c4e83b66
   Database    CS:2c1b27a7
-  Libraries   CS:1f9e2108
-  Reports     CS:e154d375
+  Libraries   CS:777cb531
+  Reports     CS:7a4afe5c
 
 Code Changes:
-  codebase.php                                                                                   4.0.7     (2015-10-05)
+  codebase.php                                                                                   4.0.8     (2015-10-06)
     1) Updated version information
-  js/ckeditor/ckeditor.js                                                                        4.5.3     (2015-10-05)
-    1) Latest version, with support for Microsoft Edge browser
+  classes/class.export.php                                                                       1.0.26    (2015-10-06)
+    1) Added specific support for link_view_tickets
+  classes/class.report_column_report_field.php                                                   1.0.30    (2015-10-06)
+    1) Specific support aded for column type 'link_view_tickets'
 
-2401.sql
-  1) Set version information
+2402.sql
+  1) New report column type 'link_view_tickets' to enable special handling in export to Excel
+  2) Added Gateway Result column to Tickets report and added support for Excel Export of tickets
+  3) Set version information
 
 Promote:
-  codebase.php                                        4.0.7
-  js/ckeditor/ckeditor.js                             4.5.3  CS:374f2caf
+  codebase.php                                        4.0.8
+  classes/  (2 files changed)
+    class.export.php                                  1.0.26    CS:d0f336fe
+    class.report_column_report_field.php              1.0.30    CS:7b1fba0d
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
