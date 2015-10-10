@@ -1,3 +1,6 @@
+  1.0.34 (2015-09-12)
+    1) Call to Layout::get_selector_sql() now  Layout::getSelectorSql()
+    2) References to Page::push_content() now changed to Output::push()
   1.0.33 (2015-03-08)
     1) Now uses namespaced \Component\CalendarSmall for calendar preview, not Component_Calendar_Small
   1.0.32 (2015-03-01)

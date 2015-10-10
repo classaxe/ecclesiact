@@ -1,16 +1,18 @@
 <?php
 namespace Component;
 
-define("VERSION_NS_COMPONENT_EMAIL_FORM", "1.0.2");
 /*
 Version History:
-  1.0.2 (2015-09-27)
-    1) Now reports IP address and browser details of person submitting form
-    2) Now prevents continuation if email, name or content are expected but are not valid
+  1.0.3 (2015-10-09)
+    1) Bug fix in EmailForm::doSubmode() to prevent sending of message if submode is anything other than 'send'
+    2) Now determines whether there is ANYTHING to send (whether fields were defined or not)
+       and gives an error if there isn't
 
 */
 class EmailForm extends Base
 {
+    const VERSION = '1.0.3';
+
     protected $_email_body_html;
     protected $_email_body_text;
     protected $_email_errors = "";
@@ -49,7 +51,7 @@ class EmailForm extends Base
 
     protected function doSubmode()
     {
-        if (!get_var('submode')=='send') {
+        if (!isset($_POST['submode']) || $_POST['submode']!=='send') {
             return false;
         }
         $this->validate();
@@ -170,23 +172,33 @@ class EmailForm extends Base
 
     protected function validate()
     {
-        $email = get_var('Email');
+        $has_content = false;
+        $ignore_arr =   explode(",", SYS_STANDARD_FIELDS);
+        foreach ($_POST as $field => $value) {
+            if ($value!=="" && !in_array($field, $ignore_arr) && substr($field, 0, 19)!='poll_max_votes_for_') {
+                $has_content = true;
+                break;
+            }
+        }
+        if (!$has_content) {
+            $this->_email_errors.= "There is nothing in your message for me to send.\n";
+        }
+        $email = (isset($_POST['Email']) ? $_POST['Email'] : false);
         if ($email !== false && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->_email_errors.= "Invalid Email address ".$email."\n";
         }
-        $name = get_var('Name');
+        $name = (isset($_POST['Name']) ? $_POST['Name'] : false);
         if ($name !== false && strlen(trim($name)) < 3) {
             $this->_email_errors.= "Please provide your name.\n";
         }
-        $message = get_var('Message');
+        $message = (isset($_POST['Message']) ? $_POST['Message'] : false);
         if ($name !== false && strlen(trim($message)) < 3) {
             $this->_email_errors.= "Please enter a useful message in the space provided.\n";
         }
-
     }
 
     public static function getVersion()
     {
-        return VERSION_NS_COMPONENT_EMAIL_FORM;
+        return EmailForm::VERSION;
     }
 }

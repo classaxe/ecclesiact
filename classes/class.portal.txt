@@ -1,3 +1,8 @@
+  1.0.35 (2015-03-23)
+    1) Portal::get_request_path() now allows \ in a path -
+       This is needed for namespace determination, e.g.
+         http://desktop.churchesinyourtown.ca/_map?type=\Map\GeocodeCache&ID=709381220...
+    2) Method get_version() renamed to getVersion() and made static
   1.0.34 (2015-03-15)
     1) Changed get_version() to getVersion() to prevent cascade by namespaced components through this class
        resulting in wrong version code being returned by extending classes

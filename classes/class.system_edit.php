@@ -1,15 +1,14 @@
 <?php
-define('VERSION_SYSTEM_EDIT', '1.0.34');
-
 /*
 Version History:
-  1.0.34 (2015-09-12)
-    1) Call to Layout::get_selector_sql() now  Layout::getSelectorSql()
-    2) References to Page::push_content() now changed to Output::push()
+  1.0.35 (2015-10-10)
+    1) Reorginised fields in General tab to allow for URL_aliases field
 
 */
 class System_Edit extends System
 {
+    const VERSION = '1.0.35';
+
     private $_colour_schemeID;
     private $_html;
     private $_msg;
@@ -36,7 +35,7 @@ class System_Edit extends System
                 $this->_doSaveColourscheme();
                 break;
         }
-      // Check again incase submode changed
+      // Check again in case submode changed
         switch ($this->_submode) {
             case 'save':
             case 'save_and_close':
@@ -124,7 +123,8 @@ class System_Edit extends System
             'text_heading'=>                strToUpper(get_var('text_heading')),
             'textEnglish'=>                 addslashes(get_var('textEnglish')),
             'timezone'=>                    addslashes(get_var('timezone')),
-            'URL'=>                         addslashes(get_var('URL'))
+            'URL'=>                         addslashes(get_var('URL')),
+            'URL_aliases'=>                 addslashes(get_var('URL_aliases'))
         );
     //  Assign checksum and version by system creating target
         if ($this->_get_ID()=="") {
@@ -304,7 +304,10 @@ class System_Edit extends System
             ".settings_group_header { padding:1px 2px 1px 2px; font-size: 80%; }\n"
             .".settings_group { margin: 0 2px 10px 2px; padding:1px; border:1px solid #c0c0c0;"
             ." background-color:#fff; font-size: 80% }\n"
-            .".settings_group label { float: left; display: block; padding: 0 0.5em;}\n"
+            .".settings_group label { float: left; display: block; padding: 0 0.5em; height: 1.5em;}\n"
+            .".settings_group label.c1  { width:170px; display:inline-block; padding: 0 0 0 0.5em; }\n"
+            .".settings_group label.c3  { width:104px; display:inline-block; text-align:right; padding:0 5px 0 0; }\n"
+            .".settings_group label.c3b { width:334px; display:inline-block; text-align:right; padding:0 5px 0 0; }\n"
             .".settings_group .lbl { float: left; }\n"
             .".settings_group .val { float: left; }\n"
             ."#checkbox_csv_notify_triggers { border: none; }\n"
@@ -756,7 +759,8 @@ class System_Edit extends System
             ."geid_set('submode','load_scheme');geid('form').submit();} else {alert('Action Cancelled')}}\"/>\n"
             ."<input type='button' class='formButton' style='width: 90px' value='Save As...' "
             ."onclick=\"var cs_name=prompt('Please enter a name for this scheme','');"
-            ."if(cs_name){geid_set('targetValue',cs_name);geid_set('submode','save_scheme');geid('form').submit();}\"/>\n"
+            ."if(cs_name){geid_set('targetValue',cs_name);geid_set('submode','save_scheme');geid('form').submit();}\""
+            ."/>\n"
             ."<input type='button' class='formButton' style='width: 90px' value='Delete' "
             ."onclick=\"if (geid_val('colour_schemeID')==1) { alert('Please select a colour scheme to delete'); } "
             ."else if(geid('colour_schemeID').options[geid('colour_schemeID').selectedIndex].text.substr(0,2)=='* ') { "
@@ -786,7 +790,8 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("table_border", $this->record['table_border'], "swatch", "60px")
             ."</div>\n"
-            ."    <label style='width:120px' for='table_header' title='Table Header Cells Colour'>Table Headers</label>\n"
+            ."    <label style='width:120px' for='table_header' title='Table Header Cells Colour'>"
+            ."Table Headers</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("table_header", $this->record['table_header'], "swatch", "60px")
             ."</div>\n"
@@ -919,7 +924,9 @@ class System_Edit extends System
         $this->_html.=
              draw_section_tab_div('general', $this->_selected_section)
             ."  <div class='settings_group'>\n"
-            ."    <div class='lbl' style='width:160px'><b>Title</b></div>\n"
+            ."    <div><b>General Settings</b></div>\n"
+            ."    <div class='clr_b'></div>\n"
+            ."    <label class='c1' for='textEnglish'>Title</label>\n"
             ."    <div class='val' style='float:left;width:250px;'>"
             .draw_form_field(
                 "textEnglish",
@@ -928,25 +935,8 @@ class System_Edit extends System
                 "250"
             )
             ."</div>"
-            ."    <div style='float:left;width:362px;text-align:right'><b>URL</b> "
-            .draw_form_field(
-                "URL",
-                $this->record['URL'],
-                "text",
-                "250"
-            )
-            ."</div>\n"
-            ."    <div class='clr_b'></div>\n"
-            ."    <div class='lbl' style='width:160px'><b>Admin Name</b></div>\n"
-            ."    <div class='val'>"
-            .draw_form_field(
-                "adminName",
-                $this->record['adminName'],
-                "text",
-                "250"
-            )
-            ."</div>"
-            ."    <div class='lbl' style='width:104px;text-align:right'><b>Admin Email</b>&nbsp;</div>\n"
+
+            ."    <label class='c3' for='adminEmail'>Admin Email</label>\n"
             ."    <div class='val'>"
             .draw_form_field(
                 "adminEmail",
@@ -955,9 +945,20 @@ class System_Edit extends System
                 "250"
             )
             ."</div>\n"
+
             ."    <div class='clr_b'></div>\n"
-            ."    <div class='lbl' style='width:414px'>&nbsp;</div>\n"
-            ."    <div class='lbl' style='width:104px;text-align:right'><b>Bounce Email</b>&nbsp;</div>\n"
+
+            ."    <label class='c1' for='adminName'>Admin Name</label>\n"
+            ."    <div class='val' style='float:left;width:250px;'>"
+            .draw_form_field(
+                "adminName",
+                $this->record['adminName'],
+                "text",
+                "250"
+            )
+            ."</div>"
+
+            ."    <label class='c3' for='bounce_email'>Bounce Email</label>\n"
             ."    <div class='val'>"
             .draw_form_field(
                 "bounce_email",
@@ -966,10 +967,31 @@ class System_Edit extends System
                 "250"
             )
             ."</div>\n"
+
             ."    <div class='clr_b'></div>\n"
-            ."    <div class='lbl' style='width:160px'><b>New Access Accounts</b></div>\n"
+            ."    <label class='c1' for='URL'>Base URL</label>\n"
+            ."    <div class='val' style='float:left;width:250px;'>"
+            .draw_form_field(
+                "URL",
+                $this->record['URL'],
+                "text",
+                "250"
+            )
+            ."</div>\n"
+
+            ."    <label class='c3' for='URL_aliases'>Alias URL(s)</label>\n"
             ."    <div class='val'>"
-            ."      <div style='float:left;width:250px;'>"
+            .draw_form_field(
+                "URL_aliases",
+                $this->record['URL_aliases'],
+                "text",
+                "250"
+            )
+            ."</div>\n"
+            ."    <div class='clr_b'></div>\n"
+
+            ."    <label class='c1' for='system_signup'>New Access Accounts</label>\n"
+            ."    <div class='val' style='float:left;width:250px;'>"
             .draw_form_field(
                 "system_signup",
                 $this->record['system_signup'],
@@ -984,7 +1006,8 @@ class System_Edit extends System
                 'lst_system_signup_options'
             )
             ."</div>"
-            ."      <div style='float:left;width:362px;text-align:right'><b>Event Cancellation notice (days) </b> "
+            ."    <label class='c3b' for='system_cancellation_days'>Event Cancellation notice (days)</label>\n"
+            ."    <div class='val' style='float:left;'>"
             .draw_form_field(
                 "system_cancellation_days",
                 $this->record['system_cancellation_days'],
@@ -992,13 +1015,12 @@ class System_Edit extends System
                 "20"
             )
             ."</div>\n"
-            ."    </div>\n"
             ."    <div class='clr_b'></div>\n"
             ."  </div>\n"
             ."  <div class='settings_group'>\n"
             ."    <div><b>Notification Options</b></div>\n"
             ."    <div class='clr_b'></div>\n"
-            ."    <label style='width:200px' for='notify_email'>Notify Email Address List</label>\n"
+            ."    <label class='c1' for='notify_email'>Notify Email Address List</label>\n"
             ."    <div class='val'>"
             .draw_form_field(
                 "notify_email",
@@ -1008,7 +1030,7 @@ class System_Edit extends System
             )
             ."</div>\n"
             ."    <div class='clr_b'></div>\n"
-            ."    <label style='width:200px' for='notify_triggers'>Notify on these Triggers</label>\n"
+            ."    <label class='c1' for='notify_triggers'>Notify on these Triggers</label>\n"
             ."    <div class='val'>"
             .draw_form_field(
                 "notify_triggers",
@@ -1462,6 +1484,6 @@ class System_Edit extends System
 
     public static function getVersion()
     {
-        return VERSION_SYSTEM_EDIT;
+        return System_Edit::VERSION;
     }
 }

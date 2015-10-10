@@ -1,3 +1,6 @@
+  1.0.2 (2015-09-27)
+    1) Now reports IP address and browser details of person submitting form
+    2) Now prevents continuation if email, name or content are expected but are not valid
   1.0.1 (2013-10-29)
     1) Brought component up to date with latest standards
     2) Now sets 'reply to' address to Email field if given

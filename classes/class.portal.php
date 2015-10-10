@@ -1,18 +1,16 @@
 <?php
-define('VERSION_PORTAL', '1.0.35');
+define('VERSION_PORTAL', '1.0.36');
 /*
 Version History:
-  1.0.35 (2015-03-23)
-    1) Portal::get_request_path() now allows \ in a path -
-       This is needed for namespace determination, e.g.
-         http://desktop.churchesinyourtown.ca/_map?type=\Map\GeocodeCache&ID=709381220...
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.36 (2015-10-10)
+    1) Added Portal::isDev() method
 
 */
 class Portal extends Base
 {
-    private static $_path_date_prefixed_types =
-    array(
+    const VERSION = '1.0.36';
+
+    private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
     );
     // Objects viewable in single-item mode by entering custom path prefix, e.g. '/2009/06/29/posting-name'
@@ -36,6 +34,20 @@ class Portal extends Base
     // To append, add this to custom.php:
     //   Portal::portal_param_push('path_type_prefixed_types','Team');
 
+
+    public function isDev() {
+        $serverhost =     getenv("SERVER_NAME");
+        return
+            $serverhost === 'localhost' ||
+            substr($serverhost, -17) === '.auroraonline.com' ||
+            substr($serverhost, -13) === '.classaxe.com' ||
+            substr($serverhost, -15) === '.ecclesiact.com' ||
+            substr($serverhost, 0, 7) === 'backup.' ||
+            substr($serverhost, 0, 8) === 'desktop.' ||
+            substr($serverhost, 0, 4) === 'dev.' ||
+            substr($serverhost, 0, 7) === 'laptop.' ||
+            substr($serverhost, 0, 4) === 'old.';
+    }
 
     protected static function get_request_path($request = false)
     {
@@ -505,6 +517,6 @@ class Portal extends Base
 
     public static function getVersion()
     {
-        return VERSION_PORTAL;
+        return Portal::VERSION;
     }
 }
