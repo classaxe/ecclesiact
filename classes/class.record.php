@@ -1,13 +1,16 @@
 <?php
-define('VERSION_RECORD', '1.0.92');
+define('VERSION_RECORD', '1.0.93');
 /*
 Version History:
-  1.0.92 (2015-08-14)
-    1) Record::is_visible() is now statically declared
+  1.0.93 (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
 
 */
 class Record extends Portal
 {
+    const VERSION = '1.0.93';
+
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
     public static $cache_debug_query_checksum =  array();
@@ -1790,12 +1793,10 @@ class Record extends Portal
         $ID_arr = explode(',', str_replace(' ', '', $this->_get_ID()));
         foreach ($ID_arr as $ID) {
             $this->_set_ID($ID);
-            if (method_exists($this, 'getCoords')){
+            if (method_exists($this, 'getCoords')) {
                 $coords = $this->getCoords();
-            }
-            else {
+            } else {
                 $coords = $this->get_coords();
-
             }
             $this->update($coords);
         }
@@ -2573,10 +2574,5 @@ class Record extends Portal
             $out[$key] = $value;
         }
         $row = $out;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_RECORD;
     }
 }

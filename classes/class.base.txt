@@ -1,3 +1,5 @@
+  1.0.15 (2015-03-28)
+    1) Magic method __call() now gives stack trace when called for non-existent method
   1.0.14 (2015-03-23)
     1) Method getVersion() is now static
   1.0.13 (2015-03-15)

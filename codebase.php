@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.9");
+define("CODEBASE_VERSION", "4.0.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,43 +16,48 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.9.2403 (2015-10-10)
+4.0.10.2404 (2015-10-16)
 Summary:
-  1) Added support for a site to have more than one access URL - for BNN which has multiple site identities
-  2) More hardening of email form component to ensure that POST method is used for submission and that the form
-     contains something in the way iof a message that is worth sending
+  1) Export from Tickets report now includes event registrations
+  2) Started eliminating local getVersion() methods in favour of class-constant driven version in Base::getVersion()
 
 Final Checksums:
-  Classes     CS:df31a568
+  Classes     CS:f90068e6
   Database    CS:2d83e942
-  Libraries   CS:ca8c34f5
-  Reports     CS:7a4afe5c
+  Libraries   CS:86ab69c2
+  Reports     CS:19970c97
 
 Code Changes:
-  codebase.php                                                                                   4.0.9     (2015-10-10)
+  codebase.php                                                                                   4.0.10    (2015-10-16)
     1) Updated version information
-  classes/class.portal.php                                                                       1.0.36    (2015-10-10)
-    1) Added Portal::isDev() method
-  classes/class.system.php                                                                       1.0.167   (2015-10-10)
-    1) Added URL_aliases to FIELDS list
-  classes/class.system_edit.php                                                                  1.0.35    (2015-10-10)
-    1) Reorginised fields in General tab to allow for URL_aliases field
-  classes/component/emailform.php                                                                1.0.3     (2015-10-09)
-    1) Bug fix in EmailForm::doSubmode() to prevent sending of message if submode is anything other than 'send'
-    2) Now determines whether there is ANYTHING to send (whether fields were defined or not)
-       and gives an error if there isn't
+  classes/class.base.php                                                                         1.0.16    (2015-10-16)
+    1) Version now given statically
+    2) Now provides a version of getVersion() that can be used by all descendents
+    3) Now more PSR-2 compliant
+  classes/class.order.php                                                                        1.0.70    (2015-10-16)
+    1) Now mainly PSR-2 compliant
+  classes/class.portal.php                                                                       1.0.37    (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
+  classes/class.record.php                                                                       1.0.93    (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
+  classes/ticket.php                                                                             1.0.0     (2015-10-16)
+    1) Newly added to allow for override of export SQL function
 
-2403.sql
-  1) Added system.URL_aliases field
+2404.sql
+  1) Report 'tickets' now uses Ticket object to allow for its own specific export methods
   2) Set version information
 
 Promote:
-  codebase.php                                        4.0.9
-  classes/  (4 files changed)
-    class.portal.php                                  1.0.36    CS:e1f2bebe
-    class.system.php                                  1.0.167   CS:9e1b246
-    class.system_edit.php                             1.0.35    CS:46184f6
-    component/emailform.php                           1.0.3     CS:f1890768
+  codebase.php                                        4.0.10
+  classes/  (5 files changed)
+    class.base.php                                    1.0.16    CS:2004f8cb
+    class.order.php                                   1.0.70    CS:7733fb1e
+    class.portal.php                                  1.0.37    CS:e6d9e9dc
+    class.record.php                                  1.0.93    CS:59df2660
+    ticket.php                                        1.0.0     CS:7f35831c
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

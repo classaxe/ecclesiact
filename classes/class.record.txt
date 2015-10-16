@@ -1,3 +1,5 @@
+  1.0.92 (2015-08-14)
+    1) Record::is_visible() is now statically declared
   1.0.91 (2015-08-03)
     1) Function sql_export() is now a stub class for newly added sqlExport()
     2) Function sql_export_delete() is now a stub class for newly added sqlExportDelete()

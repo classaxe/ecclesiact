@@ -1,3 +1,5 @@
+  1.0.36 (2015-10-10)
+    1) Added Portal::isDev() method
   1.0.35 (2015-03-23)
     1) Portal::get_request_path() now allows \ in a path -
        This is needed for namespace determination, e.g.

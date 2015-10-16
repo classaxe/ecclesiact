@@ -2,17 +2,19 @@
 define('VERSION_PORTAL', '1.0.36');
 /*
 Version History:
-  1.0.36 (2015-10-10)
-    1) Added Portal::isDev() method
+  1.0.37 (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
 
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.36';
+    const VERSION = '1.0.37';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
     );
+
     // Objects viewable in single-item mode by entering custom path prefix, e.g. '/2009/06/29/posting-name'
     // To append, add this to custom.php:
     //   Portal::portal_param_push('path_date_prefixed_types','Team');
@@ -35,7 +37,8 @@ class Portal extends Base
     //   Portal::portal_param_push('path_type_prefixed_types','Team');
 
 
-    public function isDev() {
+    public function isDev()
+    {
         $serverhost =     getenv("SERVER_NAME");
         return
             $serverhost === 'localhost' ||
@@ -505,18 +508,13 @@ class Portal extends Base
             break;
         }
         die(
-         "<h1>Error - upgrade required</h1>\n"
-        ."<p>The system must complete an important database upgrade to version ".$row['db_version'].".<br />\n"
-        ."This site is running"
-        ." <b>".System::get_item_version('system_family')." version ".System::get_item_version('codebase')."</b>"
-        ." and a database upgrade to ".$row['db_version']." is not supported with this release.</p>\n"
-        ."<p>Please contact <a href=\"mailto:".$row['adminEmail']."\"><b>".$row['adminName']."</b></a>"
-        ." to report this issue if this message persists for more than a couple of minutes.</p>"
+             "<h1>Error - upgrade required</h1>\n"
+            ."<p>The system must complete an important database upgrade to version ".$row['db_version'].".<br />\n"
+            ."This site is running"
+            ." <b>".System::get_item_version('system_family')." version ".System::get_item_version('codebase')."</b>"
+            ." and a database upgrade to ".$row['db_version']." is not supported with this release.</p>\n"
+            ."<p>Please contact <a href=\"mailto:".$row['adminEmail']."\"><b>".$row['adminName']."</b></a>"
+            ." to report this issue if this message persists for more than a couple of minutes.</p>"
         );
-    }
-
-    public static function getVersion()
-    {
-        return Portal::VERSION;
     }
 }
