@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.0.10");
+define("CODEBASE_VERSION", "4.1.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,48 +16,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.0.10.2404 (2015-10-16)
+4.1.0.2405 (2015-10-17)
 Summary:
-  1) Export from Tickets report now includes event registrations
-  2) Started eliminating local getVersion() methods in favour of class-constant driven version in Base::getVersion()
+  1) More work on responsive website support
+  2) Added include_body_bottom to layouts
+  3) Thinned out mandatory includes in responsive head generation and made better use of CDNs for library support
 
 Final Checksums:
-  Classes     CS:f90068e6
-  Database    CS:2d83e942
-  Libraries   CS:86ab69c2
-  Reports     CS:19970c97
+  Classes     CS:ce66cc6c
+  Database    CS:17d51b14
+  Libraries   CS:2a9fa637
+  Reports     CS:3292ccf6
 
 Code Changes:
-  codebase.php                                                                                   4.0.10    (2015-10-16)
+  codebase.php                                                                                   4.1.0     (2015-10-18)
     1) Updated version information
-  classes/class.base.php                                                                         1.0.16    (2015-10-16)
-    1) Version now given statically
-    2) Now provides a version of getVersion() that can be used by all descendents
-    3) Now more PSR-2 compliant
-  classes/class.order.php                                                                        1.0.70    (2015-10-16)
-    1) Now mainly PSR-2 compliant
-  classes/class.portal.php                                                                       1.0.37    (2015-10-16)
-    1) Version now given statically
-    2) Now uses getVersion() in parent
-  classes/class.record.php                                                                       1.0.93    (2015-10-16)
-    1) Version now given statically
-    2) Now uses getVersion() in parent
-  classes/ticket.php                                                                             1.0.0     (2015-10-16)
-    1) Newly added to allow for override of export SQL function
+  classes/class.layout.php                                                                       1.0.33    (2015-10-17)
+    1) Added include_body_bottom and include_head_top to FIELDS (include_head_top replaces head_include)
+    2) Now includes code provided in layout include_body_bottom field in rendered output
+    3) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
+  img.php                                                                                        2.0.88    (2015-10-18)
+    1) Added support for sysjs/device (needed for animate to work properly)
 
-2404.sql
-  1) Report 'tickets' now uses Ticket object to allow for its own specific export methods
-  2) Set version information
+2405.sql
+  1) New field for `layout` table - include_body_bottom - also `head_include` is renamed `include_head_top`
+  2) Changes to Layout report / form to include new `include_body_bottom` field
+  3) Set version information
 
 Promote:
-  codebase.php                                        4.0.10
-  classes/  (5 files changed)
-    class.base.php                                    1.0.16    CS:2004f8cb
-    class.order.php                                   1.0.70    CS:7733fb1e
-    class.portal.php                                  1.0.37    CS:e6d9e9dc
-    class.record.php                                  1.0.93    CS:59df2660
-    ticket.php                                        1.0.0     CS:7f35831c
-
+  codebase.php                                        4.1.0
+  classes/  (1 file changed)
+    class.layout.php                                  1.0.33    CS:4d40c28a
+  img.php                                             2.0.88    CS:d924f7fc
+  js/device.min.js                                    0.2.7
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

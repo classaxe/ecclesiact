@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.87");
+define("VERSION", "2.0.88");
 /*
 Version History:
-  2.0.87 (2015-09-27)
-    1) Now supports CSS compression
+  2.0.88 (2015-10-18)
+    1) Added support for sysjs/device (needed for animate to work properly)
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -1375,6 +1375,11 @@ function sysjs()
             $file =   file_get_contents($path);
             img_ext_mime_header($ext);
             print($file);
+            break;
+        case "device":
+            img_set_cache(3600*24*7); // expire in one week
+            header('Content-Type: text/javascript');
+            print file_get_contents(SYS_JS.'device.min.js');
             break;
         case "jquery":
             img_set_cache(3600*24*7); // expire in one week

@@ -1,16 +1,17 @@
 <?php
-define('VERSION_LAYOUT', '1.0.32');
 /*
 Version History:
-  1.0.32 (2015-09-21)
-    1) Layout::prepareXhtmlHead() now has additional parameter of false passed into \Nav\Suite::drawJsPreload()
-    2) Layout::prepareResponsiveHead() now has additional parameter of true passed into \Nav\Suite::drawJsPreload()
+  1.0.33 (2015-10-17)
+    1) Added include_body_bottom and include_head_top to FIELDS (include_head_top replaces head_include)
+    2) Now includes code provided in layout include_body_bottom field in rendered output
+    3) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
 
 */
 
 class Layout extends Record
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, head_include, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.33';
+    const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
     {
@@ -18,15 +19,15 @@ class Layout extends Record
         $this->_set_object_name('Layout');
         $this->set_edit_params(
             array(
-            'report_rename' =>          true,
-            'report_rename_label' =>    'new name'
+                'report_rename' =>          true,
+                'report_rename_label' =>    'new name'
             )
         );
     }
 
     public function exportSql($targetID, $show_fields)
     {
-        return  $this->sqlExport($targetID, $show_fields);
+        return $this->sqlExport($targetID, $show_fields);
     }
 
     public function getCssChecksum($ID)
@@ -148,8 +149,7 @@ class Layout extends Record
             $errors[] =
                 " required for ".$usage['page']." page".($usage['page']==1 ? "" : "s");
         }
-        $msg =
-        status_message(
+        $msg = status_message(
             2,
             true,
             $this->_get_object_name(),
@@ -164,8 +164,7 @@ class Layout extends Record
     {
         global $page_vars;
         $content = $page_vars['layout']['content'];
-        $Obj_Page = new Page;
-        if ($include = $page_vars['layout']['head_include']) {
+        if ($include = $page_vars['layout']['include_head_top']) {
             Output::push('head_include', $include);
         }
         if ($personID = get_userID()) {
@@ -181,6 +180,10 @@ class Layout extends Record
             Output::push('body', convert_safe_to_php($content));
             $this->prepareXhtmlFoot();
         }
+        if ($include = $page_vars['layout']['include_body_bottom']) {
+            Output::push('body_bottom', $include);
+        }
+
     }
 
     public function prepareXhtmlFoot()
@@ -567,31 +570,9 @@ class Layout extends Record
              :
                 ""
              )
-            ."    <meta name=\"format-detection\" content=\"telephone=no\"/>\n"
-            ."    <link rel=\"icon\" href=\"/images/favicon.ico\" type=\"image/x-icon\">\n"
             ."    <title>".strip_tags(convert_safe_to_php($page_vars['title']))."</title>\n"
-            ."\n"
-            ."    <link href=\"/css/jquery.fancybox.css\" rel=\"stylesheet\">\n"
-            ."\n"
-            ."    <link href=\"/custom_css/animate.css\" rel=\"stylesheet\">\n"
-            ."    <link href=\"/custom_css/bootstrap.css\" rel=\"stylesheet\">\n"
-            ."    <link href=\"/custom_css/camera.css\" rel=\"stylesheet\">\n"
-            ."    <link href=\"/custom_css/search.css\" rel=\"stylesheet\">\n"
-            ."    <link href=\"/custom_css/mailform.css\" rel=\"stylesheet\">\n"
-            ."\n"
-            ."    <!--[if lt IE 9]>\n"
-            ."    <div style=' clear: both; text-align:center; position: relative;'>\n"
-            ."        <a href=\"http://windows.microsoft.com/en-US/internet-explorer/\">\n"
-            ."        <img src=\"/images/ie8-panel/warning_bar_0000_us.jpg\""
-            ." border=\"0\" height=\"42\" width=\"820\"\n"
-            ."          alt=\""
-            ."You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today"
-            ."\"/>\n"
-            ."        </a>\n"
-            ."    </div>\n"
-            ."    <script src=\"/js/html5shiv.js\"></script>\n"
-            ."    <![endif]-->\n"
-            ."    <script src=\"/js/device.min.js\"></script>\n"
+            ."    <link rel=\"stylesheet\" href=\"http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">\n"
+            ."    <script src=\"/sysjs/device\"></script>\n"  // Needed for Animate to work properly
         );
 
         Output::push(
@@ -842,8 +823,7 @@ class Layout extends Record
         );
         Output::push(
             'html_bottom',
-            "<script src=\"/js/bootstrap.min.js\"></script>\n"
-            ."<script src=\"/js/tm-scripts.js\"></script>\n"
+            "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>\n"
             ."</form></body>\n"
             ."</html>"
         );
@@ -962,8 +942,4 @@ class Layout extends Record
         return $this->get_record_for_sql($sql);
     }
 
-    public static function getVersion()
-    {
-        return VERSION_LAYOUT;
-    }
 }
