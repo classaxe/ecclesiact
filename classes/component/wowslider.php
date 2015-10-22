@@ -1,15 +1,16 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_WOW_SLIDER", "1.0.13");
 /*
 Version History:
-  1.0.13 (2015-09-19)
-    1) WOWSlider::drawImageBullets() now includes alt attribute for image preview bullets
+  1.0.14 (2015-10-21)
+    1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
+    2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
 
 */
 class WOWSlider extends Base
 {
+    const VERSION = '1.0.14';
+
     protected $_first_image =   array();
     protected $_first_idx =     0;
     protected $fx =
@@ -310,8 +311,6 @@ class WOWSlider extends Base
             ."    <ul>\n";
         for ($i=0; $i<count($this->_images); $i++) {
             $image = $this->_images[$i];
-            $caption =
-
             $this->_html.=
                  "    <li>"
                 .($image['url'] ?
@@ -326,8 +325,6 @@ class WOWSlider extends Base
                 ." src=\"".htmlentities($image['image'])."\""
                 ." alt=\"".$image['title']."\""
                 ." title=\"".($this->_cp['title_show']=='1' ? $image['title'] : '')."\""
-                ." height=\"".$image['image_h']."\""
-                ." width=\"".$image['image_w']."\""
                 ."/>"
                 .($image['url'] ? "</a>" : "")
                 .($this->_cp['caption_show']=='1' ? $image['caption'] : '')
@@ -542,10 +539,5 @@ class WOWSlider extends Base
                 'url_popup' =>      $_url_popup
             );
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_WOW_SLIDER;
     }
 }

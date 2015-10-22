@@ -1,3 +1,5 @@
+  1.0.4 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.3 (2015-03-17)
     1) \Component\Base::drawStatus() now uses new HTML::drawStatus() in place of old snake-case named method
   1.0.2 (2015-03-07)

@@ -1,17 +1,17 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_BASE", "1.0.4");
 /*
 Version History:
-  1.0.4 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.5 (2015-10-21)
+    1) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
 
 */
 
 
 class Base extends \Record
 {
+    const VERSION = '1.0.5';
+
     public static $help_div_id = 0;
     protected $_args;
     protected $_current_user_groups = array();
@@ -518,10 +518,5 @@ class Base extends \Record
         }
         sort($out);
         return $out;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_BASE;
     }
 }

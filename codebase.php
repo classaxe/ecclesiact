@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.1.0");
+define("CODEBASE_VERSION", "4.1.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,39 +16,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.1.0.2405 (2015-10-17)
+4.1.1.2406 (2015-10-21)
 Summary:
-  1) More work on responsive website support
-  2) Added include_body_bottom to layouts
-  3) Thinned out mandatory includes in responsive head generation and made better use of CDNs for library support
+  1) More work on responsive website support - wow slider is now capable of being resized responsively
 
 Final Checksums:
-  Classes     CS:ce66cc6c
+  Classes     CS:7689ee22
   Database    CS:17d51b14
-  Libraries   CS:2a9fa637
+  Libraries   CS:976f27f3
   Reports     CS:3292ccf6
 
 Code Changes:
-  codebase.php                                                                                   4.1.0     (2015-10-18)
+  codebase.php                                                                                   4.1.1     (2015-10-21)
     1) Updated version information
-  classes/class.layout.php                                                                       1.0.33    (2015-10-17)
-    1) Added include_body_bottom and include_head_top to FIELDS (include_head_top replaces head_include)
-    2) Now includes code provided in layout include_body_bottom field in rendered output
-    3) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-  img.php                                                                                        2.0.88    (2015-10-18)
-    1) Added support for sysjs/device (needed for animate to work properly)
+  classes/component/base.php                                                                     1.0.5     (2015-10-21)
+    1) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
+  classes/component/wowslider.php                                                                1.0.14    (2015-10-21)
+    1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
+    2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
 
-2405.sql
-  1) New field for `layout` table - include_body_bottom - also `head_include` is renamed `include_head_top`
-  2) Changes to Layout report / form to include new `include_body_bottom` field
-  3) Set version information
+2406.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.1.0
-  classes/  (1 file changed)
-    class.layout.php                                  1.0.33    CS:4d40c28a
-  img.php                                             2.0.88    CS:d924f7fc
-  js/device.min.js                                    0.2.7
+  codebase.php                                        4.1.1
+  classes/  (2 files changed)
+    component/base.php                                1.0.5     CS:9a5dbfb1
+    component/wowslider.php                           1.0.14    CS:25b0b43b
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
