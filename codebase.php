@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.1.1");
+define("CODEBASE_VERSION", "4.1.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,9 +16,40 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.1.1.2406 (2015-10-21)
+4.1.2.2407 (2015-11-16)
 Summary:
-  1) More work on responsive website support - wow slider is now capable of being resized responsively
+  1) More support for JS in responsive sites
+  2) Sorting in Contacts, Users and Pending Mmembers reports by last name now perform subsort by first name
+
+Final Checksums:
+  Classes     CS:61ebbae
+  Database    CS:17d51b14
+  Libraries   CS:a8a6f035
+  Reports     CS:4676d5b9
+
+Code Changes:
+  codebase.php                                                                                   4.1.2     (2015-11-16)
+    1) Updated version information
+  classes/output.php                                                                             1.0.2     (2015-10-25)
+    1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
+           sysjs/jqueryui       ->  sysjs/jquery-ui
+           sysjs/jquerymigrate  ->  sysjs/jquery-migrate
+  img.php                                                                                        2.0.89    (2015-10-25)
+    1) Added support for:
+          sysjs/cookie
+          sysjs/easing
+
+2407.sql
+  1) Contacts report 'Last Name' column now subsorts by first name
+  2) Pending Members report 'Last Name' column now subsorts by first name
+  3) Users report 'Last Name' column now subsorts by first name
+  4) Set version information
+
+Promote:
+  codebase.php                                        4.1.2
+  classes/  (1 file changed)
+    output.php                                        1.0.2     CS:edd1e038  
+  img.php                                             2.0.89    CS:b4ecb49f  
 
 Final Checksums:
   Classes     CS:7689ee22
@@ -1306,27 +1337,27 @@ function draw_form_field(
 function draw_hide_show($div, $text, $expanded = 1)
 {
     return
-     "<div class='clr_b'></div>\n"
-    ."<div id=\"".$div."_show\" "
-    .($expanded ? "style=\"display:none\" " : "")
-    ."onclick=\"setDisplay('".$div."_show',0);setDisplay('".$div."_hide',1);setDisplay('".$div."_region',1);\""
-    ."><h3 style='margin:0;' title='Click to show detail'>"
-    ."<img src='".BASE_PATH."img/spacer' class='icons std_control'"
-    ." style='margin-top:4px;margin-right:2px;height:13px;width:13px;background-position:-2209px 0px;' alt='' />"
-    .$text."</h3>"
-    ."</div>\n"
-    ."<div id=\"".$div."_hide\" "
-    .($expanded ? "" : "style=\"display:none\" ")
-    ."onclick=\"setDisplay('".$div."_show',1);setDisplay('".$div."_hide',0);setDisplay('".$div."_region',0);\""
-    .">\n"
-    ."<h3 style='margin:0;' title='Click to hide detail'>"
-    ."<img src='".BASE_PATH."img/spacer' class='icons std_control'"
-    ." style='margin-top:4px;margin-right:2px;height:13px;width:13px;background-position:-2196px 0px;' alt='' />"
-    .$text."</h3>"
-    ."</div>"
-    ."<div id=\"".$div."_region\""
-    .($expanded ? "" : " style=\"display:none;width:100%; margin:auto;\"")
-    .">";
+         "<div class='clr_b'></div>\n"
+        ."<div id=\"".$div."_show\" "
+        .($expanded ? "style=\"display:none\" " : "")
+        ."onclick=\"setDisplay('".$div."_show',0);setDisplay('".$div."_hide',1);setDisplay('".$div."_region',1);\""
+        ."><h3 style='margin:0;' title='Click to show detail'>"
+        ."<img src='".BASE_PATH."img/spacer' class='icons std_control'"
+        ." style='margin-top:4px;margin-right:2px;height:13px;width:13px;background-position:-2209px 0px;' alt='' />"
+        .$text."</h3>"
+        ."</div>\n"
+        ."<div id=\"".$div."_hide\" "
+        .($expanded ? "" : "style=\"display:none\" ")
+        ."onclick=\"setDisplay('".$div."_show',1);setDisplay('".$div."_hide',0);setDisplay('".$div."_region',0);\""
+        .">\n"
+        ."<h3 style='margin:0;' title='Click to hide detail'>"
+        ."<img src='".BASE_PATH."img/spacer' class='icons std_control'"
+        ." style='margin-top:4px;margin-right:2px;height:13px;width:13px;background-position:-2196px 0px;' alt='' />"
+        .$text."</h3>"
+        ."</div>"
+        ."<div id=\"".$div."_region\""
+        .($expanded ? "" : " style=\"display:none;width:100%; margin:auto;\"")
+        .">";
 }
 
 function draw_html_content($zone = 1)
@@ -2827,10 +2858,9 @@ function title_case_string($text)
     // Ref: http://www.sitepoint.com/blogs/2005/03/15/title-case-in-php
     // Our array of 'small words' which shouldn't be capitalised if
     // they aren't the first word. Add your own words to taste.
-    $smallwordsarray =
-    array(
-      'of','a','the','and','an','or','nor','but','is','if','then','else','when',
-      'at','from','by','on','off','for','in','out','over','to','into','with'
+    $smallwordsarray = array(
+        'of','a','the','and','an','or','nor','but','is','if','then','else','when',
+        'at','from','by','on','off','for','in','out','over','to','into','with'
     );
     // Split the string into separate words
     $words = explode(' ', $text);

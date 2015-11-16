@@ -1,9 +1,11 @@
 <?php
-define("VERSION", "2.0.88");
+define("VERSION", "2.0.89");
 /*
 Version History:
-  2.0.88 (2015-10-18)
-    1) Added support for sysjs/device (needed for animate to work properly)
+  2.0.89 (2015-10-25)
+    1) Added support for:
+          sysjs/cookie
+          sysjs/easing
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -1356,6 +1358,22 @@ function sysjs()
 //  }
     $submode = $_REQUEST['submode'];
     switch ($submode) {
+        case "device":
+        case "jquery":
+        case "jquery.cookie":
+        case "jquery.easing":
+        case "jquery.equalheights":
+        case "jquery.json":
+        case "jquery.ui.totop":
+        case "jquery-ui":
+        case "jquery-migrate":
+        case "spectrum":
+        case "tmstickup":
+        case "zrssfeed":
+            img_set_cache(3600*24*7); // expire in one week
+            header('Content-Type: text/javascript');
+            print file_get_contents(SYS_JS.$submode.'.min.js');
+            break;
         case "member":
         case "rss_reader":
         case "treeview":
@@ -1375,41 +1393,6 @@ function sysjs()
             $file =   file_get_contents($path);
             img_ext_mime_header($ext);
             print($file);
-            break;
-        case "device":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'device.min.js');
-            break;
-        case "jquery":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery.min.js');
-            break;
-        case "jqueryui":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery-ui.min.js');
-            break;
-        case "jquerymigrate":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery-migrate.min.js');
-            break;
-        case "jqueryjson":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery.json.min.js');
-            break;
-        case "zrssfeed":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'jquery.zrssfeed.min.js');
-            break;
-        case "spectrum":
-            img_set_cache(3600*24*7); // expire in one week
-            header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.'spectrum.min.js');
             break;
         case "ckeditor":
             img_set_cache(3600*24*7); // expire in one week

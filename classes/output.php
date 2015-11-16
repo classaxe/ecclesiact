@@ -1,15 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.1 (2015-09-19)
-    1) Now includes Output::drawCssInclude() and Output::drawJsInclude() taken from System class
-    2) Updated version for sysjs/jqueryjson included and changed CDN for JS from Google to code.jquery.com
+  1.0.2 (2015-10-25)
+    1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
+           sysjs/jqueryui       ->  sysjs/jquery-ui
+           sysjs/jquerymigrate  ->  sysjs/jquery-migrate
 
 */
 
 class Output
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
     public static $content = array(
         'body' =>                     array(),
         'body_bottom' =>              array(),
@@ -62,7 +63,7 @@ class Output
         ."<script type=\"text/javascript\""
         ." src=\""
         .($system_vars['debug_no_internet']==1 ?
-            BASE_PATH."sysjs/jquerymigrate/1.2.1"
+            BASE_PATH."sysjs/jquery-migrate/1.2.1"
          :
             "//code.jquery.com/jquery-migrate-1.2.1.min.js"
         )
@@ -71,13 +72,13 @@ class Output
         ."<script type=\"text/javascript\""
         ." src=\""
         .($system_vars['debug_no_internet']==1 ?
-            BASE_PATH."sysjs/jqueryui/1.10.4"
+            BASE_PATH."sysjs/jquery-ui/1.10.4"
          :
             "//code.jquery.com/ui/1.10.4/jquery-ui.min.js"
         )
         ."\">"
         ."</script>\r\n"
-        ."<script type=\"text/javascript\" src=\"".BASE_PATH."sysjs/jqueryjson/2.5.1"."\"></script>\r\n"
+        ."<script type=\"text/javascript\" src=\"".BASE_PATH."sysjs/jquery.json/2.5.1"."\"></script>\r\n"
         ."<script type=\"text/javascript\""
         ." src=\"".BASE_PATH."sysjs/sys/".System::get_item_version('js_functions')."\">"
         ."</script>\r\n"

@@ -1,2 +1,5 @@
+  1.0.1 (2015-09-19)
+    1) Now includes Output::drawCssInclude() and Output::drawJsInclude() taken from System class
+    2) Updated version for sysjs/jqueryjson included and changed CDN for JS from Google to code.jquery.com
   1.0.0 (2015-09-13)
     1) Initial release - performs streaming operations previously handled by Page class
