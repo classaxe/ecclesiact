@@ -51,30 +51,6 @@ Promote:
     output.php                                        1.0.2     CS:edd1e038  
   img.php                                             2.0.89    CS:b4ecb49f  
 
-Final Checksums:
-  Classes     CS:7689ee22
-  Database    CS:17d51b14
-  Libraries   CS:976f27f3
-  Reports     CS:3292ccf6
-
-Code Changes:
-  codebase.php                                                                                   4.1.1     (2015-10-21)
-    1) Updated version information
-  classes/component/base.php                                                                     1.0.5     (2015-10-21)
-    1) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-  classes/component/wowslider.php                                                                1.0.14    (2015-10-21)
-    1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
-    2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-
-2406.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.1.1
-  classes/  (2 files changed)
-    component/base.php                                1.0.5     CS:9a5dbfb1
-    component/wowslider.php                           1.0.14    CS:25b0b43b
-
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
