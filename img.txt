@@ -1,3 +1,7 @@
+  2.0.89 (2015-10-25)
+    1) Added support for:
+          sysjs/cookie
+          sysjs/easing
   2.0.88 (2015-10-18)
     1) Added support for sysjs/device (needed for animate to work properly)
   2.0.87 (2015-09-27)

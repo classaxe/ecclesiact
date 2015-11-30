@@ -1,3 +1,5 @@
+  1.0.8 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
   1.0.7 (2011-07-05)
     1) Jumploader JS now registers presence of java applet to allow it to be
        hidden if required, e.g. with dropdown menu or layer-based divs.

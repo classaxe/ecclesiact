@@ -1,18 +1,13 @@
 <?php
-define("VERSION_COMPONENT_BASE", "1.0.23");
 /*
 Version History:
-  1.0.23 (2015-03-29)
-    1) Removed unused stub methods:
-         Component_Base::_draw_section_container_open()
-         Component_Base::_draw_section_container_close()
-  1.0.22 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-
+  1.0.24 (2015-11-23)
+    1) Changed versioning method to inherit
 */
 
 class Component_Base extends Component\Base
 {
+    const VERSION = '1.0.24';
     // Deprecated method names for backward compatability
     protected function _draw_control_panel($extra_break = false)
     {
@@ -109,8 +104,4 @@ class Component_Base extends Component\Base
         return static::getSafeID($ident, $instance);
     }
 
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_BASE;
-    }
 }

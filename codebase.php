@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.1.2");
+define("CODEBASE_VERSION", "4.2.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,55 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.1.2.2407 (2015-11-16)
+4.2.0.2408 (2015-11-29)
 Summary:
-  1) More support for JS in responsive sites
-  2) Sorting in Contacts, Users and Pending Mmembers reports by last name now perform subsort by first name
+  1) Replaced Jumploader with HTML5 version that doesn't require Java
+  2) Reworked get_max_upload_size() to handle unit type changes in php.ini
+  3) Tweak to Daily Bible Verse to more resiliently handle changes at provider
 
 Final Checksums:
-  Classes     CS:61ebbae
+  Classes     CS:48e657f9
   Database    CS:17d51b14
-  Libraries   CS:a8a6f035
+  Libraries   CS:a6526418
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.1.2     (2015-11-16)
-    1) Updated version information
-  classes/output.php                                                                             1.0.2     (2015-10-25)
-    1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
-           sysjs/jqueryui       ->  sysjs/jquery-ui
-           sysjs/jquerymigrate  ->  sysjs/jquery-migrate
-  img.php                                                                                        2.0.89    (2015-10-25)
+  codebase.php                                                                                   4.2.0     (2015-11-29)
+    1) Added convertPHPSizeToBytes()
+    2) Reworked get_max_upload_size() to handle all size units in php.ini
+    3) Updated version information
+  classes/class.component_base.php                                                               1.0.24    (2015-11-23)
+    1) Changed versioning method to inherit
+  classes/class.component_gallery_album.php                                                      1.0.73    (2015-11-23)
+    1) Now more PSR-2 compliant
+  classes/class.jumploader.php                                                                   1.1.0     (2015-11-23)
+    1) Now completely rewritten to use HTML5 ajax driven uploader instead of Java as before
+  classes/class.system.php                                                                       1.0.168   (2015-11-23)
+    1) Tweak to command get_bible_verse to be more resilient to source changes
+  classes/class.uploader.php                                                                     1.0.7     (2015-11-23)
+    1) More PSR-2 compliant
+    2) Now handles non-chunked files that come via ajax upload
+  img.php                                                                                        2.0.90    (2015-11-22)
     1) Added support for:
-          sysjs/cookie
-          sysjs/easing
+          sysjs/ajaxupload
+          sysjs/jquery.fileupload
+          sysjs/jquery.iframe-transport
+          sysjs/jquery.knob
+          sysjs/jquery.ui.widget
 
-2407.sql
-  1) Contacts report 'Last Name' column now subsorts by first name
-  2) Pending Members report 'Last Name' column now subsorts by first name
-  3) Users report 'Last Name' column now subsorts by first name
-  4) Set version information
+2408.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.1.2
-  classes/  (1 file changed)
-    output.php                                        1.0.2     CS:edd1e038  
-  img.php                                             2.0.89    CS:b4ecb49f  
+  codebase.php                                        4.2.0
+  classes/  (5 files changed)
+    class.component_base.php                          1.0.24    CS:e335d15f  
+    class.component_gallery_album.php                 1.0.73    CS:7c185037  
+    class.jumploader.php                              1.1.0     CS:6f34d9ec  
+    class.system.php                                  1.0.168   CS:d5d7db44  
+    class.uploader.php                                1.0.7     CS:68cb1cf7  
+  img.php                                             2.0.90    CS:d950cc75  
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1794,10 +1809,23 @@ function get_mailsender_to_component_results($mailidentityID = 1)
 
 function get_max_upload_size()
 {
-    $max_upload =     (int)(ini_get('upload_max_filesize'));
-    $max_post =       (int)(ini_get('post_max_size'));
-    $memory_limit =   (int)(ini_get('memory_limit'));
-    return 1024 * 1024 * min($max_upload, $max_post, $memory_limit);
+    $max_upload =     convertPHPSizeToBytes(ini_get('upload_max_filesize'));
+    $max_post =       convertPHPSizeToBytes(ini_get('post_max_size'));
+    $memory_limit =   convertPHPSizeToBytes(ini_get('memory_limit'));
+    return min($max_upload, $max_post, $memory_limit);
+}
+
+function convertPHPSizeToBytes($size) {
+    if ($size==="-1") {
+        return PHP_INT_MAX;
+    }
+    $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+    $size = preg_replace('/[^0-9\.]/', '', $size);      // Remove the non-numeric characters from the size.
+    if ($unit) {
+        // Find the position of the unit in the ordered string which is the power of magnitude to multiply a KB by.
+        return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+    }
+    return round($size);
 }
 
 function get_number_with_ordinal($num)

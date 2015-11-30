@@ -1,11 +1,14 @@
 <?php
-define("VERSION", "2.0.89");
+define("VERSION", "2.0.90");
 /*
 Version History:
-  2.0.89 (2015-10-25)
+  2.0.90 (2015-11-22)
     1) Added support for:
-          sysjs/cookie
-          sysjs/easing
+          sysjs/ajaxupload
+          sysjs/jquery.fileupload
+          sysjs/jquery.iframe-transport
+          sysjs/jquery.knob
+          sysjs/jquery.ui.widget
 
 */
 if (!defined("SYS_BUTTONS")) {
@@ -1358,13 +1361,18 @@ function sysjs()
 //  }
     $submode = $_REQUEST['submode'];
     switch ($submode) {
+        case "ajaxupload":
         case "device":
         case "jquery":
         case "jquery.cookie":
         case "jquery.easing":
         case "jquery.equalheights":
+        case "jquery.fileupload":
+        case "jquery.iframe-transport":
         case "jquery.json":
+        case "jquery.knob":
         case "jquery.ui.totop":
+        case "jquery.ui.widget":
         case "jquery-ui":
         case "jquery-migrate":
         case "spectrum":

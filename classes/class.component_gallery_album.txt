@@ -1,3 +1,5 @@
+  1.0.72 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.71 (2014-04-03)
     1) Last build prevented valid configuration of NO root folder which caused some issues
        This build now correctly handles that circumstance
