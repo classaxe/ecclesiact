@@ -1,3 +1,10 @@
+  2.0.90 (2015-11-22)
+    1) Added support for:
+          sysjs/ajaxupload
+          sysjs/jquery.fileupload
+          sysjs/jquery.iframe-transport
+          sysjs/jquery.knob
+          sysjs/jquery.ui.widget
   2.0.89 (2015-10-25)
     1) Added support for:
           sysjs/cookie

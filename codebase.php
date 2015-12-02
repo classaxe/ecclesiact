@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.0");
+define("CODEBASE_VERSION", "4.2.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,55 +16,49 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.0.2408 (2015-11-29)
+4.2.1.2409 (2015-12-01)
 Summary:
-  1) Replaced Jumploader with HTML5 version that doesn't require Java
-  2) Reworked get_max_upload_size() to handle unit type changes in php.ini
-  3) Tweak to Daily Bible Verse to more resiliently handle changes at provider
+  1) More work finding last places where Jumploader needs patching for Ajax HTML 5 method and making
+     it work in embedded mode as well.
 
+4.2.1.2409 (2015-12-01)
 Final Checksums:
-  Classes     CS:48e657f9
+  Classes     CS:1a68b66f
   Database    CS:17d51b14
-  Libraries   CS:a6526418
+  Libraries   CS:7f482067
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.0     (2015-11-29)
-    1) Added convertPHPSizeToBytes()
-    2) Reworked get_max_upload_size() to handle all size units in php.ini
-    3) Updated version information
-  classes/class.component_base.php                                                               1.0.24    (2015-11-23)
-    1) Changed versioning method to inherit
-  classes/class.component_gallery_album.php                                                      1.0.73    (2015-11-23)
-    1) Now more PSR-2 compliant
-  classes/class.jumploader.php                                                                   1.1.0     (2015-11-23)
-    1) Now completely rewritten to use HTML5 ajax driven uploader instead of Java as before
-  classes/class.system.php                                                                       1.0.168   (2015-11-23)
-    1) Tweak to command get_bible_verse to be more resilient to source changes
-  classes/class.uploader.php                                                                     1.0.7     (2015-11-23)
-    1) More PSR-2 compliant
-    2) Now handles non-chunked files that come via ajax upload
-  img.php                                                                                        2.0.90    (2015-11-22)
-    1) Added support for:
-          sysjs/ajaxupload
-          sysjs/jquery.fileupload
-          sysjs/jquery.iframe-transport
-          sysjs/jquery.knob
-          sysjs/jquery.ui.widget
+  codebase.php                                                                                   4.2.1     (2015-12-01)
+    1) Updated version information
+  classes/class.component_gallery_album.php                                                      1.0.74    (2015-11-29)
+    1) Now checks context of uploader before opening uploader form
+  classes/class.component_gallery_thumbnails.php                                                 1.0.37    (2015-12-01)
+    1) Now handles popup uploader form in submode
+  classes/class.component_jumploader.php                                                         1.0.6     (2015-11-29)
+    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
+  classes/class.jumploader.php                                                                   1.1.1     (2015-11-29)
+    1) Now includes safeID as source in path for popup Ajax loader for safer targetting of correct component
+  classes/component/collectionviewer.php                                                         1.0.54    (2015-11-29)
+    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
+  img.php                                                                                        2.0.91    (2015-11-29)
+    1) Removed support for Java Applets
 
-2408.sql
+2409.sql
   1) Set version information
 
-Promote:
-  codebase.php                                        4.2.0
-  classes/  (5 files changed)
-    class.component_base.php                          1.0.24    CS:e335d15f  
-    class.component_gallery_album.php                 1.0.73    CS:7c185037  
-    class.jumploader.php                              1.1.0     CS:6f34d9ec  
-    class.system.php                                  1.0.168   CS:d5d7db44  
-    class.uploader.php                                1.0.7     CS:68cb1cf7  
-  img.php                                             2.0.90    CS:d950cc75  
+Remove:
+  java/jumploader_z.jar
 
+Promote:
+  codebase.php                                        4.2.1
+  classes/  (5 files changed)
+    class.component_gallery_album.php                 1.0.74    CS:b0f36096
+    class.component_gallery_thumbnails.php            1.0.37    CS:491f573f
+    class.component_jumploader.php                    1.0.6     CS:8476488a
+    class.jumploader.php                              1.1.1     CS:7ae89e29
+    component/collectionviewer.php                    1.0.54    CS:476d2524
+  img.php                                             2.0.91    CS:b6d45cde
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

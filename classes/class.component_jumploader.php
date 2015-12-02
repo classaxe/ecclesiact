@@ -1,12 +1,13 @@
 <?php
-define("VERSION_COMPONENT_JUMPLOADER", "1.0.5");
 /*
 Version History:
-  1.0.5 (2015-05-03)
-    1) Moved CPs and ident to constructor
+  1.0.6 (2015-11-29)
+    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
 */
 class Component_Jumploader extends Component_Base
 {
+    const VERSION = '1.0.6';
+
     protected $_cp;
     protected $_args;
     protected $_cp_are_fixed;
@@ -22,7 +23,7 @@ class Component_Jumploader extends Component_Base
         $this->_parameter_spec = array(
             'ext' =>                array(
                 'match' =>      '',
-                'default' =>    'csv,xls,xlsx',
+                'default' =>    'csv|xls|xlsx',
                 'hint' =>       'CSV list of acceptable file extensions'
             ),
             'folder' =>             array(
@@ -32,7 +33,7 @@ class Component_Jumploader extends Component_Base
             ),
             'height' =>             array(
                 'match' =>      '',
-                'default' =>    320,
+                'default' =>    480,
                 'hint' =>       'Height in px'
             ),
             'input' =>              array(
@@ -62,7 +63,7 @@ class Component_Jumploader extends Component_Base
             ),
             'width' =>              array(
                 'match' =>      '',
-                'default' =>    480,
+                'default' =>    800,
                 'hint' =>       'Width in px'
             )
         );
@@ -143,10 +144,5 @@ class Component_Jumploader extends Component_Base
         if ($this->_upload_count) {
             $this->_msg = "<b>Success:</b> Uploaded ".$this->_upload_count." file".($this->_upload_count==1? '' : 's');
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_JUMPLOADER;
     }
 }

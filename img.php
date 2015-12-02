@@ -1,15 +1,9 @@
 <?php
-define("VERSION", "2.0.90");
+define("VERSION", "2.0.91");
 /*
 Version History:
-  2.0.90 (2015-11-22)
-    1) Added support for:
-          sysjs/ajaxupload
-          sysjs/jquery.fileupload
-          sysjs/jquery.iframe-transport
-          sysjs/jquery.knob
-          sysjs/jquery.ui.widget
-
+  2.0.91 (2015-11-29)
+    1) Removed support for Java Applets
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -18,7 +12,6 @@ if (!defined("SYS_BUTTONS")) {
     define("SYS_CLASSES", SYS_SHARED."classes/");
     define("SYS_FONTS", SYS_SHARED."fonts/");
     define("SYS_IMAGES", SYS_SHARED."images/");
-    define("SYS_JAVA", SYS_SHARED."java/");
     define("SYS_JS", SYS_SHARED."js/");
     define("SYS_STYLE", SYS_SHARED."style/");
     define("SYS_SWF", SYS_SHARED."swf/");
@@ -287,14 +280,6 @@ switch ($request_arr[0]) {
                 help();
                 break;
         }
-        die;
-    break;
-    case "java":
-        $_REQUEST['submode']="";
-        if (isset($request_arr[1])) {
-            $_REQUEST['submode'] =   $request_arr[1];
-        }
-        java();
         die;
     break;
     case "qbwc":
@@ -904,13 +889,6 @@ function img_setColourIndex(&$image, $i, $string)
 {
     sscanf($string, "%2x%2x%2x", $r, $g, $b);
     return imagecolorset($image, $i, $r, $g, $b);
-}
-
-function java()
-{
-    img_set_cache(3600*24*365); // expire in one year
-    header('Content-Type: application/java-archive');
-    readfile(SYS_JAVA.$_REQUEST['submode']);
 }
 
 function js_compress($file)

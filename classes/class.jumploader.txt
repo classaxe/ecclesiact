@@ -1,3 +1,5 @@
+  1.1.0 (2015-11-23)
+    1) Now completely rewritten to use HTML5 ajax driven uploader instead of Java as before
   1.0.8 (2015-09-13)
     1) References to Page::pop_content() now changed to Output::pull()
   1.0.7 (2011-07-05)

@@ -1,11 +1,11 @@
 <?php
 namespace Component;
 
-define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.53');
+define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.54');
 /*
 Version History:
-  1.0.53 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.54 (2015-11-29)
+    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
 
 */
 class CollectionViewer extends Base
@@ -448,6 +448,13 @@ class CollectionViewer extends Base
         if ($this->_Obj_JL->isUploading()) {
             $this->addPodcast();
             die();
+        }
+        if (get_var('source')==$this->_safe_ID) {
+            switch (get_var('submode')) {
+                case "popup":
+                    print $this->_Obj_JL->popup($this->_safe_ID); die;
+                    break;
+            }
         }
         $Obj = new \Podcast;
         $this->_msg = $Obj->do_submode();

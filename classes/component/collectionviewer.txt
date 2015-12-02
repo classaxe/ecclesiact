@@ -1,3 +1,5 @@
+  1.0.53 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.52 (2015-03-07)
     1) Moved here from class.component_collection_viewer.php and reworked to use namespaces
   1.0.51 (2015-02-12)

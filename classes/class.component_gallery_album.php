@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.73 (2015-11-23)
-    1) Now more PSR-2 compliant
+  1.0.74 (2015-11-29)
+    1) Now checks context of uploader before opening uploader form
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.73';
+    const VERSION = '1.0.74';
     private $_Obj_JL =                false;
     private $_albums =                false;
     private $_album_ID =              false;
@@ -459,7 +459,10 @@ class Component_Gallery_Album extends Component_Base
         }
         switch (get_var('submode')) {
             case "popup":
-                print $this->_Obj_JL->popup($this->_safe_ID); die;
+                if (get_var('source')==$this->_safe_ID) {
+                    print $this->_Obj_JL->popup($this->_safe_ID);
+                }
+                die;
                 break;
             case "gallery_album_sub_album":
                 $title =            get_var('targetValue');

@@ -1,3 +1,5 @@
+  1.0.73 (2015-11-23)
+    1) Now more PSR-2 compliant
   1.0.72 (2015-09-13)
     1) References to Page::push_content() now changed to Output::push()
   1.0.71 (2014-04-03)

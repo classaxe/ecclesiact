@@ -1,9 +1,9 @@
 <?php
-define("VERSION_COMPONENT_GALLERY_THUMBNAILS", "1.0.36");
+define("VERSION_COMPONENT_GALLERY_THUMBNAILS", "1.0.37");
 /*
 Version History:
-  1.0.36 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.37 (2015-12-01)
+    1) Now handles popup uploader form in submode
 
 */
 class Component_Gallery_Thumbnails extends Component_Base
@@ -229,6 +229,9 @@ class Component_Gallery_Thumbnails extends Component_Base
         if (get_var('source')==$this->_safe_ID) {
             $Obj = new Gallery_Image;
             switch (get_var('submode')) {
+                case "popup":
+                    print $this->_Obj_JL->popup($this->_safe_ID); die;
+                    break;
                 case "gallery_album_sub_album":
                     $title =        get_var('targetValue');
                     $this->_add_sub_album();
