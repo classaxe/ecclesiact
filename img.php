@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.91");
+define("VERSION", "2.0.92");
 /*
 Version History:
-  2.0.91 (2015-11-29)
-    1) Removed support for Java Applets
+  2.0.92 (2015-12-01)
+    1) Bug fix to include support for uploader.css compression and streaming
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -436,6 +436,7 @@ function css()
         case "labels":
         case "spectrum":
         case "tcal":
+        case "uploader":
             css_compress_cache(SYS_STYLE.($_REQUEST['submode']).'.css');
             break;
         case "animate.css":

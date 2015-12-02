@@ -32,25 +32,26 @@ $(function(){
                 .find('p')
                 .text(data.files[0].name)
                 .append(
-                    '<i>' + formatFileSize(data.files[0].size) + '</i><br style="clear:both" />'
+                    '<br /><i>' + formatFileSize(data.files[0].size) +
                     (data.files[0].size > data.maxbytes || jQuery.inArray(data.ext, data.filetypes)=== -1 ?
                         'ERROR:'
                      :
-                            ''
+                        ''
                     ) +
                     (jQuery.inArray(data.ext, data.filetypes)=== -1 ?
                         ' File must be ' + 
                         (data.filetypes.length>1 ? 'one of ' : 'of type ') +
                         data.filetypes.join(', ') + ' &nbsp; '
                      :
-                            ''
+                        ''
                     ) +
                     (data.files[0].size > data.maxbytes ?
-                            ' Max size is '+formatFileSize(data.maxbytes)
-                         :
-                             ''
-                        ) +
-                    '');
+                        ' Max size is '+formatFileSize(data.maxbytes)
+                     :
+                         ''
+                    ) +
+                    '</i>'
+                );
 
             // Add the HTML to the UL element
             data.context = tpl.appendTo(ul);
@@ -97,9 +98,13 @@ $(function(){
                 window.setTimeout(function(){
                     if(window.opener && window.opener.geid('form')){
                         data.context.fadeOut('slow');
-                        window.opener.geid('form').submit()
+                        window.opener.geid('form').submit();
+                        window.close();
                     }
-                    geid('form').submit()
+                    else if(window.parent && window.parent.geid('form')){
+                        data.context.fadeOut('slow');
+                        window.parent.geid('form').submit()
+                    }
                 },
                 1000
                 );

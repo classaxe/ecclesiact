@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.1");
+define("CODEBASE_VERSION", "4.2.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,49 +16,28 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.1.2409 (2015-12-01)
+4.2.2.2410 (2015-12-01)
 Summary:
-  1) More work finding last places where Jumploader needs patching for Ajax HTML 5 method and making
-     it work in embedded mode as well.
+  1) Bug fixes for Ajax uploader after some code was lost before committing
 
-4.2.1.2409 (2015-12-01)
 Final Checksums:
   Classes     CS:1a68b66f
   Database    CS:17d51b14
-  Libraries   CS:7f482067
+  Libraries   CS:3db4c436
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.1     (2015-12-01)
+  codebase.php                                                                                   4.2.2     (2015-12-01)
     1) Updated version information
-  classes/class.component_gallery_album.php                                                      1.0.74    (2015-11-29)
-    1) Now checks context of uploader before opening uploader form
-  classes/class.component_gallery_thumbnails.php                                                 1.0.37    (2015-12-01)
-    1) Now handles popup uploader form in submode
-  classes/class.component_jumploader.php                                                         1.0.6     (2015-11-29)
-    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
-  classes/class.jumploader.php                                                                   1.1.1     (2015-11-29)
-    1) Now includes safeID as source in path for popup Ajax loader for safer targetting of correct component
-  classes/component/collectionviewer.php                                                         1.0.54    (2015-11-29)
-    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
-  img.php                                                                                        2.0.91    (2015-11-29)
-    1) Removed support for Java Applets
+  img.php                                                                                        2.0.92    (2015-12-01)
+    1) Bug fix to include support for uploader.css compression and streaming
 
-2409.sql
+2410.sql
   1) Set version information
 
-Remove:
-  java/jumploader_z.jar
-
 Promote:
-  codebase.php                                        4.2.1
-  classes/  (5 files changed)
-    class.component_gallery_album.php                 1.0.74    CS:b0f36096
-    class.component_gallery_thumbnails.php            1.0.37    CS:491f573f
-    class.component_jumploader.php                    1.0.6     CS:8476488a
-    class.jumploader.php                              1.1.1     CS:7ae89e29
-    component/collectionviewer.php                    1.0.54    CS:476d2524
-  img.php                                             2.0.91    CS:b6d45cde
+  codebase.php                                        4.2.2
+  img.php                                             2.0.92    CS:f81a836f  
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
