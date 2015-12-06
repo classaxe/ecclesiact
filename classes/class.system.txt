@@ -1,3 +1,5 @@
+  1.0.168 (2015-11-23)
+    1) Tweak to command get_bible_verse to be more resilient to source changes 
   1.0.167 (2015-10-10)
     1) Added URL_aliases to FIELDS list
   1.0.166 (2015-09-21)

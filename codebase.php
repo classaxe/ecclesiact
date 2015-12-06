@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.2");
+define("CODEBASE_VERSION", "4.2.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,28 +16,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.2.2410 (2015-12-01)
+4.2.3.2411 (2015-12-06)
 Summary:
-  1) Bug fixes for Ajax uploader after some code was lost before committing
+  1) Jumploader now ONLY refreshes parent / opener window when all pending files have been transmitted and received
+  2) Added new debug function d() that writes to logs/debug.log when invoked
+  3) Added monitoring for js_ajaxupload library
 
 Final Checksums:
-  Classes     CS:1a68b66f
+  Classes     CS:9a113e23
   Database    CS:17d51b14
-  Libraries   CS:3db4c436
+  Libraries   CS:4fab0d93
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.2     (2015-12-01)
+  codebase.php                                                                                   4.2.3     (2015-12-06)
     1) Updated version information
-  img.php                                                                                        2.0.92    (2015-12-01)
-    1) Bug fix to include support for uploader.css compression and streaming
+  classes/class.system.php                                                                       1.0.169   (2015-12-06)
+    1) Added support for js_ajaxupload_cs and js_ajaxupload_version in System::get_item_version()
+  classes/class.system_health.php                                                                1.0.47    (2015-12-06)
+    1) Added monitoring of JS upload code
+  js/ajaxupload.min.js                                                                           1.0.2     (2015-12-06)
+    1) Now keeps track of items being uploader and only refreshes parent window and closes when
+       all pending files have been uploaded
 
-2410.sql
+2411.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.2.2
-  img.php                                             2.0.92    CS:f81a836f  
+  codebase.php                                        4.2.3
+  classes/  (2 files changed)
+    class.system.php                                  1.0.169   CS:902a4f5e
+    class.system_health.php                           1.0.47    CS:cfa4dcc2
+  js/ajaxupload.min.js                                1.0.2     CS:2b412eb
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -988,6 +998,16 @@ function convert_ecl_tags($string)
         $plaintext = !$plaintext;
     }
     return $out;
+}
+
+function d($value, $filename = null) {
+    $filename = (null===$filename ? SYS_LOGS."debug.log" : $filename);
+    $handle = fopen($filename, 'a+');
+    fwrite(
+        $handle,
+        date('Y-m-d H:i:s',time()).' '.var_export($value, true)."\n"
+    );
+    fclose($handle);
 }
 
 function deprecated($max_depth = 20)

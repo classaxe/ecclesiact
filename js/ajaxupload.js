@@ -1,12 +1,15 @@
-// 1.0.1
+// 1.0.2
 /*
 Version History:
-  1.0.1 (2015-11-29)
-    1) Initial release
+  1.0.2 (2015-12-06)
+    1) Now keeps track of items being uploader and only refreshes parent window and closes when
+       all pending files have been uploaded
   1.0.1 (2015-11-29)
     1) Tweak to error message when only one file type is valid
+  1.0.0 (2015-11-29)
+    1) Initial release
 */
-
+jl_sessions = [];
 $(function(){
     var ul = $('#upload ul');
     $('#drop a').click(function(){
@@ -39,7 +42,7 @@ $(function(){
                         ''
                     ) +
                     (jQuery.inArray(data.ext, data.filetypes)=== -1 ?
-                        ' File must be ' + 
+                        ' File must be ' +
                         (data.filetypes.length>1 ? 'one of ' : 'of type ') +
                         data.filetypes.join(', ') + ' &nbsp; '
                      :
@@ -72,8 +75,9 @@ $(function(){
                 fileokay = false;
             }
             if (fileokay) {
+                jl_sessions.push(data.files[0].name);
                 // Automatically upload the file once it is added to the queue
-               var jqXHR = data.submit().success(function(result, textStatus, jqXHR){
+                var jqXHR = data.submit().success(function(result, textStatus, jqXHR){
                     var json = JSON.parse(result);
                     var status = json['status'];
                     if(status == 'error'){
@@ -95,19 +99,26 @@ $(function(){
 
             if(progress == 100){
                 data.context.removeClass('working');
-                window.setTimeout(function(){
-                    if(window.opener && window.opener.geid('form')){
-                        data.context.fadeOut('slow');
-                        window.opener.geid('form').submit();
-                        window.close();
+                for(var i = jl_sessions.length - 1; i >= 0; i--) {
+                    if(jl_sessions[i] === data.files[0].name) {
+                        jl_sessions.splice(i, 1);
                     }
-                    else if(window.parent && window.parent.geid('form')){
-                        data.context.fadeOut('slow');
-                        window.parent.geid('form').submit()
-                    }
-                },
-                1000
-                );
+                }
+                if (jl_sessions.length===0) {
+                    window.setTimeout(function(){
+                        if(window.opener && window.opener.geid('form')){
+                            data.context.fadeOut('slow');
+                                window.opener.geid('form').submit();
+                                window.close();
+                            }
+                            else if(window.parent && window.parent.geid('form')){
+                                data.context.fadeOut('slow');
+                                window.parent.geid('form').submit()
+                            }
+                        },
+                        1000
+                    );
+                }
             }
         },
 

@@ -1,12 +1,10 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.46');
+define('VERSION_SYSTEM_HEALTH', '1.0.47');
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
 /*
 Version History:
-  1.0.46 (2015-03-23)
-    1) System_Health::_getConfigClasses() now only looks for getVersion() and not get_version() as before
-       Call is also static and no longer requires checked classes to be instantiated, saving about 1MB of memory
-    2) Method get_version() renamed to getVersion() and made static
+  1.0.47 (2015-12-06)
+    1) Added monitoring of JS upload code
 
   (Older version history in class.system_health.txt)
 */
@@ -137,11 +135,13 @@ class System_Health extends System
                              "    ".pad($title, 48)
                             .($version==$expected_arr['expected_version'] ? "* " : "  ")
                             .pad($version, 10)
-                            ."CS:".pad($actual, 10)
-                            .($version==$expected_arr['expected_version'] ?
-                             " * PROBLEM - VERSION NUMBER DID NOT CHANGE"
-                             : ""
-                            )
+                            .trim(
+                                "CS:".pad($actual, 10)
+                                .($version==$expected_arr['expected_version'] ?
+                                 " * PROBLEM - VERSION NUMBER DID NOT CHANGE"
+                                 : ""
+                                )
+                             )
                             ."\n";
                             $changed_files[] = "classes/".$title;
                     }
@@ -178,8 +178,10 @@ class System_Health extends System
                 $value.=
                      pad("  ".trim($entry[0], '/'), 54)
                     .pad($version, 10)
-                    ."CS:".pad($checksum, 10)
-                    ."\n";
+                    .trim(
+                         "CS:".pad($checksum, 10)
+                        ."\n"
+                     );
                     $changed_files[] = trim($entry[0], '/');
             }
         }
@@ -1114,6 +1116,8 @@ class System_Health extends System
             array('icons_big_version',              ''),
             array('img_cs',                         System::get_item_version('img_cs')),
             array('img_version',                    System::get_item_version('img')),
+            array('js_ajaxupload_cs',               System::get_item_version('js_ajaxupload_cs')),
+            array('js_ajaxupload_version',          System::get_item_version('js_ajaxupload_version')),
             array('js_cke_cs',                      System::get_item_version('js_cke_cs')),
             array('js_cke_version',                 System::get_item_version('js_cke')),
             array('js_cke_config_cs',               System::get_item_version('js_cke_config_cs')),
@@ -1178,6 +1182,7 @@ class System_Health extends System
             array('/images/icons.gif','icons'),
             array('/images/icons-big.gif','icons_big'),
             array('/images/labels.gif','labels'),
+            array('/js/ajaxupload.min.js','js_ajaxupload'),
             array('/js/ckeditor/ckeditor.js','js_cke'),
             array('/js/ckeditor/config.js','js_cke_config'),
             array('/js/ckeditor/plugins/audio/plugin.js','js_cke_plugin_audio'),
