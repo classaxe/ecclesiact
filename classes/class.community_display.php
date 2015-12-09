@@ -1,12 +1,12 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION', '1.0.42');
+define('COMMUNITY_DISPLAY_VERSION', '1.0.43');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.42 (2015-09-13)
-    1) References to Page::pushContent() now changed to Output::push()
+  1.0.43 (2015-12-08)
+    1) Community_Display::drawContextMenuMember() now properly includes service location
 
 */
 
@@ -1075,7 +1075,6 @@ class Community_Display extends Community
         if (!$this->_current_user_rights['canEdit']) {
             return;
         }
-  //    y($record);die;
         return
              " onmouseover=\""
             ."if(!CM_visible('CM_community_member')) {"
@@ -1087,7 +1086,14 @@ class Community_Display extends Community
             ."_CM.communityID='".$record['primary_communityID']."';"
             ."_CM.full_member=".($record['full_member']=='1' ? '1' : '0').";"
             ."_CM.ministerial_member=".($record['primary_ministerialID'] ? '1' : '0').";"
-            ."_CM.map_location=".($record['service_map_loc'] ? '1' : '0').";"
+            ."_CM.map_location='".($record['service_map_loc'] ? htmlentities($record['service_map_loc']) : '')."';"
+            ."_CM.map_description='"
+            .(isset($record['service_map_desc']) && $record['service_map_desc']!=='' ?
+                addslashes(str_replace("\r\n", "<<br>>", htmlentities($record['service_map_desc'])))
+             :
+                ''
+            )
+            ."';"
             ."_CM_text[0]='&quot;".str_replace(array("'","\""), '', htmlentities($record['title']))."&quot;';"
             ."_CM.path='".$record['member_URL']."';"
             ."}\""

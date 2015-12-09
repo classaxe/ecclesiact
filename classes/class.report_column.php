@@ -1,9 +1,10 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.132');
+define('VERSION_REPORT_COLUMN', '1.0.133');
 /*
 Version History:
-  1.0.132 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.133 (2015-12-08)
+    1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
+       Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly
 
 */
 class Report_Column extends Record
@@ -910,7 +911,15 @@ class Report_Column extends Record
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
                     Output::push(
                         'javascript_onload',
-                        "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
+                        "  \$J('#".$jq_field."')[0].value="
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
+                        .";"
                     );
                     $out =
                          "<textarea id=\"".$field."\" name=\"".$field."\""
@@ -1685,7 +1694,15 @@ class Report_Column extends Record
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
                     Output::push(
                         'javascript_onload',
-                        "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
+                        "  \$J('#".$jq_field."')[0].value="
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
+                        .";"
                     );
                     $out =
                         "<a class='fl'"
@@ -1731,7 +1748,15 @@ class Report_Column extends Record
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
                     Output::push(
                         'javascript_onload',
-                        "  \$J('#".$jq_field."')[0].value=".json_encode($value).";"
+                        "  \$J('#".$jq_field."')[0].value="
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
+                        .";"
                     );
                     $out =
                          "<textarea id=\"".$field."\" name=\"".$field."\""
@@ -2216,7 +2241,13 @@ class Report_Column extends Record
                     Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
-                        .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
                         .";"
                     );
                     $out =
@@ -2229,7 +2260,13 @@ class Report_Column extends Record
                     Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
-                        .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
                         .";"
                     );
                     $out =
@@ -2242,7 +2279,13 @@ class Report_Column extends Record
                     Output::push(
                         'javascript_onload',
                         "  \$J('#".$jq_field."')[0].value="
-                        .json_encode(str_replace("</textarea>", "&lt;/textarea&gt;", $value))
+                        .json_encode(
+                            str_replace(
+                                array("<<br>>","</textarea>"),
+                                array("\r\n","&lt;/textarea&gt;"),
+                                $value
+                            )
+                        )
                         .";"
                     );
                     $out =

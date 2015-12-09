@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.3");
+define("CODEBASE_VERSION", "4.2.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,38 +16,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.3.2411 (2015-12-06)
+4.2.4.2412 (2015-12-08)
 Summary:
-  1) Jumploader now ONLY refreshes parent / opener window when all pending files have been transmitted and received
-  2) Added new debug function d() that writes to logs/debug.log when invoked
-  3) Added monitoring for js_ajaxupload library
+  1) Community member tweak - now when an event is created for a community member,
+     the map location and location description of the community member will be used by default.
 
 Final Checksums:
-  Classes     CS:9a113e23
+  Classes     CS:e1dcb04d
   Database    CS:17d51b14
-  Libraries   CS:4fab0d93
+  Libraries   CS:e650b282
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.3     (2015-12-06)
+  codebase.php                                                                                   4.2.4     (2015-12-08)
     1) Updated version information
-  classes/class.system.php                                                                       1.0.169   (2015-12-06)
-    1) Added support for js_ajaxupload_cs and js_ajaxupload_version in System::get_item_version()
-  classes/class.system_health.php                                                                1.0.47    (2015-12-06)
-    1) Added monitoring of JS upload code
-  js/ajaxupload.min.js                                                                           1.0.2     (2015-12-06)
-    1) Now keeps track of items being uploader and only refreshes parent window and closes when
-       all pending files have been uploaded
+  classes/class.community_display.php                                                            1.0.43    (2015-12-08)
+    1) Community_Display::drawContextMenuMember() now properly includes service location
+  classes/class.context_menu.php                                                                 1.0.78    (2015-12-08)
+    1) Added support for including map description in new member events
+    2) Added support for Easter and Christmas events which are shared by default
+  classes/class.report_column.php                                                                1.0.133   (2015-12-08)
+    1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
+       Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly
 
-2411.sql
+2412.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.2.3
-  classes/  (2 files changed)
-    class.system.php                                  1.0.169   CS:902a4f5e
-    class.system_health.php                           1.0.47    CS:cfa4dcc2
-  js/ajaxupload.min.js                                1.0.2     CS:2b412eb
+  codebase.php                                        4.2.4
+  classes/  (3 files changed)
+    class.community_display.php                       1.0.43    CS:ab726f9c
+    class.context_menu.php                            1.0.78    CS:b105cdd7
+    class.report_column.php                           1.0.133   CS:b4e87db1
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,3 +1,5 @@
+  1.0.132 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.131 (2015-08-09)
     1) Code for Report_Column::draw_form_field() types 'sample_buttonstyle' and 'sample_navsuite' now
        moved to helper classes that only show when navstyle_type is 'Image'
