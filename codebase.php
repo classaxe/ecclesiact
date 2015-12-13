@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.4");
+define("CODEBASE_VERSION", "4.2.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,10 +16,9 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.4.2412 (2015-12-08)
+4.2.5.2413 (2015-12-12)
 Summary:
-  1) Community member tweak - now when an event is created for a community member,
-     the map location and location description of the community member will be used by default.
+  1) Changes to 'Save and New...' to have this preserve GET variables passed in, other than the ID of course
 
 Final Checksums:
   Classes     CS:e1dcb04d
@@ -359,6 +358,9 @@ if (isset($offset)) {
 }
 if (isset($page)) {
     $page =               sanitize('html', (substr($page, -1)=='\\' ? '' : $page));
+}
+if (isset($preset_values)) {
+    $preset_values =      sanitize('html', $preset_values);
 }
 if (isset($print)) {
     $print =              sanitize('html', $print);

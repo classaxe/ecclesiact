@@ -23,6 +23,7 @@ class Report_Form extends Report
     protected $_msg;
     protected $_Obj_Report_Column;
     protected $_operation;
+    protected $_preset_values = array();
     protected $_record;
     protected $_recordID;
     protected $_report_record;
@@ -49,8 +50,6 @@ class Report_Form extends Report
         } catch (Exception $e) {
             return "<strong>Error</strong><br />".$e->getMessage();
         }
-  //    print 'access = '.Report::COLUMN_DEFAULT_VALUE;die;
-  //    foreach($this->_columnList as $c){if ($c['required_feature']){y($c);}};die;
         $this->_get_operation_by_submode();
         $this->_execute_actions_pre_save();
         $this->_do_initial_operations();
@@ -63,6 +62,7 @@ class Report_Form extends Report
         if ($this->_submode=='save_and_close' && $msg=='') {
             return "";
         }
+        $this->_get_initial_preset_values();
         $this->_load_default_settings();
         $this->_set_default_settings();
         $this->_load_form_dimensions();
@@ -80,6 +80,10 @@ class Report_Form extends Report
             .($this->_form_settings['height']-($this->_controls ? 58 : 30))
             ."px;background-image: none;'>";
         $this->_draw_form_fields();
+        $preset_fields = array();
+        foreach($this->_preset_values as $key => $value) {
+            $preset_fields[] = $key.'='.urlencode($value);
+        }
         $this->_html.=
              "    </table>\n"
             .$this->_hidden_fields
@@ -99,8 +103,13 @@ class Report_Form extends Report
                 ."geid('form').submit();\"/>\n"
                 .(!$this->_bulk_update && $this->_can_add!==false ?
                      "<input type='button' value='Save and New...' class='formbutton' style='width: 120px;'"
-                    ." onclick=\"this.value='Please Wait...';this.disabled=1;geid('submode').value='save_and_new';"
-                    ."geid('form').submit();\"/>\n"
+                    ." onclick=\""
+                    ."this.value='Please Wait...';"
+                    ."this.disabled=1;"
+                    ."geid_set('submode','save_and_new');"
+                    ."geid_set('preset_values', '".implode('&',$preset_fields)."');"
+                    ."geid('form').submit();"
+                    ."\"/>\n"
                  :
                     ""
                 )
@@ -548,6 +557,22 @@ class Report_Form extends Report
         }
     }
 
+    protected function _get_initial_preset_values()
+    {
+        foreach ($this->_columnList as $c) {
+            if ($c['access']==Report::COLUMN_FULL_ACCESS && $c['formField']!='' || $c['fieldType']=='iframe') {
+                $field_form_safe = (substr($c['formField'], 0, 4)=='xml:' ?
+                    str_replace('/', ':', $c['formField'])
+                 :
+                    $c['formField']
+                );
+                if (isset($_REQUEST[$field_form_safe])) {
+                    $this->_preset_values[$field_form_safe] = $_REQUEST[$field_form_safe];
+                }
+            }
+        }
+    }
+
     protected function _get_operation_by_submode()
     {
         switch ($this->_submode) {
@@ -657,74 +682,73 @@ class Report_Form extends Report
         $out = "";
         if ($error_msg!='') {
             $out.=
-             "// *******************\n"
-            ."// * Error reporting *\n"
-            ."// *******************\n"
-            ."popup_msg += \"".$error_msg."\";\n"
-            ."addEvent(\n"
-            ."  window,\n"
-            ."  \"load\",\n"
-            ."  function(e){\n"
-            ."    popup_dialog(\n"
-            ."      'Form Submission Issues',\n"
-            ."      \"<div style='padding:4px;max-height:290px;overflow:auto;'>"
-            ."Please note:<ul style='margin:0;padding:0 0 0 2em'>\"+popup_msg+\"</ul></div>\",\n"
-            ."      600,300,'OK','',\"hidePopWin(null)\"\n"
-            ."    )\n"
-            ."  }\n"
-            .");\n"
-            ;
+                 "// *******************\n"
+                ."// * Error reporting *\n"
+                ."// *******************\n"
+                ."popup_msg += \"".$error_msg."\";\n"
+                ."addEvent(\n"
+                ."  window,\n"
+                ."  \"load\",\n"
+                ."  function(e){\n"
+                ."    popup_dialog(\n"
+                ."      'Form Submission Issues',\n"
+                ."      \"<div style='padding:4px;max-height:290px;overflow:auto;'>"
+                ."Please note:<ul style='margin:0;padding:0 0 0 2em'>\"+popup_msg+\"</ul></div>\",\n"
+                ."      600,300,'OK','',\"hidePopWin(null)\"\n"
+                ."    )\n"
+                ."  }\n"
+                .");\n";
         }
         if ($submode=='save' && isset($operation) && $operation=='update') {
             $out.=
-             "if (window.opener && window.opener.geid('form')) {\n"
-            ."window.opener.geid('anchor').value='row_".$ID."';\n"
-            ."window.opener.geid('form').action='#row_".$ID."';\n"
-            ."window.opener.geid('form').submit();\n"
-            ."}\n"
-            ;
+                 "if (window.opener && window.opener.geid('form')) {\n"
+                ."window.opener.geid('anchor').value='row_".$ID."';\n"
+                ."window.opener.geid('form').action='#row_".$ID."';\n"
+                ."window.opener.geid('form').submit();\n"
+                ."}\n";
         }
         switch ($submode) {
             case 'save_and_close':
                 if ($error_msg=='') {
                     $out.=
-                     "if (window.opener && window.opener.geid('form')) {\n"
-                    ."  window.opener.geid('anchor').value='row_".$ID."';\n"
-                    ."  window.opener.geid('form').action='#row_".$ID."'\n;"
-                    ."  window.opener.geid('form').submit();\n"
-                    ."  window.close();\n"
-                    ."}\n"
-                    ;
+                         "if (window.opener && window.opener.geid('form')) {\n"
+                        ."  window.opener.geid('anchor').value='row_".$ID."';\n"
+                        ."  window.opener.geid('form').action='#row_".$ID."'\n;"
+                        ."  window.opener.geid('form').submit();\n"
+                        ."  window.close();\n"
+                        ."}\n";
                 }
                 break;
             case 'save_and_new':
                 $out.=
-                 "if (window.opener && window.opener.geid('form')) {\n"
-                ."  window.opener.geid('anchor').value='row_".$ID."';\n"
-                ."  window.opener.geid('form').action='#row_".$ID."';\n"
-                ."  window.opener.geid('form').submit();\n"
-                ."  window.location = \"./?mode=".$mode."&report_name=".$report_name."&selectID=".$selectID."\";\n"
-                ."}\n"
-                ;
-                break;
-            case "save_open":
-                $out.=
-                 "if (window.opener && window.opener.geid('form')) {\n"
-                ."  window.opener.geid('anchor').value='row_".$ID."';\n"
-                ."  window.opener.geid('form').action='#row_".$ID."';\n"
-                ."  window.opener.geid('form').submit();\n"
-                ."}\n"
-                ;
-                break;
-            case 'save':
-                if (isset($operation) && $operation=='insert') {
-                    $out.=
                      "if (window.opener && window.opener.geid('form')) {\n"
                     ."  window.opener.geid('anchor').value='row_".$ID."';\n"
                     ."  window.opener.geid('form').action='#row_".$ID."';\n"
                     ."  window.opener.geid('form').submit();\n"
-                    ."}\n"
-                    ;
+                    ."  window.location = \""
+                    ."./?mode=".$mode
+                    ."&report_name=".$report_name
+                    ."&selectID=".$selectID
+                    ."&".$_POST['preset_values']
+                    ."\""
+                    ."}\n";
+                break;
+            case "save_open":
+                $out.=
+                     "if (window.opener && window.opener.geid('form')) {\n"
+                    ."  window.opener.geid('anchor').value='row_".$ID."';\n"
+                    ."  window.opener.geid('form').action='#row_".$ID."';\n"
+                    ."  window.opener.geid('form').submit();\n"
+                    ."}\n";
+                break;
+            case 'save':
+                if (isset($operation) && $operation=='insert') {
+                    $out.=
+                         "if (window.opener && window.opener.geid('form')) {\n"
+                        ."  window.opener.geid('anchor').value='row_".$ID."';\n"
+                        ."  window.opener.geid('form').action='#row_".$ID."';\n"
+                        ."  window.opener.geid('form').submit();\n"
+                        ."}\n";
                 }
                 break;
         }

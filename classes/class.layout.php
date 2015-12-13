@@ -1,16 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.33 (2015-10-17)
-    1) Added include_body_bottom and include_head_top to FIELDS (include_head_top replaces head_include)
-    2) Now includes code provided in layout include_body_bottom field in rendered output
-    3) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-
+  1.0.34 (2015-12-12)
+    1) Layout::prepareXhtmlHead() and Layout::prepareResponsiveHead() now both provide for preset_values hidden field
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.33';
+    const VERSION = '1.0.34';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -205,7 +202,7 @@ class Layout extends Record
     {
         global $page_vars, $system_vars, $print, $report_name, $ID, $mode;
         global $anchor, $bulk_update, $component_help, $DD, $limit, $memberID, $offset, $page, $sortBy;
-        global $MM, $YYYY, $selectID,$selected_section;
+        global $MM, $YYYY, $selectID, $selected_section, $preset_values;
         global $search_categories, $search_date_end, $search_date_start, $search_keywords;
         global $search_name, $search_offset, $search_text, $search_type;
         global $filterExact,$filterField,$filterValue;
@@ -452,6 +449,7 @@ class Layout extends Record
             .draw_form_field('goto', $page, 'hidden')."\r\n"
             .draw_form_field('mode', $mode, 'hidden')."\r\n"
             .draw_form_field('MM', $MM, 'hidden')."\r\n"
+            .draw_form_field('preset_values', $preset_values, 'hidden')."\r\n"
             .draw_form_field('print', $print, 'hidden')."\r\n"
             .draw_form_field('report_name', $report_name, 'hidden')."\r\n"
             .draw_form_field('rnd', dechex(mt_rand(0, mt_getrandmax())), 'hidden')."\r\n"
@@ -505,7 +503,7 @@ class Layout extends Record
     {
         global $page_vars, $system_vars, $print, $report_name, $ID, $mode;
         global $anchor, $bulk_update, $component_help, $DD, $limit, $memberID, $offset, $page, $sortBy;
-        global $MM, $YYYY, $selectID,$selected_section;
+        global $MM, $YYYY, $selectID, $selected_section, $preset_values;
         global $search_categories, $search_date_end, $search_date_start, $search_keywords;
         global $search_name, $search_offset, $search_text, $search_type;
         global $filterExact,$filterField,$filterValue;
@@ -764,6 +762,7 @@ class Layout extends Record
             .draw_form_field('goto', $page, 'hidden')."\r\n"
             .draw_form_field('mode', $mode, 'hidden')."\r\n"
             .draw_form_field('MM', $MM, 'hidden')."\r\n"
+            .draw_form_field('preset_values', $preset_values, 'hidden')."\r\n"
             .draw_form_field('print', $print, 'hidden')."\r\n"
             .draw_form_field('report_name', $report_name, 'hidden')."\r\n"
             .draw_form_field('rnd', dechex(mt_rand(0, mt_getrandmax())), 'hidden')."\r\n"
