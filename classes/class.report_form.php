@@ -1,11 +1,11 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.65");
+define("VERSION_REPORT_FORM", "1.0.66");
 
 /*
 Version History:
-  1.0.65 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.66 (2015-12-13)
+    1) Changes to allow 'Save and New' to retain initial context when opened on a non-existing record -
+       This will greatly speed up adding of categorised events in Community interface
 */
 
 class Report_Form extends Report
@@ -720,6 +720,8 @@ class Report_Form extends Report
                 }
                 break;
             case 'save_and_new':
+                parse_str($_POST['preset_values'], $tmp);
+                $preset_values = (isset($tmp['ID']) ? "" : "&".$_POST['preset_values']);
                 $out.=
                      "if (window.opener && window.opener.geid('form')) {\n"
                     ."  window.opener.geid('anchor').value='row_".$ID."';\n"
@@ -729,7 +731,7 @@ class Report_Form extends Report
                     ."./?mode=".$mode
                     ."&report_name=".$report_name
                     ."&selectID=".$selectID
-                    ."&".$_POST['preset_values']
+                    .$preset_values
                     ."\""
                     ."}\n";
                 break;

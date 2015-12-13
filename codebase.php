@@ -21,32 +21,28 @@ Summary:
   1) Changes to 'Save and New...' to have this preserve GET variables passed in, other than the ID of course
 
 Final Checksums:
-  Classes     CS:e1dcb04d
+  Classes     CS:46488666
   Database    CS:17d51b14
-  Libraries   CS:e650b282
+  Libraries   CS:11288ec4
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.4     (2015-12-08)
+  codebase.php                                                                                   4.2.5     (2015-12-13)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.43    (2015-12-08)
-    1) Community_Display::drawContextMenuMember() now properly includes service location
-  classes/class.context_menu.php                                                                 1.0.78    (2015-12-08)
-    1) Added support for including map description in new member events
-    2) Added support for Easter and Christmas events which are shared by default
-  classes/class.report_column.php                                                                1.0.133   (2015-12-08)
-    1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
-       Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly
+  classes/class.layout.php                                                                       1.0.34    (2015-12-12)
+    1) Layout::prepareXhtmlHead() and Layout::prepareResponsiveHead() now both provide for preset_values hidden field
+  classes/class.report_form.php                                                                  1.0.66    (2015-12-13)
+    1) Changes to allow 'Save and New' to retain initial context when opened on a non-existing record -
+       This will greatly speed up adding of categorised events in Community interface
 
-2412.sql
+2413.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.2.4
-  classes/  (3 files changed)
-    class.community_display.php                       1.0.43    CS:ab726f9c
-    class.context_menu.php                            1.0.78    CS:b105cdd7
-    class.report_column.php                           1.0.133   CS:b4e87db1
+  codebase.php                                        4.2.5
+  classes/  (2 files changed)
+    class.layout.php                                  1.0.34    CS:c70e25fa
+    class.report_form.php                             1.0.66    CS:ce3c2d08
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
