@@ -1,15 +1,17 @@
 <?php
-define('VERSION_REPORT_COLUMN', '1.0.133');
 /*
 Version History:
-  1.0.133 (2015-12-08)
-    1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
-       Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly
+  1.0.134 (2015-12-13)
+    1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
+       is enabled for the site
+    2) Added method note_prepend_unstamped()
+    3) Now uses VERSION constant
 
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.134';
 
     public function __construct($ID = "")
     {
@@ -1705,19 +1707,27 @@ class Report_Column extends Record
                         .";"
                     );
                     $out =
-                        "<a class='fl'"
-                         ."onmouseover=\"window.status='Add a new note';return true;\" "
-                         ."onmouseout=\"window.status='';return true;\" "
-                         ."href=\"#\" onclick=\"add_note('".$field."','note');return false;\">"
-                         .convert_icons("[ICON]33 33 917 Add new Note...[/ICON]")
-                         ."</a>"
-                         ."<textarea class='fl' name=\"_notes_".$field."\" rows=\"4\" cols=\"80\""
-                         ." style=\"width:".($width-35)."px;height:".(int)($height/3)."px;\" ".$jsCode."></textarea>"
-                         ."<br clear='both' />\n"
-                         ."<textarea id=\"".$field."\" readonly=\"readonly\" name=\"".$field."\""
-                         ." style=\"width: ".$width.";height:".(int)($height*(2/3))."px;"
-                         ."background-color:#f0f0f0;\" rows=\"8\" cols=\"80\">"
-                         ."</textarea>";
+                         "<a class='fl'"
+                        ." href=\"#\" onclick=\"add_note('".$field."','note');return false;\">"
+                        .convert_icons("[ICON]33 35 8165 Add Stamped Note (with date and username)[/ICON]")
+                        ."</a>"
+                        .(System::has_feature('Allow-Unstamped-Notes') ?
+                             "<div class='fl'> &nbsp; </div><a class='fl'"
+                            ." href=\"#\" onclick=\"add_note_unstamped('".$field."','note');return false;\">"
+                            .convert_icons("[ICON]33 35 917 Add Plain Note[/ICON]")
+                            ."</a>"
+                         :
+                            ""
+                         )
+                        ." <textarea class='fl' name=\"_notes_".$field."\" rows=\"4\" cols=\"80\""
+                        ." style=\"width:"
+                        .($width-(System::has_feature('Allow-Unstamped-Notes') ? 78 : 37))
+                        ."px;height:".(int)($height/3)."px;\" ".$jsCode."></textarea>"
+                        ."<br clear='both' />\n"
+                        ."<textarea id=\"".$field."\" readonly=\"readonly\" name=\"".$field."\""
+                        ." style=\"width: ".$width.";height:".(int)($height*(2/3))."px;"
+                        ."background-color:#f0f0f0;\" rows=\"8\" cols=\"80\">"
+                        ."</textarea>";
                     break;
                 case "option_list":
                     $value = explode(OPTION_SEPARATOR, str_replace(OPTION_SEPARATOR." ", OPTION_SEPARATOR, $value));
@@ -3415,9 +3425,9 @@ class Report_Column extends Record
         return $html;
     }
 
-    public function export_sql($targetID, $show_fields)
+    public function exportSql($targetID, $show_fields)
     {
-        return  $this->sql_export($targetID, $show_fields);
+        return $this->sqlExport($targetID, $show_fields);
     }
 
     public function get_column_for_report($reportName, $formField)
@@ -3464,14 +3474,8 @@ class Report_Column extends Record
         $timestamp =    get_timestamp();
         $PUsername =    get_userPUsername();
         return
-         $timestamp
-        ." (".$PUsername.")\n"
-        .$text."\n"
-        ."----------------------------------------------------\n";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_REPORT_COLUMN;
+             $timestamp." (".$PUsername.")\n"
+            .$text."\n"
+            .str_repeat('-', 53)."\n";
     }
 }

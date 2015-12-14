@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.5");
+define("CODEBASE_VERSION", "4.2.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,33 +16,44 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.5.2413 (2015-12-12)
+4.2.6.2414 (2015-12-13)
 Summary:
-  1) Changes to 'Save and New...' to have this preserve GET variables passed in, other than the ID of course
+  1) Service times fields now made bigger
+  2) New feature 'Allow Unstampted Notes' allows Notes to have option of being added without prepending
+     Datestamp and Author - used for CIYT
 
 Final Checksums:
-  Classes     CS:46488666
-  Database    CS:17d51b14
-  Libraries   CS:11288ec4
+  Classes     CS:1f5db77f
+  Database    CS:d3ff0e71
+  Libraries   CS:b1ec99c0
   Reports     CS:4676d5b9
 
 Code Changes:
-  codebase.php                                                                                   4.2.5     (2015-12-13)
+  codebase.php                                                                                   4.2.6     (2015-12-13)
     1) Updated version information
-  classes/class.layout.php                                                                       1.0.34    (2015-12-12)
-    1) Layout::prepareXhtmlHead() and Layout::prepareResponsiveHead() now both provide for preset_values hidden field
-  classes/class.report_form.php                                                                  1.0.66    (2015-12-13)
-    1) Changes to allow 'Save and New' to retain initial context when opened on a non-existing record -
-       This will greatly speed up adding of categorised events in Community interface
+  classes/class.report_column.php                                                                1.0.134   (2015-12-13)
+    1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
+       is enabled for the site
+    2) Added method note_prepend_unstamped()
+    3) Now uses VERSION constant
+  classes/class.report_form.php                                                                  1.0.67    (2015-12-13)
+    1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
+  js/member.js                                                                                   1.0.146   (2015-12-13)
+    1) Added function add_note_unstamped(), and error if person attempts to add a note without any content
 
-2413.sql
-  1) Set version information
+2414.sql
+  1) Increase field size for `service_times_sun` through `service_times_sat`
+  2) New system feature 'Allow-Unstamped-Notes'
+  3) Set version information
 
 Promote:
-  codebase.php                                        4.2.5
+  codebase.php                                        4.2.6
   classes/  (2 files changed)
-    class.layout.php                                  1.0.34    CS:c70e25fa
-    class.report_form.php                             1.0.66    CS:ce3c2d08
+    class.report_column.php                           1.0.134   CS:cee2db11
+    class.report_form.php                             1.0.67    CS:6ef60cb6
+  images/icons.gif                                              CS:e11d95fd
+  js/member.js                                        1.0.146   CS:7ef5a78d
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

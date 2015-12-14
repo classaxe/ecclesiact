@@ -1,10 +1,9 @@
-// 1.0.145
+// 1.0.146
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.145 (2015-09-20)
-    1) CM_SDMenu_Over() and CM_Responsive_Over() now set _CM.seq to active seq operations in context menus
-
+  1.0.146 (2015-12-13)
+    1) Added function add_note_unstamped(), and error if person attempts to add a note without any content
 */
 
 // ************************************
@@ -1451,12 +1450,27 @@ function selected_operation_enable(reportID){
 // ************************************
 // * Other functions                  *
 // ************************************
-function add_note(targetField,targetValue) {
-  geid('submode').value='add_note';
-  geid('targetField').value=targetField;
-  geid('targetValue').value=targetValue;
-  geid('form').submit();
-}  
+function add_note(targetField, targetValue) {
+    if (geid('_notes_'+targetField).value.length==0) {
+        alert('Please type or paste the note you wish to add.');
+        return;
+    }
+    geid_set('submode', 'add_note');
+    geid_set('targetField', targetField);
+    geid_set('targetValue', targetValue);
+    geid('form').submit();
+}
+
+function add_note_unstamped(targetField, targetValue) {
+    if (geid('_notes_'+targetField).value.length==0) {
+        alert('Please type or paste the note you wish to add.');
+        return;
+    }
+    geid_set('submode', 'add_note_unstamped');
+    geid_set('targetField', targetField);
+    geid_set('targetValue', targetValue);
+    geid('form').submit();
+}
 
 function field_csv_set(id,value,options) {
   var i, j, inthere, value_arr;

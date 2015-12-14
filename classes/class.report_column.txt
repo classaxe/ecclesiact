@@ -1,3 +1,6 @@
+  1.0.133 (2015-12-08)
+    1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
+       Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly
   1.0.132 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.131 (2015-08-09)

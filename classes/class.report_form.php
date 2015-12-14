@@ -1,11 +1,10 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.66");
+define("VERSION_REPORT_FORM", "1.0.67");
 
 /*
 Version History:
-  1.0.66 (2015-12-13)
-    1) Changes to allow 'Save and New' to retain initial context when opened on a non-existing record -
-       This will greatly speed up adding of categorised events in Community interface
+  1.0.67 (2015-12-13)
+    1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
 */
 
 class Report_Form extends Report
@@ -431,12 +430,25 @@ class Report_Form extends Report
                 switch ($targetValue) {
                     case "note":
                         $_POST[$targetField] =
-                         get_timestamp()." (".get_userPUsername().") \n"
-                        ."NOTE:   ".$_POST["_notes_".$targetField]."\n"
-                        ."----------------------------------------------------\n"
-                        .$_POST[$targetField];
+                             get_timestamp()." (".get_userPUsername().") \n"
+                            ."NOTE:   ".trim($_POST["_notes_".$targetField])."\n\n"
+                            .str_repeat('-', 118)."\n\n"
+                            .$_POST[$targetField];
                         $this->_submode="save_open";
                         break;
+                }
+                break;
+            case "add_note_unstamped":
+                if (System::has_feature('Allow-Unstamped-Notes')) {
+                    switch ($targetValue) {
+                        case "note":
+                            $_POST[$targetField] =
+                                 trim($_POST["_notes_".$targetField])."\n\n"
+                                .str_repeat('-', 118)."\n\n"
+                                .$_POST[$targetField];
+                            $this->_submode="save_open";
+                            break;
+                    }
                 }
                 break;
             case "seq_up":
