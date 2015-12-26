@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.6");
+define("CODEBASE_VERSION", "4.2.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,44 +16,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.6.2414 (2015-12-13)
+4.2.7.2415 (2015-12-26)
 Summary:
-  1) Service times fields now made bigger
-  2) New feature 'Allow Unstampted Notes' allows Notes to have option of being added without prepending
-     Datestamp and Author - used for CIYT
+  1) Now shows contacts for each community member, and emails sent to those contacts in community member panel
+     Thanks Robert for query optimisation genius!
 
 Final Checksums:
   Classes     CS:1f5db77f
   Database    CS:d3ff0e71
-  Libraries   CS:b1ec99c0
-  Reports     CS:4676d5b9
+  Libraries   CS:a0c70ee7
+  Reports     CS:24da7b21
 
 Code Changes:
-  codebase.php                                                                                   4.2.6     (2015-12-13)
+  codebase.php                                                                                   4.2.7     (2015-12-26)
     1) Updated version information
-  classes/class.report_column.php                                                                1.0.134   (2015-12-13)
-    1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
-       is enabled for the site
-    2) Added method note_prepend_unstamped()
-    3) Now uses VERSION constant
-  classes/class.report_form.php                                                                  1.0.67    (2015-12-13)
-    1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
-  js/member.js                                                                                   1.0.146   (2015-12-13)
-    1) Added function add_note_unstamped(), and error if person attempts to add a note without any content
+  style/labels.css                                                                               1.0.48    (2015-12-25)
+    1) Added lbl_YELLOW-num-contacts
+    2) Added lbl_YELLOW-num-emails-sent
+    3) Added lbl_YELLOW-num-users
 
-2414.sql
-  1) Increase field size for `service_times_sun` through `service_times_sat`
-  2) New system feature 'Allow-Unstamped-Notes'
-  3) Set version information
+2415.sql
+  1) Community Member report and form now shows associated contacts
+  2) New report 'community_member.contacts'
+  3) New report 'community_member.emails'
+  4) New report 'community_member.users'
+  5) Set version information
 
 Promote:
-  codebase.php                                        4.2.6
-  classes/  (2 files changed)
-    class.report_column.php                           1.0.134   CS:cee2db11
-    class.report_form.php                             1.0.67    CS:6ef60cb6
-  images/icons.gif                                              CS:e11d95fd
-  js/member.js                                        1.0.146   CS:7ef5a78d
+  codebase.php                                        4.2.7
+  images/labels.gif                                             CS:69b8a3a
+  style/labels.css                                    1.0.48    CS:884a48fd
 
+TODO:
+Vcron job for updating piwik stats
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

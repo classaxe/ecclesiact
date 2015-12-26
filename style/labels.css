@@ -1,7 +1,11 @@
-/* 1.0.47
+/* 1.0.48
+// Don't forget to clear the cached file from style/cache!
+
 Version History:
-  1.0.47 (2015-09-12)
-    1) Added lbl_responsive
+  1.0.48 (2015-12-25)
+    1) Added lbl_YELLOW-num-contacts
+    2) Added lbl_YELLOW-num-emails-sent
+    3) Added lbl_YELLOW-num-users
 
 */
 .lbl_actions{
@@ -355,6 +359,12 @@ Version History:
 .lbl_responsive{
   background-position:-1683px 0; width:11px; height:72px;
 }
+.lbl_YELLOW-num-contacts{
+  background-position:-1694px 0; width:11px; height:64px;
+}
+.lbl_YELLOW-num-emails-sent{
+  background-position:-1705px 0; width:11px; height:84px;
+}
 .lbl_PEACH-num-products{
   background-position:-1716px 0; width:11px; height:68px;
 }
@@ -465,6 +475,9 @@ Version History:
 }
 .lbl_num-products{
   background-position:-2310px 0; width:11px; height:68px;
+}
+.lbl_YELLOW-num-users{
+  background-position:-2321px 0; width:11px; height:45px;
 }
 .lbl_credit-memo-issued{
   background-position:-2332px 0; width:22px; height:79px;
