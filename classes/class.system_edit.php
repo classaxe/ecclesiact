@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.35 (2015-10-10)
-    1) Reorginised fields in General tab to allow for URL_aliases field
-
+  1.0.36 (2015-12-29)
+    1) Added support for new field piwik_md5_password
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.35';
+    const VERSION = '1.0.36';
 
     private $_colour_schemeID;
     private $_html;
@@ -112,6 +111,7 @@ class System_Edit extends System
             'notify_email'=>                addslashes(get_var('notify_email')),
             'notify_triggers'=>             addslashes(get_var('notify_triggers')),
             'piwik_id'=>                    addslashes(get_var('piwik_id')),
+            'piwik_md5_password'=>          addslashes(get_var('piwik_md5_password')),
             'piwik_token'=>                 addslashes(get_var('piwik_token')),
             'piwik_user'=>                  addslashes(get_var('piwik_user')),
             'style'=>                       addslashes(get_var('style')),
@@ -1122,7 +1122,7 @@ class System_Edit extends System
             ."  <div class='settings_group'>\n"
             ."    <div class='lbl' style='width:170px'><b>Akismet Key "
             ."<a href='http://wordpress.com/signup/' rel='external'>Get WP Key</a></b></div>\n"
-            ."    <div class='val' style='width:510px'>"
+            ."    <div class='val' style='width:110px'>"
             .draw_form_field(
                 "akismet_api_key",
                 $this->record['akismet_api_key'],
@@ -1130,7 +1130,17 @@ class System_Edit extends System
                 "100px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_getAkismetKeyStatus()."</div>\n"
+            ."    <div class='val' style='width:155px'>&nbsp; &nbsp; <b>Status:</b> ".$this->_getAkismetKeyStatus()."</div>\n"
+            ."    <div class='lbl' style='width:190px'><b>Google Analytics Key "
+            ."<a href='http://www.google.com/analytics' rel='external'>Get ID</a></b></div>\n"
+            ."    <div class='val'>"
+            .draw_form_field(
+                "google_analytics_key",
+                $this->record['google_analytics_key'],
+                "text",
+                "155px"
+            )
+            ."</div>\n"
             ."    <div class='clr_b'></div>\n"
             ."    <div class='lbl' style='width:170px'><b>Bug Tracker</b></div>"
             ."    <div class='val' style='width:200px;'>"
@@ -1168,20 +1178,30 @@ class System_Edit extends System
             ."</div>\n"
             ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_getBugtrackerStatus()."</div>\n"
             ."    <div class='clr_b'></div>\n"
+
             ."    <div class='lbl' style='width:170px'><b>Piwik ID</b></div>\n"
-            ."    <div class='val' style='width:200px;'>"
+            ."    <div class='val' style='width:20px;'>"
             .draw_form_field(
                 "piwik_id",
                 $this->record['piwik_id'],
                 "int",
-                "100px"
+                "20px"
             )
             ."</div>\n"
             ."    <div class='lbl txt_r' style='width:50px'><b>User</b>&nbsp;</div>\n"
-            ."    <div class='val' style='width:155px;'>"
+            ."    <div class='val' style='width:130px;'>"
             .draw_form_field(
                 "piwik_user",
                 $this->record['piwik_user'],
+                "text",
+                "130px"
+            )
+            ."</div>\n"
+            ."    <div class='lbl txt_r' style='width:50px'><b>Pwd</b>&nbsp;</div>\n"
+            ."    <div class='val' style='width:155px;'>"
+            .draw_form_field(
+                "piwik_md5_password",
+                $this->record['piwik_md5_password'],
                 "text",
                 "155px"
             )
@@ -1193,17 +1213,6 @@ class System_Edit extends System
                 $this->record['piwik_token'],
                 "text",
                 "155px"
-            )
-            ."</div>\n"
-            ."    <div class='clr_b'></div>\n"
-            ."    <div class='lbl' style='width:170px'><b>Google Analytics "
-            ."<a href='http://www.google.com/analytics' rel='external'>Get ID</a></b></div>\n"
-            ."    <div class='val'>"
-            .draw_form_field(
-                "google_analytics_key",
-                $this->record['google_analytics_key'],
-                "text",
-                "100px"
             )
             ."</div>\n"
             ."    <div class='clr_b'></div>\n"

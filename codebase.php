@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.7");
+define("CODEBASE_VERSION", "4.2.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,36 +16,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.7.2415 (2015-12-26)
+4.2.8.2416 (2015-12-29)
 Summary:
-  1) Now shows contacts for each community member, and emails sent to those contacts in community member panel
-     Thanks Robert for query optimisation genius!
+  1) Now has separate entries in system table for piwik password in addition to token_auth so that Login method
+     will continue to work post migration to Piwik version 2.15.0 and later
 
 Final Checksums:
-  Classes     CS:1f5db77f
-  Database    CS:d3ff0e71
-  Libraries   CS:a0c70ee7
-  Reports     CS:24da7b21
+  Classes     CS:d5985bf8
+  Database    CS:5d138354
+  Libraries   CS:df394ac2
+  Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.2.7     (2015-12-26)
+  codebase.php                                                                                   4.2.8     (2015-12-29)
     1) Updated version information
-  style/labels.css                                                                               1.0.48    (2015-12-25)
-    1) Added lbl_YELLOW-num-contacts
-    2) Added lbl_YELLOW-num-emails-sent
-    3) Added lbl_YELLOW-num-users
+  classes/class.system.php                                                                       1.0.170   (2015-12-29)
+    1) New field piwik_md5_password added to fields list
+    2) Change to draw_visitor_stats() to use piwik_md5_password field
+  classes/class.system_edit.php                                                                  1.0.36    (2015-12-29)
+    1) Added support for new field piwik_md5_password
 
-2415.sql
-  1) Community Member report and form now shows associated contacts
-  2) New report 'community_member.contacts'
-  3) New report 'community_member.emails'
-  4) New report 'community_member.users'
-  5) Set version information
+2416.sql
+  1) New column for system table piwik_md5_password
+  2) Made popup size for system report a bit bigger, and added new field for piwik_password
+  3) Set values for system piwik_md5_password settings
+  4) Set version information
 
 Promote:
-  codebase.php                                        4.2.7
-  images/labels.gif                                             CS:69b8a3a
-  style/labels.css                                    1.0.48    CS:884a48fd
+  codebase.php                                        4.2.8
+  classes/  (2 files changed)
+    class.system.php                                  1.0.170   CS:1bed4f1f
+    class.system_edit.php                             1.0.36    CS:2b3490e6
+
 
 TODO:
 Vcron job for updating piwik stats

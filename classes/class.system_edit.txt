@@ -1,3 +1,5 @@
+  1.0.35 (2015-10-10)
+    1) Reorginised fields in General tab to allow for URL_aliases field
   1.0.34 (2015-09-12)
     1) Call to Layout::get_selector_sql() now  Layout::getSelectorSql()
     2) References to Page::push_content() now changed to Output::push()
