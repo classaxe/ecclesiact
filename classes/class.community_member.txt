@@ -1,3 +1,6 @@
+  1.0.109 (2015-12-29)
+    1) Added new method updateStats() to be used by Community::updateAllMemberStats() in VCRON
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
   1.0.108 (2015-09-13)
     1) References to Page::pop_content() now changed to Output::pull()
   1.0.107 (2015-03-23)

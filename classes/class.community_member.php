@@ -4,14 +4,13 @@ Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.109 (2015-12-29)
-    1) Added new method updateStats() to be used by Community::updateAllMemberStats() in VCRON
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  1.0.110 (2015-12-31)
+    1) Now orders communty member stats update process by community then member name
 */
 
 class Community_Member extends Displayable_Item
 {
-    const VERSION = '1.0.109';
+    const VERSION = '1.0.110';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, gallery_albumID, podcast_albumID, primary_communityID, primary_ministerialID, admin_notes, attention_required, contact_history, date_photo_taken, date_survey_returned, date_welcome_letter, date_went_live, languages, link_facebook, link_twitter, link_video, link_website, mailing_addr_line1, mailing_addr_line2, mailing_addr_city, mailing_addr_country, mailing_addr_postal, mailing_addr_sp, office_addr_line1, office_addr_line2, office_addr_city, office_addr_country, office_addr_postal, office_addr_sp, office_fax, office_map_desc, office_map_geocodeID, office_map_geocode_address, office_map_geocode_area, office_map_geocode_quality, office_map_geocode_type, office_map_loc, office_map_lat, office_map_lon, office_notes, office_phone1_lbl, office_phone1_num, office_phone2_lbl, office_phone2_num, office_times_sun, office_times_mon, office_times_tue, office_times_wed, office_times_thu, office_times_fri, office_times_sat, service_addr_line1, service_addr_line2, service_addr_city, service_addr_country, service_addr_postal, service_addr_sp, service_map_desc, service_map_geocodeID, service_map_geocode_address, service_map_geocode_area, service_map_geocode_quality, service_map_geocode_type, service_map_loc, service_map_lat, service_map_lon, service_notes, service_times_sun, service_times_mon, service_times_tue, service_times_wed, service_times_thu, service_times_fri, service_times_sat, stats_cache, name, title, category, contactID, contact_NFirst, contact_NGreeting, contact_NLast, contact_NMiddle, contact_NTitle, contact_PEmail, contact_Telephone, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_verified, dropbox_folder, dropbox_last_checked, dropbox_last_filelist, dropbox_last_status, featured_image, full_member, partner_csv, PEmail, shortform_name, signatories, summary, type, URL, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const DASHBOARD_HEIGHT = 500;
     const DASHBOARD_WIDTH =  860;
@@ -989,6 +988,30 @@ class Community_Member extends Displayable_Item
         return $sql;
     }
 
+    public function get_records($systemID = '', $sortBy = '')
+    {
+        $sql =
+             "SELECT\n"
+            ."    COALESCE(\n"
+            ."        (SELECT\n"
+            ."            `community`.`name`\n"
+            ."        FROM\n"
+            ."            `community`\n"
+            ."        WHERE\n"
+            ."            `community`.`ID` = `community_member`.`primary_communityID`\n"
+            ."        ),\n"
+            ."        '(None)'\n"
+            ."    ) AS `community`,"
+            ."    `community_member`.*\n"
+            ."FROM\n"
+            ."    `community_member`\n"
+            ."WHERE\n"
+            .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
+            ."    1\n"
+            .($sortBy !="" ? "ORDER BY ".$sortBy : "");
+        return Record::get_records_for_sql($sql);
+    }
+
     public function get_stats()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
@@ -1517,7 +1540,7 @@ class Community_Member extends Displayable_Item
         $page_vars['layout_component_parameter'] = $Obj_Layout->get_field('component_parameters');
     }
 
-    public function updateStats()
+    public function updateStats($debug = false)
     {
         $start = microtime(true);
         $this->_record = $this->load();
@@ -1526,20 +1549,31 @@ class Community_Member extends Displayable_Item
         $this->get_stats();
         $end = microtime(true);
         $result = 
-             "Updated stats for ".$this->_community_record['title'].": ".$this->record['title']
-            ." in ".two_dp($end-$start)." seconds";
-        d($result);
+             "| "
+            .pad(two_dp($end-$start), 5)
+            ." | "
+            .pad($this->_community_record['title'] ? $this->_community_record['title'] : "(None)", 14)
+            ." | "
+            .$this->record['title'];
+        if ($debug) {
+            d($result);
+        }
         return $result;
     }
 
     public function updateAllMemberStats()
     {
         set_time_limit(3600);
-        $result = array();
-        $members = $this->get_records(SYS_ID);
+        $debug = 0;
+        $members = $this->get_records(SYS_ID, 'community, title');
+        $header = "| TIME  | COMMUNITY      | MEMBER\n".str_repeat("-",80);
+        $result = array($header);
+        if ($debug) {
+            d($header);
+        }
         foreach($members as $member) {
             $this->_set_ID($member['ID']);
-            $result[] = $this->updateStats();
+            $result[] = $this->updateStats($debug);
         }
         return implode("\n", $result);
     }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.9");
+define("CODEBASE_VERSION", "4.2.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,45 +16,31 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.9.2417 (2015-12-30)
+4.2.10.2418 (2015-12-31)
 Summary:
-  1) Added new VCRON-available component to build stats for all community members
+  1) Community Stats update now orders community members by community then by name
 
 Final Checksums:
-  Classes     CS:48c89aa0
+  Classes     CS:9fa88e26
   Database    CS:5d138354
-  Libraries   CS:28417684
+  Libraries   CS:3ff25cb
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.2.9     (2015-12-30)
-    1) Updated version information
-  classes/class.block_layout.php                                                                 1.0.67    (2015-12-30)
-    1) Now uses VERSION constant for version control
-  classes/class.community.php                                                                    1.0.118   (2015-12-30)
-    1) New method Community::updateAllMemberStats() for use by component-based VCRON job
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
-  classes/class.community_display.php                                                            1.0.44    (2015-12-30)
-    1) Moved comment concerning dropbox checking into here from Community where it had been left behind
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
-  classes/class.community_member.php                                                             1.0.109   (2015-12-29)
-    1) Added new method updateStats() to be used by Community::updateAllMemberStats() in VCRON
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
-  classes/class.displayable_item.php                                                             1.0.156   (2015-12-30)
-    1) Now uses VERSION constant for version control
+  codebase.php                                                                                   4.2.10    (2015-12-31)
+    1) Added lead() function
+    2) d() now prints a simple string if that was what was given to it, rather than a var_dump
+    3) Updated version information
+  classes/class.community_member.php                                                             1.0.110   (2015-12-31)
+    1) Now orders communty member stats update process by community then member name
 
-2417.sql
-  1) New component 'SCHEDULE: Update Community Member Stats'
-  2) Set version information
+2418.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.2.9
-  classes/  (5 files changed)
-    class.block_layout.php                            1.0.67    CS:d818d7f7
-    class.community.php                               1.0.118   CS:a6768713
-    class.community_display.php                       1.0.44    CS:5c66c60f
-    class.community_member.php                        1.0.109   CS:3492614
-    class.displayable_item.php                        1.0.156   CS:a26a8ba1
+  codebase.php                                        4.2.10
+  classes/  (1 file changed)
+    class.community_member.php                        1.0.110   CS:bfa9db1e
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1014,7 +1000,9 @@ function d($value, $filename = null) {
     $handle = fopen($filename, 'a+');
     fwrite(
         $handle,
-        date('Y-m-d H:i:s',time()).' '.var_export($value, true)."\n"
+        date('Y-m-d H:i:s',time()).' '
+        .(is_string($value) ? $value : var_export($value, true))
+        ."\n"
     );
     fclose($handle);
 }
@@ -2187,6 +2175,16 @@ function img_button_sample($ID)
 {
     $Obj = new \Nav\style($ID);
     return $Obj->makeImages(false);
+}
+
+function lead($text, $places)
+{
+    $padding = (strLen($text)>$places ?
+        " "
+     :
+        (substr(str_repeat(" ", 120), 0, $places-strLen($text)))
+    );
+    return $padding.$text;
 }
 
 function lead_zero($text, $places)
