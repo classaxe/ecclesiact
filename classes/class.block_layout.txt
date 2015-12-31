@@ -1,3 +1,5 @@
+  1.0.66 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.65 (2015-09-01)
     1) BL_Link now includes title of linked resource in title tag, BL_thumbnail_image() no longer has hidden span
        with title as this messes up layouts sometimes.

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.8");
+define("CODEBASE_VERSION", "4.2.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,45 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.8.2416 (2015-12-29)
+4.2.9.2417 (2015-12-30)
 Summary:
-  1) Now has separate entries in system table for piwik password in addition to token_auth so that Login method
-     will continue to work post migration to Piwik version 2.15.0 and later
+  1) Added new VCRON-available component to build stats for all community members
 
 Final Checksums:
-  Classes     CS:d5985bf8
+  Classes     CS:48c89aa0
   Database    CS:5d138354
-  Libraries   CS:df394ac2
+  Libraries   CS:28417684
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.2.8     (2015-12-29)
+  codebase.php                                                                                   4.2.9     (2015-12-30)
     1) Updated version information
-  classes/class.system.php                                                                       1.0.170   (2015-12-29)
-    1) New field piwik_md5_password added to fields list
-    2) Change to draw_visitor_stats() to use piwik_md5_password field
-  classes/class.system_edit.php                                                                  1.0.36    (2015-12-29)
-    1) Added support for new field piwik_md5_password
+  classes/class.block_layout.php                                                                 1.0.67    (2015-12-30)
+    1) Now uses VERSION constant for version control
+  classes/class.community.php                                                                    1.0.118   (2015-12-30)
+    1) New method Community::updateAllMemberStats() for use by component-based VCRON job
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  classes/class.community_display.php                                                            1.0.44    (2015-12-30)
+    1) Moved comment concerning dropbox checking into here from Community where it had been left behind
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  classes/class.community_member.php                                                             1.0.109   (2015-12-29)
+    1) Added new method updateStats() to be used by Community::updateAllMemberStats() in VCRON
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  classes/class.displayable_item.php                                                             1.0.156   (2015-12-30)
+    1) Now uses VERSION constant for version control
 
-2416.sql
-  1) New column for system table piwik_md5_password
-  2) Made popup size for system report a bit bigger, and added new field for piwik_password
-  3) Set values for system piwik_md5_password settings
-  4) Set version information
+2417.sql
+  1) New component 'SCHEDULE: Update Community Member Stats'
+  2) Set version information
 
 Promote:
-  codebase.php                                        4.2.8
-  classes/  (2 files changed)
-    class.system.php                                  1.0.170   CS:1bed4f1f
-    class.system_edit.php                             1.0.36    CS:2b3490e6
-
-
-TODO:
-Vcron job for updating piwik stats
+  codebase.php                                        4.2.9
+  classes/  (5 files changed)
+    class.block_layout.php                            1.0.67    CS:d818d7f7
+    class.community.php                               1.0.118   CS:a6768713
+    class.community_display.php                       1.0.44    CS:5c66c60f
+    class.community_member.php                        1.0.109   CS:3492614
+    class.displayable_item.php                        1.0.156   CS:a26a8ba1
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -179,7 +183,6 @@ Filter Icons:
 [ICON]19 19 7655 Is an Administrator - No[/ICON]
 
 */
-
 // For when codebase is included without functions.php - e.g. ajax or cron
 if (!function_exists('mem')) {
     function mem($label = '')

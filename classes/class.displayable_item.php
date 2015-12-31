@@ -1,13 +1,13 @@
 <?php
-define('VERSION_DISPLAYABLE_ITEM', '1.0.155');
 /*
 Version History:
-  1.0.155 92015-09-19)
-    1) draw_comments_block() anchor now has only ID attribute, not name (name is deprecated)
-
+  1.0.156 (2015-12-30)
+    1) Now uses VERSION constant for version control
 */
 class Displayable_Item extends Block_Layout
 {
+    const VERSION = '1.0.156';
+
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
     protected $_args =                          array();
@@ -2109,10 +2109,5 @@ class Displayable_Item extends Block_Layout
             return true;
         }
         return false;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_DISPLAYABLE_ITEM;
     }
 }

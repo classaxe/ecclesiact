@@ -1,12 +1,12 @@
 <?php
-define('VERSION_BLOCK_LAYOUT','1.0.66');
 /*
 Version History:
-  1.0.66 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.67 (2015-12-30)
+    1) Now uses VERSION constant for version control
 */
 class Block_Layout extends Record{
+    const VERSION = '1.0.67';
+    
   function __construct($table='block_layout', $ID='', $systemID=SYS_ID) {
     parent::__construct($table, $ID);
     $this->_set_systemID($systemID);
@@ -897,9 +897,4 @@ class Block_Layout extends Record{
   function handle_report_copy(&$newID,&$msg,&$msg_tooltip,$name){
     return parent::try_copy($newID,$msg,$msg_tooltip,$name);
   }
-
-  public static function getVersion(){
-    return VERSION_BLOCK_LAYOUT;
-  }
 }
-?>

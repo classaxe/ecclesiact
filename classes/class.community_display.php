@@ -1,17 +1,21 @@
 <?php
-define('COMMUNITY_DISPLAY_VERSION', '1.0.43');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
+Add each site to be checked to CRON table like this:
+  http://www.ChurchesInWherever.ca/?dropbox
+
 /*
 Version History:
-  1.0.43 (2015-12-08)
-    1) Community_Display::drawContextMenuMember() now properly includes service location
-
+  1.0.44 (2015-12-30)
+    1) Moved comment concerning dropbox checking into here from Community where it had been left behind
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
 */
 
 class Community_Display extends Community
 {
+    const VERSION = '1.0.44';
+
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
     protected $_events =                        array();
@@ -2551,10 +2555,5 @@ class Community_Display extends Community
         }
         $Obj_GA->_set_ID($ID);
         $this->_sponsors_national_records = $Obj_GA->get_children();
-    }
-
-    public static function getVersion()
-    {
-        return COMMUNITY_DISPLAY_VERSION;
     }
 }

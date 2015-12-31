@@ -1,20 +1,16 @@
 <?php
-define('COMMUNITY_VERSION', '1.0.117');
 /* Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
-/*
-Add each site to be checked to CRON table like this:
-  http://www.ChurchesInWherever.ca/?dropbox
-
 Version History:
-  1.0.117 (2015-03-28)
-    1) Moved _check_dropbox code out into community_display class
-
+  1.0.118 (2015-12-30)
+    1) New method Community::updateAllMemberStats() for use by component-based VCRON job
+    2) Now uses VERSION constant and inherritted getVersion() method for version control
 */
 
 class Community extends Displayable_Item
 {
+    const VERSION = '1.0.118';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -777,10 +773,5 @@ class Community extends Displayable_Item
             $this->_popup['member'] =             get_popup_size($this->_edit_form['member']);
             $this->_popup['sponsor_plan'] =       get_popup_size($this->_edit_form['sponsor_plan']);
         }
-    }
-
-    public static function getVersion()
-    {
-        return COMMUNITY_VERSION;
     }
 }

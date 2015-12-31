@@ -1,3 +1,5 @@
+  1.0.155 (2015-09-19)
+    1) draw_comments_block() anchor now has only ID attribute, not name (name is deprecated)
   1.0.154 (2015-09-13)
     1) Many changes following move of output streaming from Page into Output class:
          Page::push_content()           ->      Output::push()

@@ -1,3 +1,5 @@
+  1.0.43 (2015-12-08)
+    1) Community_Display::drawContextMenuMember() now properly includes service location
   1.0.42 (2015-09-13)
     1) References to Page::pushContent() now changed to Output::push()
   1.0.41 (2015-03-30)
