@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.92");
+define("VERSION", "2.0.93");
 /*
 Version History:
-  2.0.92 (2015-12-01)
-    1) Bug fix to include support for uploader.css compression and streaming
+  2.0.93 (2016-01-01)
+    1) Now includes support for bootstrap.css and responsive.css
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -432,8 +432,10 @@ function css()
     img_set_cache(3600*24*7); // expire in one year
     header("Content-type: text/css");
     switch ($_REQUEST['submode']){
+        case "bootstrap":
         case "community":
         case "labels":
+        case "responsive":
         case "spectrum":
         case "tcal":
         case "uploader":

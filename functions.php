@@ -1,11 +1,28 @@
 <?php
-define("FUNCTIONS_VERSION", "1.0.17");
+define("FUNCTIONS_VERSION", "1.0.18");
 /*
 Version History:
-  1.0.17 (2015-04-19)
-    1) Removed backward compatible implementation for memory_get_usage()
-
+  1.0.18 (2016-01-01)
+    1) Added custom error handler that will show strict errors pertaining to static method calls but only
+       if viewed in dev environment
 */
+function errorHandler($errno, $errstr, $errfile, $errline)
+{
+    if (!(error_reporting() & $errno)) {
+        // This error code is not included in error_reporting
+        return;
+    }
+    if ($errno === E_STRICT && strpos($errstr, 'Declaration of')!==false) {
+        return true;
+    }
+    /* Don't execute PHP internal error handler */
+    return false;
+}
+if ($_SERVER["REMOTE_ADDR"]==='192.168.0.1' || $_SERVER["REMOTE_ADDR"]==='127.0.0.1') {
+    $old_error_handler = set_error_handler("errorHandler");
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+}
 
 function includes_monitor($className = '', $filePath = '')
 {

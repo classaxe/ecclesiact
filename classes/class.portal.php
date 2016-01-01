@@ -1,15 +1,12 @@
 <?php
-define('VERSION_PORTAL', '1.0.36');
 /*
 Version History:
-  1.0.37 (2015-10-16)
-    1) Version now given statically
-    2) Now uses getVersion() in parent
-
+  1.0.38 (2016-01-01)
+    1) Portal::isDev() is now declared statically
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.37';
+    const VERSION = '1.0.38';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -37,7 +34,7 @@ class Portal extends Base
     //   Portal::portal_param_push('path_type_prefixed_types','Team');
 
 
-    public function isDev()
+    public static function isDev()
     {
         $serverhost =     getenv("SERVER_NAME");
         return

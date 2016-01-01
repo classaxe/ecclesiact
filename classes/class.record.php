@@ -1,15 +1,12 @@
 <?php
-define('VERSION_RECORD', '1.0.93');
 /*
 Version History:
-  1.0.93 (2015-10-16)
-    1) Version now given statically
-    2) Now uses getVersion() in parent
-
+  1.0.94 (2016-01-01)
+    1) Method Record::get_records_for_sql() is now declared statically
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.93';
+    const VERSION = '1.0.94';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1182,16 +1179,16 @@ class Record extends Portal
         return $records[0];
     }
 
-    public function get_records_for_sql($sql)
+    public static function get_records_for_sql($sql)
     {
-        if (!$result = Record::do_sql_query($sql)) {
+        if (!$result = static::do_sql_query($sql)) {
             do_log(
                 3,
                 __CLASS__.'::'.__FUNCTION__.'()',
                 'execute',
-                "Object: ".$this->_get_object_name()."\nQuery: ".$sql."\nError: ".Record::get_last_db_error_msg()
+                "Object: ".$this->_get_object_name()."\nQuery: ".$sql."\nError: ".static::get_last_db_error_msg()
             );
-            print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, Record::get_last_db_error_msg());
+            print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, static::get_last_db_error_msg());
             return false;
         }
         $out = array();

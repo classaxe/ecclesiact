@@ -1,15 +1,14 @@
 <?php
-define('VERSION_FILESYSTEM', '1.0.17');
 /*
 Version History:
-  1.0.17 (2015-01-11)
-    1) Changes to FileSystem::get_file_changes() to deal with unix-style line endings in classes
-    2) Now PSR-2 Compliant
-
-  (Older version history in class.filesystem.txt)
+  1.0.18 (2016-01-01)
+    1) FileSystem::get_file_checksum() is now declared statically
+    2) Now uses VERSION class constant for version control
 */
-class FileSystem
+class FileSystem extends Base
 {
+    const VERSION = '1.0.18';
+
     public function delete_dir_entry($key, $value)
     {
         if (substr($key, 0, 10)=='dir_entry_' && $value=='1') {
@@ -401,7 +400,7 @@ class FileSystem
         return $status;
     }
 
-    public function get_file_checksum($filepath)
+    public static function get_file_checksum($filepath)
     {
         if (!file_exists($filepath)) {
             return "(Missing)";
@@ -537,10 +536,5 @@ class FileSystem
             return $result;
         }
         return false;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_FILESYSTEM;
     }
 }

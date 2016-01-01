@@ -1,3 +1,5 @@
+  1.0.34 (2015-12-12)
+    1) Layout::prepareXhtmlHead() and Layout::prepareResponsiveHead() now both provide for preset_values hidden field
   1.0.33 (2015-10-17)
     1) Added include_body_bottom and include_head_top to FIELDS (include_head_top replaces head_include)
     2) Now includes code provided in layout include_body_bottom field in rendered output

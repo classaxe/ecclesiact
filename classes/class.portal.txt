@@ -1,3 +1,6 @@
+  1.0.37 (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
   1.0.36 (2015-10-10)
     1) Added Portal::isDev() method
   1.0.35 (2015-03-23)

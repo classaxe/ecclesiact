@@ -1,13 +1,9 @@
 <?php
-define("DB_CONNECT", "1.0.2");
+define("DB_CONNECT", "1.0.3");
 /*
 Version History:
-  1.0.2 (2014-12-30)
-    1) Now conforms to PSR-2
-  1.0.1 (2013-05-27)
-    1) Bug fix for error checking on conection failure
-  1.0.0 (2012-09-10)
-    1) Initial release
+  1.0.3 (2016-01-01)
+    1) Replaced mysql calls with mysqli calls
 */
 
 function db_connect()
@@ -19,7 +15,7 @@ function db_connect()
     if ($Obj_MySQLi -> connect_errno > 0) {
         die("<b>Fatal error:</b><br />\n".$Obj_MySQLi->connect_error);
     }
-    $li =  mysql_connect($b['host'], $b['user'], $b['pass']);
-    mysql_select_db($db);
+    $li =  mysqli_connect($b['host'], $b['user'], $b['pass']);
+    mysqli_select_db($li, $db);
 }
 db_connect();

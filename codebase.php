@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.2.10");
+define("CODEBASE_VERSION", "4.3.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,31 +16,54 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.2.10.2418 (2015-12-31)
+4.3.0.2419 (2016-01-01)
 Summary:
-  1) Community Stats update now orders community members by community then by name
+  1) Worked on fixing some PHP strict warnings for PHP 5.6.7
+  2) More work on responsive site layouts to allow for easier customising of colours and styles
+  3) Custom error handler now reveals selected strict warnings for local developer in php 5.4.x and above  
 
 Final Checksums:
-  Classes     CS:9fa88e26
+  Classes     CS:693b8005
   Database    CS:5d138354
-  Libraries   CS:3ff25cb
+  Libraries   CS:e023e812
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.2.10    (2015-12-31)
-    1) Added lead() function
-    2) d() now prints a simple string if that was what was given to it, rather than a var_dump
-    3) Updated version information
-  classes/class.community_member.php                                                             1.0.110   (2015-12-31)
-    1) Now orders communty member stats update process by community then member name
+  codebase.php                                                                                   4.3.0     (2016-01-01)
+    1) Updated version information
+  classes/class.filesystem.php                                                                   1.0.18    (2016-01-01)
+    1) FileSystem::get_file_checksum() is now declared statically
+    2) Now uses VERSION class constant for version control
+  classes/class.layout.php                                                                       1.0.35    (2016-01-01)
+    1) Now Layout::prepareResponsiveHead() includes responsive css file
+  classes/class.portal.php                                                                       1.0.38    (2016-01-01)
+    1) Portal::isDev() is now declared statically
+  classes/class.record.php                                                                       1.0.94    (2016-01-01)
+    1) Method Record::get_records_for_sql() is now declared statically
+  classes/class.system.php                                                                       1.0.171   (2016-01-01)
+    1) Method System::get_css_checksum() is now declared statically
+  db_connect.php                                                                                 1.0.3     (2016-01-01)
+    1) Replaced mysql calls with mysqli calls
+  functions.php                                                                                  1.0.18    (2016-01-01)
+    1) Added custom error handler that will show strict errors pertaining to static method calls but only
+       if viewed in dev environment
+  img.php                                                                                        2.0.93    (2016-01-01)
+    1) Now includes support for bootstrap.css and responsive.css
 
-2418.sql
+2419.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.2.10
-  classes/  (1 file changed)
-    class.community_member.php                        1.0.110   CS:bfa9db1e
+  codebase.php                                        4.3.0
+  classes/  (5 files changed)
+    class.filesystem.php                              1.0.18    CS:f35654be
+    class.layout.php                                  1.0.35    CS:f53fe13c
+    class.portal.php                                  1.0.38    CS:d489cbec
+    class.record.php                                  1.0.94    CS:3391da1f
+    class.system.php                                  1.0.171   CS:186e91c3
+  db_connect.php                                      1.0.3     CS:275ee15
+  functions.php                                       1.0.18    CS:1083d6ae
+  img.php                                             2.0.93    CS:eee17968
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

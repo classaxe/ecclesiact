@@ -1,3 +1,6 @@
+  1.0.93 (2015-10-16)
+    1) Version now given statically
+    2) Now uses getVersion() in parent
   1.0.92 (2015-08-14)
     1) Record::is_visible() is now statically declared
   1.0.91 (2015-08-03)
