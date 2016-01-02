@@ -1,16 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.2 (2015-10-25)
-    1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
-           sysjs/jqueryui       ->  sysjs/jquery-ui
-           sysjs/jquerymigrate  ->  sysjs/jquery-migrate
-
+  1.0.3 (2016-01-01)
+    1) Output::isPresent() now declared statically
+    2) All other internal static calls to Output::method() now called sa static::method()
 */
 
 class Output
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
+
     public static $content = array(
         'body' =>                     array(),
         'body_bottom' =>              array(),
@@ -100,23 +99,23 @@ class Output
 
     public static function push($part, $code)
     {
-        Output::$content[$part][] = $code;
+        static::$content[$part][] = $code;
     }
 
     public static function pull($part)
     {
-        if (!Output::isPresent($part)) {
+        if (!static::isPresent($part)) {
             return "";
         }
-        return implode("", Output::$content[$part]);
+        return implode("", static::$content[$part]);
     }
 
-    public function isPresent($part)
+    public static function isPresent($part)
     {
-        if (!isset(Output::$content[$part])) {
+        if (!isset(static::$content[$part])) {
             return false;
         }
-        if (Output::$content[$part]==='') {
+        if (static::$content[$part]==='') {
             return false;
         }
         return true;
@@ -124,13 +123,13 @@ class Output
 
     public static function reset()
     {
-        foreach (Output::$content as &$part) {
+        foreach (static::$content as &$part) {
             $part = array();
         }
     }
 
     public static function getVersion()
     {
-        return Output::VERSION;
+        return static::VERSION;
     }
 }

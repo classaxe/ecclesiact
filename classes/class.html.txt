@@ -1,3 +1,5 @@
+  1.0.91 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
   1.0.90 (2015-04-19)
     1) Moved support for HTML::draw_icon() out into separate classes for:
          bookmark, print_friendly, sitemap, text_sizer

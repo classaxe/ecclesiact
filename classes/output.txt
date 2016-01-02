@@ -1,3 +1,7 @@
+  1.0.2 (2015-10-25)
+    1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
+           sysjs/jqueryui       ->  sysjs/jquery-ui
+           sysjs/jquerymigrate  ->  sysjs/jquery-migrate
   1.0.1 (2015-09-19)
     1) Now includes Output::drawCssInclude() and Output::drawJsInclude() taken from System class
     2) Updated version for sysjs/jqueryjson included and changed CDN for JS from Google to code.jquery.com

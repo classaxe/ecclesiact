@@ -2,12 +2,13 @@
 define("VERSION_COMPONENT_GALLERY_FADER", "1.0.43");
 /*
 Version History:
-  1.0.43 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.44 (2016-01-01)
+    1) Bug fix in Component_Gallery_Fader::_setup_image_first() for situations where there are no images to show
 */
 class Component_Gallery_Fader extends Component_Base
 {
+    const VERSION = '1.0.44';
+
     protected $_msg =         "";
     protected $_first_image = array();
     protected $_first_idx =   0;
@@ -531,11 +532,6 @@ class Component_Gallery_Fader extends Component_Base
     protected function _setup_image_first()
     {
         $this->_first_idx =  ($this->_cp['random_start']==1 ? rand(0, count($this->_images)-1) : 0);
-        $this->_first_image = $this->_images[$this->_first_idx];
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_GALLERY_FADER;
+        $this->_first_image = (isset($this->_images[$this->_first_idx]) ? $this->_images[$this->_first_idx] : false);
     }
 }

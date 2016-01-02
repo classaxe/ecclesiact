@@ -1,13 +1,20 @@
 <?php
-define('VERSION_HTML', '1.0.91');
 /*
 Version History:
-  1.0.91 (2015-09-13)
-    1) References to Page::pop_content() now changed to Output::pull()
-
+  1.0.92 (2016-01-01)
+    1) The following methods are now declared to be static:
+         HTML::draw_icon()
+         HTML::draw_info()
+         HTML::draw_section_tabs()
+         HTML::draw_toolbar_end()
+         HTML::draw_toolbar_frame()
+         HTML::draw_toolbar_text()
+         HTML::draw_toolbar_separator()
 */
 class HTML extends Record
 {
+    const VERSION = '1.0.92';
+    
     protected $_args =                      array();
     protected $_current_user_rights =       array();
     protected $_has_no_personal_toolbar =   0;
@@ -21,32 +28,32 @@ class HTML extends Record
     {
         global $report_name, $ID;
         return
-         "<div class='std_control form_box constrain".($shadow ? " shadow" : "")."'"
-        .($width!==false ? " style='width:".$width."'" : "")
-        .">\n"
-        ."  <div class='form_box_header'>\n"
-        .$title
-        .($help!="" ? " ".HTML::draw_icon('help', $help) : "")
-        .($report_name!='' && $ID!='' ?
-            " ".HTML::draw_icon('print_form', array('report_name'=>$report_name,'ID'=>$ID))
-        :
-            ""
-        )
-        ."</div>"
-        ."  <div class='form_box_body table_border table_header'>\n"
-        .$content
-        ."  </div>\n"
-        .($footer!=='' ?
-           "  <div class='form_box_footer'>\n"
-          .$footer
-          ."  </div>\n"
-         :
-         ""
-        )
-        ."</div>";
+             "<div class='std_control form_box constrain".($shadow ? " shadow" : "")."'"
+            .($width!==false ? " style='width:".$width."'" : "")
+            .">\n"
+            ."  <div class='form_box_header'>\n"
+            .$title
+            .($help!="" ? " ".HTML::draw_icon('help', $help) : "")
+            .($report_name!='' && $ID!='' ?
+                " ".HTML::draw_icon('print_form', array('report_name'=>$report_name,'ID'=>$ID))
+            :
+                ""
+            )
+            ."</div>"
+            ."  <div class='form_box_body table_border table_header'>\n"
+            .$content
+            ."  </div>\n"
+            .($footer!=='' ?
+               "  <div class='form_box_footer'>\n"
+              .$footer
+              ."  </div>\n"
+             :
+             ""
+            )
+            ."</div>";
     }
 
-    public function draw_icon($type, $args = false)
+    public static function draw_icon($type, $args = false)
     {
       // Handle simple disabled icons first:
         switch ($type) {
@@ -288,7 +295,7 @@ class HTML extends Record
         }
     }
 
-    public function draw_info($title, $content)
+    public static function draw_info($title, $content)
     {
         return
              "<div class='info'>"
@@ -299,7 +306,7 @@ class HTML extends Record
             ."</div>";
     }
 
-    public function draw_section_tabs($arr, $divider_prefix, $selected_section, $js = "")
+    public static function draw_section_tabs($arr, $divider_prefix, $selected_section, $js = "")
     {
         $divider_prefix = str_replace(array(' ',':','.','-'), array('_','_','_','_'), $divider_prefix);
         $ID_arr = array();
@@ -1489,7 +1496,7 @@ class HTML extends Record
             );
     }
 
-    public function draw_toolbar_end()
+    public static function draw_toolbar_end()
     {
         return
             "<div class='admin_toolbartable noprint'>"
@@ -1497,37 +1504,30 @@ class HTML extends Record
            ."</div>";
     }
 
-    public function draw_toolbar_frame($content = '', $align = 'left')
+    public static function draw_toolbar_frame($content = '', $align = 'left')
     {
         return
-         "<div style='float:".$align."' class='noprint'>"
-        .HTML::draw_toolbar_separator()
-        .$content
-        ."</div>"
-        ;
+             "<div style='float:".$align."' class='noprint'>"
+            .static::draw_toolbar_separator()
+            .$content
+            ."</div>";
     }
 
-    public function draw_toolbar_text($text)
+    public static function draw_toolbar_text($text)
     {
         return
-         "<div class='admin_toolbartable noprint'>"
-        ."<div class='toolbar_text'>"
-        .$text
-        ."</div>"
-        ."</div>"
-        ;
+             "<div class='admin_toolbartable noprint'>"
+            ."<div class='toolbar_text'>"
+            .$text
+            ."</div>"
+            ."</div>";
     }
 
-    public function draw_toolbar_separator()
+    public static function draw_toolbar_separator()
     {
         return
-        "<div class='admin_toolbartable noprint'>"
-        ."<img class='toolbar_left' src='".BASE_PATH."img/sysimg/icon_toolbar_end_left.gif' alt='|'/>"
-        ."</div>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_HTML;
+            "<div class='admin_toolbartable noprint'>"
+            ."<img class='toolbar_left' src='".BASE_PATH."img/sysimg/icon_toolbar_end_left.gif' alt='|'/>"
+            ."</div>";
     }
 }

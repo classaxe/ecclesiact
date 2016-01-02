@@ -1,14 +1,15 @@
 <?php
-define('VERSION_PAGE', '1.0.124');
 /*
 Version History:
-  1.0.124 (2015-09-17)
-    1) Page::draw_detail_content() now only shows 'Show comments' link if there are any to see
+  1.0.125 (2016-01-01)
+    1) Page::hasDynamicTags() is now declared to be static
 
 */
 class Page extends Displayable_Item
 {
+    const VERSION = '1.0.125';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, memberID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     public static $javascript =  array();
     public static $style = "";
     public static $css_colors =  array();
@@ -529,7 +530,9 @@ class Page extends Displayable_Item
             ($responsive ?
                  ""
               :
-                 "<div style=\"visibility:hidden\"><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\">Main content begins here</a></div>\r\n"
+                 "<div style=\"visibility:hidden\"><a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\">"
+                ."Main content begins here"
+                ."</a></div>\r\n"
                 .$page_heading_title
                 ."<div class='content'>"
              )
@@ -544,7 +547,11 @@ class Page extends Displayable_Item
               :
                  "</div>"
              )
-            .(!$responsive && $page_vars['comments_count']>0 ? "<a href=\"#anchor_comments_list\">View Comments</a>" : "")
+            .(!$responsive && $page_vars['comments_count']>0 ?
+                "<a href=\"#anchor_comments_list\">View Comments</a>"
+             :
+                ""
+             )
             .($ratings_allow ? Rating::draw_block() : "")
             .$this->draw_related_block()
             .$this->draw_comments_block($page_vars['comments_allow'])
@@ -1474,7 +1481,7 @@ class Page extends Displayable_Item
         return false;
     }
 
-    public function hasDynamicTags($content)
+    public static function hasDynamicTags($content)
     {
         $hasAudioClips =    (strpos(' '.$content, "[audio:"));
         $hasECLTags =       (strpos(' '.$content, "[ECL]"));
@@ -1734,10 +1741,5 @@ class Page extends Displayable_Item
         header("Status: 403 Unauthorised", true, 403);
         print "403 - only public content can be obtained this way";
         die;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_PAGE;
     }
 }

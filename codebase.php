@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.0");
+define("CODEBASE_VERSION", "4.3.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,54 +16,54 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.0.2419 (2016-01-01)
+4.3.1.2420 (2016-01-01)
 Summary:
-  1) Worked on fixing some PHP strict warnings for PHP 5.6.7
-  2) More work on responsive site layouts to allow for easier customising of colours and styles
-  3) Custom error handler now reveals selected strict warnings for local developer in php 5.4.x and above  
+  1) More work on fixing remaining PHP strict and deprecated warnings for PHP 5.6.7
 
 Final Checksums:
-  Classes     CS:693b8005
+  Classes     CS:3ff0091d
   Database    CS:5d138354
-  Libraries   CS:e023e812
+  Libraries   CS:fa48f386
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.0     (2016-01-01)
+  codebase.php                                                                                   4.3.1     (2016-01-01)
     1) Updated version information
-  classes/class.filesystem.php                                                                   1.0.18    (2016-01-01)
-    1) FileSystem::get_file_checksum() is now declared statically
+  classes/class.block_layout.php                                                                 1.0.68    (2016-01-01)
+    1) Some PSR-2 tidy up
+  classes/class.component_gallery_fader.php                                                      1.0.44    (2016-01-01)
+    1) Bug fix in Component_Gallery_Fader::_setup_image_first() for situations where there are no images to show
+  classes/class.component_rss_headlines.php                                                      1.0.2     (2016-01-01)
+    1) Component_RSS_Headlines::draw() is now declared statically
     2) Now uses VERSION class constant for version control
-  classes/class.layout.php                                                                       1.0.35    (2016-01-01)
-    1) Now Layout::prepareResponsiveHead() includes responsive css file
-  classes/class.portal.php                                                                       1.0.38    (2016-01-01)
-    1) Portal::isDev() is now declared statically
-  classes/class.record.php                                                                       1.0.94    (2016-01-01)
-    1) Method Record::get_records_for_sql() is now declared statically
-  classes/class.system.php                                                                       1.0.171   (2016-01-01)
-    1) Method System::get_css_checksum() is now declared statically
-  db_connect.php                                                                                 1.0.3     (2016-01-01)
-    1) Replaced mysql calls with mysqli calls
-  functions.php                                                                                  1.0.18    (2016-01-01)
-    1) Added custom error handler that will show strict errors pertaining to static method calls but only
-       if viewed in dev environment
-  img.php                                                                                        2.0.93    (2016-01-01)
-    1) Now includes support for bootstrap.css and responsive.css
+  classes/class.html.php                                                                         1.0.92    (2016-01-01)
+    1) The following methods are now declared to be static:
+         HTML::draw_icon()
+         HTML::draw_info()
+         HTML::draw_section_tabs()
+         HTML::draw_toolbar_end()
+         HTML::draw_toolbar_frame()
+         HTML::draw_toolbar_text()
+         HTML::draw_toolbar_separator()
+  classes/class.page.php                                                                         1.0.125   (2016-01-01)
+    1) Page::hasDynamicTags() is now declared to be static
+  classes/output.php                                                                             1.0.3     (2016-01-01)
+    1) Output::isPresent() now declared statically
+    2) All other internal static calls to Output::method() now called sa static::method()
 
-2419.sql
+2420.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.0
-  classes/  (5 files changed)
-    class.filesystem.php                              1.0.18    CS:f35654be
-    class.layout.php                                  1.0.35    CS:f53fe13c
-    class.portal.php                                  1.0.38    CS:d489cbec
-    class.record.php                                  1.0.94    CS:3391da1f
-    class.system.php                                  1.0.171   CS:186e91c3
-  db_connect.php                                      1.0.3     CS:275ee15
-  functions.php                                       1.0.18    CS:1083d6ae
-  img.php                                             2.0.93    CS:eee17968
+  codebase.php                                        4.3.1
+  classes/  (6 files changed)
+    class.block_layout.php                            1.0.68    CS:501b85d
+    class.component_gallery_fader.php                 1.0.44    CS:430fcdb8
+    class.component_rss_headlines.php                 1.0.2     CS:59810422
+    class.html.php                                    1.0.92    CS:edfe55d
+    class.page.php                                    1.0.125   CS:9005b7a9
+    output.php                                        1.0.3     CS:258841b8
+
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date
