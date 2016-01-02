@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.156 (2015-12-30)
-    1) Now uses VERSION constant for version control
+  1.0.157 (2016-01-02)
+    1) Method do_tracking() now declared to be static
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.156';
+    const VERSION = '1.0.157';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -161,7 +161,7 @@ class Displayable_Item extends Block_Layout
     }
 
 
-    public function do_tracking($status, $allow_redirect = true)
+    public static function do_tracking($status, $allow_redirect = true)
     {
         global $page_vars;
         if ($personID = get_userID()) {

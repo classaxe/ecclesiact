@@ -1,11 +1,9 @@
-// 1.1.270
+// 1.1.271
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.270 (2015-09-21)
-    1) Function nav_setup() now accepts new parameter for responsive that omits code for IE suckerfish augmentation
-
-  (Older version history in functions.txt)
+  1.0.271 (2016-01-02)
+    1) Made popup window for version() larger
 */
 
 // ************************************
@@ -5360,7 +5358,7 @@ function validate_payment_details(err_arr,id_method,id_card_name,id_card_number,
 function version(ver) {
   var name = ver.replace(/\./g,'_');
   var site = (system_family.toLowerCase()==='ximmix' ? 'http://www.auroraonline.com' : 'http://www.ecclesiact.com');
-  popWin(site+'/build/'+ver+'?print=1',name,'scrollbars=1,resizable=1,status=0',800,600,'centre');
+  popWin(site+'/build/'+ver+'?print=1',name,'scrollbars=1,resizable=1,status=0',1000,800,'centre');
 }
 
 function video_setup(id,url){

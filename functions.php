@@ -1,10 +1,9 @@
 <?php
-define("FUNCTIONS_VERSION", "1.0.18");
+define("FUNCTIONS_VERSION", "1.0.19");
 /*
 Version History:
-  1.0.18 (2016-01-01)
-    1) Added custom error handler that will show strict errors pertaining to static method calls but only
-       if viewed in dev environment
+  1.0.19 (2016-01-02)
+    1) Comments fix within errorHandler()
 */
 function errorHandler($errno, $errstr, $errfile, $errline)
 {
@@ -13,11 +12,12 @@ function errorHandler($errno, $errstr, $errfile, $errline)
         return;
     }
     if ($errno === E_STRICT && strpos($errstr, 'Declaration of')!==false) {
+        /* Don't execute PHP internal error handler for this error */
         return true;
     }
-    /* Don't execute PHP internal error handler */
     return false;
 }
+
 if ($_SERVER["REMOTE_ADDR"]==='192.168.0.1' || $_SERVER["REMOTE_ADDR"]==='127.0.0.1') {
     $old_error_handler = set_error_handler("errorHandler");
     ini_set('display_errors', 1);

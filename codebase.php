@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.3");
+define("CODEBASE_VERSION", "4.3.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,62 +16,52 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-TODO:
-  class.phpmailer.php has some instances of preg_replace() with the /e modifier that need to be upgraded
-  to use preg_replace_callback() instead -
-  see Report::convert_xml_field_for_sort() or http://php.net/manual/en/function.preg-replace-callback.php#109938  
-
-4.3.3.2422 (2016-01-01)
+4.3.4.2423 (2016-01-02)
 Summary:
-  1) Yet more work on fixing remaining PHP strict and deprecated warnings for PHP 5.6.7
+  1) Replaced phpmailer and smtp classes with latest versions 5.2.14 from github -
+     These versions do not use instances of preg_replace() with the /e modifier that cause issues in PHP 5.5 
+  2) Made link to 'build' version in System Status open a bigger popup window
+  3) More fixes for PHP strict mode
 
 Final Checksums:
-  Classes     CS:760c8bfd
+  Classes     CS:e6894a6
   Database    CS:5d138354
-  Libraries   CS:ce9ec4ae
+  Libraries   CS:b126e20f
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.3     (2016-01-01)
+  codebase.php                                                                                   4.3.4     (2016-01-02)
     1) Updated version information
-  classes/class.colour_scheme.php                                                                1.0.3     (2016-01-01)
-    1) Colour_Scheme::get_match() now declared to be static
-    2) Colour_Scheme::Lookup() now declared to be static
-  classes/class.fck.php                                                                          1.0.24    (2016-01-01)
-    1) The following methopds are now declared to be static:
-          FCK::attach_ckfinder()
-          FCK::do_fck()
-          FCK::draw_editor()
-          FCK::draw_plugin_ecl()
-    2) Now uses class constant VERSION for version control
-  classes/class.layout.php                                                                       1.0.36    (2016-01-01)
-    1) The following methods are now declared to be static:
-         Layout::prepare()
-         Layout::prepareXhtmlFoot()
-         Layout::prepareXhtmlHead()
-         Layout::prepareResponsiveHead()
-  classes/class.page.php                                                                         1.0.126   (2016-01-01)
-    1) Page::get_css_idx() is now declared to be static
-  classes/class.record.php                                                                       1.0.96    (2016-01-01)
-    1) Record::get_record_for_sql() now declared to be static
-  classes/class.theme.php                                                                        1.0.9     (2016-01-01)
-    1) Theme::get_selector_sql() now declared to be static
-    2) Now uses class constant VERSION for version control
+  classes/class.displayable_item.php                                                             1.0.157   (2016-01-02)
+    1) Method do_tracking() now declared to be static
+  classes/class.phpmailer.php                                                                    2.0.1     (2016-01-02)
+    1) New release based on PHPMailer 5.2.14
+    2) phpmailerException moved to its own class file
+  classes/class.smtp.php                                                                         2.0.1     (2016-01-02)
+    1) New release based on PHPMailer 5.2.14
+  classes/phpmailerexception.php                                                                 2.0.1     (2016-01-02)
+    1) Initial release based on PHPMailer 5.2.14
+       Code was previously included within class.phpmailer.php, now moved to single class file
+  functions.php                                                                                  1.0.19    (2016-01-02)
+    1) Comments fix within errorHandler()
+  js/functions.js                                                                                1.0.271   (2016-01-02)
+    1) Made popup window for version() larger
 
-2422.sql
+2423.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.3
-  classes/  (6 files changed)
-    class.colour_scheme.php                           1.0.3     CS:9a71cfb9
-    class.fck.php                                     1.0.24    CS:73f80f82
-    class.layout.php                                  1.0.36    CS:2d4f7106
-    class.page.php                                    1.0.126   CS:1062bb18
-    class.record.php                                  1.0.96    CS:e678ee45
-    class.theme.php                                   1.0.9     CS:1cef11b5
+  codebase.php                                        4.3.4
+  classes/  (4 files changed)
+    class.displayable_item.php                        1.0.157   CS:88c9ae62
+    class.phpmailer.php                               2.0.1     CS:b8d312f6
+    class.smtp.php                                    2.0.1     CS:c2a5250a
+    phpmailerexception.php                            2.0.1     CS:c53dc0ba
+  functions.php                                       1.0.19    CS:9cfbb63f
+  js/functions.js                                     1.1.271   CS:70216d0e
 
-  Bug:
+
+Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
     http://www.armsofjesus.org/2009/03/14/kariobangi-youth-center
