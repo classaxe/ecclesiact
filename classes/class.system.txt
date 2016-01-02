@@ -1,3 +1,5 @@
+  1.0.171 (2016-01-01)
+    1) Method System::get_css_checksum() is now declared statically
   1.0.170 (2015-12-29)
     1) New field piwik_md5_password added to fields list
     2) Change to draw_visitor_stats() to use piwik_md5_password field

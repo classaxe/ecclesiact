@@ -1,15 +1,15 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_BREADCRUMBS', '1.0.6');
 /*
 Version History:
-  1.0.6 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.7 (2016-01-01)
+    1) Call to Page::getURL() no longer a static call
+    2) Now uses VERSION class constant for version control
 */
 class Breadcrumbs extends Base
 {
+    const VERSION = '1.0.7';
+
     public function __construct()
     {
         $this->_ident =         'breadcrumbs';
@@ -77,7 +77,8 @@ class Breadcrumbs extends Base
             ;
             \Output::push("style_include", "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$css."\" />");
         }
-        $URL = \Page::get_URL($page_vars);
+        $ObjPage = new \Page;
+        $URL = $ObjPage->get_URL($page_vars);
         $URL = (substr($URL, 0, strlen(BASE_PATH))==BASE_PATH ?
             substr($URL, strlen(BASE_PATH))
          :
@@ -117,10 +118,5 @@ class Breadcrumbs extends Base
             ."<ul id='breadcrumbs' class='breadcrumbs'>\n"
             .implode('', $path_arr)
             ."</ul>\n";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_BREADCRUMBS;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.1");
+define("CODEBASE_VERSION", "4.3.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,54 +16,52 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.1.2420 (2016-01-01)
+TODO:
+  class.phpmailer.php has some instances of preg_replace() with the /e modifier that need to be upgraded
+  to use preg_replace_callback() instead -
+  see Report::convert_xml_field_for_sort() or http://php.net/manual/en/function.preg-replace-callback.php#109938  
+
+4.3.2.2421 (2016-01-01)
 Summary:
   1) More work on fixing remaining PHP strict and deprecated warnings for PHP 5.6.7
 
 Final Checksums:
-  Classes     CS:3ff0091d
+  Classes     CS:687b2bdd
   Database    CS:5d138354
-  Libraries   CS:fa48f386
+  Libraries   CS:d4f5df3a
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.1     (2016-01-01)
+  codebase.php                                                                                   4.3.2     (2016-01-01)
     1) Updated version information
-  classes/class.block_layout.php                                                                 1.0.68    (2016-01-01)
-    1) Some PSR-2 tidy up
-  classes/class.component_gallery_fader.php                                                      1.0.44    (2016-01-01)
-    1) Bug fix in Component_Gallery_Fader::_setup_image_first() for situations where there are no images to show
-  classes/class.component_rss_headlines.php                                                      1.0.2     (2016-01-01)
-    1) Component_RSS_Headlines::draw() is now declared statically
+  classes/class.product.php                                                                      1.0.80    (2016-01-01)
+    1) Product::get_match_for_name() now declared as static
     2) Now uses VERSION class constant for version control
-  classes/class.html.php                                                                         1.0.92    (2016-01-01)
-    1) The following methods are now declared to be static:
-         HTML::draw_icon()
-         HTML::draw_info()
-         HTML::draw_section_tabs()
-         HTML::draw_toolbar_end()
-         HTML::draw_toolbar_frame()
-         HTML::draw_toolbar_text()
-         HTML::draw_toolbar_separator()
-  classes/class.page.php                                                                         1.0.125   (2016-01-01)
-    1) Page::hasDynamicTags() is now declared to be static
-  classes/output.php                                                                             1.0.3     (2016-01-01)
-    1) Output::isPresent() now declared statically
-    2) All other internal static calls to Output::method() now called sa static::method()
+  classes/class.record.php                                                                       1.0.95    (2016-01-01)
+    1) Record::get_field_for_sql() now declared statically
+    2) Record::get_rows_for_sql() now declared statically
+  classes/class.report.php                                                                       1.0.88    (2016-01-01)
+    1) Report::convert_xml_field_for_sort() now declared to be static
+    2) Rather complex refactoring of Report::convert_xml_field_for_sort() and Report::convert_xml_field_for_filter()
+       to use preg_replace_callback() intead of preg_replace() with /e modifier, deprecated in PHP 5.5:
+       Ref: http://php.net/manual/en/function.preg-replace-callback.php#109938
+  classes/class.system.php                                                                       1.0.172   (2016-01-01)
+    1) System::get_display_title() is now declared statically
+  classes/component/breadcrumbs.php                                                              1.0.7     (2016-01-01)
+    1) Call to Page::getURL() no longer a static call
+    2) Now uses VERSION class constant for version control
 
-2420.sql
+2421.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.1
-  classes/  (6 files changed)
-    class.block_layout.php                            1.0.68    CS:501b85d
-    class.component_gallery_fader.php                 1.0.44    CS:430fcdb8
-    class.component_rss_headlines.php                 1.0.2     CS:59810422
-    class.html.php                                    1.0.92    CS:edfe55d
-    class.page.php                                    1.0.125   CS:9005b7a9
-    output.php                                        1.0.3     CS:258841b8
-
+  codebase.php                                        4.3.2
+  classes/  (5 files changed)
+    class.product.php                                 1.0.80    CS:810ddc09
+    class.record.php                                  1.0.95    CS:d6c7eb4b
+    class.report.php                                  1.0.88    CS:47e7f203
+    class.system.php                                  1.0.172   CS:d9a52ebf
+    component/breadcrumbs.php                         1.0.7     CS:d00e3189
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,14 +1,16 @@
 <?php
-define('VERSION_PRODUCT', '1.0.79');
 /*
 Version History:
-  1.0.79 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.80 (2016-01-01)
+    1) Product::get_match_for_name() now declared as static
+    2) Now uses VERSION class constant for version control
 
 */
 class Product extends Displayable_Item
 {
+    const VERSION = '1.0.80';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     public $type;
     public $systemID;
 
@@ -881,7 +883,7 @@ class Product extends Displayable_Item
         return $this->get_field_for_sql($sql);
     }
 
-    public function get_match_for_name($name, &$mode, &$ID)
+    public static function get_match_for_name($name, &$mode, &$ID)
     {
         $sql =
              "SELECT\n"
@@ -891,7 +893,7 @@ class Product extends Displayable_Item
             ."WHERE\n"
             ."  `itemCode` = \"".addslashes($name)."\" AND\n"
             ."  `systemID` = ".SYS_ID;
-        $result = Product::get_field_for_sql($sql);
+        $result = static::get_field_for_sql($sql);
         if (!$result) {
             return false;
         }
@@ -1570,10 +1572,5 @@ class Product extends Displayable_Item
         }
         $this->delete();
         return true;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_PRODUCT;
     }
 }

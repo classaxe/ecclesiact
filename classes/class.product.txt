@@ -1,3 +1,5 @@
+  1.0.79 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.78 (2015-08-14)
     1) Product::is_visible() is now declared and implemented statically
   1.0.77 (2015-02-01)

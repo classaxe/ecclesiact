@@ -1,11 +1,13 @@
 <?php
-define("VERSION_REPORT", "1.0.87");
+define("VERSION_REPORT", "1.0.88");
 
 /*
 Version History:
-  1.0.87 (2015-09-12)
-    1) Report::handle_delete() now provides support for PSR-2 compliant named method handleReportDelete()
-
+  1.0.88 (2016-01-01)
+    1) Report::convert_xml_field_for_sort() now declared to be static
+    2) Rather complex refactoring of Report::convert_xml_field_for_sort() and Report::convert_xml_field_for_filter()
+       to use preg_replace_callback() intead of preg_replace() with /e modifier, deprecated in PHP 5.5:
+       Ref: http://php.net/manual/en/function.preg-replace-callback.php#109938
 */
 
 class Report extends Displayable_Item
@@ -149,15 +151,16 @@ class Report extends Displayable_Item
             $replacement_sql[] = $_tmp_sql;
         }
         $match_num = 0;
-        $field =
-        preg_replace(
-            "/(xml:[^ =\b]+)/e",
-            "\$replacement_sql[\$match_num++]",
+        $field = preg_replace_callback(
+            "/(xml:[^ =\b]+)/",
+            function($m) use($replacement_sql, $match_num) {
+                return $replacement_sql[$match_num++];
+            },
             $field
         );
     }
 
-    public function convert_xml_field_for_sort(&$field, $table)
+    public static function convert_xml_field_for_sort(&$field, $table)
     {
       // This code converts xml virtual fields into nested sql matches to isolate the required node
         preg_match_all('(xml:[^ =\b]+)', $field, $xml_fields, PREG_SET_ORDER);
@@ -187,10 +190,11 @@ class Report extends Displayable_Item
             $replacement_sql[] = $_tmp_sql;
         }
         $match_num = 0;
-        $field =
-        preg_replace(
-            "/(xml:[^ =\b]+)/e",
-            "\$replacement_sql[\$match_num++]",
+        $field = preg_replace_callback(
+            "/(xml:[^ =\b]+)/",
+            function($m) use($replacement_sql, $match_num) {
+                return $replacement_sql[$match_num++];
+            },
             $field
         );
     }

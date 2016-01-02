@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.94 (2016-01-01)
-    1) Method Record::get_records_for_sql() is now declared statically
+  1.0.95 (2016-01-01)    
+    1) Record::get_field_for_sql() now declared statically
+    2) Record::get_rows_for_sql() now declared statically
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.94';
+    const VERSION = '1.0.95';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -913,9 +914,9 @@ class Record extends Portal
         }
     }
 
-    public function get_field_for_sql($sql)
+    public static function get_field_for_sql($sql)
     {
-        if (!$records = Record::get_rows_for_sql($sql)) {
+        if (!$records = static::get_rows_for_sql($sql)) {
             return false;
         }
         return $records[0][0];
@@ -1186,7 +1187,7 @@ class Record extends Portal
                 3,
                 __CLASS__.'::'.__FUNCTION__.'()',
                 'execute',
-                "Object: ".$this->_get_object_name()."\nQuery: ".$sql."\nError: ".static::get_last_db_error_msg()
+                "Query: ".$sql."\nError: ".static::get_last_db_error_msg()
             );
             print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, static::get_last_db_error_msg());
             return false;
@@ -1276,16 +1277,16 @@ class Record extends Portal
         return $retVal;
     }
 
-    public function get_rows_for_sql($sql)
+    public static function get_rows_for_sql($sql)
     {
-        if (!$result = Record::do_sql_query($sql)) {
+        if (!$result = static::do_sql_query($sql)) {
             do_log(
                 3,
                 __CLASS__.'::'.__FUNCTION__.'()',
                 'execute',
-                "Object: ".$this->_get_object_name()."\nQuery: ".$sql."\nError: ".Record::get_last_db_error_msg()
+                "Query: ".$sql."\nError: ".static::get_last_db_error_msg()
             );
-            print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, Record::get_last_db_error_msg());
+            print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, static::get_last_db_error_msg());
             return false;
         }
         $out = array();

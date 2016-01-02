@@ -1,3 +1,5 @@
+  1.0.94 (2016-01-01)
+    1) Method Record::get_records_for_sql() is now declared statically
   1.0.93 (2015-10-16)
     1) Version now given statically
     2) Now uses getVersion() in parent
