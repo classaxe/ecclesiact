@@ -1,3 +1,5 @@
+  1.0.35 (2016-01-01)
+    1) Now Layout::prepareResponsiveHead() includes responsive css file 
   1.0.34 (2015-12-12)
     1) Layout::prepareXhtmlHead() and Layout::prepareResponsiveHead() now both provide for preset_values hidden field
   1.0.33 (2015-10-17)

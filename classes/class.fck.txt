@@ -1,3 +1,5 @@
+  1.0.23 (2015-09-13)
+    1) References to Page::pop_content() now changed to Output::pull()
   1.0.22 (2014-04-17)
     1) Changes to include indenting rules for parsed code
   1.0.21 (2014-01-28)

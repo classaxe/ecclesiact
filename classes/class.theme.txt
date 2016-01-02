@@ -1,3 +1,5 @@
+  1.0.8 (2014-02-17)
+    1) Refreshed fields list - now declared as a class constant
   1.0.7 (2012-10-09)
     1) Changes to CM in Theme::draw_accent() and Theme::draw_banner() to have them
        handle embedded apostrophes or even quotes in theme name without error

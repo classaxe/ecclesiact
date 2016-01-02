@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.95 (2016-01-01)    
-    1) Record::get_field_for_sql() now declared statically
-    2) Record::get_rows_for_sql() now declared statically
+  1.0.96 (2016-01-01)
+    1) Record::get_record_for_sql() now declared to be static
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.95';
+    const VERSION = '1.0.96';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1172,9 +1171,9 @@ class Record extends Portal
         return Record::get_records_for_sql($sql);
     }
 
-    public function get_record_for_sql($sql)
+    public static function get_record_for_sql($sql)
     {
-        if (!$records = Record::get_records_for_sql($sql)) {
+        if (!$records = static::get_records_for_sql($sql)) {
             return false;
         }
         return $records[0];

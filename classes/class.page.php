@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.125 (2016-01-01)
-    1) Page::hasDynamicTags() is now declared to be static
-
+  1.0.126 (2016-01-01)
+    1) Page::get_css_idx() is now declared to be static
 */
 class Page extends Displayable_Item
 {
-    const VERSION = '1.0.125';
+    const VERSION = '1.0.126';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, memberID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public static $javascript =  array();
@@ -812,18 +811,17 @@ class Page extends Displayable_Item
         return $this->sql_export($targetID, $show_fields);
     }
 
-    public function get_css_idx($color, $bgcolor)
+    public static function get_css_idx($color, $bgcolor)
     {
-        foreach (Page::$css_colors as $idx => $style) {
+        foreach (static::$css_colors as $idx => $style) {
             if (strToUpper($color)==$style['color'] && strToUpper($bgcolor)==$style['bgcolor']) {
                 return $idx;
             }
         }
-        $idx = Page::$css_color_idx++;
-        Page::$css_colors[$idx] =
-        array(
-        'color' =>      strToUpper($color),
-        'bgcolor' =>    strToUpper($bgcolor)
+        $idx = static::$css_color_idx++;
+        static::$css_colors[$idx] = array(
+            'color' =>      strToUpper($color),
+            'bgcolor' =>    strToUpper($bgcolor)
         );
         Output::push(
             "style",
@@ -833,7 +831,6 @@ class Page extends Displayable_Item
             .($bgcolor!==false ? " background-color: #".strToUpper($bgcolor).";" : "")
             ."}"
         );
-
         return $idx;
     }
 

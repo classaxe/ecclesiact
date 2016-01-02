@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.2");
+define("CODEBASE_VERSION", "4.3.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -21,47 +21,55 @@ TODO:
   to use preg_replace_callback() instead -
   see Report::convert_xml_field_for_sort() or http://php.net/manual/en/function.preg-replace-callback.php#109938  
 
-4.3.2.2421 (2016-01-01)
+4.3.3.2422 (2016-01-01)
 Summary:
-  1) More work on fixing remaining PHP strict and deprecated warnings for PHP 5.6.7
+  1) Yet more work on fixing remaining PHP strict and deprecated warnings for PHP 5.6.7
 
 Final Checksums:
-  Classes     CS:687b2bdd
+  Classes     CS:760c8bfd
   Database    CS:5d138354
-  Libraries   CS:d4f5df3a
+  Libraries   CS:ce9ec4ae
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.2     (2016-01-01)
+  codebase.php                                                                                   4.3.3     (2016-01-01)
     1) Updated version information
-  classes/class.product.php                                                                      1.0.80    (2016-01-01)
-    1) Product::get_match_for_name() now declared as static
-    2) Now uses VERSION class constant for version control
-  classes/class.record.php                                                                       1.0.95    (2016-01-01)
-    1) Record::get_field_for_sql() now declared statically
-    2) Record::get_rows_for_sql() now declared statically
-  classes/class.report.php                                                                       1.0.88    (2016-01-01)
-    1) Report::convert_xml_field_for_sort() now declared to be static
-    2) Rather complex refactoring of Report::convert_xml_field_for_sort() and Report::convert_xml_field_for_filter()
-       to use preg_replace_callback() intead of preg_replace() with /e modifier, deprecated in PHP 5.5:
-       Ref: http://php.net/manual/en/function.preg-replace-callback.php#109938
-  classes/class.system.php                                                                       1.0.172   (2016-01-01)
-    1) System::get_display_title() is now declared statically
-  classes/component/breadcrumbs.php                                                              1.0.7     (2016-01-01)
-    1) Call to Page::getURL() no longer a static call
-    2) Now uses VERSION class constant for version control
+  classes/class.colour_scheme.php                                                                1.0.3     (2016-01-01)
+    1) Colour_Scheme::get_match() now declared to be static
+    2) Colour_Scheme::Lookup() now declared to be static
+  classes/class.fck.php                                                                          1.0.24    (2016-01-01)
+    1) The following methopds are now declared to be static:
+          FCK::attach_ckfinder()
+          FCK::do_fck()
+          FCK::draw_editor()
+          FCK::draw_plugin_ecl()
+    2) Now uses class constant VERSION for version control
+  classes/class.layout.php                                                                       1.0.36    (2016-01-01)
+    1) The following methods are now declared to be static:
+         Layout::prepare()
+         Layout::prepareXhtmlFoot()
+         Layout::prepareXhtmlHead()
+         Layout::prepareResponsiveHead()
+  classes/class.page.php                                                                         1.0.126   (2016-01-01)
+    1) Page::get_css_idx() is now declared to be static
+  classes/class.record.php                                                                       1.0.96    (2016-01-01)
+    1) Record::get_record_for_sql() now declared to be static
+  classes/class.theme.php                                                                        1.0.9     (2016-01-01)
+    1) Theme::get_selector_sql() now declared to be static
+    2) Now uses class constant VERSION for version control
 
-2421.sql
+2422.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.2
-  classes/  (5 files changed)
-    class.product.php                                 1.0.80    CS:810ddc09
-    class.record.php                                  1.0.95    CS:d6c7eb4b
-    class.report.php                                  1.0.88    CS:47e7f203
-    class.system.php                                  1.0.172   CS:d9a52ebf
-    component/breadcrumbs.php                         1.0.7     CS:d00e3189
+  codebase.php                                        4.3.3
+  classes/  (6 files changed)
+    class.colour_scheme.php                           1.0.3     CS:9a71cfb9
+    class.fck.php                                     1.0.24    CS:73f80f82
+    class.layout.php                                  1.0.36    CS:2d4f7106
+    class.page.php                                    1.0.126   CS:1062bb18
+    class.record.php                                  1.0.96    CS:e678ee45
+    class.theme.php                                   1.0.9     CS:1cef11b5
 
   Bug:
     where two postings (e.g. gallery album and article) have same name and date

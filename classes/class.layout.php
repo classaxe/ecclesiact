@@ -1,13 +1,17 @@
 <?php
 /*
 Version History:
-  1.0.35 (2016-01-01)
-    1) Now Layout::prepareResponsiveHead() includes responsive css file 
+  1.0.36 (2016-01-01)
+    1) The following methods are now declared to be static:
+         Layout::prepare()
+         Layout::prepareXhtmlFoot()
+         Layout::prepareXhtmlHead()
+         Layout::prepareResponsiveHead()
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.35';
+    const VERSION = '1.0.36';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -157,7 +161,7 @@ class Layout extends Record
         return false;
     }
 
-    public function prepare()
+    public static function prepare()
     {
         global $page_vars;
         $content = $page_vars['layout']['content'];
@@ -169,13 +173,13 @@ class Layout extends Record
             $Obj_Person->load_profile_fields();
         }
         if ($page_vars['layout']['responsive']) {
-            $this->prepareResponsiveHead();
+            static::prepareResponsiveHead();
             Output::push('body', convert_safe_to_php($content));
-            $this->prepareResponsiveFoot();
+            static::prepareResponsiveFoot();
         } else {
-            $this->prepareXhtmlHead();
+            static::prepareXhtmlHead();
             Output::push('body', convert_safe_to_php($content));
-            $this->prepareXhtmlFoot();
+            static::prepareXhtmlFoot();
         }
         if ($include = $page_vars['layout']['include_body_bottom']) {
             Output::push('body_bottom', $include);
@@ -183,7 +187,7 @@ class Layout extends Record
 
     }
 
-    public function prepareXhtmlFoot()
+    public static function prepareXhtmlFoot()
     {
         global $system_vars;
         Output::push(
@@ -198,7 +202,7 @@ class Layout extends Record
         );
     }
 
-    public function prepareXhtmlHead()
+    public static function prepareXhtmlHead()
     {
         global $page_vars, $system_vars, $print, $report_name, $ID, $mode;
         global $anchor, $bulk_update, $component_help, $DD, $limit, $memberID, $offset, $page, $sortBy;
@@ -499,7 +503,7 @@ class Layout extends Record
         }
     }
 
-    public function prepareResponsiveHead()
+    public static function prepareResponsiveHead()
     {
         global $page_vars, $system_vars, $print, $report_name, $ID, $mode;
         global $anchor, $bulk_update, $component_help, $DD, $limit, $memberID, $offset, $page, $sortBy;

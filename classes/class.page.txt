@@ -1,3 +1,5 @@
+  1.0.125 (2016-01-01)
+    1) Page::hasDynamicTags() is now declared to be static
   1.0.124 (2015-09-17)
     1) Page::draw_detail_content() now only shows 'Show comments' link if there are any to see
   1.0.123 (2015-09-14)
