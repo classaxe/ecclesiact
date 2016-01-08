@@ -1,3 +1,5 @@
+  1.0.111 (2016-01-07)
+    1) Performance improvements for Piwik stats crunching
   1.0.110 (2015-12-31)
     1) Now orders communty member stats update process by community then member name
   1.0.109 (2015-12-29)

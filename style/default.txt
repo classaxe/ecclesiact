@@ -1,3 +1,5 @@
+  1.0.170 (2015-09-20)
+    1) Strengthened definitions of context menus to prevent bootstrap from messing with them
   1.0.169 (2015-09-12)
     1) Strenthened definitions relating to admin menu to prevent bootstrap from messing with them
   1.0.168 (2015-04-25)

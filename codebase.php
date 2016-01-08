@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.5");
+define("CODEBASE_VERSION", "4.3.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,36 +16,37 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.5.2424 (2016-01-08)
+4.3.6.2425 (2016-01-08)
 Summary:
-  1) Performance improvement for community member stats
-  2) Now handles wow-slider css generation in community member context without reloading all community member data
-  3) Debug backtrace function x() now allows for plaintext mode  
+  1) Now shows total time for Piwik number crunching
+  2) Textarea Report column fields now detect <pre> tags used in field and no longer nl2br() those values 
 
 Final Checksums:
-  Classes     CS:b5e5bd82
+  Classes     CS:986d9a4d
   Database    CS:5d138354
-  Libraries   CS:ab4df99b
+  Libraries   CS:d0ac81f9
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.5     (2016-01-08)
-    1) Function x() now accepts optional parameter to specify plaintext mode for ajax or debug log output  
-    2) Updated version information
-  classes/class.community_display.php                                                            1.0.45    (2016-01-06)
-    1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
-       ?submode=css&targetValue=wow_slider_profile
-  classes/class.community_member.php                                                             1.0.111   (2016-01-07)
-    1) Performance improvements for Piwik stats crunching
+  codebase.php                                                                                   4.3.6     (2016-01-08)
+    1) Updated version information
+  classes/class.community_member.php                                                             1.0.112   (2016-01-08)
+    1) Now gives total time for number crunching of Piwik Stats at bottom
+  classes/class.report_column_report_field.php                                                   1.0.31    (2016-01-08)
+    1) Report_Column_Report_Field::draw() for textarea types now detects <pre> tags and doesn't nl2br() that output
+    2) Now uses VERSION class constant for version control
+  style/default.css                                                                              1.0.171   (2016-01-08)
+    1) Added pre.admin_fixed that reduces top ad bottom margins
 
-2424.sql
+2425.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.5
+  codebase.php                                        4.3.6
   classes/  (2 files changed)
-    class.community_display.php                       1.0.45    CS:360f5751
-    class.community_member.php                        1.0.111   CS:c5d7b3fb
+    class.community_member.php                        1.0.112   CS:51b2f1e6
+    class.report_column_report_field.php              1.0.31    CS:820a23bd
+  style/default.css                                   1.0.171   CS:67413ca3
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

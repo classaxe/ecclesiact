@@ -1,14 +1,14 @@
 <?php
-define('VERSION_REPORT_COLUMN_REPORT_FIELD', '1.0.30');
 /*
 Version History:
-  1.0.30 (2015-10-06)
-    1) Specific support aded for column type 'link_view_tickets'
-
+  1.0.31 (2016-01-08)
+    1) Report_Column_Report_Field::draw() for textarea types now detects <pre> tags and doesn't nl2br() that output
+    2) Now uses VERSION class constant for version control
 */
 
 class Report_Column_Report_Field extends Record
 {
+    const VERSION = '1.0.31';
     public function draw(
         $column,
         $row,
@@ -697,7 +697,10 @@ class Report_Column_Report_Field extends Record
             case "textarea":
             case "textarea_big":
             case "textarea_readonly":
-                $out.=    "    <td>".nl2br($value)."</td>\n";
+                $out.=
+                     "    <td>"
+                    .(substr($value,0,5)==='<pre>' ? "<pre class='admin_fixed'>".substr($value, 5) : nl2br($value))
+                    ."</td>\n";
                 break;
             case "toggle_shared":
                 if ($readOnly) {
@@ -899,10 +902,5 @@ class Report_Column_Report_Field extends Record
                 break;
         }
         return $out;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_REPORT_COLUMN_REPORT_FIELD;
     }
 }
