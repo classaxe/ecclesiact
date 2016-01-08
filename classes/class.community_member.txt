@@ -1,3 +1,5 @@
+  1.0.110 (2015-12-31)
+    1) Now orders communty member stats update process by community then member name
   1.0.109 (2015-12-29)
     1) Added new method updateStats() to be used by Community::updateAllMemberStats() in VCRON
     2) Now uses VERSION constant and inherritted getVersion() method for version control

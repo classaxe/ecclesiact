@@ -7,14 +7,14 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.44 (2015-12-30)
-    1) Moved comment concerning dropbox checking into here from Community where it had been left behind
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  1.0.45 (2016-01-06)
+    1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
+       ?submode=css&targetValue=wow_slider_profile
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.44';
+    const VERSION = '1.0.45';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -879,6 +879,9 @@ class Community_Display extends Community
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
+        if (get_var('submode')=='css') {
+            return;
+        }
         try {
             $this->setup($instance, $args, $disable_params);
             if ($this->_path_extension) {

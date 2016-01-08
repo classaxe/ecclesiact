@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.4");
+define("CODEBASE_VERSION", "4.3.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,50 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.4.2423 (2016-01-02)
+4.3.5.2424 (2016-01-08)
 Summary:
-  1) Replaced phpmailer and smtp classes with latest versions 5.2.14 from github -
-     These versions do not use instances of preg_replace() with the /e modifier that cause issues in PHP 5.5 
-  2) Made link to 'build' version in System Status open a bigger popup window
-  3) More fixes for PHP strict mode
+  1) Performance improvement for community member stats
+  2) Now handles wow-slider css generation in community member context without reloading all community member data
+  3) Debug backtrace function x() now allows for plaintext mode  
 
 Final Checksums:
-  Classes     CS:e6894a6
+  Classes     CS:b5e5bd82
   Database    CS:5d138354
-  Libraries   CS:b126e20f
+  Libraries   CS:ab4df99b
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.4     (2016-01-02)
-    1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.157   (2016-01-02)
-    1) Method do_tracking() now declared to be static
-  classes/class.phpmailer.php                                                                    2.0.1     (2016-01-02)
-    1) New release based on PHPMailer 5.2.14
-    2) phpmailerException moved to its own class file
-  classes/class.smtp.php                                                                         2.0.1     (2016-01-02)
-    1) New release based on PHPMailer 5.2.14
-  classes/phpmailerexception.php                                                                 2.0.1     (2016-01-02)
-    1) Initial release based on PHPMailer 5.2.14
-       Code was previously included within class.phpmailer.php, now moved to single class file
-  functions.php                                                                                  1.0.19    (2016-01-02)
-    1) Comments fix within errorHandler()
-  js/functions.js                                                                                1.0.271   (2016-01-02)
-    1) Made popup window for version() larger
+  codebase.php                                                                                   4.3.5     (2016-01-08)
+    1) Function x() now accepts optional parameter to specify plaintext mode for ajax or debug log output  
+    2) Updated version information
+  classes/class.community_display.php                                                            1.0.45    (2016-01-06)
+    1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
+       ?submode=css&targetValue=wow_slider_profile
+  classes/class.community_member.php                                                             1.0.111   (2016-01-07)
+    1) Performance improvements for Piwik stats crunching
 
-2423.sql
+2424.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.4
-  classes/  (4 files changed)
-    class.displayable_item.php                        1.0.157   CS:88c9ae62
-    class.phpmailer.php                               2.0.1     CS:b8d312f6
-    class.smtp.php                                    2.0.1     CS:c2a5250a
-    phpmailerexception.php                            2.0.1     CS:c53dc0ba
-  functions.php                                       1.0.19    CS:9cfbb63f
-  js/functions.js                                     1.1.271   CS:70216d0e
-
+  codebase.php                                        4.3.5
+  classes/  (2 files changed)
+    class.community_display.php                       1.0.45    CS:360f5751
+    class.community_member.php                        1.0.111   CS:c5d7b3fb
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1429,16 +1415,16 @@ function draw_signup(
 function draw_sql_debug($title, $sql, $error)
 {
     return
-     "<table border='1' summary='SQL Error Info'>\n"
-    ."  <tr>\n"
-    ."    <td bgcolor='#ffffff'><h1>SQL Statement Debugger</h1>\n"
-    ."    <h3 style='margin:0;'>$title</h3>\n"
-    ."    <pre>".$sql."</pre>\n"
-    .($error!="" ? "    <h3 style='margin:0;'>Error:</h3>\n".$error."<br /><br />" : "")
-    .x(2)
-    ."</td>\n"
-    ."  </tr>\n"
-    ."</table>\n";
+         "<table border='1' summary='SQL Error Info'>\n"
+        ."  <tr>\n"
+        ."    <td bgcolor='#ffffff'><h1>SQL Statement Debugger</h1>\n"
+        ."    <h3 style='margin:0;'>$title</h3>\n"
+        ."    <pre>".$sql."</pre>\n"
+        .($error!="" ? "    <h3 style='margin:0;'>Error:</h3>\n".$error."<br /><br />" : "")
+        .x(false, 2)
+        ."</td>\n"
+        ."  </tr>\n"
+        ."</table>\n";
 }
 
 function draw_layout($layoutID)
@@ -2896,29 +2882,68 @@ function title_case_string($text)
     return implode(' ', $words);
 }
 
-function x($shift = 0)
+function x($plain = false, $shift = 0)
 {
     $trace = debug_backtrace();
     if (!isset($trace[1])) {
         return "";
     }
-    for ($i=0; $i<$shift; $i++) {
-        array_shift($trace);
+    $func_len = 0;
+    $file_len = 0;
+    for ($i=0; $i<count($trace) && $i<=50; $i++) {
+        $func = (isset($trace[$i]['class']) ? $trace[$i]['class']."::" : "").$trace[$i]['function']."()";
+        $file = (isset($trace[$i]['file']) ? $trace[$i]['file'] : "");
+        if (strlen($func) > $func_len) {
+            $func_len = strlen($func);
+        }
+        if (strlen($file) > $file_len) {
+            $file_len = strlen($file);
+        }
     }
-    $message =    "<pre><b>Call stack trace:</b>\n";
-    for ($i=1; $i<count($trace)&&$i<=50; $i++) {
-        $message.=
-         "[".lead_zero(count($trace)-$i-1, 2)."] "
-        ."<span style='color:#ff0000'><b>"
-        .(isset($trace[$i]['class']) ? $trace[$i]['class']."::" : "")
-        .$trace[$i]['function']."()"
-        ."</b></span>"
-        .(isset($trace[$i]['file']) ? " via <span style='color:#008080'><b>".$trace[$i]['file']."</b></span>" : '')
-        .(isset($trace[$i]['line']) ? " line <span style='color:#000080'><b>".$trace[$i]['line']."</b></span>" : '')
-        ."\n";
+    $rule = str_repeat("-", (10+$func_len+$file_len));
+    $text =
+         "\nCall stack trace:\n"
+        .$rule."\n"
+        ."#  Called by ".str_repeat(' ', $func_len-10)." File".str_repeat(' ', $file_len-4)." Line\n"
+        .$rule."\n";
+    $html =
+         "<p><b>Call stack trace:</b></p>\n"
+        ."<table"
+        ." style='font-size:70%; border-collapse:collapse; background:#fff; margin:0.5em 0;'"
+        ." border='1' cellpadding='2' cellspacing='0'>\n"
+        ."  <thead>\n"
+        ."    <tr style='background:#ccc'>\n"
+        ."      <th style='text-align:left'>#</th>\n"
+        ."      <th style='text-align:left'>Called by</th>\n"
+        ."      <th style='text-align:left'>File</th>\n"
+        ."      <th style='text-align:left'>Line</th>\n"
+        ."    </tr>\n"
+        ."  </thead>\n"
+        ."  <tbody>\n";
+    for ($i=$start; $i<count($trace) && $i<=50; $i++) {
+        $num =  count($trace)-$i-1;
+        $num =  substr("0000", 0, 2-strlen($num)).$num;
+        $func = (isset($trace[$i]['class']) ? $trace[$i]['class']."::" : "").$trace[$i]['function']."()";
+        $file = (isset($trace[$i]['file']) ? $trace[$i]['file'] : "");
+        $line = (isset($trace[$i]['line']) ? $trace[$i]['line'] : false);
+        $text.=
+             $num
+            ." ".$func.str_repeat(' ', $func_len-strlen($func))
+            ." ".$file.str_repeat(' ', $file_len-strlen($file))
+            ." ".$line."\n";
+        $html.=
+             "    <tr".($i==$start ? " style='background:#dfd; color:080; font-weight:bold'" : "").">\n"
+            ."      <td>".$num."</td>\n"
+            .($func ? "      <td>".$func."</td>\n" : "")
+            .($file ? "      <td style='color:#088'><b>".$file."</b></td>\n" : '')
+            .($line ? "      <td style='color:#008'><b>".$line."</b></td>\n" : '')
+            ."    </tr>\n";
     }
-    $message.= "</pre>";
-    return $message;
+    $html.=
+         "  </tbody>\n"
+        ."</table>";
+    $text.= $rule."\n";
+    return $plain ? $text : $html;
 }
 
 function y()
