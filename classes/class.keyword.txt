@@ -1,3 +1,11 @@
+  1.0.10 (2011-11-18)
+    1) Keyword::delete() now removes associated csv entries for all types
+       including products (not previously handled) and contacts
+       (was looking in contacts table for these - that doesn't event exist now!)
+  1.0.9 (2011-10-26)
+    1) Keyword::get_related() now includes related products
+  1.0.8 (2011-10-19)
+    1) Change to Keyword::get_related() to reference `effective_date_start`
   1.0.7 (2011-03-01)
     1) Changes to delete() function to update postings table from `events` to
        `postings` (!!!)

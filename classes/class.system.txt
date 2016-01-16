@@ -1,3 +1,5 @@
+  1.0.172 (2016-01-01)
+    1) System::get_display_title() is now declared statically
   1.0.171 (2016-01-01)
     1) Method System::get_css_checksum() is now declared statically
   1.0.170 (2015-12-29)

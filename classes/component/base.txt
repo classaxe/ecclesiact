@@ -1,3 +1,5 @@
+  1.0.5 (2015-10-21)
+    1) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
   1.0.4 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.3 (2015-03-17)

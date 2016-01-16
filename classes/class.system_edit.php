@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.36 (2015-12-29)
-    1) Added support for new field piwik_md5_password
+  1.0.37 (2016-01-16)
+    1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.36';
+    const VERSION = '1.0.37';
 
     private $_colour_schemeID;
     private $_html;
@@ -356,16 +356,16 @@ class System_Edit extends System
         $this->_html.=
              draw_section_tab_div('advanced', $this->_selected_section)
             ."  <div class='settings_group'>\n"
-            ."    <label style='width:150px' for='debug'><b>SQL Debug File</b><br />"
-            ."(Affects performance)</label>"
             ."    <div class='val'>"
             .draw_form_field("debug", $this->record['debug'], "bool")
             ."</div>\n"
-            ."    <label style='width:200px' for='debug'><b>No Internet Mode</b><br />"
-            ."(Disables external services)</label>"
+            ."    <label style='width:360px' for='debug'><b>SQL Debug File</b> "
+            ."(Affects performance)</label>"
             ."    <div class='val'>"
             .draw_form_field("debug_no_internet", $this->record['debug_no_internet'], "bool")
             ."</div>\n"
+            ."    <label style='width:360px' for='debug'><b>No Internet Mode</b> "
+            ."(Disables external services)</label>"
             ."    <div class='clr_b'></div>\n"
             ."  </div>\n"
             ."  <div class='settings_group'>\n"
@@ -812,7 +812,7 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("colour2", $this->record['colour2'], "swatch", "60px")
             ."</div>\n"
-            ."    <div class='clr_b'></div>\n"
+            ."    <br class='clear' />\n"
             ."    <label style='width:120px' for='colour3' title='Accent Colour #3'>Accent # 3</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("colour3", $this->record['colour3'], "swatch", "60px")
@@ -821,23 +821,21 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("colour4", $this->record['colour4'], "swatch", "60px")
             ."</div>\n"
-            ."    <div class='clr_b'></div>\n"
+            ."    <br class='clear' />\n"
             ."  </div>\n"
             ."  <div class='settings_group'>\n"
             ."    <div class='lbl'><b>Calendar Colour Scheme</b></div>\n"
-            ."    <div class='clr_b'></div>\n"
-            ."    <div style='float:right;height:200px'><div class='constrain'>"
-            ."<div style='position:relative;padding:0px 10px'>"
-            .$ObjCalendar->draw(array('shadow'=>1,'show'=>'sample'))
-            ."</div></div></div>\n"
+            ."    <br class='clear' />\n"
+            ."    <div style='float: left'>"
             ."    <label style='width:120px' for='cal_border' title='Calendar Border'>Border</label>\n"
-            ."    <div class='val' style='width:130px'>"
+            ."    <div class='val' style='width:130px;'>"
             .draw_form_field("cal_border", $this->record['cal_border'], "swatch", "60px")
             ."</div>\n"
             ."    <label style='width:120px' for='cal_current' title='Current Weekday'>Current</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_current", $this->record['cal_current'], "swatch", "60px")
             ."</div>\n"
+            ."    <br class='clear' />\n"
             ."    <label style='width:120px' for='cal_head' title='Calendar Heading'>Heading</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_head", $this->record['cal_head'], "swatch", "60px")
@@ -846,6 +844,7 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_days", $this->record['cal_days'], "swatch", "60px")
             ."</div>\n"
+            ."    <br class='clear' />\n"
             ."    <label style='width:120px' for='cal_current_we' title='Current Weekend'>Current Wknd</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_current_we", $this->record['cal_current_we'], "swatch", "60px")
@@ -854,6 +853,7 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_today", $this->record['cal_today'], "swatch", "60px")
             ."</div>\n"
+            ."    <br class='clear' />\n"
             ."    <label style='width:120px' for='cal_then' title='Inactive Weekday'>Inactive Weekday</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_then", $this->record['cal_then'], "swatch", "60px")
@@ -862,10 +862,16 @@ class System_Edit extends System
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_event", $this->record['cal_event'], "swatch", "60px")
             ."</div>\n"
+            ."    <br class='clear' />\n"
             ."    <label style='width:120px' for='cal_then_we' title='Inactive Weekend'>Inactive Weekend</label>\n"
             ."    <div class='val' style='width:130px'>"
             .draw_form_field("cal_then_we", $this->record['cal_then_we'], "swatch", "60px")
             ."</div>\n"
+            ."</div>\n"
+            ."    <div style='float:right;height:200px' class='constrain'>"
+            ."<div style='position:relative;padding:0px 10px'>"
+            .$ObjCalendar->draw(array('shadow'=>1,'show'=>'sample'))
+            ."</div></div>\n"
             ."    <div class='clr_b'></div>\n"
             ."  </div>\n"
             ."</div>";

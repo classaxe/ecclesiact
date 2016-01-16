@@ -1,3 +1,10 @@
+  1.0.24 (2016-01-01)
+    1) The following methopds are now declared to be static:
+          FCK::attach_ckfinder()
+          FCK::do_fck()
+          FCK::draw_editor()
+          FCK::draw_plugin_ecl()
+    2) Now uses class constant VERSION for version control
   1.0.23 (2015-09-13)
     1) References to Page::pop_content() now changed to Output::pull()
   1.0.22 (2014-04-17)

@@ -1,17 +1,17 @@
 <?php
 /*
 Version History:
-  1.0.134 (2015-12-13)
-    1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
-       is enabled for the site
-    2) Added method note_prepend_unstamped()
-    3) Now uses VERSION constant
-
+  1.0.135 (2016-01-16)
+    1) Report_Column::draw_label() is now statically declared
+    2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given
+       and properly applies colours where these are given
+    3) Report_Column::draw_form_field() for cases radio_csvlist and selector_csvlist now better handle cases where
+       text and bg colors are not given
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.134';
+    const VERSION = '1.0.135';
 
     public function __construct($ID = "")
     {
@@ -172,8 +172,13 @@ class Report_Column extends Record
                         'color_background' => (isset($_entry_arr[2]) ?
                             $_entry_arr[2]
                          :
-                            ""
-                        )
+                            "ffffff"
+                        ),
+                        'color_text' => (isset($_entry_arr[3]) ?
+                            $_entry_arr[3]
+                            :
+                            "000000"
+                        ),
                     );
                 }
                 break;
@@ -798,9 +803,11 @@ class Report_Column extends Record
                         ."height:".$height."px;width:".((int)$width-17)."px;overflow:auto;\">\n"
                         ."<input type='hidden' name='".$field."' id='".$field."' value='".$value."' />\n";
                     foreach ($options as $option) {
-                        $idx = Page::get_css_idx($option['color_text'], $option['color_background']);
+                        $color_text =   (isset($option['color_text']) ? $option['color_text'] : '000000');
+                        $color_bg =     (isset($option['color_background']) ? $option['color_background'] : 'ffffff');
+                        $idx = Page::get_css_idx($color_text, $color_bg);
                         $out.=
-                             "<div >"
+                             "<div class=\"color_$idx\">"
                             ."<label style=\"padding-left:10px;padding-right:5px;\">"
                             ."<input id=\"".$field."_".$option."\" type='checkbox' "
                             .(in_array($option, $value_arr) ? "checked='checked' " : "")
@@ -2722,7 +2729,7 @@ class Report_Column extends Record
         return $Obj_RFFL->draw();
     }
 
-    public function draw_label($label, $tooltip = '', $field = '', $standalone = false, $width = false)
+    public static function draw_label($label, $tooltip = '', $field = '', $standalone = false, $width = false)
     {
         if ($label=='') {
             return;
@@ -2890,26 +2897,24 @@ class Report_Column extends Record
             }
             $ID = $field.($i==0? '' : '_'.get_web_safe_ID($v));
             $out.=
-            "<label"
-            .($stacked && (int)$width || $ajax_mode ?
-             " style='"
-            .($ajax_mode && isset($record['color_text']) ? "color:#".$record['color_text'].";" : "")
-            .($ajax_mode && isset($record['color_background']) ? "background:#".$record['color_background'].";" : "")
-            .($stacked ? "" : "float:left;")
-            .($stacked || (int)$width ? "display:block;margin:0 1px 1px 0;width:".(int)$width."px;" : "")
-            ."'"
-             : ""
-            )
-            ." class='"
-            ."xformOptionValue"
-            .(!$ajax_mode ? " color_".$idx : "")
-            ."'>"
-            ."<input type=\"radio\" name=\"".$field."\" value=\"".$v."\" "
-            ."id=\"".$ID."\"".(strToLower($value)==strToLower($v) ? " checked='checked'" : "")
-            .($jsCode ? " ".$jsCode : "")
-            ." />"
-            .$l
-            ."&nbsp;</label>\n";
+                 "<label"
+                .($stacked && (int)$width || $ajax_mode ?
+                 " style='"
+                .($stacked ? "" : "float:left;")
+                .($stacked || (int)$width ? "display:block;margin:0 1px 1px 0;width:".(int)$width."px;" : "")
+                ."'"
+                 : ""
+                )
+                ." class='"
+                ."xformOptionValue"
+                .(!$ajax_mode ? " color_".$idx : "")
+                ."'>"
+                ."<input type=\"radio\" name=\"".$field."\" value=\"".$v."\" "
+                ."id=\"".$ID."\"".(strToLower($value)==strToLower($v) ? " checked='checked'" : "")
+                .($jsCode ? " ".$jsCode : "")
+                ." />"
+                .$l
+                ."&nbsp;</label>\n";
         }
         if ((int)$width && !$stacked) {
             $out.="</div>";

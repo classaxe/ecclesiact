@@ -2,15 +2,14 @@
 namespace Component;
 /*
 Version History:
-  1.0.5 (2015-10-21)
-    1) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-
+  1.0.6 (2016-01-16)
+    1) Component\Base::help() is now staticaly defined
 */
 
 
 class Base extends \Record
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     public static $help_div_id = 0;
     protected $_args;
@@ -284,7 +283,7 @@ class Base extends \Record
         );
     }
 
-    public function help($name, $params, $instance = '')
+    public static function help($name, $params, $instance = '')
     {
         global $page_vars, $system_vars;
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");

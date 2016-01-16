@@ -1,3 +1,5 @@
+  1.0.126 (2016-01-01)
+    1) Page::get_css_idx() is now declared to be static
   1.0.125 (2016-01-01)
     1) Page::hasDynamicTags() is now declared to be static
   1.0.124 (2015-09-17)

@@ -1,19 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.24 (2016-01-01)
-    1) The following methopds are now declared to be static:
-          FCK::attach_ckfinder()
-          FCK::do_fck()
-          FCK::draw_editor()
-          FCK::draw_plugin_ecl()
-    2) Now uses class constant VERSION for version control
+  1.0.25 (2016-01-16)
+    1) FCK::draw_editor() now uses the VERSION constant internally
 */
 
 
 class FCK extends Record
 {
-    const VERSION = '1.0.24';
+    const VERSION = '1.0.25';
 
     public static function attach_ckfinder()
     {
@@ -59,7 +54,7 @@ class FCK extends Record
         Output::push(
             'javascript_onload',
             "  \$J('#".$jq_field."')[0].value=".json_encode($sanitized).";\n"
-            ."  CKEDITOR.timestamp = '".VERSION_FCK."';\n"
+            ."  CKEDITOR.timestamp = '".static::VERSION."';\n"
             ."  ckeditor_".$field." = CKEDITOR.replace( \"".$field."\", { toolbar: '".$toolbar."',height: 0});\n"
             ."  ckeditor_".$field.".on('instanceReady',\n"
             ."    function(e) {\n"

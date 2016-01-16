@@ -1,3 +1,8 @@
+  1.0.134 (2015-12-13)
+    1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
+       is enabled for the site
+    2) Added method note_prepend_unstamped()
+    3) Now uses VERSION constant
   1.0.133 (2015-12-08)
     1) Report_Column::draw_form_field() for the following field types now converts <<br>> to newline when see:
        Types affected are: notes, option_list, php, textarea, textarea_big and textarea_readonly

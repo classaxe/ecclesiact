@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.126 (2016-01-01)
-    1) Page::get_css_idx() is now declared to be static
+  1.0.127 (2016-01-16)
+    1) Page::get_css_idx() - formatting tweaks for clearer HTML output
 */
 class Page extends Displayable_Item
 {
-    const VERSION = '1.0.126';
+    const VERSION = '1.0.127';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, memberID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public static $javascript =  array();
@@ -825,11 +825,11 @@ class Page extends Displayable_Item
         );
         Output::push(
             "style",
-            ($idx==1 ? "/* [Option colours] */\r\n" : "")
+            ($idx==1 ? "\n/* [Option colours] */\n" : "")
             .".color_".$idx." {"
             .($color!==false ? " color: #".strToUpper($color).";" : "")
             .($bgcolor!==false ? " background-color: #".strToUpper($bgcolor).";" : "")
-            ."}"
+            ."}\n"
         );
         return $idx;
     }

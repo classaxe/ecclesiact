@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.6");
+define("CODEBASE_VERSION", "4.3.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,37 +16,73 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.6.2425 (2016-01-08)
+4.3.7.2426 (2016-01-16)
 Summary:
-  1) Now shows total time for Piwik number crunching
-  2) Textarea Report column fields now detect <pre> tags used in field and no longer nl2br() those values 
+  1) More corrections for PHP 5.6
+  2) Formatting improvements for System Edit dialog
 
 Final Checksums:
-  Classes     CS:986d9a4d
+  Classes     CS:a9d5ce6b
   Database    CS:5d138354
-  Libraries   CS:d0ac81f9
+  Libraries   CS:27d4bdbf
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.6     (2016-01-08)
+  codebase.php                                                                                   4.3.7     (2016-01-16)
     1) Updated version information
-  classes/class.community_member.php                                                             1.0.112   (2016-01-08)
-    1) Now gives total time for number crunching of Piwik Stats at bottom
-  classes/class.report_column_report_field.php                                                   1.0.31    (2016-01-08)
-    1) Report_Column_Report_Field::draw() for textarea types now detects <pre> tags and doesn't nl2br() that output
-    2) Now uses VERSION class constant for version control
-  style/default.css                                                                              1.0.171   (2016-01-08)
-    1) Added pre.admin_fixed that reduces top ad bottom margins
+  classes/class.category.php                                                                     1.0.3     (2016-01-16)
+    1) Method Category::get_labels_for_values() now static
+    2) Method Category::get_selector_sql() now static
+    3) Now uses VERSION for version control
+    4) Now more PSR-2 compliant
+  classes/class.fck.php                                                                          1.0.25    (2016-01-16)
+    1) FCK::draw_editor() now uses the VERSION constant internally
+  classes/class.group_assign.php                                                                 1.0.3     (2016-01-16)
+    1) Method get_selector_sql() is now statically defined
+    2) Now more PSR-2 compliant
+  classes/class.keyword.php                                                                      1.0.11    (2016-01-16)
+    1) The folowing methods are now declared to be static:
+         Keyword::get_selector_sql()
+         Keyword::get_related()
+         Keyword::get_keywordIDs_list_by_keywords_list()
+         Keyword::get_keywords_list_by_IDs_list()
+         Keyword::get_keyword_list_with_weight
+    2) Now uses VERSION for version control
+    3) Now more PSR-2 compliant
+  classes/class.link.php                                                                         1.0.7     (2016-01-16)
+    1) Link::draw_treeview_js() now declared statically
+    2) Now more PSR-2 compiant
+  classes/class.page.php                                                                         1.0.127   (2016-01-16)
+    1) Page::get_css_idx() - formatting tweaks for clearer HTML output
+  classes/class.report_column.php                                                                1.0.135   (2016-01-16)
+    1) Report_Column::draw_label() is now statically declared
+    2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given
+       and properly applies colours where these are given
+    3) Report_Column::draw_form_field() for cases radio_csvlist and selector_csvlist now better handle cases where
+       text and bg colors are not given
+  classes/class.system.php                                                                       1.0.173   (2016-01-16)
+    1) System::get_selector_sql() now declared statically
+  classes/class.system_edit.php                                                                  1.0.37    (2016-01-16)
+    1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
+  classes/component/base.php                                                                     1.0.6     (2016-01-16)
+    1) Component\Base::help() is now staticaly defined
 
-2425.sql
+2426.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.3.6
-  classes/  (2 files changed)
-    class.community_member.php                        1.0.112   CS:51b2f1e6
-    class.report_column_report_field.php              1.0.31    CS:820a23bd
-  style/default.css                                   1.0.171   CS:67413ca3
+  codebase.php                                        4.3.7
+  classes/  (10 files changed)
+    class.category.php                                1.0.3     CS:4b1dcf78
+    class.fck.php                                     1.0.25    CS:11eced5e
+    class.group_assign.php                            1.0.3     CS:890ed72
+    class.keyword.php                                 1.0.11    CS:14a4c320
+    class.link.php                                    1.0.4     CS:12943bb5
+    class.page.php                                    1.0.127   CS:ec498c1a
+    class.report_column.php                           1.0.135   CS:d3cd9735
+    class.system.php                                  1.0.173   CS:bedb471b
+    class.system_edit.php                             1.0.37    CS:19aeac1c
+    component/base.php                                1.0.6     CS:a7f77a48
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -2883,7 +2919,7 @@ function title_case_string($text)
     return implode(' ', $words);
 }
 
-function x($plain = false, $shift = 0)
+function x($plain = false, $start = 0)
 {
     $trace = debug_backtrace();
     if (!isset($trace[1])) {

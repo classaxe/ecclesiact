@@ -1,0 +1,10 @@
+  1.0.2 (2012-10-01)
+    1) Group_Assign::get_selector_sql() has colour-codes entries for MasterAdmin
+       now that option-transfer function is now preserving these after sorting
+    2) Group_Assign::get_selector_sql() no longer takes any parameters so looks
+       similar to other methods of the same name
+  1.0.1 (2010-10-19)
+    1) Constructor now named __construct()
+    2) Group_Assign::set_for_assignment() now calls insert() method
+  1.0.0 (2009-07-02)
+    Initial release

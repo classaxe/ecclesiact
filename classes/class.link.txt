@@ -1,3 +1,7 @@
+  1.0.6 (2013-06-07)
+    1) Changed the following CPs for listings mode:
+         Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'
+         New: 'results_grouping', 'results_limit', 'results_order',   'results_paging'
   1.0.5 (2013-04-01)
     1) Removed CP options for image selection
   1.0.4 (2012-08-23)

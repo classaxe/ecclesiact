@@ -1,3 +1,5 @@
+  1.0.36 (2015-12-29)
+    1) Added support for new field piwik_md5_password
   1.0.35 (2015-10-10)
     1) Reorginised fields in General tab to allow for URL_aliases field
   1.0.34 (2015-09-12)
