@@ -1,3 +1,8 @@
+  1.0.4 (2012-11-21)
+    1) Now Posting_Container::set_default_enclosure_folder() checks the parent
+       folder if there is one, and then builds default folder based on parent
+       path combined with the name of the object represented.
+       Also checks that the path is properly prefixed ad suffixed with a slash
   1.0.3 (2012-03-06)
     1) Added Posting_Container::set_default_enclosure_folder() and
        Posting_Container::on_action_set_default_enclosure_folder()

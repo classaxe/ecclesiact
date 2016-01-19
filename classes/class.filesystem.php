@@ -1,20 +1,19 @@
 <?php
 /*
 Version History:
-  1.0.18 (2016-01-01)
-    1) FileSystem::get_file_checksum() is now declared statically
-    2) Now uses VERSION class constant for version control
+  1.0.19 (2016-01-18)
+    1) Almost all methods are now declared statically
 */
 class FileSystem extends Base
 {
-    const VERSION = '1.0.18';
+    const VERSION = '1.0.19';
 
-    public function delete_dir_entry($key, $value)
+    public static function delete_dir_entry($key, $value)
     {
         if (substr($key, 0, 10)=='dir_entry_' && $value=='1') {
             $crc32 = substr($key, 10);
-            $dirTree = $this->get_dir_tree(SYS_LOGS);
-            $result = $this->in_dir_tree($dirTree, $crc32);
+            $dirTree = static::get_dir_tree(SYS_LOGS);
+            $result = static::in_dir_tree($dirTree, $crc32);
             if ($result!=false) {
                 if ($result['type']=='d') {
                     rmdir($result['path'].$result['name']);
@@ -27,7 +26,7 @@ class FileSystem extends Base
         return false;
     }
 
-    public function dir_getMatchingFiles($files, $search)
+    public static function dir_getMatchingFiles($files, $search)
     {
     // Thanks to: tmm at aon dot at (see http://ca2.php.net/manual/en/function.glob.php)
       // Split to name and filetype
@@ -66,15 +65,15 @@ class FileSystem extends Base
         return $matches;
     }
 
-    public function dir_getContents($dir, $files = array())
+    public static function dir_getContents($dir, $files = array())
     {
-        if (!($res=opendir($dir))) {
+        if (!($res = opendir($dir))) {
             exit("$dir doesn't exist!");
         }
         while (($file=readdir($res))==true) {
             if ($file!="." && $file!="..") {
                 if (is_dir("$dir/$file")) {
-                    $files=FileSystem::dir_getContents("$dir/$file", $files);
+                    $files = static::dir_getContents("$dir/$file", $files);
                 } else {
                     array_push($files, "$dir/$file");
                 }
@@ -84,12 +83,12 @@ class FileSystem extends Base
         return $files;
     }
 
-    public function dir_wildcard_search($path, $pattern)
+    public static function dir_wildcard_search($path, $pattern)
     {
-        return self::dir_getMatchingFiles(FileSystem::dir_getContents($path), $pattern);
+        return static::dir_getMatchingFiles(FileSystem::dir_getContents($path), $pattern);
     }
 
-    public function draw_dir_tree($dir_array, $level = 0, $checkboxes = false, $title = 'Files', $expanded = 0)
+    public static function draw_dir_tree($dir_array, $level = 0, $checkboxes = false, $title = 'Files', $expanded = 0)
     {
         global $page_vars;
         $get = BASE_PATH.trim($page_vars['path'], '/')."/?command=get_file";
@@ -144,7 +143,7 @@ class FileSystem extends Base
                         ." \/><\/td>\";\n";
                 }
             } else {
-                $out.= $this->draw_dir_tree($entry, $level+1, $checkboxes, '', $expanded);
+                $out.= static::draw_dir_tree($entry, $level+1, $checkboxes, '', $expanded);
             }
         }
         if ($level==0) {
@@ -156,7 +155,7 @@ class FileSystem extends Base
         return $out;
     }
 
-    public function file_append($name, $data)
+    public static function file_append($name, $data)
     {
         if ($fp=fopen($name, 'a')) {
             fwrite($fp, $data, strlen($data));
@@ -166,7 +165,7 @@ class FileSystem extends Base
         return false;
     }
 
-    public function get_dir_tree($dir)
+    public static function get_dir_tree($dir)
     {
         $d = dir($dir);
         $out = array();
@@ -195,14 +194,12 @@ class FileSystem extends Base
                     break;
             }
         }
-        $order_arr =
-        array(
-        array('dir','d'),
-        array('name','a')
+        $order_arr = array(
+            array('dir','d'),
+            array('name','a')
         );
         $Obj = new Record();
         $entries = $Obj->sort_records($entries, $order_arr);
-
         foreach ($entries as $entry) {
             $name = $entry['name'];
             $path = $dir.$name;
@@ -214,7 +211,7 @@ class FileSystem extends Base
                     'path' => $dir,
                     'crc32' => dechex(crc32($path))
                 );
-                $out[] = $this->get_dir_tree($path.'/');
+                $out[] = static::get_dir_tree($path.'/');
             } else {
                 $out[] = array(
                     'name' => $name,
@@ -374,7 +371,7 @@ class FileSystem extends Base
         return true;
     }
 
-    public function readfile_chunked($filename, $retbytes = true)
+    public static function readfile_chunked($filename, $retbytes = true)
     {
       // From http://www.php.net/manual/en/function.readfile.php#54295
         $chunksize = 1*(1024*1024); // how many bytes per chunk
@@ -468,20 +465,20 @@ class FileSystem extends Base
         return $out;
     }
 
-    public function in_dir_tree($dir_array, $crc32)
+    public static function in_dir_tree($dir_array, $crc32)
     {
         for ($i=0; $i<count($dir_array); $i++) {
-            $this_entry = $dir_array[$i];
-            if (isset($this_entry['type'])) {
-                if ($crc32 == $this_entry['crc32']) {
+            $entry = $dir_array[$i];
+            if (isset($entry['type'])) {
+                if ($crc32 == $entry['crc32']) {
                     return array(
-                    'type'=>$this_entry['type'],
-                    'path'=>$this_entry['path'],
-                    'name'=>$this_entry['name']
+                        'type'=>$entry['type'],
+                        'path'=>$entry['path'],
+                        'name'=>$entry['name']
                     );
                 }
             } else {
-                $result = ($this->in_dir_tree($this_entry, $crc32));
+                $result = static::in_dir_tree($entry, $crc32);
                 if ($result!=false) {
                     return $result;
                 }
@@ -528,7 +525,7 @@ class FileSystem extends Base
         return true;
     }
 
-    public function write_file($name, $data)
+    public static function write_file($name, $data)
     {
         if ($fp=fopen($name, 'w')) {
             $result = fwrite($fp, $data, strlen($data));

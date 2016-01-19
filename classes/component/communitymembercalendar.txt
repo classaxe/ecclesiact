@@ -1,3 +1,11 @@
+  1.0.30 (2015-09-13)
+    1) Many changes following move of output streaming from Page into Output class:
+         Page::push_content()           ->      Output::push()
+         Page::pop_content()            ->      Output::pull()
+         Page::$content = array()       ->      Output::reset()
+         isset(Page::$content[$part])   ->      Output::present($part)
+  1.0.2 (2015-03-13)
+    1) Now extends \Component\CalendarLarge and modified to suit that object
   1.0.1 (2013-09-20)
     1) Community_Member_Calendar::_shared_source_link() now sets anchor to linked
        calendar for member who shared event on calendar

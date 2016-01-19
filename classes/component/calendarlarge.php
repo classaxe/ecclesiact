@@ -1,19 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CALENDAR_LARGE", "1.0.30");
 /*
 Version History:
-  1.0.30 (2015-09-13)
-    1) Many changes following move of output streaming from Page into Output class:
-         Page::push_content()           ->      Output::push()
-         Page::pop_content()            ->      Output::pull()
-         Page::$content = array()       ->      Output::reset()
-         isset(Page::$content[$part])   ->      Output::present($part)
-
+  1.0.31 (2016-01-19)
+    1) Now uses class constant for Version control
 */
 class CalendarLarge extends Base
 {
+    const VERSION = '1.0.31';
+
     protected $_arr_cal;
     protected $_categories = array();
     protected $_controls_visible;
@@ -589,10 +584,5 @@ class CalendarLarge extends Base
             ."<img src='".BASE_PATH."img/sysimg/icon_shared.gif' style='padding:2px;height:13px;width:15px'"
             ." alt=\"External content from ".str_replace('& ', '&amp; ', $event['systemTitle'])."\" />"
             ."</div>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CALENDAR_LARGE;
     }
 }

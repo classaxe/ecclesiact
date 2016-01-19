@@ -1,14 +1,12 @@
 <?php
-define('VERSION_PODCAST', '1.0.47');
 /*
 Version History:
-  1.0.47 (2015-09-19)
-    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
-    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
-
+  1.0.48 (2016-01-18)
+    1) Now uses VERSION class constant for version control
 */
 class Podcast extends Posting_Contained
 {
+    const VERSION = '1.0.48';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -646,10 +644,5 @@ class Podcast extends Posting_Contained
             $data = $Obj_Podcast->get_mp3_metadata();
             $Obj_Podcast->update($data);
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_PODCAST;
     }
 }

@@ -1,3 +1,6 @@
+  1.0.47 (2015-09-19)
+    1) Now calls Output::drawCssInclude() instead of System::draw_css_include()
+    2) Now calls Output::drawJsInclude()  instead of System::draw_js_include()
   1.0.46 (2015-02-06)
     1) Now allows for ordering by date_d_name_a and date_d_title_a (for DCC AM / PM services on same day)
   1.0.45 (2015-02-01)

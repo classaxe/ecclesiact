@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.7");
+define("CODEBASE_VERSION", "4.3.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,73 +16,108 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.7.2426 (2016-01-16)
+4.3.8.2427 (2016-01-19)
 Summary:
-  1) More corrections for PHP 5.6
-  2) Formatting improvements for System Edit dialog
+  1) Many more corrections for PHP 5.6 - including some 'magic this' elimination
+  2) Inline signin component now a true namespaced component
 
 Final Checksums:
-  Classes     CS:a9d5ce6b
+  Classes     CS:ab45c11a
   Database    CS:5d138354
-  Libraries   CS:27d4bdbf
+  Libraries   CS:582af99a
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.7     (2016-01-16)
+  codebase.php                                                                                   4.3.8     (2016-01-19)
     1) Updated version information
-  classes/class.category.php                                                                     1.0.3     (2016-01-16)
-    1) Method Category::get_labels_for_values() now static
-    2) Method Category::get_selector_sql() now static
-    3) Now uses VERSION for version control
-    4) Now more PSR-2 compliant
-  classes/class.fck.php                                                                          1.0.25    (2016-01-16)
-    1) FCK::draw_editor() now uses the VERSION constant internally
-  classes/class.group_assign.php                                                                 1.0.3     (2016-01-16)
-    1) Method get_selector_sql() is now statically defined
-    2) Now more PSR-2 compliant
-  classes/class.keyword.php                                                                      1.0.11    (2016-01-16)
-    1) The folowing methods are now declared to be static:
-         Keyword::get_selector_sql()
-         Keyword::get_related()
-         Keyword::get_keywordIDs_list_by_keywords_list()
-         Keyword::get_keywords_list_by_IDs_list()
-         Keyword::get_keyword_list_with_weight
-    2) Now uses VERSION for version control
-    3) Now more PSR-2 compliant
-  classes/class.link.php                                                                         1.0.7     (2016-01-16)
-    1) Link::draw_treeview_js() now declared statically
-    2) Now more PSR-2 compiant
-  classes/class.page.php                                                                         1.0.127   (2016-01-16)
-    1) Page::get_css_idx() - formatting tweaks for clearer HTML output
-  classes/class.report_column.php                                                                1.0.135   (2016-01-16)
-    1) Report_Column::draw_label() is now statically declared
-    2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given
-       and properly applies colours where these are given
-    3) Report_Column::draw_form_field() for cases radio_csvlist and selector_csvlist now better handle cases where
-       text and bg colors are not given
-  classes/class.system.php                                                                       1.0.173   (2016-01-16)
-    1) System::get_selector_sql() now declared statically
-  classes/class.system_edit.php                                                                  1.0.37    (2016-01-16)
-    1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
-  classes/component/base.php                                                                     1.0.6     (2016-01-16)
-    1) Component\Base::help() is now staticaly defined
+  classes/class.article.php                                                                      1.0.40    (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/class.community_article.php                                                            1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_event.php                                                              1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_member_article.php                                                     1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_member_event.php                                                       1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_member_news_item.php                                                   1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_member_podcast.php                                                     1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_member_posting.php                                                     1.0.5     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+    2) Community_Member_Posting::_get_records_get_sql() ->       Community_Member_Posting::getRecordsGetSqlWithDelegate()
+    3) Community_Member_Posting::BL_shared_source_link() ->      Community_Member_Posting::BLsharedSourceLinkWithDelegate()
+    4) Community_Member_Posting::BL_mini_shared_source_link() -> Community_Member_Posting::BLminiSharedSourceLinkWithDelegate()
+  classes/class.community_news_item.php                                                          1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_podcast.php                                                            1.0.4     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  classes/class.community_posting.php                                                            1.0.6     (2016-01-18)
+    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+    2) Community_Posting::_get_records_get_sql() ->       Community_Posting::getRecordsGetSqlWithDelegate()
+    3) Community_Posting::BL_shared_source_link() ->      Community_Posting::BLsharedSourceLinkWithDelegate()
+    4) Community_Posting::BL_mini_shared_source_link() -> Community_Posting::BLminiSharedSourceLinkWithDelegate()
+  classes/class.event.php                                                                        1.0.106   (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/class.filesystem.php                                                                   1.0.19    (2016-01-18)
+    1) Almost all methods are now declared statically
+  classes/class.news_item.php                                                                    1.0.25    (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/class.podcast.php                                                                      1.0.48    (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/class.posting.php                                                                      1.0.122   (2016-01-18)
+    1) Now uses VERSION class constant for version control
+    2) Removed override of handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name) - not needed
+  classes/class.posting_contained.php                                                            1.0.243   (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/class.posting_container.php                                                            1.0.5     (2016-01-18)
+    1) Now uses VERSION class constant for version control
+  classes/component/calendarlarge.php                                                            1.0.31    (2016-01-19)
+    1) Now uses class constant for Version control
+  classes/component/communitycalendar.php                                                        1.0.3     (2016-01-18)
+    1) Now getSharedSourceLink() calls renamed Community_Posting::BLMiniSharedSourceLinkWithDelegate()
+    2) Now uses class constant for version control
+  classes/component/communitymembercalendar.php                                                  1.0.3     (2016-01-18)
+    1) Now Community_Member_Posting::getSharedSourceLink() calls renamed
+       Community_Member_Posting::BLMiniSharedSourceLinkWithDelegate()
+    2) Now uses class constant for version control
+  classes/component/inlinesignin.php                                                             1.0.4     (2016-01-16)
+    1) Now a PSR-2 namespaced component
+    2) draw() method is now declared as static
 
-2426.sql
-  1) Set version information
+2427.sql
+  1) Changes to ECL tag 'draw_inline_signin' for component changes
+  2) Set version information
+
+Delete:
+    class.component_inline_signin.php                 1.0.3
 
 Promote:
-  codebase.php                                        4.3.7
-  classes/  (10 files changed)
-    class.category.php                                1.0.3     CS:4b1dcf78
-    class.fck.php                                     1.0.25    CS:11eced5e
-    class.group_assign.php                            1.0.3     CS:890ed72
-    class.keyword.php                                 1.0.11    CS:14a4c320
-    class.link.php                                    1.0.4     CS:12943bb5
-    class.page.php                                    1.0.127   CS:ec498c1a
-    class.report_column.php                           1.0.135   CS:d3cd9735
-    class.system.php                                  1.0.173   CS:bedb471b
-    class.system_edit.php                             1.0.37    CS:19aeac1c
-    component/base.php                                1.0.6     CS:a7f77a48
+  codebase.php                                        4.3.8
+  classes/  (22 files changed)
+    class.article.php                                 1.0.40    CS:f91e7aa
+    class.community_article.php                       1.0.4     CS:d33c0cf8
+    class.community_event.php                         1.0.4     CS:b4b31a0e
+    class.community_member_article.php                1.0.4     CS:77c26278
+    class.community_member_event.php                  1.0.4     CS:e007820a
+    class.community_member_news_item.php              1.0.4     CS:6d90769d
+    class.community_member_podcast.php                1.0.4     CS:75b1ae85
+    class.community_member_posting.php                1.0.5     CS:cd381ef7
+    class.community_news_item.php                     1.0.4     CS:92f8e5e
+    class.community_podcast.php                       1.0.4     CS:f608146d
+    class.community_posting.php                       1.0.6     CS:3285a23
+    class.event.php                                   1.0.106   CS:ad77682b
+    class.filesystem.php                              1.0.19    CS:1c841241
+    class.news_item.php                               1.0.25    CS:50d2ef10
+    class.podcast.php                                 1.0.48    CS:525316fd
+    class.posting.php                                 1.0.122   CS:e37f989f
+    class.posting_contained.php                       1.0.243   CS:5abe4bb5
+    class.posting_container.php                       1.0.5     CS:788cd153
+    component/calendarlarge.php                       1.0.31    CS:bdcf0a0d
+    component/communitycalendar.php                   1.0.3     CS:cdae41c2
+    component/communitymembercalendar.php             1.0.3     CS:aa631584
+    component/inlinesignin.php                        1.0.4     CS:5f87b3f7
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,16 +1,17 @@
 <?php
 namespace Component;
-
-define('COMPONENT_NS_COMMUNITY_MEMBER_CALENDAR_VERSION', '1.0.2');
 /*
 Version History:
-  1.0.2 (2015-03-13)
-    1) Now extends \Component\CalendarLarge and modified to suit that object
-
+  1.0.3 (2016-01-18)
+    1) Now Community_Member_Posting::getSharedSourceLink() calls renamed
+       Community_Member_Posting::BLMiniSharedSourceLinkWithDelegate()
+    2) Now uses class constant for version control
 */
 
 class CommunityMemberCalendar extends \Component\CalendarLarge
 {
+    const VERSION = '1.0.3';
+
     protected $_event_category_name =       'Community Posting Category';
     protected $_event_report_name =         'community_member.events';
     protected $_event_context_menu_name =   'module_cm_event';
@@ -27,11 +28,6 @@ class CommunityMemberCalendar extends \Component\CalendarLarge
 
     protected function getSharedSourceLink()
     {
-        return \Community_Member_Posting::BL_mini_shared_source_link($this, '#calendar');
-    }
-
-    public static function getVersion()
-    {
-        return COMPONENT_NS_COMMUNITY_MEMBER_CALENDAR_VERSION;
+        return \Community_Member_Posting::BLMiniSharedSourceLinkWithDelegate($this, '#calendar');
     }
 }

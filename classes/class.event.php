@@ -1,13 +1,12 @@
 <?php
-define('VERSION_EVENT', '1.0.105');
 /*
 Version History:
-  1.0.105 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.106 (2016-01-18)
+    1) Now uses VERSION class constant for version control
 */
 class Event extends Posting
 {
+    const VERSION = '1.0.106';
 
     public static $cache_event_registrant_count =      array();
 
@@ -1839,11 +1838,5 @@ class Event extends Posting
             "  popup_msg=\"".$msg."\";popup_dialog('Event Delete',"
             ."\"<div style='padding:4px'>\"+popup_msg+\"</div>\",'320',120,'Done','','');\n"
         );
-    }
-
-
-    public static function getVersion()
-    {
-        return VERSION_EVENT;
     }
 }

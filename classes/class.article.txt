@@ -1,3 +1,5 @@
+  1.0.39 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.38 (2015-02-06)
     1) CP for listings 'results_order' now allows for date_a, date_d_name_a and date_d_title_a
     2) Now PSR-2 Compliant

@@ -1,3 +1,6 @@
+  1.0.2 (2015-03-13)
+    1) Now uses namespaces and is fully PSR-2 Compliant
+    2) Now extends \Component\CalendarLarge and modified to suit that object
   1.0.1 (2013-07-23)
     1) Anchor for mini link changed to '#calendar'
   1.0.0 (2013-07-23)

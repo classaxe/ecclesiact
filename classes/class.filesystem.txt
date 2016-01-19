@@ -1,3 +1,6 @@
+  1.0.18 (2016-01-01)
+    1) FileSystem::get_file_checksum() is now declared statically
+    2) Now uses VERSION class constant for version control
   1.0.17 (2015-01-11)
     1) Changes to FileSystem::get_file_changes() to deal with unix-style line endings in classes
     2) Now PSR-2 Compliant

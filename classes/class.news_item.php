@@ -1,15 +1,13 @@
 <?php
-define('VERSION_NEWS_ITEM', '1.0.24');
 /*
 Version History:
-  1.0.24 (2015-02-06)
-    1) New CP for listings - results_order - previously not possible to change display order
-    2) Now PSR-2 Compliant
-
-  (Older version history in class.news_item.txt)
+  1.0.25 (2016-01-18)
+    1) Now uses VERSION class constant for version control
 */
 class News_Item extends Posting
 {
+    const VERSION = '1.0.25';
+
     public function __construct($ID = "", $systemID = SYS_ID)
     {
         parent::__construct($ID, $systemID);
@@ -282,10 +280,5 @@ class News_Item extends Posting
                 'hint' =>       '0|1'
             )
         );
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NEWS_ITEM;
     }
 }

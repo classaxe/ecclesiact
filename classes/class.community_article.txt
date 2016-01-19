@@ -1,3 +1,5 @@
+  1.0.3 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.2 (2013-12-14)
     1) Added override for report form to use for 'Add New...' icon
   1.0.1 (2013-09-20)

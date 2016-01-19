@@ -1,16 +1,17 @@
 <?php
-define("VERSION_POSTING", "1.0.121");
 /*
 Version History:
-  1.0.121 (2015-03-22)
-    1) Added `map_geocode_address` to fields list
-    2) Posting::get_coords() now includes map_geocode_address
+  1.0.122 (2016-01-18)
+    1) Now uses VERSION class constant for version control
+    2) Removed override of handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name) - not needed
 
 */
 
 class Posting extends Displayable_Item
 {
+    const VERSION = '1.0.122';
     const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     public $subtype;
     public $systemID;
     public $_get_records_args = array();
@@ -20,8 +21,8 @@ class Posting extends Displayable_Item
 
     public function __construct($ID = '', $systemID = SYS_ID)
     {
-      // ID is used when copying records
-      // systemID is used to allow remote access to shared events locally from same DB
+        // ID is used when copying records
+        // systemID is used to allow remote access to shared events locally from same DB
         parent::__construct('postings', $ID);
         $this->_set_systemID($systemID);
         $this->_set_assign_type('event');
@@ -1505,11 +1506,6 @@ class Posting extends Displayable_Item
         return $name."-".(1+$max);
     }
 
-    public function handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name)
-    {
-        return parent::try_copy($newID, $msg, $msg_tooltip);
-    }
-
     protected function handle_video()
     {
         $this->load();
@@ -1708,10 +1704,5 @@ class Posting extends Displayable_Item
             }
         }
         return "good";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_POSTING;
     }
 }

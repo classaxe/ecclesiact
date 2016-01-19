@@ -1,27 +1,14 @@
 <?php
-define("VERSION_POSTING_CONTAINED", "1.0.242");
 /*
 Version History:
-  1.0.242 (2015-02-01)
-    1) Changed call in Posting_Contained::_get_records_sort_records()
-         from $this->_get_records_sort_records_using_filter_order_by()
-         to   $this->_get_records_sort_records_using_results_order()
-    2) Changed call in Posting_Contained::_get_records_sort_records_by_sequence()
-         from $this->_get_records_sort_records_using_filter_order_by()
-         to   $this->_get_records_sort_records_using_results_order()
-    3) Changes internal arguments for Posting_Contained::get_records_matching()
-         Old: filter_limit,  filter_order_by
-         New: results_limit, results_order
-    4) Changes to internal arguments for Posting_Contained::_draw_listings_load_records()
-         Old: filter_limit,  filter_order_by
-         New: results_limit, results_order
-    5) Now PSR-2 Compliant
-
-  (Older version history in class.posting_contained.txt)
+  1.0.243 (2016-01-18)
+    1) Now uses VERSION class constant for version control
 */
 
 class Posting_Contained extends Posting
 {
+    const VERSION = '1.0.243';
+
     private $_container_object_type;
 
     public function __construct($ID = '', $systemID = SYS_ID)
@@ -383,10 +370,5 @@ class Posting_Contained extends Posting
             $Obj =      new $type($ID);
             $Obj->sequence_erase();
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_POSTING_CONTAINED;
     }
 }

@@ -1,3 +1,5 @@
+  1.0.4 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.3 (2014-03-27)
     1) Community_Member_Posting::BL_shared_source_link() and
        Community_Member_Posting::BL_mini_shared_source_link() now use new

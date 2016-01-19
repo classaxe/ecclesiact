@@ -1,3 +1,5 @@
+  1.0.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.4 (2014-01-21)
     1) Changes to Community_Posting::_get_records_get_sql() to include items
        assigned to this community and not to any specific community member

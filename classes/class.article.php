@@ -1,13 +1,13 @@
 <?php
-define('VERSION_ARTICLE', '1.0.39');
 /*
 Version History:
-  1.0.39 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-
+  1.0.40 (2016-01-18)
+    1) Now uses VERSION class constant for version control
 */
 class Article extends Posting
 {
+    const VERSION = '1.0.40';
+
     public function __construct($ID = "", $systemID = SYS_ID)
     {
         parent::__construct($ID, $systemID);
@@ -357,13 +357,8 @@ class Article extends Posting
         );
     }
 
-    public function handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name)
+    public function handleReportCopy(&$newID, &$msg, &$msg_tooltip, $name)
     {
         return parent::try_copy($newID, $msg, $msg_tooltip, $name);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_ARTICLE;
     }
 }
