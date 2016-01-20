@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.5 (2016-01-18)
-    1) Now uses VERSION class constant for version control
+  1.0.6 (2016-01-20)
+    1) Bug fix - get_selector_sql() is no longer statically defined
 */
 
 class Posting_Container extends Posting_Contained
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     public function __construct($ID = '', $systemID = SYS_ID)
     {
@@ -39,7 +39,7 @@ class Posting_Container extends Posting_Contained
         return      $this->get_path($parentID, $path);
     }
 
-    public static function get_selector_sql()
+    public function get_selector_sql()
     {
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
         if ($isMASTERADMIN) {

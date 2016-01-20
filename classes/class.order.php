@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.70 (2015-10-16)
-    1) Now mainly PSR-2 compliant
+  1.0.71 (2016-01-19)
+    1) Made the following methods static:
+         Order::manage()
+         Order::manage_refunds()
 
 */
 class Order extends Record
 {
-    const VERSION = '1.0.70';
+    const VERSION = '1.0.71';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, personID, BAddress1, BAddress2, BCity, BCountryID, BEmail, BPostal, BSpID, BTelephone, category, cost_grand_total, cost_items_pre_tax, cost_shipping, cost_sub_total, credit_memo_for_orderID, credit_memo_notes_admin, credit_memo_notes_customer, credit_memo_refund_awarded, credit_memo_status, credit_memo_transaction_code, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, deliveryStatus, gateway_result, gateway_settingsID, instructions, notes, originating_page, paymentAmount, paymentApproved, paymentMethod, paymentMethodSurcharge, paymentStatus, payment_card_expiry, payment_card_name, payment_card_partial, processed, qb_ident, SAddress1, SAddress2, SCity, SCountryID, SMethod, SPostal, SSpID, tax1_cost, tax1_name, tax1_rate, tax2_cost, tax2_name, tax2_rate, tax3_cost, tax3_name, tax3_rate, tax4_cost, tax4_name, tax4_rate, tax5_cost, tax5_name, tax5_rate, tax6_cost, tax6_name, tax6_rate, tax7_cost, tax7_name, tax7_rate, tax8_cost, tax8_name, tax8_rate, tax9_cost, tax9_name, tax9_rate, tax10_cost, tax10_name, tax10_rate, tax11_cost, tax11_name, tax11_rate, tax12_cost, tax12_name, tax12_rate, tax13_cost, tax13_name, tax13_rate, tax14_cost, tax14_name, tax14_rate, tax15_cost, tax15_name, tax15_rate, tax16_cost, tax16_name, tax16_rate, tax17_cost, tax17_name, tax17_rate, tax18_cost, tax18_name, tax18_rate, tax19_cost, tax19_name, tax19_rate, tax20_cost, tax20_name, tax20_rate, taxes_shipping, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -955,7 +957,7 @@ class Order extends Record
         return $creditMemoID;
     }
 
-    public function manage($admin = 0)
+    public static function manage($admin = 0)
     {
         $ident =        "order_manage";
         $parameter_spec = array(
@@ -1046,7 +1048,7 @@ class Order extends Record
             ;
     }
 
-    public function manage_refunds($admin = 0)
+    public static function manage_refunds($admin = 0)
     {
         switch($admin) {
             case true:

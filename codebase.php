@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.8");
+define("CODEBASE_VERSION", "4.3.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,108 +16,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.8.2427 (2016-01-19)
+4.3.9.2428 (2016-01-20)
 Summary:
-  1) Many more corrections for PHP 5.6 - including some 'magic this' elimination
-  2) Inline signin component now a true namespaced component
+  1) More fixes for PHP 5.6
 
 Final Checksums:
-  Classes     CS:ab45c11a
+  Classes     CS:1d66f266
   Database    CS:5d138354
-  Libraries   CS:582af99a
+  Libraries   CS:af52c5dc
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.3.8     (2016-01-19)
+  codebase.php                                                                                   4.3.9     (2016-01-20)
     1) Updated version information
-  classes/class.article.php                                                                      1.0.40    (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/class.community_article.php                                                            1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_event.php                                                              1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_member_article.php                                                     1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_member_event.php                                                       1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_member_news_item.php                                                   1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_member_podcast.php                                                     1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_member_posting.php                                                     1.0.5     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-    2) Community_Member_Posting::_get_records_get_sql() ->       Community_Member_Posting::getRecordsGetSqlWithDelegate()
-    3) Community_Member_Posting::BL_shared_source_link() ->      Community_Member_Posting::BLsharedSourceLinkWithDelegate()
-    4) Community_Member_Posting::BL_mini_shared_source_link() -> Community_Member_Posting::BLminiSharedSourceLinkWithDelegate()
-  classes/class.community_news_item.php                                                          1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_podcast.php                                                            1.0.4     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-  classes/class.community_posting.php                                                            1.0.6     (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-    2) Community_Posting::_get_records_get_sql() ->       Community_Posting::getRecordsGetSqlWithDelegate()
-    3) Community_Posting::BL_shared_source_link() ->      Community_Posting::BLsharedSourceLinkWithDelegate()
-    4) Community_Posting::BL_mini_shared_source_link() -> Community_Posting::BLminiSharedSourceLinkWithDelegate()
-  classes/class.event.php                                                                        1.0.106   (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/class.filesystem.php                                                                   1.0.19    (2016-01-18)
-    1) Almost all methods are now declared statically
-  classes/class.news_item.php                                                                    1.0.25    (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/class.podcast.php                                                                      1.0.48    (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/class.posting.php                                                                      1.0.122   (2016-01-18)
-    1) Now uses VERSION class constant for version control
-    2) Removed override of handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name) - not needed
-  classes/class.posting_contained.php                                                            1.0.243   (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/class.posting_container.php                                                            1.0.5     (2016-01-18)
-    1) Now uses VERSION class constant for version control
-  classes/component/calendarlarge.php                                                            1.0.31    (2016-01-19)
-    1) Now uses class constant for Version control
-  classes/component/communitycalendar.php                                                        1.0.3     (2016-01-18)
-    1) Now getSharedSourceLink() calls renamed Community_Posting::BLMiniSharedSourceLinkWithDelegate()
-    2) Now uses class constant for version control
-  classes/component/communitymembercalendar.php                                                  1.0.3     (2016-01-18)
-    1) Now Community_Member_Posting::getSharedSourceLink() calls renamed
-       Community_Member_Posting::BLMiniSharedSourceLinkWithDelegate()
-    2) Now uses class constant for version control
-  classes/component/inlinesignin.php                                                             1.0.4     (2016-01-16)
-    1) Now a PSR-2 namespaced component
-    2) draw() method is now declared as static
+  classes/class.ajax.php                                                                         1.0.26    (2016-01-19)
+    1) All methods now static, and more PSR-2 compliant
+  classes/class.mail_queue.php                                                                   1.0.39    (2016-01-19)
+    1) Now more PSR-2 compliant
+    2)Version control now via class constant
+  classes/class.order.php                                                                        1.0.71    (2016-01-19)
+    1) Made the following methods static:
+         Order::manage()
+         Order::manage_refunds()
+  classes/class.posting_container.php                                                            1.0.6     (2016-01-20)
+    1) Bug fix - get_selector_sql() is no longer statically defined
 
-2427.sql
-  1) Changes to ECL tag 'draw_inline_signin' for component changes
-  2) Set version information
-
-Delete:
-    class.component_inline_signin.php                 1.0.3
+2428.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.3.8
-  classes/  (22 files changed)
-    class.article.php                                 1.0.40    CS:f91e7aa
-    class.community_article.php                       1.0.4     CS:d33c0cf8
-    class.community_event.php                         1.0.4     CS:b4b31a0e
-    class.community_member_article.php                1.0.4     CS:77c26278
-    class.community_member_event.php                  1.0.4     CS:e007820a
-    class.community_member_news_item.php              1.0.4     CS:6d90769d
-    class.community_member_podcast.php                1.0.4     CS:75b1ae85
-    class.community_member_posting.php                1.0.5     CS:cd381ef7
-    class.community_news_item.php                     1.0.4     CS:92f8e5e
-    class.community_podcast.php                       1.0.4     CS:f608146d
-    class.community_posting.php                       1.0.6     CS:3285a23
-    class.event.php                                   1.0.106   CS:ad77682b
-    class.filesystem.php                              1.0.19    CS:1c841241
-    class.news_item.php                               1.0.25    CS:50d2ef10
-    class.podcast.php                                 1.0.48    CS:525316fd
-    class.posting.php                                 1.0.122   CS:e37f989f
-    class.posting_contained.php                       1.0.243   CS:5abe4bb5
-    class.posting_container.php                       1.0.5     CS:788cd153
-    component/calendarlarge.php                       1.0.31    CS:bdcf0a0d
-    component/communitycalendar.php                   1.0.3     CS:cdae41c2
-    component/communitymembercalendar.php             1.0.3     CS:aa631584
-    component/inlinesignin.php                        1.0.4     CS:5f87b3f7
+  codebase.php                                        4.3.9
+  classes/  (4 files changed)
+    class.ajax.php                                    1.0.26    CS:58364b32
+    class.mail_queue.php                              1.0.39    CS:b279a4f7
+    class.order.php                                   1.0.71    CS:e158f6be
+    class.posting_container.php                       1.0.6     CS:351213a6
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
