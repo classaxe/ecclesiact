@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.93");
+define("VERSION", "2.0.94");
 /*
 Version History:
-  2.0.93 (2016-01-01)
-    1) Now includes support for bootstrap.css and responsive.css
+  2.0.94 (2016-02-05)
+    1) Now includes support for 'searchprovider' - ajax driven search mode
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -300,6 +300,10 @@ switch ($request_arr[0]) {
         lib($request_arr);
         die;
     break;
+    case "search":
+        include_once 'classes/searchhandler.php';
+        $Obj = new SearchHandler();
+        break;
     case "sysjs":
         $_REQUEST['submode']="";
         $_REQUEST['level']="";

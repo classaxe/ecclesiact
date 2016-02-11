@@ -1,12 +1,8 @@
 <?php
 /*
 Version History:
-  1.0.36 (2016-01-01)
-    1) The following methods are now declared to be static:
-         Layout::prepare()
-         Layout::prepareXhtmlFoot()
-         Layout::prepareXhtmlHead()
-         Layout::prepareResponsiveHead()
+  1.0.37 (2016-01-30)
+    1) Updated bootstrap library references
 */
 
 class Layout extends Record
@@ -573,7 +569,7 @@ class Layout extends Record
                 ""
              )
             ."    <title>".strip_tags(convert_safe_to_php($page_vars['title']))."</title>\n"
-            ."    <link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">\n"
+            ."    <link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\">\n"
             ."    <link rel=\"stylesheet\" href=\"".BASE_PATH."css/responsive/"
             .System::get_item_version('codebase')
             ."\">\n"
@@ -829,7 +825,7 @@ class Layout extends Record
         );
         Output::push(
             'html_bottom',
-            "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>\n"
+            "<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\"></script>\n"
             ."</form></body>\n"
             ."</html>"
         );

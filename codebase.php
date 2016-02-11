@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.3.9");
+define("CODEBASE_VERSION", "4.4.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,9 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.3.9.2428 (2016-01-20)
+4.4.0.2429 (2016-02-10)
 Summary:
-  1) More fixes for PHP 5.6
-
-Final Checksums:
-  Classes     CS:1d66f266
-  Database    CS:5d138354
-  Libraries   CS:af52c5dc
-  Reports     CS:ed22cc30
-
-Code Changes:
-  codebase.php                                                                                   4.3.9     (2016-01-20)
-    1) Updated version information
-  classes/class.ajax.php                                                                         1.0.26    (2016-01-19)
-    1) All methods now static, and more PSR-2 compliant
-  classes/class.mail_queue.php                                                                   1.0.39    (2016-01-19)
-    1) Now more PSR-2 compliant
-    2)Version control now via class constant
-  classes/class.order.php                                                                        1.0.71    (2016-01-19)
-    1) Made the following methods static:
-         Order::manage()
-         Order::manage_refunds()
-  classes/class.posting_container.php                                                            1.0.6     (2016-01-20)
-    1) Bug fix - get_selector_sql() is no longer statically defined
-
-2428.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.3.9
-  classes/  (4 files changed)
-    class.ajax.php                                    1.0.26    CS:58364b32
-    class.mail_queue.php                              1.0.39    CS:b279a4f7
-    class.order.php                                   1.0.71    CS:e158f6be
-    class.posting_container.php                       1.0.6     CS:351213a6
+  1) Start of work on new ajax-driven search system - not connected to database just yet
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
