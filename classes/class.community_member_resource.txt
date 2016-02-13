@@ -1,3 +1,5 @@
+  1.0.7 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.6 (2015-03-15)
     1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
   1.0.5 (2015-01-31)

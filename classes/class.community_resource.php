@@ -1,17 +1,13 @@
 <?php
-define('COMMUNITY_RESOURCE_VERSION', '1.0.4');
-/* Custom Fields used:
-custom_1 = denomination (must be as used in other SQL-based controls)
-
 /*
 Version History:
-  1.0.4 (2015-03-13)
-    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
-
+  1.0.5 (2016-02-13)
+    1) Changes to Community_Resource::drawSearchResults() to use refactored methods within Search object
 */
 
 class Community_Resource extends Community_Display
 {
+    const VERSION = '1.0.5';
 
     public function draw($cp, $path_extension, $community_record)
     {
@@ -128,7 +124,6 @@ class Community_Resource extends Community_Display
              'search_type' =>                 get_var('search_type', $search_type),
              'systemIDs_csv' =>               SYS_ID
         );
-        $Obj_Search = new Search(SYS_ID);
         $cps = array(
             'controls' =>                 false,
             'search_articles' =>          true,
@@ -141,10 +136,10 @@ class Community_Resource extends Community_Display
             'search_podcasts' =>          true,
             'search_products' =>          false
         );
-        $Obj_Search->_set_cp($cps);
-        $search_results = $Obj_Search->_get_results($args);
-  //      y($search_results);
-        return $Obj_Search->_draw_results($search_results, $args);
+        $Obj_Search = new Search(SYS_ID);
+        $Obj_Search->setComponentParameters($cps);
+        $search_results = $Obj_Search->getResults($args);
+        return $Obj_Search->drawResults($search_results, $args);
     }
 
     protected function drawSermons()
@@ -233,10 +228,5 @@ class Community_Resource extends Community_Display
         $this->_path_extension =    $path_extension;
         $this->_community_record =  $community_record;
         $this->_set_ID($this->_community_record['ID']);
-    }
-
-    public static function getVersion()
-    {
-        return COMMUNITY_RESOURCE_VERSION;
     }
 }

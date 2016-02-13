@@ -2,14 +2,14 @@
 namespace Component;
 /*
 Version History:
-  1.0.6 (2016-01-16)
-    1) Component\Base::help() is now staticaly defined
+  1.0.7 (2016-02-13)
+    1) New method setComponentParameters()
 */
 
 
 class Base extends \Record
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     public static $help_div_id = 0;
     protected $_args;
@@ -26,6 +26,11 @@ class Base extends \Record
     protected $_msg =             '';
     protected $_Obj_Block_Layout = false;   // Deprecated
     protected $_ObjBlockLayout = false;
+
+    public function setComponentParameters($cp)
+    {
+        $this->_cp = $cp;
+    }
 
     public function __construct($ID = "")
     {

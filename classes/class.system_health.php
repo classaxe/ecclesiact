@@ -1,15 +1,13 @@
 <?php
-define('VERSION_SYSTEM_HEALTH', '1.0.47');
-define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|sysjs)');
+define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|search|sysjs)');
 /*
 Version History:
-  1.0.47 (2015-12-06)
-    1) Added monitoring of JS upload code
-
-  (Older version history in class.system_health.txt)
+  1.0.48 (2016-02-13)
+    1) Now looks for 'search' in .htaccess file to wire in ajax-based search provider
 */
 class System_Health extends System
 {
+    const VERSION = '1.0.48';
 
     public function draw($config_arr, $ID)
     {
@@ -1561,10 +1559,5 @@ class System_Health extends System
             }
         }
         return $cs_arr;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_SYSTEM_HEALTH;
     }
 }

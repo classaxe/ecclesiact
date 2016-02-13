@@ -7,7 +7,7 @@ Version History:
 
 class Layout extends Record
 {
-    const VERSION = '1.0.36';
+    const VERSION = '1.0.37';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")

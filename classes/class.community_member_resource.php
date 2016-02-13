@@ -1,18 +1,14 @@
 <?php
-define('COMMUNITY_MEMBER_RESOURCE_VERSION', '1.0.7');
-/*
-Custom Fields used:
-custom_1 = denomination (must be as used in other SQL-based controls)
-*/
 /*
 Version History:
-  1.0.7 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-
+  1.0.8 (2016-02-13)
+    1) _draw_search_results() now calls renamed methods in Search
 */
 
 class Community_Member_Resource extends Community_Member
 {
+    const VERSION = '1.0.8';
+
     protected $_member_name =                   '';
     protected $_member_page =                   '';
     protected $_record =                        false;
@@ -163,7 +159,6 @@ class Community_Member_Resource extends Community_Member
              'search_type' =>                 get_var('search_type', $search_type),
              'systemIDs_csv' =>               SYS_ID
         );
-        $Obj_Search = new Search(SYS_ID);
         $cps = array(
             'controls' =>                     false,
             'search_articles' =>              true,
@@ -176,9 +171,10 @@ class Community_Member_Resource extends Community_Member
             'search_podcasts' =>              true,
             'search_products' =>              false
         );
-        $Obj_Search->_set_cp($cps);
-        $search_results = $Obj_Search->_get_results($args);
-        return $Obj_Search->_draw_results($search_results, $args);
+        $Obj_Search = new Search(SYS_ID);
+        $Obj_Search->setComponentParameters($cps);
+        $search_results = $Obj_Search->getResults($args);
+        return $Obj_Search->drawResults($search_results, $args);
     }
 
     protected function _setup($cp, $member_extension)
@@ -199,10 +195,5 @@ class Community_Member_Resource extends Community_Member
         if (!$this->get_member_profile($this->_cp['community_name'], $this->_member_name)) {
             throw new Exception("Member \"".$this->_member_name."\" not found.");
         }
-    }
-
-    public static function getVersion()
-    {
-        return COMMUNITY_MEMBER_RESOURCE_VERSION;
     }
 }

@@ -2,7 +2,7 @@
 define("VERSION", "2.0.94");
 /*
 Version History:
-  2.0.94 (2016-02-05)
+  2.0.94 (2016-02-13)
     1) Now includes support for 'searchprovider' - ajax driven search mode
 */
 if (!defined("SYS_BUTTONS")) {
@@ -303,6 +303,7 @@ switch ($request_arr[0]) {
     case "search":
         include_once 'classes/searchhandler.php';
         $Obj = new SearchHandler();
+        $Obj->draw();
         break;
     case "sysjs":
         $_REQUEST['submode']="";

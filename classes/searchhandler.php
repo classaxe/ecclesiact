@@ -1,7 +1,13 @@
 <?php
-
-class SearchHandler
+/*
+Version History:
+  1.0.0 (2016-02-10)
+    1) Initial release
+*/
+class SearchHandler extends Base
 {
+    const VERSION = '1.0.0';
+
     protected static $config = array(
         'highlight' =>  true,
         'recursive' =>  false,
@@ -17,12 +23,11 @@ class SearchHandler
 
     public function __construct()
     {
-        $this->setup();
-        $this->draw();
     }
 
     public function draw()
     {
+        $this->setup();
         if ($this->mode=='page') {
             print
                  "<!DOCTYPE HTML>\n"
@@ -50,7 +55,7 @@ class SearchHandler
         }
         print
              "<div id=\"search-results\">\n"
-            ."    <ol class=\"search_list\">";
+            ."  <ol class=\"search_list\">\n";
         $sum_of_results = 0;
         $match_count = 0;
         for ($i=0; $i < count($this->results); $i++) {
@@ -63,26 +68,27 @@ class SearchHandler
                             // // don't add the result - we have enough
                         } else {
                             print
-                                 "      <li class=\"result-item\">\n"
-                                ."        <a target=\"_top\" href=\"".$this->results[$i]['file_name'][0]."\""
+                                 "    <li class=\"result-item\">\n"
+                                ."      <a target=\"_top\" href=\"".$this->results[$i]['file_name'][0]."\""
                                 ." class=\"search_link\">\n"
-                                ."          <h4 class=\"search_title\">".$this->results[$i]['page_title'][0]."</h4>\n"
-                                ."          <p>...".$this->results[$i]['search_result'][0]."...</p>\n"
-                                ."        </a>\n"
-                                ."</li>";
+                                ."        <h4 class=\"search_title\">".$this->results[$i]['page_title'][0]."</h4>\n"
+                                ."        <p>...".$this->results[$i]['search_result'][0]."...</p>\n"
+                                ."      </a>\n"
+                                ."    </li>\n";
                         }
                     } else {
                         print
-                             "      <li class=\"result-item\">\n"
-                            ."        <h4 class=\"search_title\">\n"
-                            ."          <a target=\"_top\" href=\"".$this->results[$i]['file_name'][0]."\""
-                            ." class=\"search_link\">\n"
-                            .$this->results[$i]['page_title'][0]."</a>\n"
-                            ."</h4>\n"
-                            ."        <p>...".$this->results[$i]['search_result'][0]."...</p>\n"
-                            ."        <p class=\"match\"><em>Terms matched: ".count($this->results[$i]['search_result'])
+                             "    <li class=\"result-item\">\n"
+                            ."      <h4 class=\"search_title\">\n"
+                            ."        <a target=\"_top\" href=\"".$this->results[$i]['file_name'][0]."\""
+                            ." class=\"search_link\">"
+                            .$this->results[$i]['page_title'][0]
+                            ."</a>\n"
+                            ."      </h4>\n"
+                            ."      <p>...".$this->results[$i]['search_result'][0]."...</p>\n"
+                            ."      <p class=\"match\"><em>Terms matched: ".count($this->results[$i]['search_result'])
                             ." - URL: ".$this->results[$i]['file_name'][0]."</em></p>\n"
-                            ."      </li>\n";
+                            ."    </li>\n";
                     }
                 }
             }
@@ -90,23 +96,25 @@ class SearchHandler
 
         if ($match_count == 0) {
             print
-                 "<li><h4 class=\"search_error\">No results found for "
+                 "    <li>\n"
+                ."      <h4 class=\"search_error\">No results found for "
                 ."<span class=\"search\">".$this->searchTerm."</span>"
-                ."</h4></li>";
+                ."      </h4>\n"
+                ."    </li>";
         }
         if ($this->mode=='live' && $match_count > 0) {
             print
-                 "<li>\n"
-                ."<button type=\"submit\">"
+                 "    <li>\n"
+                ."      <button type=\"submit\">"
                 .$sum_of_results
                 .($sum_of_results < 2 ? " result on " : " results on ")
                 .$match_count
                 .($match_count < 2 ? " page." : " pages.")
                 ."</button>\n"
-                ."</li>";
+                ."    </li>\n";
         }
         print
-             "</ol>\n"
+             "  </ol>\n"
             ."</div>";
         if ($this->mode=='page') {
             print

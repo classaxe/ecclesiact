@@ -16,9 +16,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.0.2429 (2016-02-10)
+4.4.0.2429 (2016-02-13)
 Summary:
   1) Start of work on new ajax-driven search system - not connected to database just yet
+  2) Refactoring of existing non-ajax driven search system
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

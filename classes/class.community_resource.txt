@@ -1,3 +1,5 @@
+  1.0.4 (2015-03-13)
+    1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
   1.0.3 (2015-03-07)
     1) Renamed internal methods to camel case format
     2) _draw_sermons now uses namespaced Component\CommunityCollectionViewer class
