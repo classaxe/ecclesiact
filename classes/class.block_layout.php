@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.68 (2016-01-01)
-    1) Some PSR-2 tidy up 
+  1.0.69 (2016-02-21)
+    1) New BL tag BL_sequence_content - selects item from sequence_content_list according to displayed order
+    2) New BL tag BL_link_URL - just the linked URL and nothing else
+
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.68';
+    const VERSION = '1.0.69';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -542,6 +544,17 @@ class Block_Layout extends Record
         .">";
     }
 
+    protected function BL_link_URL()
+    {
+        if (isset($this->_cp['links_point_to_URL']) && $this->_cp['links_point_to_URL']==1 && isset($this->record['URL']) && $this->record['URL']!='') {
+            return BASE_PATH.trim($this->record['URL'], '/');
+        }
+        if (isset($this->_cp['links_switch_video']) && $this->_cp['links_switch_video']==1 && isset($this->record['video']) && $this->record['video']!='') {
+            return $this->record['video'];
+        }
+        return BASE_PATH.trim($this->get_URL($this->record), '/');
+    }
+
     protected function BL_links()
     {
         $link_arr =     array();
@@ -646,6 +659,18 @@ class Block_Layout extends Record
         if (isset($this->record['computed_sequence_value'])) {
             return $this->record['computed_sequence_value'];
         }
+    }
+
+    protected function BL_sequence_content()
+    {
+        if (!isset($this->record['computed_sequence_value'])) {
+            return '';
+        }
+        if (!isset($this->_cp['sequence_content_list'])) {
+            return '';
+        }
+        $items = explode('|', $this->_cp['sequence_content_list']);
+        return $items[count($items) % $this->record['computed_sequence_value']];
     }
 
     protected function BL_shared_source_link()

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.0");
+define("CODEBASE_VERSION", "4.4.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,51 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.0.2429 (2016-02-13)
+4.4.1.2430 (2016-02-21)
 Summary:
-  1) Start of work on new ajax-driven search system - not connected to database just yet
-  2) Refactoring of existing non-ajax driven search system
+  1) New BL tag sequence_content - selects item from sequence_content_list according to displayed order
+  2) Changes to listings mode for Gallery Images to allow for sequence_content_list
 
 Final Checksums:
-  Classes     CS:4060bb35
+  Classes     CS:617a5e35
   Database    CS:5d138354
-  Libraries   CS:9d9df9cd
+  Libraries   CS:6ae5c58b
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.0     (2016-02-13)
+  codebase.php                                                                                   4.4.1     (2016-02-21)
     1) Updated version information
-  classes/class.community_member_resource.php                                                    1.0.8     (2016-02-13)
-    1) _draw_search_results() now calls renamed methods in Search
-  classes/class.community_resource.php                                                           1.0.5     (2016-02-13)
-    1) Changes to Community_Resource::drawSearchResults() to use refactored methods within Search object
-  classes/class.layout.php                                                                       1.0.37    (2016-01-30)
-    1) Updated bootstrap library references
-  classes/class.search.php                                                                       1.0.12    (2016-02-12)
-    1) Refactored for PSR-2
-  classes/class.system_health.php                                                                1.0.48    (2016-02-13)
-    1) Now looks for 'search' in .htaccess file to wire in ajax-based search provider
-  classes/component/base.php                                                                     1.0.7     (2016-02-13)
-    1) New method setComponentParameters()
-  classes/searchhandler.php                                                                      1.0.0     (2016-02-10)
-    1) Initial release
-  img.php                                                                                        2.0.94    (2016-02-13)
-    1) Now includes support for 'searchprovider' - ajax driven search mode
+  classes/class.block_layout.php                                                                 1.0.69    (2016-02-21)
+    1) New BL tag BL_sequence_content - selects item from sequence_content_list according to displayed order
+    2) New BL tag BL_link_URL - just the linked URL and nothing else
+  classes/class.gallery_image.php                                                                1.0.23    (2016-02-21)
+    1) New CP for listing mode - sequence_insert_list
+    2) Now more PSR-2
 
-2429.sql
+2430.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.4.0
-  classes/  (7 files changed)
-    class.community_member_resource.php               1.0.8     CS:b0bbba33
-    class.community_resource.php                      1.0.5     CS:98444b1d
-    class.layout.php                                  1.0.37    CS:f5731a5d
-    class.search.php                                  1.0.12    CS:21f2f5fe
-    class.system_health.php                           1.0.48    CS:7fd7e10a
-    component/base.php                                1.0.7     CS:9225a127
-    searchhandler.php                                 1.0.0     CS:15963cc7
-  img.php                                             2.0.94    CS:3810026e
+  codebase.php                                        4.4.1
+  classes/  (2 files changed)
+    class.block_layout.php                            1.0.69    CS:f56b1c30
+    class.gallery_image.php                           1.0.24    CS:92c65361
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
