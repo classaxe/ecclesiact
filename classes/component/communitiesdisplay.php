@@ -1,16 +1,14 @@
 <?php
 namespace Component;
-
-define('COMPONENT_NS_COMMUNITIES_DISPLAY_VERSION', '1.0.7');
 /*
 Version History:
-  1.0.7 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.8 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
 class CommunitiesDisplay extends Base
 {
+    const VERSION = '1.0.8';
+
     protected $_Obj_Community =   false;
     protected $_records =         array();
 
@@ -173,10 +171,5 @@ class CommunitiesDisplay extends Base
         $this->_Obj_Community->_safe_ID = $this->_safe_ID;
         $this->_Obj_Community->_set_multiple(array('_cp'=>$this->_cp));
         $this->_records =       $this->_Obj_Community->get_communities();
-    }
-
-    public static function getVersion()
-    {
-        return COMPONENT_NS_COMMUNITIES_DISPLAY_VERSION;
     }
 }

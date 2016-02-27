@@ -1,17 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_EMAILUNSUBSCRIBE", "1.0.1");
 /*
 Version History:
-  1.0.1 (2015-03-01)
-    1) Moved from Component_Email_Unsubscribe and reworked to use namespaces
-    2) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
-    3) Fully PSR-2 compliant
-
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class EmailUnsubscribe extends Base
 {
+    const VERSION = '1.0.2';
+
     public function __construct()
     {
         $this->_ident =         'email_unsubscribe';
@@ -168,10 +165,5 @@ class EmailUnsubscribe extends Base
                 }
                 break;
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_EMAILUNSUBSCRIBE;
     }
 }

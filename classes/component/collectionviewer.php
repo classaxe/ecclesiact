@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_COLLECTION_VIEWER', '1.0.54');
 /*
 Version History:
-  1.0.54 (2015-11-29)
-    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
-
+  1.0.55 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CollectionViewer extends Base
 {
+    const VERSION = '1.0.55';
+
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
     protected $_paging_controls_current_pos =   '';
@@ -1353,10 +1352,5 @@ class CollectionViewer extends Base
             $this->_Obj_Block_Layout->draw_css_include('listings');
             $this->_Obj_Block_Layout->draw_css_include('detail');
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_COLLECTION_VIEWER;
     }
 }

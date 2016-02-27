@@ -1,16 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CUSTOM_FORM", "1.0.5");
 /*
 Version History:
-  1.0.5 (2015-03-29)
-    1) Moved from Component_Activity_Tabber and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.6 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CustomForm extends Base
 {
+    const VERSION = '1.0.6';
+
     protected $CustomFormID;
     protected $ObjCF;
     protected $XML;
@@ -201,11 +199,5 @@ class CustomForm extends Base
         global $system_vars;
         $Obj_GS = new \Gateway_Setting($system_vars['gatewayID']);
         $this->_parameter_spec['payment_gateway_setting']['default'] = $Obj_GS->get_field('name');
-
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CUSTOM_FORM;
     }
 }

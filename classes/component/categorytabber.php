@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_COMPONENT_NS_CATEGORY_TABBER", "1.0.6");
 /*
 Version History:
-  1.0.6 (2015-07-26)
-    1) Add icon now correctly hidden for non-admins
-
+  1.0.7 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CategoryTabber extends Base
 {
+    const VERSION = '1.0.7';
+
     protected $records = array();
     protected $Obj;
     protected $ObjBlockLayout;
@@ -353,11 +352,5 @@ class CategoryTabber extends Base
         }
         $temp = get_var('selected_section');
         $this->_selected_section = (in_array($temp, $this->_category_arr) ? $temp : $this->_category_arr[0]);
-    }
-
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_NS_CATEGORY_TABBER;
     }
 }

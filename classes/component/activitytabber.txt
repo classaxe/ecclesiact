@@ -1,3 +1,6 @@
+  1.0.6 (2015-03-04)
+    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
   1.0.5 (2013-05-10)
     1) Tweak to Component_Activity_Tabber::_setup_load_tabs() for when there are
        no records to set tabs for

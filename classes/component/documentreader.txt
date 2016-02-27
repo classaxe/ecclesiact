@@ -1,3 +1,5 @@
+  1.0.2 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.1 (2015-04-22)
     1) Moved from class.component_document_reader.php and reworked to use namespaces
     2) Now Fully PSR-2 compliant

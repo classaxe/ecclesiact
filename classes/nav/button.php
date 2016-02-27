@@ -1,17 +1,15 @@
 <?php
 namespace Nav;
-
-define('VERSION_NS_NAV_BUTTON', '1.0.19');
 /*
 Version History:
-  1.0.19 (2015-08-14)
-    1) Method Button::hasVisibleChildren() is now static
-
+  1.0.20 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
 class Button extends \Record
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, group_assign_csv, icon_over_h_align, icon_over_image, icon_under_h_align, icon_under_image, img_checksum, img_height, img_width, permPUBLIC, permSYSLOGON, permSYSMEMBER, popup, position, sitemap_frequency, sitemap_priority, suiteID, text1, text2, URL, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.20';
+    const FIELDS =  'ID, archive, archiveID, deleted, systemID, group_assign_csv, icon_over_h_align, icon_over_image, icon_under_h_align, icon_under_image, img_checksum, img_height, img_width, permPUBLIC, permSYSLOGON, permSYSMEMBER, popup, position, sitemap_frequency, sitemap_priority, suiteID, text1, text2, URL, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     protected $_file_prefix =      "btn_";
 
     public function __construct($ID = "")
@@ -466,10 +464,5 @@ class Button extends \Record
             return true;
         }
         return false;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_NAV_BUTTON;
     }
 }

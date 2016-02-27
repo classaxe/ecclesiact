@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_DOCUMENT_COVERS", "1.0.1");
 /*
 Version History:
-  1.0.1 (2015-04-22)
-    1) Moved from class.component_document_covers.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class DocumentCovers extends Base
 {
+    const VERSION = '1.0.2';
+
     public function __construct()
     {
         $this->_ident =             "document_covers";
@@ -115,10 +114,5 @@ class DocumentCovers extends Base
         }
         $this->_html.=
             "<div class='clear'></div>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_DOCUMENT_COVERS;
     }
 }

@@ -1,15 +1,13 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_DOCUMENT_READER", "1.0.2");
 /*
 Version History:
-  1.0.2 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.3 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class DocumentReader extends Base
 {
+    const VERSION = '1.0.3';
 
     public function __construct()
     {
@@ -90,11 +88,5 @@ class DocumentReader extends Base
             ."  pages_total:     ".$this->_cp['pages_total']."\n"
             ."}\n"
         );
-
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_DOCUMENT_READER;
     }
 }

@@ -1,18 +1,14 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_DAILY_BIBLE_VERSE', '1.0.1');
 /*
 Version History:
-  1.0.1 (2015-03-04)
-    1) Moved from Component_Daily_Bible_Verse and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
-
 class DailyBibleVerse extends Base
 {
+    const VERSION = '1.0.2';
+
     public function __construct()
     {
         global $system_vars;
@@ -49,10 +45,5 @@ class DailyBibleVerse extends Base
             ."onclick=\"javascript:window.open('http://www.christnotes.org/bible.php');return false\">"
             ."Bible Search</a></p>";
         return $this->_html;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_DAILY_BIBLE_VERSE;
     }
 }

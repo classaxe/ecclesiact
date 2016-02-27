@@ -1,16 +1,14 @@
 <?php
 namespace Map;
-
-define('VERSION_NS_ADDRESS_SUBSTITUTION', '1.0.1');
 /*
 Version History:
-  1.0.1 (2015-03-24)
-    1) Added AddressSubstitution::getAddressForInput() method
-
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class AddressSubstitution extends \Record
 {
-    const FIELDS =          'ID, archive, archiveID, deleted, systemID, input, output, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.2';
+    const FIELDS =  'ID, archive, archiveID, deleted, systemID, input, output, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
     {
@@ -42,10 +40,5 @@ class AddressSubstitution extends \Record
     public function handleReportCopy(&$newID, &$msg, &$msg_tooltip, $name)
     {
         return parent::try_copy($newID, $msg, $msg_tooltip);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_ADDRESS_SUBSTITUTION;
     }
 }

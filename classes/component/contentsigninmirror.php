@@ -1,16 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CONTENT_SIGNIN_MIRROR", "1.0.3");
 /*
 Version History:
-  1.0.3 (2015-03-17)
-    1) Moved from Component_Content_Signin_Mirror and MAJORLY reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.4 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ContentSigninMirror extends \Component_Base
 {
+    const VERSION = '1.0.4';
+
     protected $content;
 
     public function __construct()
@@ -50,10 +48,5 @@ class ContentSigninMirror extends \Component_Base
             return;
         }
         $this->content = $content;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CONTENT_SIGNIN_MIRROR;
     }
 }

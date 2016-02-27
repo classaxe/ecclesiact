@@ -1,3 +1,5 @@
+  1.0.1 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.0 (2015-03-23)
     1) Moved here from class.google_map.php which is now just a stub class
     2) References to class Geocode_Cache now point to map\geocodeCache

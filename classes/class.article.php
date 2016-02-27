@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.40 (2016-01-18)
-    1) Now uses VERSION class constant for version control
+  1.0.41 (2016-02-27)
+    1) Now has new CP for listings - filter_has_video
 */
 class Article extends Posting
 {
-    const VERSION = '1.0.40';
+    const VERSION = '1.0.41';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -239,6 +239,10 @@ class Article extends Posting
                 'match' =>      '',
                 'default' =>    '',
                 'hint' =>       'Optionally INSIST on this category'
+            ),
+            'filter_has_video' =>         array(
+                'match' =>      'enum|,0,1',       'default' =>  '',
+                'hint' =>       'Blank to ignore, 0 for no video, 1 for with video'
             ),
             'filter_important' =>         array(
                 'match' =>      'enum|,0,1',       'default' =>  '',

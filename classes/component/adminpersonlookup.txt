@@ -1,3 +1,5 @@
+  1.0.5 (2015-03-08)
+    1) Moved here from class.component_admin_person_lookup.php and reworked for namespaces
   1.0.4 (2014-03-17)
     1) Parameter spec now includes better help for filter_mode and filter_field
   1.0.3 (2014-02-10)

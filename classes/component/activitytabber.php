@@ -1,17 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_ACTIVITY_TABBER", "1.0.6");
-
 /*
 Version History:
-  1.0.6 (2015-03-04)
-    1) Moved from Component_Activity_Tabber and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.7 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ActivityTabber extends Base
 {
+    const VERSION = '1.0.7';
+
     protected $_activities =    array();
     protected $_records =       false;
     protected $_tabs =          array();
@@ -263,10 +260,5 @@ class ActivityTabber extends Base
         }
         $temp = get_var('selected_section');
         $this->_selected_section = (in_array($temp, $this->_activities) ? $temp : $this->_activities[0]);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_ACTIVITY_TABBER;
     }
 }

@@ -1,3 +1,5 @@
+  1.0.7 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.6 (2015-03-17)
     1) Moved from Component_Change_Password and reworked to use namespaces
     2) Now Fully PSR-2 compliant

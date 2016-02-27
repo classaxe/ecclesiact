@@ -1,2 +1,6 @@
+  1.0.1 (2015-03-01)
+    1) Moved from Component_Email_Unsubscribe and reworked to use namespaces
+    2) Now calls Mail_Queue_Item::viewMessagesForPerson() to list messages
+    3) Fully PSR-2 compliant
   1.0.0 (2013-10-04)
     1) Initial release

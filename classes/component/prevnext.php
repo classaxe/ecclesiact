@@ -1,17 +1,14 @@
 <?php
 namespace Component;
-
-  define("VERSION_NS_COMPONENT_PREVNEXT", "1.0.2");
 /*
 Version History:
-  1.0.6 (2015-08-03)
-    1) Moved here from class.component_nav_links.php
-    2) Now PSR-2 Compliant
-    3) Nav entity references now namespaced
-
+  1.0.3 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class PrevNext extends Base
 {
+    const VERSION = '1.0.3';
+
     protected $_extra_links = array();
     protected $_nav_links =   array();
     protected $_links =       array();
@@ -180,12 +177,6 @@ class PrevNext extends Base
                 }
             }
         }
-  //    y($this->_links);die;
         return;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_PREVNEXT;
     }
 }

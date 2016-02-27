@@ -1,16 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CONTENT_GROUP_MEMBER_MIRROR", "1.0.4");
 /*
 Version History:
-  1.0.4 (2015-03-17)
-    1) Moved from Component_Content_Group_Member_Mirror and MAJORLY reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.5 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ContentGroupMemberMirror extends Base
 {
+    const VERSION = '1.0.5';
+
     protected $content;
 
     public function __construct()
@@ -67,10 +65,5 @@ class ContentGroupMemberMirror extends Base
                 return;
             }
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CONTENT_GROUP_MEMBER_MIRROR;
     }
 }

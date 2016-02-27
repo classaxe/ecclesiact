@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CALENDAR_YEARLY", "1.0.2");
 /*
 Version History:
-  1.0.2 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.3 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CalendarYearly extends Base
 {
+    const VERSION = '1.0.3';
+
     // With ideas from http://www.gaijin.at/en/scrphpcalj.php
     protected $categories = array();
     protected $days =       array('Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa') ;
@@ -213,10 +212,5 @@ class CalendarYearly extends Base
     {
         $Obj =              new \Event;
         $this->events =     $Obj->get_yearly_dates($this->YYYY, $this->memberID);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CALENDAR_YEARLY;
     }
 }

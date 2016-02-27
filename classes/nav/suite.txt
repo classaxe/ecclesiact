@@ -1,3 +1,6 @@
+  1.0.41 (2015-09-21)
+    1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
+       responsive or not
   1.0.40 (2015-09-20)
     1) Fix for Suite::copy() to make created buttons belong to the new parent, not the old one
     2) Added in Suite::drawJsPreload() for simpluifying job of creating preload JS for navsuites in layouts

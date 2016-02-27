@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_COMPONENT_EDIT_YOUR_PROFILE", "1.0.1");
 /*
 Version History:
-  1.0.1 (2015-04-24)
-    1) Moved from class.component_edit_your_profile.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class EditYourProfile extends Base
 {
+    const VERSION = '1.0.2';
+
     protected $_msg = '';
     protected $_submode;
     protected $_Obj_User;
@@ -118,10 +117,5 @@ class EditYourProfile extends Base
         header("Location: ".BASE_PATH.trim($this->_cp['page_public'], '/'));
         print "&nbsp;";
         die();
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_EDIT_YOUR_PROFILE;
     }
 }

@@ -1,3 +1,5 @@
+  1.0.9 (2015-08-04)
+    1) Moved here from class.navbutton_image.php
   1.0.8 (2012-12-08)
     1) Bug fix for one accented character in Navbutton_Image::get_uppercase()
   1.0.7 (2012-12-08)

@@ -1,16 +1,14 @@
 <?php
 namespace Nav;
-
-define('VERSION_NS_NAV_BUTTON_IMAGE', '1.0.9');
 /*
 Version History:
-  1.0.9 (2015-08-04)
-    1) Moved here from class.navbutton_image.php
-
+  1.0.10 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
 class ButtonImage extends \Nav\Button
 {
+    const VERSION = '1.0.10';
+
     protected $file_prefix =      "btn_";
     protected $_button_data;
     protected $_palette =         array();
@@ -1086,10 +1084,5 @@ class ButtonImage extends \Nav\Button
         $width =        $img_base_w-1;
         $height =       $img_base_h/4;
         return true;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_NAV_BUTTON_IMAGE;
     }
 }

@@ -1,3 +1,5 @@
+  1.0.6 (2015-07-26)
+    1) Add icon now correctly hidden for non-admins
   1.0.5 (2015-03-14)
     1) Moved in here from class.component_category_tabber.php
     2) Extensivly refactored

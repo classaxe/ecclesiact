@@ -1,16 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_ICONBOOKMARK", "1.0.0");
 /*
 Version History:
-  1.0.0 (2015-04-19)
-    1) Moved from HTML::draw_icon('bookmark') and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.1 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class IconBookmark extends Base
 {
+    const VERSION = '1.0.1';
+
     public function __construct()
     {
         $this->_ident =
@@ -68,10 +66,5 @@ class IconBookmark extends Base
                 ""
             )
             ."</span>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_ICONBOOKMARK;
     }
 }

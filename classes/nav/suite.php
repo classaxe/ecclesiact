@@ -1,17 +1,15 @@
 <?php
 namespace Nav;
-
-define('VERSION_NS_NAV_SUITE', '1.0.41');
 /*
 Version History:
-  1.0.41 (2015-09-21)
-    1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
-       responsive or not
-
+  1.0.42 (2015-08-29)
+    1) Added sdmenu_exclusive and sdmenu_speed to field list
 */
 class Suite extends \Record
 {
+    const VERSION = '1.0.42';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, buttonStyleID, childID_csv, name, parentButtonID, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     public static $cache_buttons_array = array();
     public static $cache_childID_array = array();
 
@@ -680,11 +678,5 @@ class Suite extends \Record
              str_repeat("  ", $depth-1)."<ul>\n"
             .implode("", $links)
             .str_repeat("  ", $depth-1)."</ul>\n";
-    }
-
-
-    public static function getVersion()
-    {
-        return VERSION_NS_NAV_SUITE;
     }
 }

@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CUSTOMISER_BUTTON", "1.0.4");
 /*
 Version History:
-  1.0.4 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.5 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CustomiserButton extends Base
 {
+    const VERSION = '1.0.5';
+
     public function __construct()
     {
         $this->_ident =             "draw_customiser_button";
@@ -97,10 +96,5 @@ class CustomiserButton extends Base
             "geid_set('command','');\n"
             ."geid('form').submit();\n"
         );
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CUSTOMISER_BUTTON;
     }
 }

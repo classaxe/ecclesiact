@@ -1,3 +1,9 @@
+  1.0.6 (2015-09-21)
+    1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
+       to make Context Menu go away whern clicking outside after moving over a tracked menu item.
+       Container has size constraints removed.
+    2) DrawNav::setup() now specifies legacy manual button sequence for SD Menu and Responsive Menu types, neither
+       of which presently support drag and drop ordering or sequence
   1.0.5 (2015-09-20)
     1) Now handles drawing of responsive menus
   1.0.4 (2015-09-14)

@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_ICONSOCIAL", "1.0.3");
 /*
 Version History:
-  1.0.3 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.4 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class IconSocial extends Base
 {
+    const VERSION = '1.0.4';
+
     public function __construct()
     {
         $this->_ident =
@@ -95,10 +94,5 @@ class IconSocial extends Base
             $sections['base_'.$this->_cp['size'].'_'.$this->_cp['icon']] = true;
         }
         \Output::push('style', $this->_css);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_ICONSOCIAL;
     }
 }

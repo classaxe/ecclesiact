@@ -1,15 +1,14 @@
 <?php
 namespace Map;
-
-define('VERSION_NS_GOOGLE_MAP', '1.0.1');
 /*
 Version History:
-  1.0.1 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control and extends \Base to have access to that method
 */
-class GoogleMap
+class GoogleMap extends \Base
 {
+    const VERSION = '1.0.2';
+
     public $function_code;
     public $function_code_loader;
     public $id;
@@ -876,10 +875,5 @@ class GoogleMap
         $Obj->on_schedule_update_pending(15);
         $Obj = new \Posting;
         $Obj->on_schedule_update_pending(15);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_GOOGLE_MAP;
     }
 }

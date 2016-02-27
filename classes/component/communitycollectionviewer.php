@@ -1,25 +1,19 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_COMMUNITY_COLLECTION_VIEWER', '1.0.1');
 /*
 Version History:
-  1.0.1 (2015-03-07)
-    1) Now namespaced and PSR-2 compliant
-
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CommunityCollectionViewer extends CollectionViewer
 {
+    const VERSION = '1.0.2';
+
     public function __construct()
     {
         parent::__construct();
         $this->_ident =             'community_collection_viewer';
         $this->_cm_podcast =        'module_cm_podcast';
         $this->_cm_podcastalbum =   'podcastalbum';
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_COMMUNITY_COLLECTION_VIEWER;
     }
 }

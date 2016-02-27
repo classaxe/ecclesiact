@@ -1,19 +1,13 @@
 <?php
 namespace Nav;
-
 /*
 Version History:
-  1.0.6 (2015-09-21)
-    1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
-       to make Context Menu go away whern clicking outside after moving over a tracked menu item.
-       Container has size constraints removed.
-    2) DrawNav::setup() now specifies legacy manual button sequence for SD Menu and Responsive Menu types, neither
-       of which presently support drag and drop ordering or sequence
-
+  1.0.7 (2016-02-27)
+    1) Now extends \Base so it can use getVersion() from there instead
 */
-class DrawNav
+class DrawNav extends \Base
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     protected $buttons;
     protected $buttonsCount = 0;
@@ -471,12 +465,5 @@ class DrawNav
         $isSYSEDITOR =          get_person_permission("SYSEDITOR");
         $this->isAdmin =        ($isSYSEDITOR||$isSYSAPPROVER||$isSYSADMIN||$isMASTERADMIN);
         $this->isMasterAdmin =  $isMASTERADMIN;
-
-    }
-
-
-    public static function getVersion()
-    {
-        return DrawNav::VERSION;
     }
 }

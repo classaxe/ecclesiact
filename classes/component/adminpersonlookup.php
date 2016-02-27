@@ -1,15 +1,13 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_ADMIN_PERSON_LOOKUP', '1.0.5');
 /*
 Version History:
-  1.0.5 (2015-03-08)
-    1) Moved here from class.component_admin_person_lookup.php and reworked for namespaces
-
+  1.0.6 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class AdminPersonLookup extends Base
 {
+    const VERSION = '1.0.6';
 
     public function __construct()
     {
@@ -121,10 +119,5 @@ class AdminPersonLookup extends Base
     {
         parent::setup($instance, $args, $disable_params);
         $this->setupLoadUserRights();
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_ADMIN_PERSON_LOOKUP;
     }
 }

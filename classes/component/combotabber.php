@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_COMBO_TABBER", "1.0.12");
 /*
 Version History:
-  1.0.12 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.13 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ComboTabber extends Base
 {
+    const VERSION = '1.0.13';
+
     protected $_tabs = array();
     protected $_count_sections;
 
@@ -383,10 +382,5 @@ class ComboTabber extends Base
             }
         }
         $this->_selected_section = $this->_tabs[0]['ID'];
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_COMBO_TABBER;
     }
 }

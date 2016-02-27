@@ -1,18 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_ARTICLES_ROTATOR", "1.0.8");
 /*
 Version History:
-  1.0.8 (2015-03-07)
-    1) Moved from Component_Articles_Rotator and reworked to use namespaces
-    2) Now has up-to-date constructor-based setup
-    3) Greatly simplified code by splitting into smaller helper classes
-
+  1.0.9 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
 class ArticlesRotator extends Base
 {
+    const VERSION = '1.0.9';
+
     protected $_ObjArticle;
     protected $_records;
     protected $_itemsFeatured = array();
@@ -383,11 +379,5 @@ class ArticlesRotator extends Base
                 array_splice($this->_records, $n, 1);
             }
         }
-
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_ARTICLES_ROTATOR;
     }
 }

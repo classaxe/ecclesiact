@@ -4,13 +4,14 @@ namespace Nav;
 define('VERSION_NS_NAV_STYLE', '1.0.12');
 /*
 Version History:
-  1.0.12 (2015-08-29)
-    1) Added sdmenu_exclusive and sdmenu_speed to field list
-
+  1.0.13 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class Style extends \Record
 {
+    const VERSION = '1.0.13';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, button_spacing, css, dropdownArrow, img_checksum, img_height, img_width, name, orientation, overlay_ba_img, overlay_ba_img_align, overlay_bm_img, overlay_bm_img_align, overlay_bz_img, overlay_bz_img_align, sdmenu_exclusive, sdmenu_speed, subnavOffsetX, subnavOffsetY, subnavStyleID, templateFile, text1_effect_color_active, text1_effect_color_down, text1_effect_color_normal, text1_effect_color_over, text1_effect_level_active, text1_effect_level_down, text1_effect_level_normal, text1_effect_level_over, text1_effect_type_active, text1_effect_type_down, text1_effect_type_normal, text1_effect_type_over, text1_font_color_active, text1_font_color_down, text1_font_color_normal, text1_font_color_over, text1_font_face, text1_font_size, text1_h_align, text1_h_offset, text1_uppercase, text1_v_offset, text2_effect_color_active, text2_effect_color_down, text2_effect_color_normal, text2_effect_color_over, text2_effect_level_active, text2_effect_level_down, text2_effect_level_normal, text2_effect_level_over, text2_effect_type_active, text2_effect_type_down, text2_effect_type_normal, text2_effect_type_over, text2_font_color_active, text2_font_color_down, text2_font_color_normal, text2_font_color_over, text2_font_face, text2_font_size, text2_h_align, text2_h_offset, text2_uppercase, text2_v_offset, type, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+
     public $file_prefix = "btn_style_";
 
     public function __construct($ID = "")
@@ -107,10 +108,5 @@ class Style extends \Record
         $Obj_Navbutton_Image =      new \Nav\ButtonImage;
         $navstyleID =               ($filename ? false : $ID);
         return $Obj_Navbutton_Image->draw($data, $filename, $no_show, $navstyleID);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_NAV_STYLE;
     }
 }

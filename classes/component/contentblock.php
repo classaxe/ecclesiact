@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CONTENT_BLOCK", "1.0.2");
 /*
 Version History:
-  1.0.2 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.3 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ContentBlock extends Base
 {
+    const VERSION = '1.0.3';
+
     protected $_record;
     protected static $style="";
 
@@ -137,10 +136,5 @@ class ContentBlock extends Base
         $this->_ID =        $this->_Obj->get_ID_by_name($this->_cp['name'], '1,'.SYS_ID);
         $this->_Obj->_set_ID($this->_ID);
         $this->_record =    $this->_Obj->load();
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CONTENT_BLOCK;
     }
 }

@@ -1,18 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CATEGORY_STACKER", "1.0.4");
 /*
 Version History:
-  1.0.4 (2015-03-14)
-    1) Moved in here from class.component_category_stacker.php
-    2) Extensivly refactored
-    3) Now fully PSR-2 Compliant
-
+  1.0.5 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
-
 class CategoryStacker extends Base
 {
+    const VERSION = '1.0.5';
+
     protected $Obj;
     protected $categories = array();
     protected $popupForm;
@@ -256,10 +252,5 @@ class CategoryStacker extends Base
             ."'','','','&amp;category=".$category."'"
             .");return false;\"  title='Add ".$this->_cp['filter_type']." for ".$category." category&hellip;'>"
             ."[ICON]11 11 1188 [/ICON]</a>\n";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CATEGORY_STACKER;
     }
 }

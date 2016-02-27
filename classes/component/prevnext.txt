@@ -1,3 +1,6 @@
+  1.0.2 (2015-08-03)
+    2) Now PSR-2 Compliant
+    3) Nav entity references now namespaced
   1.0.1 (2014-08-12)
     1) Changes to bring this component up to date and to have a configrable control panel
     2) Added ability to take a list of pages and take links from them to splice into the

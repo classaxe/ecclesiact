@@ -1,3 +1,5 @@
+  1.0.54 (2015-11-29)
+    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
   1.0.53 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.52 (2015-03-07)

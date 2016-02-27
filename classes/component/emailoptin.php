@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define("VERSION_COMPONENT_EMAIL_OPT_IN", "1.0.1");
 /*
 Version History:
-  1.0.1 (2015-04-24)
-    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class EmailOptIn extends Base
 {
+    const VERSION = '1.0.2';
+
     public function __construct()
     {
         $this->_ident =         'email_opt_in';
@@ -90,7 +89,6 @@ class EmailOptIn extends Base
             ."</table><br />\n";
     }
 
-
     protected function setup($instance = '', $args = array(), $disable_params = false)
     {
         global $page_vars;
@@ -123,10 +121,5 @@ class EmailOptIn extends Base
             }
         }
         $this->_msg= "<b>Success:</b> You have confirmed your email subscription with us.";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_EMAIL_OPT_IN;
     }
 }

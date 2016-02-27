@@ -1,23 +1,20 @@
 <?php
 namespace Component;
-
-define("VERSION_NS_COMPONENT_CHANGE_PASSWORD", "1.0.2");
 /*
 Version History:
-  1.0.2 (2015-03-17)
-    1) Moved from Component_Change_Password and reworked to use namespaces
-    2) Now Fully PSR-2 compliant
-
+  1.0.3 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class ChangePassword extends Base
 {
+    const VERSION = '1.0.3';
+
     protected $_command;
     protected $_done = false;
     protected $_msg = '';
     protected $_Obj_User;
     protected $_pwd;
     protected $_pwd2;
-
 
     public function __construct()
     {
@@ -169,10 +166,5 @@ class ChangePassword extends Base
             print "&nbsp;";
             die();
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CHANGE_PASSWORD;
     }
 }

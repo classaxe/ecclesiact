@@ -1,3 +1,5 @@
+  1.0.1 (2015-03-07)
+    1) Now namespaced and PSR-2 compliant
   1.0.0 (2012-11-15)
     1) New release - needed now that community is included as a class and not
        permanently loaded as a module

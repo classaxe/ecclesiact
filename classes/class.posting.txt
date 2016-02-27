@@ -1,3 +1,6 @@
+  1.0.122 (2016-01-18)
+    1) Now uses VERSION class constant for version control
+    2) Removed override of handle_report_copy(&$newID, &$msg, &$msg_tooltip, $name) - not needed
   1.0.121 (2015-03-22)
     1) Added `map_geocode_address` to fields list
     2) Posting::get_coords() now includes map_geocode_address

@@ -1,2 +1,5 @@
+  1.0.1 (2015-04-24)
+    1) Moved from class.component_email_opt_in.php and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
   1.0.0 (2014-06-22)
     1) Initial release

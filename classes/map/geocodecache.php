@@ -1,16 +1,13 @@
 <?php
 namespace Map;
-
-define('VERSION_NS_GEOCODE_CACHE', '1.0.5');
 /*
 Version History:
-  1.0.5 (2015-03-23)
-    1) Moved to map namespace and made PSR-2 compliant
-    2) Renamed export_sql() to exportSql
-
+  1.0.6 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class GeocodeCache extends \Displayable_Item
 {
+    const VERSION = '1.0.6';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, input_address, match_address, match_area, match_quality, match_type, output_json, output_lat, output_lon, partial_match, query_date, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const QUERIES_PER_DAY = 2400;   // 100 less than Google's daily maximum
     const MAX_CACHE_AGE =   90;     // Maximum number of days to cache previous results
@@ -90,10 +87,5 @@ class GeocodeCache extends \Displayable_Item
             'query_date' =>             $geocode['query_date']
         );
         return $result;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_GEOCODE_CACHE;
     }
 }

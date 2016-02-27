@@ -1,3 +1,7 @@
+  1.0.8 (2015-03-07)
+    1) Moved from Component_Articles_Rotator and reworked to use namespaces
+    2) Now has up-to-date constructor-based setup
+    3) Greatly simplified code by splitting into smaller helper classes
   1.0.7 (2015-01-31)
     1) Changes to internally used parameters in Component_Articles_Rotator::draw():
          Old: limit,         order_by

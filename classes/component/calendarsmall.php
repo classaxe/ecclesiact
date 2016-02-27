@@ -1,15 +1,14 @@
 <?php
 namespace Component;
-
-define('VERSION_NS_COMPONENT_CALENDAR_SMALL', '1.0.5');
 /*
 Version History:
-  1.0.5 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.6 (2016-02-27)
+    1) Now uses VERSION class constant for version control
 */
 class CalendarSmall extends Base
 {
+    const VERSION = '1.0.6';
+
     public function __construct()
     {
         $this->_ident =         'calendar';
@@ -135,10 +134,5 @@ class CalendarSmall extends Base
             ."<div id=\"".$this->_safe_ID."\""
             .($this->_cp['shadow'] ? " class='shadow'" : "")
             ." style='".($this->_cp['width'] ? "width:".$this->_cp['width']."px" : "xheight:1%")."'></div>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_NS_COMPONENT_CALENDAR_SMALL;
     }
 }

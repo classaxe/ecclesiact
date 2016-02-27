@@ -1,3 +1,6 @@
+  1.0.5 (2015-03-29)
+    1) Moved from Component_Activity_Tabber and reworked to use namespaces
+    2) Now Fully PSR-2 compliant
   1.0.4 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
   1.0.3 (2012-11-15)
