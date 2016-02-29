@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.2");
+define("CODEBASE_VERSION", "4.4.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,163 +16,34 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.2.2431 (2016-02-27)
+4.4.3.2432 (2016-02-28)
 Summary:
-  1) New ECL tag latest_youtube -
-     Used in AOJ website to ensure that the large preloaded video posted with
-     the video chooser shows the latest applicable video automatically
-  2) Updated existing namespaced components to use VERSION class constant for version control
+  1) New ECL tag community_member_stats
 
 Final Checksums:
-  Classes     CS:e9811325
+  Classes     CS:937f2a35
   Database    CS:5d138354
-  Libraries   CS:a81c8700
+  Libraries   CS:5f64bb46
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.2     (2016-02-27)
+  codebase.php                                                                                   4.4.3     (2016-02-28)
     1) Updated version information
-  classes/class.article.php                                                                      1.0.41    (2016-02-27)
-    1) Now has new CP for listings - filter_has_video
-  classes/class.posting.php                                                                      1.0.123   (2016-02-27)
-    1) Added support for filtering on hasVideo
-  classes/component/activitytabber.php                                                           1.0.7     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/adminpersonlookup.php                                                        1.0.6     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/articlesrotator.php                                                          1.0.9     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/biblelinks.php                                                               1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/calendarsmall.php                                                            1.0.6     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/calendaryearly.php                                                           1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/categorystacker.php                                                          1.0.5     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/categorytabber.php                                                           1.0.7     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/changepassword.php                                                           1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/collectionviewer.php                                                         1.0.55    (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/combotabber.php                                                              1.0.13    (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/communitiesdisplay.php                                                       1.0.8     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/communitycollectionviewer.php                                                1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/contentblock.php                                                             1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/contentgroupmembermirror.php                                                 1.0.5     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/contentsigninmirror.php                                                      1.0.4     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/customform.php                                                               1.0.6     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/customiserbutton.php                                                         1.0.5     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/dailybibleverse.php                                                          1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/documentcovers.php                                                           1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/documentreader.php                                                           1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/edityourprofile.php                                                          1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/emailnewslettersignup.php                                                    1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/emailoptin.php                                                               1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/emailoptout.php                                                              1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/emailunsubscribe.php                                                         1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/iconbookmark.php                                                             1.0.1     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/iconprintfriendly.php                                                        1.0.1     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/iconsitemap.php                                                              1.0.1     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/iconsocial.php                                                               1.0.4     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/icontextsizer.php                                                            1.0.1     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/latestyoutube.php                                                            1.0.0     (2016-02-25)
-    1) Initial Release
-  classes/component/navlinks.php                                                                 1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/component/prevnext.php                                                                 1.0.3     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/map/addresssubstitution.php                                                            1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/map/geocodecache.php                                                                   1.0.6     (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/map/googlemap.php                                                                      1.0.2     (2016-02-27)
-    1) Now uses VERSION class constant for version control and extends \Base to have access to that method
-  classes/nav/button.php                                                                         1.0.20    (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/nav/buttonimage.php                                                                    1.0.10    (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/nav/drawnav.php                                                                        1.0.7     (2016-02-27)
-    1) Now extends \Base so it can use getVersion() from there instead
-  classes/nav/style.php                                                                          1.0.13    (2016-02-27)
-    1) Now uses VERSION class constant for version control
-  classes/nav/suite.php                                                                          1.0.42    (2015-08-29)
-    1) Added sdmenu_exclusive and sdmenu_speed to field list
+  classes/class.community_member_display.php                                                     1.0.44    (2016-02-28)
+    1) Community_Member_Display::drawStats() now shows year separators
+    2) Now uses VERSION class constant for version control
+  classes/communitymemberstats.php                                                               1.0.0     (2016-02-28)
+    1) Initial release
 
-2431.sql
-  1) New ECL tag 'latest_youtube'
+2432.sql
+  1) New ECL tag 'community_member_stats'
   2) Set version information
 
 Promote:
-  codebase.php                                        4.4.2
-  classes/  (44 files changed)
-    class.article.php                                 1.0.41    CS:6bd021b1
-    class.posting.php                                 1.0.123   CS:60291a1d
-    component/activitytabber.php                      1.0.7     CS:1e09cb83
-    component/adminpersonlookup.php                   1.0.6     CS:de37ee56
-    component/articlesrotator.php                     1.0.9     CS:598dd322
-    component/biblelinks.php                          1.0.3     CS:1de8a289
-    component/calendarsmall.php                       1.0.6     CS:c3894668
-    component/calendaryearly.php                      1.0.3     CS:af90b37f
-    component/categorystacker.php                     1.0.5     CS:ffbd3044
-    component/categorytabber.php                      1.0.7     CS:eca1a8
-    component/changepassword.php                      1.0.3     CS:3a8a8d3f
-    component/collectionviewer.php                    1.0.55    CS:29fa9c3d
-    component/combotabber.php                         1.0.13    CS:f1618cc4
-    component/communitiesdisplay.php                  1.0.8     CS:904591e3
-    component/communitycollectionviewer.php           1.0.2     CS:d7b5d693
-    component/contentblock.php                        1.0.3     CS:a4211712
-    component/contentgroupmembermirror.php            1.0.5     CS:56b24be4
-    component/contentsigninmirror.php                 1.0.4     CS:8bfc480f
-    component/customform.php                          1.0.6     CS:cf8df093
-    component/customiserbutton.php                    1.0.5     CS:bf182b7d
-    component/dailybibleverse.php                     1.0.2     CS:b7ecf29
-    component/documentcovers.php                      1.0.2     CS:c2e431eb
-    component/documentreader.php                      1.0.3     CS:d3abb1f
-    component/edityourprofile.php                     1.0.2     CS:a50e25cc
-    component/emailnewslettersignup.php               1.0.3     CS:87869659
-    component/emailoptin.php                          1.0.2     CS:f3197c56
-    component/emailoptout.php                         1.0.2     CS:6f7dd37c
-    component/emailunsubscribe.php                    1.0.2     CS:74069cb6
-    component/iconbookmark.php                        1.0.1     CS:ea3732a1
-    component/iconprintfriendly.php                   1.0.1     CS:d89730f5
-    component/iconsitemap.php                         1.0.1     CS:39099775
-    component/iconsocial.php                          1.0.4     CS:948863c5
-    component/icontextsizer.php                       1.0.1     CS:d3bba60f
-    component/latestyoutube.php                       1.0.0     CS:a711bbcf
-    component/navlinks.php                            1.0.3     CS:54769563
-    component/prevnext.php                            1.0.3     CS:817633c3
-    map/addresssubstitution.php                       1.0.2     CS:4dccbc67
-    map/geocodecache.php                              1.0.6     CS:a2983981
-    map/googlemap.php                                 1.0.2     CS:e7fd7d02
-    nav/button.php                                    1.0.20    CS:7c2f5f86
-    nav/buttonimage.php                               1.0.10    CS:d8c4bdad
-    nav/drawnav.php                                   1.0.7     CS:6cf22208
-    nav/style.php                                     1.0.13    CS:bcb6fce1
-    nav/suite.php                                     1.0.42    CS:a666154b
-
+  codebase.php                                        4.4.3
+  classes/  (2 files changed)
+    class.community_member_display.php                1.0.44    CS:52939765
+    communitymemberstats.php                          1.0.0     CS:25ce535f
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:

@@ -1,18 +1,18 @@
 <?php
-define('COMMUNITY_MEMBER_DISPLAY_VERSION', '1.0.43');
 /*
 Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.43 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.44 (2016-02-28)
+    1) Community_Member_Display::drawStats() now shows year separators
+    2) Now uses VERSION class constant for version control
 */
-
 class Community_Member_Display extends Community_Member
 {
+    const VERSION = '1.0.44';
+
     protected $_events =                  array();
     protected $_events_christmas =        array();
     protected $_events_easter =           array();
@@ -1501,7 +1501,6 @@ class Community_Member_Display extends Community_Member
             $prof =   $this->_stats[$YYYYMM]['visits'][$member_url];
             $link =   $this->_stats[$YYYYMM]['links'];
             $bord_b = ($i==0 ? " st_bord_b" : "");
-    //      y($links);die;
             $this->_html.=
                  "    <tr>\n"
                 ."      <td class='st_date st_bord_l st_line".$bord_b."'>".$YYYYMM."</td>\n"
@@ -1558,6 +1557,9 @@ class Community_Member_Display extends Community_Member
                 )
                 ."</td>\n"
                 ."    </tr>\n";
+            if (substr($YYYYMM,5,2)=='01') {
+                $this->_html.= "<tr><td colspan='13' style='background:#808080'></td></tr>";
+            }
         }
         $this->_html.=
              "  </tbody>\n"
@@ -1826,10 +1828,5 @@ class Community_Member_Display extends Community_Member
             }
             $this->_section_tabs_arr[$i]['width'] = $w;
         }
-    }
-
-    public static function getVersion()
-    {
-        return COMMUNITY_MEMBER_DISPLAY_VERSION;
     }
 }

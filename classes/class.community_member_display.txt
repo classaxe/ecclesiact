@@ -1,3 +1,5 @@
+  1.0.43 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.42 (2015-03-28)
     1) Now includes Special Events, Easter Events and Christmas Events whenever they are there to see
        and uses separate tab indexes for each so that #easter for example goes directly to that tab
