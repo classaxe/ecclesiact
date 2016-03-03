@@ -1,3 +1,6 @@
+  1.0.45 (2016-01-06)
+    1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
+       ?submode=css&targetValue=wow_slider_profile
   1.0.44 (2015-12-30)
     1) Moved comment concerning dropbox checking into here from Community where it had been left behind
     2) Now uses VERSION constant and inherritted getVersion() method for version control

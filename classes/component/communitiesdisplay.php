@@ -2,25 +2,23 @@
 namespace Component;
 /*
 Version History:
-  1.0.8 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.9 (2016-03-03)
+    1) Changes to work with renamed Extended_Community - now CommunityListing
+    2) Better handling of no-records condition
+    3) Now has option to show members nested in output
 */
 class CommunitiesDisplay extends Base
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
-    protected $_Obj_Community =   false;
-    protected $_records =         array();
+    protected $CommunityListing =   false;
+    protected $CommunityMemberListing =   false;
+    protected $records =            array();
 
     public function __construct()
     {
         $this->_ident =             'communities_display';
         $this->_parameter_spec = array(
-            'filter_active' =>  array(
-                'match' =>      'enum|,0,1',
-                'default' =>    '1',
-                'hint' =>       '|0|1 - 0 for inactive, 1 for active, blank for all'
-            ),
             'map_height' =>     array(
                 'match' =>      'range|0,n',
                 'default' =>    '400',
@@ -34,13 +32,18 @@ class CommunitiesDisplay extends Base
             'show_list' =>      array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
-                'hint' =>       '0|1 - Whether or not to show the listing of members'
+                'hint' =>       '0|1 - Whether or not to show the listing of communities'
             ),
             'show_map' =>       array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
-                'hint' =>       '0|1 - Whether or not to allow map to show'
-            )
+                'hint' =>       '0|1 - Whether or not to show the communities map'
+            ),
+            'show_members' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1 - Whether or not to show the listing of members'
+            ),
         );
     }
 
@@ -90,9 +93,21 @@ class CommunitiesDisplay extends Base
         $this->_html.=
              "<div id='".$this->_safe_ID."_listing'>\n"
             ."<ul class='cross'>";
-        foreach ($this->_records as $r) {
-            $this->_Obj_Community->load($r);
-            $this->_html.= $this->_Obj_Community->draw_listing($this->_cp['show_map']);
+        foreach ($this->records as $r) {
+            $this->CommunityListing->load($r);
+            $inner_content = "";
+            if ($this->_cp['show_members']) {
+                $inner_content = "<ul>\n";
+                foreach($r['membersList'] as $m) {
+                    $this->CommunityMemberListing->load($m);
+                    $inner_content.= $this->CommunityMemberListing->draw();                    
+                }
+                $inner_content .= "</ul>\n";
+            }
+            $this->_html.= $this->CommunityListing->draw(
+                $this->_cp['show_map'],
+                $inner_content
+            );
         }
         $this->_html.=
              "</ul>"
@@ -104,10 +119,18 @@ class CommunitiesDisplay extends Base
         if (!$this->_cp['show_map']) {
             return;
         }
+        if (count($this->records)===0) {
+            $this->_html.=
+                 "<div id='".$this->_safe_ID."_frame' style='background:#e0e0e0'>\n"
+                ."<h2 style='text-align:center'>Error</h2>"
+                ."<p style='text-align:center'>No communities to map</p>"
+                ."</div>\n";
+            return;
+        }
         $Obj_Map =      new \Google_Map($this->_safe_ID, SYS_ID);
-        if (count($this->_records)>1) {
+        if (count($this->records)>1) {
             $points = array();
-            foreach ($this->_records as $r) {
+            foreach ($this->records as $r) {
                 $points[] = array(
                     'map_lat' =>    $r['map_lat'],
                     'map_lon' =>    $r['map_lon']
@@ -116,9 +139,9 @@ class CommunitiesDisplay extends Base
             $range = \Google_Map::get_bounds($points);
             $Obj_Map->map_zoom_to_fit($range);
         } else {
-            $Obj_Map->map_centre($this->_records[0]['map_lat'], $this->_records[0]['map_lon'], 6);
+            $Obj_Map->map_centre($this->records[0]['map_lat'], $this->records[0]['map_lon'], 6);
         }
-        foreach ($this->_records as $r) {
+        foreach ($this->records as $r) {
             if ($r['map_lat']==0 && $r['map_lon']==0) {
                 continue;
             }
@@ -135,7 +158,7 @@ class CommunitiesDisplay extends Base
                 0,
                 true,
                 '',
-                (count($this->_records)==1 ? true : false),
+                (count($this->records)==1 ? true : false),
                 htmlentities($r['title'])
             );
         }
@@ -161,15 +184,27 @@ class CommunitiesDisplay extends Base
     protected function setup($instance, $args, $disable_params)
     {
         parent::setup($instance, $args, $disable_params);
+        $this->setupInitialiseObjects();
         $this->setupLoadRecords();
+    }
+
+    protected function setupInitialiseObjects()
+    {
+        $this->CommunityListing = new \CommunityListing;
+        $this->CommunityListing->loadUserRights();
+        $this->CommunityListing->_safe_ID = $this->_safe_ID;
+        $this->CommunityMemberListing = new \CommunityMemberListing;
+        $this->CommunityMemberListing->loadUserRights();
     }
 
     protected function setupLoadRecords()
     {
-        $this->_Obj_Community = new \Extended_Community;
-        $this->_Obj_Community->_load_user_rights();
-        $this->_Obj_Community->_safe_ID = $this->_safe_ID;
-        $this->_Obj_Community->_set_multiple(array('_cp'=>$this->_cp));
-        $this->_records =       $this->_Obj_Community->get_communities();
+        $this->records =       $this->CommunityListing->get_communities();
+        if ($this->_cp['show_members']) {
+            foreach($this->records as &$record) {
+                $this->CommunityListing->_set_ID($record['ID']);
+                $record['membersList'] = $this->CommunityListing->get_members();
+            }
+        }
     }
 }

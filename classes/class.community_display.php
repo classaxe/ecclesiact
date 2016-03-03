@@ -7,14 +7,14 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.45 (2016-01-06)
-    1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
-       ?submode=css&targetValue=wow_slider_profile
+  1.0.46 (2016-03-03)
+    1) Moved setupListingsLoadUserRights() into here from Community::_setup_load_user_rights()
+    2) Split out setupListingsLoadPopupSizes() from setupListingsLoadUserRights()
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.45';
+    const VERSION = '1.0.46';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2351,6 +2351,9 @@ class Community_Display extends Community
             substr(get_timestamp(), 0, 10)
         );
         $this->setupListingsLoadUserRights();
+        if ($this->_current_user_rights['canEdit']) {
+            $this->setupListingsLoadPopupSizes();
+        }
         $this->setupListingsConnectToDropbox();
         $this->setupListingsLoadRecords();
         $this->setupListingsCategoriseRecords();
@@ -2476,7 +2479,34 @@ class Community_Display extends Community
 
     protected function setupListingsLoadUserRights()
     {
-        parent::_setup_load_user_rights();
+        $this->_current_user_rights['isSYSADMIN'] =
+            get_person_permission("SYSADMIN") ||
+            get_person_permission("MASTERADMIN");
+        $this->_current_user_rights['isMASTERADMIN'] =
+            get_person_permission("MASTERADMIN");
+        $this->_current_user_rights['canAdd'] =
+            get_person_permission("SYSAPPROVER") ||
+            get_person_permission("SYSADMIN") ||
+            get_person_permission("MASTERADMIN");
+        $this->_current_user_rights['canViewStats'] =
+            $this->_current_user_rights['canAdd'];
+        $this->_current_user_rights['canEdit'] =
+            $this->_current_user_rights['canAdd'] ||
+            get_person_permission("SYSEDITOR");
+        if ($this->_current_user_rights['canEdit']) {
+            $this->_edit_form['pages'] =          'pages';
+            $this->_edit_form['community'] =      'community';
+            $this->_edit_form['member'] =         'community_member';
+            $this->_edit_form['sponsor_plan'] =   'community.sponsorship-plans';
+        }
+    }
+
+    protected function setupListingsLoadPopupSizes()
+    {
+        $this->_popup['pages'] =              get_popup_size($this->_edit_form['pages']);
+        $this->_popup['community'] =          get_popup_size($this->_edit_form['community']);
+        $this->_popup['member'] =             get_popup_size($this->_edit_form['member']);
+        $this->_popup['sponsor_plan'] =       get_popup_size($this->_edit_form['sponsor_plan']);
     }
 
     protected function setupListingsTabs()

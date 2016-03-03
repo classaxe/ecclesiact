@@ -3,14 +3,13 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.118 (2015-12-30)
-    1) New method Community::updateAllMemberStats() for use by component-based VCRON job
-    2) Now uses VERSION constant and inherritted getVersion() method for version control
+  1.0.119 (2016-03-03)
+    1) Moved Community::_setup_load_user_rights() out into Community_Display::setupListingsLoadUserRights()
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.118';
+    const VERSION = '1.0.119';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -745,33 +744,5 @@ class Community extends Displayable_Item
         }
   //    header("Content-type: image/png"); ImagePNG($this->_img); die;
         ImagePNG($this->_img, '.'.$path);
-    }
-
-    protected function _setup_load_user_rights()
-    {
-        $this->_current_user_rights['isSYSADMIN'] =
-            get_person_permission("SYSADMIN") ||
-            get_person_permission("MASTERADMIN");
-        $this->_current_user_rights['isMASTERADMIN'] =
-            get_person_permission("MASTERADMIN");
-        $this->_current_user_rights['canAdd'] =
-            get_person_permission("SYSAPPROVER") ||
-            get_person_permission("SYSADMIN") ||
-            get_person_permission("MASTERADMIN");
-        $this->_current_user_rights['canViewStats'] =
-            $this->_current_user_rights['canAdd'];
-        $this->_current_user_rights['canEdit'] =
-            $this->_current_user_rights['canAdd'] ||
-            get_person_permission("SYSEDITOR");
-        if ($this->_current_user_rights['canEdit']) {
-            $this->_edit_form['pages'] =          'pages';
-            $this->_edit_form['community'] =      'community';
-            $this->_edit_form['member'] =         'community_member';
-            $this->_edit_form['sponsor_plan'] =   'community.sponsorship-plans';
-            $this->_popup['pages'] =              get_popup_size($this->_edit_form['pages']);
-            $this->_popup['community'] =          get_popup_size($this->_edit_form['community']);
-            $this->_popup['member'] =             get_popup_size($this->_edit_form['member']);
-            $this->_popup['sponsor_plan'] =       get_popup_size($this->_edit_form['sponsor_plan']);
-        }
     }
 }

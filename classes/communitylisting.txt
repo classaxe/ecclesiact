@@ -1,0 +1,2 @@
+  1.0.0 (2015-03-17)
+    1) Moved into its own file - was originally part of class.component_communities_display.php

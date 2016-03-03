@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.3");
+define("CODEBASE_VERSION", "4.4.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,34 +16,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.3.2432 (2016-02-28)
+4.4.4.2433 (2016-03-03)
 Summary:
-  1) New ECL tag community_member_stats
+  1) ECL tag communities_display now has option to show list of members for each community
 
-Final Checksums:
-  Classes     CS:937f2a35
-  Database    CS:5d138354
-  Libraries   CS:5f64bb46
-  Reports     CS:ed22cc30
-
-Code Changes:
-  codebase.php                                                                                   4.4.3     (2016-02-28)
-    1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.44    (2016-02-28)
-    1) Community_Member_Display::drawStats() now shows year separators
-    2) Now uses VERSION class constant for version control
-  classes/communitymemberstats.php                                                               1.0.0     (2016-02-28)
-    1) Initial release
-
-2432.sql
-  1) New ECL tag 'community_member_stats'
-  2) Set version information
-
-Promote:
-  codebase.php                                        4.4.3
-  classes/  (2 files changed)
-    class.community_member_display.php                1.0.44    CS:52939765
-    communitymemberstats.php                          1.0.0     CS:25ce535f
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
