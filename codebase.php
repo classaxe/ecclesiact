@@ -20,6 +20,46 @@ define(
 Summary:
   1) ECL tag communities_display now has option to show list of members for each community
 
+Final Checksums:
+  Classes     CS:bc9e6f04
+  Database    CS:5d138354
+  Libraries   CS:f69f0457
+  Reports     CS:ed22cc30
+
+Code Changes:
+  codebase.php                                                                                   4.4.4     (2016-03-03)
+    1) Updated version information
+  classes/class.community.php                                                                    1.0.119   (2016-03-03)
+    1) Moved Community::_setup_load_user_rights() out into Community_Display::setupListingsLoadUserRights()
+  classes/class.community_display.php                                                            1.0.46    (2016-03-03)
+    1) Moved setupListingsLoadUserRights() into here from Community::_setup_load_user_rights()
+    2) Split out setupListingsLoadPopupSizes() from setupListingsLoadUserRights()
+  classes/communitylisting.php                                                                   1.0.1     (2016-03-03)
+    1) Formerly Extended_Community - now CommunityListing
+    2) CommunityListing::draw_listing() renamed to drawListing() and now takes single parameter for show_map
+       rather than requiring complete CP list to be set for it by parent
+  classes/communitymemberlisting.php                                                             1.0.0     (2016-03-03)
+    1) Initial Release
+  classes/component/communitiesdisplay.php                                                       1.0.9     (2016-03-03)
+    1) Changes to work with renamed Extended_Community - now CommunityListing
+    2) Better handling of no-records condition
+    3) Now has option to show members nested in output
+
+2433.sql
+  1) Set version information
+
+Delete:
+    class.extended_community.php                      1.0.0
+
+Promote:
+  codebase.php                                        4.4.4
+  classes/  (5 files changed)
+    class.community.php                               1.0.119   CS:1e32ff7f
+    class.community_display.php                       1.0.46    CS:1ccb15d7
+    communitylisting.php                              1.0.1     CS:585fdbfd
+    communitymemberlisting.php                        1.0.0     CS:513f57c9
+    component/communitiesdisplay.php                  1.0.9     CS:3dd2f365
+
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
