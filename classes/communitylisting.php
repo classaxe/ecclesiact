@@ -1,17 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.1 (2016-03-03)
-    1) Formerly Extended_Community - now CommunityListing
-    2) CommunityListing::draw_listing() renamed to drawListing() and now takes single parameter for show_map
-       rather than requiring complete CP list to be set for it by parent 
+  1.0.2 (2016-03-04)
+    1) Added options for show_URL and show_member_count to better control generated output
 */
 
 class CommunityListing extends Community
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
     
-    public function draw($show_map = false, $content = '')
+    public function draw($show_map = false, $show_URL = false, $show_member_count = false, $content = '')
     {
         if (!$this->_current_user_rights['canEdit'] && !$this->record['members']) {
             return;
@@ -31,8 +29,8 @@ class CommunityListing extends Community
             .">"
             .htmlentities($this->record['title'])
             ."</a>"
-            ." <i>(".$this->record['members'].")</i>"
-            .($this->record['URL_external'] ?
+            .($show_member_count ? " <i>(".$this->record['members'].")</i>" : "")
+            .($show_URL && $this->record['URL_external'] ?
                  "    <em><a href=\"".$this->record['URL_external']."\" rel=\"external\">"
                 .$this->record['URL_external']
                 ."</a></em>\n"

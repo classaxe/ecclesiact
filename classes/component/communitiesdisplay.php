@@ -2,14 +2,13 @@
 namespace Component;
 /*
 Version History:
-  1.0.9 (2016-03-03)
-    1) Changes to work with renamed Extended_Community - now CommunityListing
-    2) Better handling of no-records condition
-    3) Now has option to show members nested in output
+  1.0.10 (2016-03-04)
+    1) Added CPs for filter_active, show_communities_url and show_member_count
+    2) Implemented code to operate with the new CPs
 */
 class CommunitiesDisplay extends Base
 {
-    const VERSION = '1.0.9';
+    const VERSION = '1.0.10';
 
     protected $CommunityListing =   false;
     protected $CommunityMemberListing =   false;
@@ -19,6 +18,11 @@ class CommunitiesDisplay extends Base
     {
         $this->_ident =             'communities_display';
         $this->_parameter_spec = array(
+            'filter_active' =>         array(
+                'match' =>      'enum|,0,1',
+                'default' =>    '',
+                'hint' =>       'Blank to ignore, 0 for not active, 1 for active'
+            ),
             'map_height' =>     array(
                 'match' =>      'range|0,n',
                 'default' =>    '400',
@@ -29,6 +33,11 @@ class CommunitiesDisplay extends Base
                 'default' =>    '490',
                 'hint' =>       '0-n'
             ),
+            'show_communities_url' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       '0|1 - Whether or not to show the URL for communities'
+            ),
             'show_list' =>      array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
@@ -38,6 +47,11 @@ class CommunitiesDisplay extends Base
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1 - Whether or not to show the communities map'
+            ),
+            'show_member_count' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       '0|1 - Whether or not to show the number of members'
             ),
             'show_members' =>      array(
                 'match' =>      'enum|0,1',
@@ -106,6 +120,8 @@ class CommunitiesDisplay extends Base
             }
             $this->_html.= $this->CommunityListing->draw(
                 $this->_cp['show_map'],
+                $this->_cp['show_communities_url'],
+                $this->_cp['show_member_count'],
                 $inner_content
             );
         }
@@ -199,7 +215,15 @@ class CommunitiesDisplay extends Base
 
     protected function setupLoadRecords()
     {
-        $this->records =       $this->CommunityListing->get_communities();
+        $communities = $this->CommunityListing->get_communities();
+        foreach($communities as $c) {
+            if (($this->_cp['filter_active']==='') ||
+                ($this->_cp['filter_active']==='0' && $c['enabled']==='0') ||
+                ($this->_cp['filter_active']==='1' && $c['enabled']==='1')
+            ) {
+                $this->records[] = $c;
+            }
+        }
         if ($this->_cp['show_members']) {
             foreach($this->records as &$record) {
                 $this->CommunityListing->_set_ID($record['ID']);

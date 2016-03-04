@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.4");
+define("CODEBASE_VERSION", "4.4.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,49 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.4.2433 (2016-03-03)
+4.4.5.2434 (2016-03-04)
 Summary:
-  1) ECL tag communities_display now has option to show list of members for each community
+  1) ECL tag communities_display now has option to hide inactive communities, the community site URL and member counts
 
 Final Checksums:
-  Classes     CS:bc9e6f04
+  Classes     CS:3bea330c
   Database    CS:5d138354
-  Libraries   CS:f69f0457
+  Libraries   CS:1e73811
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.4     (2016-03-03)
+  codebase.php                                                                                   4.4.5     (2016-03-04)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.119   (2016-03-03)
-    1) Moved Community::_setup_load_user_rights() out into Community_Display::setupListingsLoadUserRights()
-  classes/class.community_display.php                                                            1.0.46    (2016-03-03)
-    1) Moved setupListingsLoadUserRights() into here from Community::_setup_load_user_rights()
-    2) Split out setupListingsLoadPopupSizes() from setupListingsLoadUserRights()
-  classes/communitylisting.php                                                                   1.0.1     (2016-03-03)
-    1) Formerly Extended_Community - now CommunityListing
-    2) CommunityListing::draw_listing() renamed to drawListing() and now takes single parameter for show_map
-       rather than requiring complete CP list to be set for it by parent
-  classes/communitymemberlisting.php                                                             1.0.0     (2016-03-03)
-    1) Initial Release
-  classes/component/communitiesdisplay.php                                                       1.0.9     (2016-03-03)
-    1) Changes to work with renamed Extended_Community - now CommunityListing
-    2) Better handling of no-records condition
-    3) Now has option to show members nested in output
+  classes/communitylisting.php                                                                   1.0.2     (2016-03-04)
+    1) Added options for show_URL and show_member_count to better control generated output
+  classes/communitymemberlisting.php                                                             1.0.1     (2016-03-04)
+    1) Removed some unused code and fixed closing tag for each list items
+  classes/component/communitiesdisplay.php                                                       1.0.10    (2016-03-04)
+    1) Added CPs for filter_active, show_communities_url and show_member_count
+    2) Implemented code to operate with the new CPs
 
-2433.sql
+2434.sql
   1) Set version information
 
-Delete:
-    class.extended_community.php                      1.0.0
-
 Promote:
-  codebase.php                                        4.4.4
-  classes/  (5 files changed)
-    class.community.php                               1.0.119   CS:1e32ff7f
-    class.community_display.php                       1.0.46    CS:1ccb15d7
-    communitylisting.php                              1.0.1     CS:585fdbfd
-    communitymemberlisting.php                        1.0.0     CS:513f57c9
-    component/communitiesdisplay.php                  1.0.9     CS:3dd2f365
+  codebase.php                                        4.4.5
+  classes/  (3 files changed)
+    communitylisting.php                              1.0.2     CS:7d2f4e0c
+    communitymemberlisting.php                        1.0.1     CS:1d5871b4
+    component/communitiesdisplay.php                  1.0.10    CS:fe3c214c
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

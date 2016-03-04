@@ -1,48 +1,24 @@
 <?php
 /*
 Version History:
-  1.0.0 (2016-03-03)
-    1) Initial Release 
+  1.0.1 (2016-03-04)
+    1) Removed some unused code and fixed closing tag for each list items
 */
 
 class CommunityMemberListing extends Community_Member
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
     
     public function draw()
     {
         return
-             "<li>"
+             "<li>\n"
             ."<a href=\"".$this->record['member_URL']."\"".$this->drawContextMenuMember().">"
             .htmlentities($this->record['title'])
-            ."</a>";
-        
-        return
-             "<li".($this->record['enabled'] ? "" : " class='inactive' title='Inactive'").">"
-            .$this->BL_context_selection_start()
-            ."<a"
-            ." href=\"".BASE_PATH.trim($this->record['URL'], '/')."\""
-            .($show_map && $has_map ?
-                 " title=\"Show Community of ".htmlentities($this->record['title'])." on map\""
-                ." onclick=\"return ecc_map.point.i(_google_map_".$this->_safe_ID."_marker_".$this->record['ID'].");\""
-              :
-                 " title=\"Visit Community of ".htmlentities($this->record['title'])."\""
-             )
-            .">"
-            .htmlentities($this->record['title'])
             ."</a>"
-            ." <i>(".$this->record['members'].")</i>"
-            .($this->record['URL_external'] ?
-                 "    <em><a href=\"".$this->record['URL_external']."\" rel=\"external\">"
-                .$this->record['URL_external']
-                ."</a></em>\n"
-             :
-                ""
-            )
-            .$this->BL_context_selection_end()
-            .$content
-            ."</li>";
+            ."</li>\n";
     }
+
     protected function drawContextMenuMember()
     {
         if (!$this->_current_user_rights['canEdit']) {
