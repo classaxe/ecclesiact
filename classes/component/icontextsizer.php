@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.1 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.2 (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
 */
 class IconTextSizer extends Base
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     public function __construct()
     {
@@ -52,7 +52,7 @@ class IconTextSizer extends Base
             .">"
             ."<a href=\"#\" onclick=\"toggleTextSize();return false;\">"
             ."<img alt='Enlarge Text' src='".BASE_PATH."img/spacer'"
-            ." class='toolbar_icon' height=\"16\" width=\"16\" /></a>"
+            ." class='toolbar_icon' style='width:16px;height:16px'/></a>"
             .($this->_cp['show_label'] ?
                 "<a href=\"#\" style=\"float:left\" onclick=\"toggleTextSize();return false;\">"
                 .$this->_cp['label']
@@ -66,7 +66,7 @@ class IconTextSizer extends Base
             .">"
             ."<a href=\"#\" onclick=\"toggleTextSize();return false;\">"
             ."<img alt='Reduce Text' src='".BASE_PATH."img/spacer'"
-            ." class='toolbar_icon' height=\"16\" width=\"16\"/></a>"
+            ." class='toolbar_icon' style='width:16px;height:16px'/></a>"
             .($this->_cp['show_label'] ?
                 "<a href=\"#\" style=\"float:left\" onclick=\"toggleTextSize();return false;\">"
                 .$this->_cp['label']

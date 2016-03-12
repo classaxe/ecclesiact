@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.4 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.5 (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
 */
 class IconSocial extends Base
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     public function __construct()
     {
@@ -63,8 +63,7 @@ class IconSocial extends Base
             ." title=\"".$this->_cp['tooltip']."\">"
             ."<img id=\"".$this->_js_safe_ID."\" src='".BASE_PATH."img/spacer' class=''"
             ." alt=\"".$this->_cp['tooltip']."\""
-            ." height=\"".$this->_cp['size']."\""
-            ." width=\"".$this->_cp['size']."\""
+            ." style='width:".$this->_cp['size']."px;height:".$this->_cp['size']."px'"
             ."/></a>";
     }
 

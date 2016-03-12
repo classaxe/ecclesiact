@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.5");
+define("CODEBASE_VERSION", "4.4.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,36 +16,47 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.5.2434 (2016-03-04)
+4.4.6.2435 (2016-03-12)
 Summary:
-  1) ECL tag communities_display now has option to hide inactive communities, the community site URL and member counts
+  1) Changes to system icons to eliminate some interference from bootstrap integration
 
 Final Checksums:
-  Classes     CS:3bea330c
+  Classes     CS:4fc04aab
   Database    CS:5d138354
-  Libraries   CS:1e73811
+  Libraries   CS:d4a2ab7c
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.5     (2016-03-04)
+  codebase.php                                                                                   4.4.6     (2016-03-12)
     1) Updated version information
-  classes/communitylisting.php                                                                   1.0.2     (2016-03-04)
-    1) Added options for show_URL and show_member_count to better control generated output
-  classes/communitymemberlisting.php                                                             1.0.1     (2016-03-04)
-    1) Removed some unused code and fixed closing tag for each list items
-  classes/component/communitiesdisplay.php                                                       1.0.10    (2016-03-04)
-    1) Added CPs for filter_active, show_communities_url and show_member_count
-    2) Implemented code to operate with the new CPs
+  classes/class.html.php                                                                         1.0.93    (2016-03-06)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  classes/component/iconbookmark.php                                                             1.0.2     (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  classes/component/iconprintfriendly.php                                                        1.0.2     (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  classes/component/iconsitemap.php                                                              1.0.2     (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  classes/component/iconsocial.php                                                               1.0.5     (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  classes/component/icontextsizer.php                                                            1.0.2     (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  style/default.css                                                                              1.0.172   (2016-03-12)
+    1) popupTitleBar now sets line-height
 
-2434.sql
+2435.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.4.5
-  classes/  (3 files changed)
-    communitylisting.php                              1.0.2     CS:7d2f4e0c
-    communitymemberlisting.php                        1.0.1     CS:1d5871b4
-    component/communitiesdisplay.php                  1.0.10    CS:fe3c214c
+  codebase.php                                        4.4.6
+  classes/  (6 files changed)
+    class.html.php                                    1.0.93    CS:1013f7ee
+    component/iconbookmark.php                        1.0.2     CS:99aa440c
+    component/iconprintfriendly.php                   1.0.2     CS:8ab1ee6a
+    component/iconsitemap.php                         1.0.2     CS:c0062d83
+    component/iconsocial.php                          1.0.5     CS:fd0d605f
+    component/icontextsizer.php                       1.0.2     CS:dc9c9c60
+  style/default.css                                   1.0.172   CS:ee090ced
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,8 +1,7 @@
-/* 1.0.171
+/* 1.0.172
 Version History:
-  1.0.171 (2016-01-08)
-    1) Added pre.admin_fixed that reduces top ad bottom margins
-
+  1.0.172 (2016-03-12)
+    1) popupTitleBar now sets line-height
 */
 
 .swatch {
@@ -278,6 +277,7 @@ Version History:
 .cp_config table thead tr th {
   text-align: left;
   border: 1px solid #888;
+  color: #222;
   background: #eee;
   padding: 0 2px;
 }
@@ -300,6 +300,7 @@ Version History:
   border: 1px solid #ccc;
   font-weight: normal;
   padding: 0 2px;
+  color: #222;
   background-color: #fff;
 }
 .cp_config table tbody tr td input {
@@ -2100,7 +2101,8 @@ ul.vnavmenu li ul li.over ul li {
 	background-color: #486CAE;
 	color: #ffffff;
 	font-size: 8pt;
-	height: 14px;
+	height: 22px;
+	line-height: 14px;
 	padding: 2px;
 	border-bottom: 1px solid #000000;
 	border-top: 1px solid #78A3F2;
@@ -2114,6 +2116,7 @@ ul.vnavmenu li ul li.over ul li {
 #popupBody {
 	clear: both;
 	background-color: #ffffff;
+	color: #000000;
 	position: relative;
 	z-index: 204;
 	padding-bottom: 1px;

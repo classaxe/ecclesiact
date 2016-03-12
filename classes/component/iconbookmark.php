@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.1 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.2 (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
 */
 class IconBookmark extends Base
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     public function __construct()
     {
@@ -56,7 +56,7 @@ class IconBookmark extends Base
             ."<a href=\"#\""
             ." onclick=\"add_bookmark('".$URL."','".addslashes($page_vars['title'])."');return false;\">"
             ."<img alt='Add Bookmark' src='".BASE_PATH."img/spacer' class='toolbar_icon'"
-            ." height=\"15\" width=\"15\""
+            ." style='width:15px;height:15px'"
             ."/></a>"
             .($this->_cp['show_label'] ?
                 "<a href=\"#\""

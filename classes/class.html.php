@@ -1,19 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.92 (2016-01-01)
-    1) The following methods are now declared to be static:
-         HTML::draw_icon()
-         HTML::draw_info()
-         HTML::draw_section_tabs()
-         HTML::draw_toolbar_end()
-         HTML::draw_toolbar_frame()
-         HTML::draw_toolbar_text()
-         HTML::draw_toolbar_separator()
+  1.0.93 (2016-03-06)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.92';
+    const VERSION = '1.0.93';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -133,45 +126,40 @@ class HTML extends Record
             case 'Popup Edit Product':
                 return
                     "<img src='".BASE_PATH."img/spacer' class='icons fl'"
-                    ." style='margin:1px;background-position:-".$pos."px 0px;'"
+                    ." style='margin:1px;background-position:-".$pos."px 0px;width:".$width."px;height:16px;'"
                     ." alt=\"".$text."\""
-                    ." height=\"16\" width=\"".$width."\""
                     ."/>";
             break;
             case 'add_to_outlook':
                 return
-                     "<img alt='Add to Outlook' src='".BASE_PATH."img/spacer' class='icons std_control'"
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3902px 0px;'"
+                     "<img alt='Add to Outlook' src='".BASE_PATH."img/spacer' class='icons std_control' style='"
+                    ."margin:3px 0px;background-position:-3902px 0px;width:30px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-3932px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-3902px 0px';return true;\""
-                    ." height=\"10\" width=\"30\""
                     ." />";
             break;
             case "buy_event":
                 return
-                     "<img alt='Buy Event' src='".BASE_PATH."img/spacer' class='icons std_control'"
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-4552px 0px;'"
+                     "<img alt='Buy Event' src='".BASE_PATH."img/spacer' class='icons std_control' style='"
+                    ."margin:3px 0px;background-position:-4552px 0px;width:31px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-4583px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-4552px 0px';return true;\""
-                    ." height=\"10\" width=\"31\""
                     ." />";
             break;
             case 'bugtracker':
                 return
                      "<img src='".BASE_PATH."img/spacer' class='icons'"
-                    ." style='display:block;background-position:-4314px 0px;'"
+                    ." style='display:block;background-position:-4314px 0px;width:15px;height:16px'"
                     ." alt='File a Bug Report' title='File a Bug Report'"
-                    ." height=\"16\" width=\"15\""
                     ."/>";
             break;
             case 'external':
                 return
-                     "<img src='".BASE_PATH."img/spacer' class='icons'"
-                    ." style='margin-left:0.5em;display:inline;float:none;background-position:-3224px 0px;'"
+                     "<img src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin-left:0.5em;display:inline;float:none;background-position:-3224px 0px;width:9px;height:7px'"
                     ." onmouseover=\"this.style.backgroundPosition='-3224px -7px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-3224px 0px';return true;\""
                     ." alt='Opens in a new window'"
-                    ." height=\"7\" width=\"9\""
                     ."/>";
             break;
             case 'help':
@@ -180,66 +168,62 @@ class HTML extends Record
                 }
                 return
                      "<a href=\"#\" onclick=\"popup_help('".$args."');return false;\">"
-                    ."<img src='".BASE_PATH."img/spacer' class='icons'"
-                    ." style='display:inline;float:none;background-position:-2937px 0px;'"
+                    ."<img src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."display:inline;float:none;background-position:-2937px 0px;width:11px;height:12px;'"
                     ." onmouseover=\"this.style.backgroundPosition='-2948px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-2937px 0px';return true;\""
                     ." alt='?'"
-                    ." height=\"12\" width=\"11\""
                     ."/></a>";
             break;
             case 'link':
                 return
-                     "<img alt='Link' src='".BASE_PATH."img/spacer' class='icons'"
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-1766px 0px;'"
+                     "<img alt='Link' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-1766px 0px;"
+                    ."width:".($args==true ? "33" : "22")."px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-1799px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-1766px 0px';return true;\""
-                    ." height=\"10\" width=\"".($args==true ? "33" : "22")."\""
                     ."/>";
             break;
             case 'map':
                 return
-                     "<img alt='View Map' src='".BASE_PATH."img/spacer' class='icons'"
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-1832px 0px;'"
+                     "<img alt='View Map' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-1832px 0px;"
+                    ."width:".($args==true ? "33" : "22")."px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-1865px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-1832px 0px';return true;\""
-                    ." height=\"10\" width=\"".($args==true ? "33" : "22")."\""
                     ." />";
             break;
             case 'media_player':
                 return
-                    "<img alt='Media Player' src='".BASE_PATH."img/spacer' class='icons' "
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-2295px 0px;'"
+                    "<img alt='Media Player' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-2295px 0px;width:12p;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-2307px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-2295px 0px';return true;\""
-                    ." height=\"10\" width=\"12\""
                     ." />";
             break;
             case 'media_download':
                 return
-                    "<img alt='Download Media' src='".BASE_PATH."img/spacer' class='icons' "
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3631px 0px;'"
+                    "<img alt='Download Media' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-3631px 0px;width:16px;height:15px'"
                     ." onmouseover=\"this.style.backgroundPosition='-3647px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-3631px 0px';return true;\""
-                    ." height=\"15\" width=\"16\""
                     ."/>";
             break;
             case 'media_download_mini':
                 return
-                    "<img alt='Download Media' src='".BASE_PATH."img/spacer' class='icons' "
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3663px 0px;'"
+                    "<img alt='Download Media' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-3663px 0px;width:13px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-3676px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-3663px 0px';return true;\""
-                    ." height=\"10\" width=\"13\""
                     ."/>";
             break;
             case 'more':
                 return
-                    "<img alt='Read More' src='".BASE_PATH."img/spacer' class='icons' "
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-1638px 0px;'"
+                    "<img alt='Read More' src='".BASE_PATH."img/spacer' class='icons' style='"
+                    ."margin:3px 0px;background-position:-1638px 0px;"
+                    ."width:".($args==true ? "64" : "53")."px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-1702px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-1638px 0px';return true;\""
-                    ." height=\"10\" width=\"".($args==true ? "64" : "53")."\""
                     ."/>";
             break;
             case 'print':
@@ -251,7 +235,7 @@ class HTML extends Record
                     ." onmouseout=\"geid('icon_print').style.backgroundPosition='-1456px 0px';\""
                     .">"
                     ."<img alt='Print this page' id='icon_print' src='".BASE_PATH."img/spacer' title='Print this page'"
-                    ." class='toolbar_icon' style='background-position:-1456px 0px;' height=\"16\" width=\"20\"/>"
+                    ." class='toolbar_icon' style='background-position:-1456px 0px;width:20px;height:16px'/>"
                     ."</a></span>";
             break;
             case 'print_calendar':
@@ -268,8 +252,8 @@ class HTML extends Record
                     ." onmouseover=\"geid('icon_print_calendar').style.backgroundPosition='-1476px 0px';\" "
                     ." onmouseout=\"geid('icon_print_calendar').style.backgroundPosition='-1456px 0px';\">"
                     ."<img alt='Print this calendar' id='icon_print_calendar' src='".BASE_PATH."img/spacer'"
-                    ." title='Print this calendar' class='toolbar_icon' style='background-position:-1456px 0px;'"
-                    ." height=\"16\" width=\"20\""
+                    ." title='Print this calendar' class='toolbar_icon'"
+                    ." style='background-position:-1456px 0px;width:20px;height:16px'"
                     ."/></a></span>";
             break;
             case 'print_form':
@@ -279,17 +263,15 @@ class HTML extends Record
                     ." onmouseout=\"geid('icon_print_form').style.backgroundPosition='-2811px 0px';\">"
                     ."<img alt='Click to print' id='icon_print_form' src='".BASE_PATH."img/spacer'"
                     ." title='Click to print' class='icons'"
-                    ." style='display:inline;float:none;background-position:-2811px 0px;'"
-                    ." height=\"12\" width=\"13\""
+                    ." style='display:inline;float:none;background-position:-2811px 0px;width:13px;height:12px'"
                     ."/></a>";
             break;
             case "register_event":
                 return
                      "<img alt='Register for Event' src='".BASE_PATH."img/spacer' class='icons std_control'"
-                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3962px 0px;'"
+                    ." style='margin-top:3px;margin-bottom:3px;background-position:-3962px 0px;width:55px;height:10px'"
                     ." onmouseover=\"this.style.backgroundPosition='-4017px 0px';return true;\""
                     ." onmouseout=\"this.style.backgroundPosition='-3962px 0px';return true;\""
-                    ." height=\"10\" width=\"55\""
                     ." />";
             break;
         }

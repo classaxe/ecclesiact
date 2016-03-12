@@ -1,3 +1,5 @@
+  1.0.1 (2016-02-27)
+    1) Now uses VERSION class constant for version control
   1.0.0 (2015-04-19)
     1) Moved from HTML::draw_icon('bookmark') and reworked to use namespaces
     2) Now Fully PSR-2 compliant

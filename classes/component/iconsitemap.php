@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.1 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.2 (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
 */
 class IconSiteMap extends Base
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     public function __construct()
     {
@@ -54,7 +54,7 @@ class IconSiteMap extends Base
         $this->_html.=
              "<span class='icon_sitemap noprint'><a href=\"#\" onclick=\"print_friendly();return false;\""
             ." title='Click to view Sitemap'>"
-            ."<img src='".BASE_PATH."img/spacer' class='toolbar_icon' width='26' height='16'"
+            ."<img src='".BASE_PATH."img/spacer' class='toolbar_icon' style='width:26px;height:16px'"
             ." alt='Click to view Sitemap' /></a>"
             .($this->_cp['show_label'] ?
                 "<a href=\"".$this->_cp['URL']."\" style=\"float:left\">".$this->_cp['label']."</a>"

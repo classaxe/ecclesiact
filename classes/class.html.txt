@@ -1,3 +1,12 @@
+  1.0.92 (2016-01-01)
+    1) The following methods are now declared to be static:
+         HTML::draw_icon()
+         HTML::draw_info()
+         HTML::draw_section_tabs()
+         HTML::draw_toolbar_end()
+         HTML::draw_toolbar_frame()
+         HTML::draw_toolbar_text()
+         HTML::draw_toolbar_separator()
   1.0.91 (2015-09-13)
     1) References to Page::pop_content() now changed to Output::pull()
   1.0.90 (2015-04-19)
