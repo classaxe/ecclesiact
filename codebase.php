@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.6");
+define("CODEBASE_VERSION", "4.4.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,47 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.6.2435 (2016-03-12)
+4.4.7.2436 (2016-03-13)
 Summary:
-  1) Changes to system icons to eliminate some interference from bootstrap integration
+  1) Moved Component_Search_Word_Cloud into component namespace and completely recoded for much better control
 
 Final Checksums:
-  Classes     CS:4fc04aab
+  Classes     CS:e97cbf66
   Database    CS:5d138354
-  Libraries   CS:d4a2ab7c
+  Libraries   CS:23da973a
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.6     (2016-03-12)
+  codebase.php                                                                                   4.4.7     (2016-03-13)
     1) Updated version information
-  classes/class.html.php                                                                         1.0.93    (2016-03-06)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  classes/component/iconbookmark.php                                                             1.0.2     (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  classes/component/iconprintfriendly.php                                                        1.0.2     (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  classes/component/iconsitemap.php                                                              1.0.2     (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  classes/component/iconsocial.php                                                               1.0.5     (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  classes/component/icontextsizer.php                                                            1.0.2     (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
-  style/default.css                                                                              1.0.172   (2016-03-12)
-    1) popupTitleBar now sets line-height
+  classes/class.posting.php                                                                      1.0.124   (2016-03-13)
+    1) Now allows filtering without type matching if type is not set
+  classes/component/searchwordcloud.php                                                          1.0.1     (2016-03-12)
+    1) Now namespaced and refactored to use standard methods to filter on different types of posting
 
-2435.sql
-  1) Set version information
+2436.sql
+  1) Changes to ECL tag 'component_search_word_cloud' for new namespaced component
+  2) Set version information
+
+Delete:
+    class.component_search_word_cloud.php             1.0.0
 
 Promote:
-  codebase.php                                        4.4.6
-  classes/  (6 files changed)
-    class.html.php                                    1.0.93    CS:1013f7ee
-    component/iconbookmark.php                        1.0.2     CS:99aa440c
-    component/iconprintfriendly.php                   1.0.2     CS:8ab1ee6a
-    component/iconsitemap.php                         1.0.2     CS:c0062d83
-    component/iconsocial.php                          1.0.5     CS:fd0d605f
-    component/icontextsizer.php                       1.0.2     CS:dc9c9c60
-  style/default.css                                   1.0.172   CS:ee090ced
+  codebase.php                                        4.4.7
+  classes/  (2 files changed)
+    class.posting.php                                 1.0.124   CS:661e0a87
+    component/searchwordcloud.php                     1.0.1     CS:2822e44c
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
