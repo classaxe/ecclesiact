@@ -3,17 +3,14 @@ namespace Component;
 
 /*
 Version History:
-  1.0.2 (2016-03-14)
-    1) New CP 'link_path' to allow component to be used with pages other than search results
+  1.0.0 (2016-03-14)
+    1) Initial release
 */
-class SearchWordCloud extends Base
+class SearchCategoryList extends Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.1';
 
-    protected $filtered =   array();
-    protected $maxMatches = 0;
-    protected $text =       array();
-    protected $words =      array();
+    protected $categories =      array();
 
     public function __construct()
     {
@@ -62,35 +59,15 @@ class SearchWordCloud extends Base
                 'default' =>    '',
                 'hint' =>       'Type of object to limit results to - or blank for anything'
             ),
-            'min_characters' =>     array(
-                'match' =>      'range|1,n',
-                'default' =>    '4',
-                'hint' =>       'Minimum number of characters for words shown'
-            ),
-            'max_matches' =>        array(
-                'match' =>      'range|1,n',
-                'default' =>    '1000',
-                'hint' =>       'Maximum number of matches for words shown'
-            ),
             'link_path' =>     array(
                 'match' =>      '',
                 'default' =>    '/search_results/',
                 'hint' =>       'URL to prefix all linked words with'
             ),
-            'min_matches' =>        array(
-                'match' =>      'range|1,n',
-                'default' =>    '5',
-                'hint' =>       'Minimum number of matches for words shown'
-            ),
             'summary_show' =>       array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
-            ),
-            'top_n' =>              array(
-                'match' =>      'range|0,n',
-                'default' =>    '0',
-                'hint' =>       'Just show the top n matches - or 0 to show everything'
             )
         );
     }
@@ -99,20 +76,20 @@ class SearchWordCloud extends Base
     {
         $this->setup($instance, $args, $disable_params);
         $this->drawControlPanel(true);
-        foreach ($this->filtered as $word => $count) {
+        $this->_html.= "<ul id='".$this->_safe_ID."'>\n";
+        foreach ($this->categories as $word => $count) {
             $this->_html.=
-                 "<a href=\""
+                 "    <li><a href=\""
                 .BASE_PATH.trim($this->_cp['link_path'], '/')
-                ."?search_text=".$word
+                ."?search_categories=".$word
                 .($this->_cp['filter_type']!=='' ?
                     "&amp;search_type=".strtolower($this->_cp['filter_type'])
                  :
                     ""
                  )
                 ."\""
-                ." style=\"font-size:".(int)(500*$count/$this->maxMatches)."%;"
-                ."color:"
-                .get_color_for_weight(
+                ." style=\""
+                ."color:".get_color_for_weight(
                     100*$count/$this->maxMatches,
                     $this->_cp['colour_min'],
                     $this->_cp['colour_max']
@@ -120,28 +97,20 @@ class SearchWordCloud extends Base
                 ."\""
                 ." title=\"".$word." (".$count.")\">"
                 .$word
-                ."</a> ";
+                ." (".$count.")"
+                ."</a></li>\n";
         }
-        if ($this->_cp['summary_show']==='1') {
-            $this->_html.=
-                 "<p>Total: ".count($this->filtered)."</p>\n"
-                ."<p>Criteria used:<br />\n"
-                ."Minimum letters per word: ".$this->_cp['min_characters']." &nbsp; "
-                ."Minimum number of matches: ".$this->_cp['min_matches']." &nbsp; "
-                ."Maximum number of matches: ".$this->_cp['max_matches']."</p>";
-        }
+        $this->_html.= "</ul>\n";
         return $this->_html;
     }
     
     protected function setup($instance, $args, $disable_params)
     {
         parent::setup($instance, $args, $disable_params);
-        $this->setupLoadText();
-        $this->setupLoadWords();
-        $this->setupFilterWords();
+        $this->setupLoadCategories();
     }
 
-    protected function setupLoadText()
+    protected function setupLoadCategories()
     {
         switch ($this->_cp['filter_type']) {
             case 'Article':
@@ -165,69 +134,17 @@ class SearchWordCloud extends Base
                 'personID' =>               $this->_cp['filter_personID']
             )
         );
+        $found = array();
         foreach ($records['data'] as $record) {
-            $this->text[] = $record['content_text'];
-        }
-    }
-    
-    protected function setupLoadWords()
-    {
-        $wc = html_entity_decode(implode(" ", $this->text));
-        $wc = trim(str_replace("><", "> <", $wc));
-        $wc = strip_tags($wc);
-        $wc = preg_replace("/\s\s+/", " ", $wc);
-        $wc = str_replace(array("&#39;"), array("'"), $wc);
-        $wc = html_entity_decode($wc);
-        $wc = trim(preg_replace("/&hellip;|&ldquo;|&lsquo;|&mdash;|&ndash;|&rdquo;|&rsquo;|&trade;/", " ", $wc));
-        $wc = strToLower($wc);
-        # remove 'words' that don't consist of alphanumerical characters or punctuation
-        $pattern = "#[^(\w|\d|\'|\"|\.|\!|\?|;|,|\\|\/|\-|:|\&|@)]+#";
-        $wc = trim(preg_replace($pattern, " ", $wc));
-        # remove one-letter 'words' that consist only of punctuation
-        $wc = trim(preg_replace("#\s*[(\'|\"|\!|\?|;|,|\\|\/|\-|_|:|\&)]\s*#", " ", $wc));
-        # remove superfluous whitespace
-        $wc = preg_replace("/\s\s+/", " ", $wc);
-        # split string into an array of words
-        $wc = explode(" ", $wc);
-        # Trim periods at start and end of words - preserves email addresses and website URLs
-        foreach ($wc as &$word) {
-            $word = trim($word, '.');
-        }
-        # remove empty elements
-        $wc = array_filter($wc);
-        $this->words = array_count_values($wc);
-    }
-
-    protected function setupFilterWords()
-    {
-        $filtered = array();
-        foreach ($this->words as $word => $count) {
-            if (
-                !is_numeric(substr($word, 0, 1)) &&
-                strlen($word)>=$this->_cp['min_characters'] &&
-                $count>=$this->_cp['min_matches'] &&
-                $count<=$this->_cp['max_matches']
-                ) {
-                    $filtered[$word] = $count;
-                if ($count>$this->maxMatches) {
-                    $this->maxMatches = $count;
+            $categories = explode(',', $record['category']);
+            foreach ($categories as $category) {
+                if (trim($category)!=='') {
+                    $found[] = trim($category);
                 }
             }
         }
-        if ($this->_cp['top_n']!=='0') {
-            $top_n = $this->_cp['top_n'];
-            natsort($filtered);
-            $filtered = array_reverse($filtered);
-            $filtered2 = array();
-            foreach ($filtered as $word => $count) {
-                if ($top_n>0) {
-                    $filtered2[$word] = $count;
-                }
-                $top_n--;
-            }
-            $filtered = $filtered2;
-        }
-        ksort($filtered);
-        $this->filtered = $filtered;
+        $this->categories = array_count_values($found);
+        $this->maxMatches = max($this->categories);
+        ksort($this->categories);
     }
 }

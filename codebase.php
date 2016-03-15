@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.4.7");
+define("CODEBASE_VERSION", "4.4.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,36 +16,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.4.7.2436 (2016-03-13)
+4.4.8.2437 (2016-03-14)
 Summary:
-  1) Moved Component_Search_Word_Cloud into component namespace and completely recoded for much better control
+  1) New component SearchCategoryList
+  2) Refinements to SearchWordList to allow it to be used interactively with pages other than search_results
 
 Final Checksums:
-  Classes     CS:e97cbf66
+  Classes     CS:ab1d9c1a
   Database    CS:5d138354
-  Libraries   CS:23da973a
+  Libraries   CS:5c24d31f
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.4.7     (2016-03-13)
+  codebase.php                                                                                   4.4.8     (2016-03-14)
     1) Updated version information
-  classes/class.posting.php                                                                      1.0.124   (2016-03-13)
-    1) Now allows filtering without type matching if type is not set
-  classes/component/searchwordcloud.php                                                          1.0.1     (2016-03-12)
-    1) Now namespaced and refactored to use standard methods to filter on different types of posting
+  classes/component/searchcategorylist.php                                                       1.0.0     (2016-03-14)
+    1) Initial release
+  classes/component/searchwordcloud.php                                                          1.0.2     (2016-03-14)
+    1) New CP 'link_path' to allow component to be used with pages other than search results
 
-2436.sql
-  1) Changes to ECL tag 'component_search_word_cloud' for new namespaced component
+2437.sql
+  1) New ECL tag 'component_search_category_list'
   2) Set version information
 
-Delete:
-    class.component_search_word_cloud.php             1.0.0
-
 Promote:
-  codebase.php                                        4.4.7
+  codebase.php                                        4.4.8
   classes/  (2 files changed)
-    class.posting.php                                 1.0.124   CS:661e0a87
-    component/searchwordcloud.php                     1.0.1     CS:2822e44c
+    component/searchcategorylist.php                  1.0.1     CS:164f531b
+    component/searchwordcloud.php                     1.0.2     CS:b5998ace
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

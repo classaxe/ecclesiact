@@ -1,2 +1,4 @@
+  1.0.1 (2016-03-12)
+    1) Now namespaced and refactored to use standard methods to filter on different types of posting
   1.0.0 (2011-12-31)
     1) Initial release - moved from Component class
