@@ -1,3 +1,8 @@
+  1.0.11 (2015-01-31)
+    1) Changes to Remote::get_items() to use newer argument parameters to retrieve records:
+         Old: limit
+         New: results_limit
+    2) Now PSR-2 Compliant
   1.0.10 (2012-07-16)
     1) Minor code formatting tweaks
   1.0.9 (2012-07-14)

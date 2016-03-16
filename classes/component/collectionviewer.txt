@@ -1,3 +1,5 @@
+  1.0.55 (2016-02-27)
+    1) Now uses VERSION class constant for version control
   1.0.54 (2015-11-29)
     1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
   1.0.53 (2015-09-14)

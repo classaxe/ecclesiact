@@ -3,8 +3,8 @@ namespace Component;
 
 /*
 Version History:
-  1.0.0 (2016-03-14)
-    1) Initial release
+  1.0.1 (2016-03-15)
+    1) SearchCategoryList::setupLoadCategories() now provides filter_... prefixed parameters for all filters
 */
 class SearchCategoryList extends Base
 {
@@ -125,13 +125,13 @@ class SearchCategoryList extends Base
         $Obj = new $type;
         $records = $Obj->get_records(
             array(
-                'byRemote' =>               false,
-                'category' =>               $this->_cp['filter_category_list'],
-                'category_master' =>        $this->_cp['filter_category_master'],
-                'filter_has_video' =>       $this->_cp['filter_has_video'],
-                'important' =>              $this->_cp['filter_important'],
-                'memberID' =>               $this->_cp['filter_memberID'],
-                'personID' =>               $this->_cp['filter_personID']
+                'byRemote' =>                   false,
+                'filter_category' =>            $this->_cp['filter_category_list'],
+                'filter_category_master' =>     $this->_cp['filter_category_master'],
+                'filter_has_video' =>           $this->_cp['filter_has_video'],
+                'filter_important' =>           $this->_cp['filter_important'],
+                'filter_memberID' =>            $this->_cp['filter_memberID'],
+                'filter_personID' =>            $this->_cp['filter_personID']
             )
         );
         $found = array();

@@ -1,13 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.9 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.10 (2016-03-15)
+    1) ArticlesRotator::setupLoadRecords() now provides filter_... prefixed parameters for all filters
 */
 class ArticlesRotator extends Base
 {
-    const VERSION = '1.0.9';
+    const VERSION = '1.0.10';
 
     protected $_ObjArticle;
     protected $_records;
@@ -349,16 +350,15 @@ class ArticlesRotator extends Base
     {
         $this->_ObjArticle = new \Article;
         // Get last n articles
-        $filter_offset =   (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0);
         $results = $this->_ObjArticle->get_records(
             array(
-                'category' =>           $this->_cp['filter_category_list'],
-                'category_master' =>    $this->_cp['filter_category_master'],
-                'memberID' =>           $this->_cp['filter_memberID'],
-                'personID' =>           $this->_cp['filter_personID'],
-                'offset' =>             $filter_offset,
-                'results_limit' =>      $this->_cp['results_limit'],
-                'results_order' =>      $this->_cp['results_order']
+                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_master' => $this->_cp['filter_category_master'],
+                'filter_memberID' =>        $this->_cp['filter_memberID'],
+                'filter_personID' =>        $this->_cp['filter_personID'],
+                'results_limit' =>          $this->_cp['results_limit'],
+                'results_offset' =>         (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0),
+                'results_order' =>          $this->_cp['results_order']
             )
         );
         $this->_records =  $results['data'];

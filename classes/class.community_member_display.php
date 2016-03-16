@@ -5,13 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.44 (2016-02-28)
-    1) Community_Member_Display::drawStats() now shows year separators
-    2) Now uses VERSION class constant for version control
+  1.0.45 (2016-03-15)
+    1) Community_Member_Display::drawSponsorsLocal()
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.44';
+    const VERSION = '1.0.45';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1385,10 +1384,11 @@ class Community_Member_Display extends Community_Member
         $Obj_GA->_set_ID($this->_community_record['sponsorship_gallery_albumID']);
         $path = $Obj_GA->get_field('path');
         $Obj_SP = new Sponsorship_Plan;
-        $args = array(
-            'container_path' =>  $path
+        $result = $Obj_SP->get_records(
+            array(
+                'filter_container_path' =>  $path
+            )
         );
-        $result = $Obj_SP->get_records($args);
         $Obj_CGT = new Component_Gallery_Thumbnails;
         $out = "";
         foreach ($result['data'] as $plan) {

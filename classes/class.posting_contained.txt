@@ -1,3 +1,5 @@
+  1.0.243 (2016-01-18)
+    1) Now uses VERSION class constant for version control
   1.0.242 (2015-02-01)
     1) Changed call in Posting_Contained::_get_records_sort_records()
          from $this->_get_records_sort_records_using_filter_order_by()

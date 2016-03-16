@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.2 (2016-03-14)
-    1) New CP 'link_path' to allow component to be used with pages other than search results
+  1.0.3 (2016-03-15)
+    1) SearchWordCloud::setupLoadText() now provides filter_... prefixed parameters for all filters
 */
 class SearchWordCloud extends Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     protected $filtered =   array();
     protected $maxMatches = 0;
@@ -157,12 +157,12 @@ class SearchWordCloud extends Base
         $records = $Obj->get_records(
             array(
                 'byRemote' =>               false,
-                'category' =>               $this->_cp['filter_category_list'],
-                'category_master' =>        $this->_cp['filter_category_master'],
+                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_master' => $this->_cp['filter_category_master'],
                 'filter_has_video' =>       $this->_cp['filter_has_video'],
-                'important' =>              $this->_cp['filter_important'],
-                'memberID' =>               $this->_cp['filter_memberID'],
-                'personID' =>               $this->_cp['filter_personID']
+                'filter_important' =>       $this->_cp['filter_important'],
+                'filter_memberID' =>        $this->_cp['filter_memberID'],
+                'filter_personID' =>        $this->_cp['filter_personID']
             )
         );
         foreach ($records['data'] as $record) {

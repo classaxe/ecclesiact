@@ -2,13 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.0 (2016-02-25)
-    1) Initial Release
-
+  1.0.1 (2016-03-15)
+    1) LatestYoutube::setupLoadLatestYoutube() now provides filter_... prefixed parameters for all filters
 */
 class LatestYoutube extends Base
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     protected $youtubeURL;
 
@@ -78,14 +77,15 @@ class LatestYoutube extends Base
         $this->Article = new \Article();
         $results = $this->Article->get_records(
             array(
-                'category' =>           $this->_cp['filter_category_list'],
-                'category_master' =>    $this->_cp['filter_category_master'],
-                'filter_has_video' =>   true,
-                'memberID' =>           $this->_cp['filter_memberID'],
-                'personID' =>           $this->_cp['filter_personID'],
-                'offset' =>             0,
-                'results_limit' =>      1,
-                'results_order' =>      $this->_cp['results_order']
+                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_master' => $this->_cp['filter_category_master'],
+                'filter_has_video' =>       true,
+                'filter_important' =>       $this->_cp['filter_important'],
+                'filter_memberID' =>        $this->_cp['filter_memberID'],
+                'filter_personID' =>        $this->_cp['filter_personID'],
+                'results_limit' =>          1,
+                'results_offset' =>         0,
+                'results_order' =>          $this->_cp['results_order']
             )
         );
         if (isset($results['data'][0])) {

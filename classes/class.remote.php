@@ -1,17 +1,13 @@
 <?php
-define('VERSION_REMOTE', '1.0.11');
 /*
 Version History:
-  1.0.11 (2015-01-31)
-    1) Changes to Remote::get_items() to use newer argument parameters to retrieve records:
-         Old: limit
-         New: results_limit
-    2) Now PSR-2 Compliant
-
-  (Older version history in class.remote.txt)
+  1.0.12 (2016-03-15)
+    1) Remote::get_items() now provides filter_... prefixed parameters for all filters
 */
-class Remote
+class Remote extends Base
 {
+    const VERSION = '1.0.12';
+
     public $URL;
     public $isLocal;
 
@@ -80,20 +76,20 @@ class Remote
                 $Obj =      new $Object_type(0,$systemID);
                 $results =  $Obj->get_records(
                     array(
-                        'byRemote' =>         true,
-                        'category' =>         $category,
-                        'category_master' =>  $category_master,
-                        'container_path' =>   $container_path,
-                        'container_subs' =>   $container_subs,
-                        'DD' =>               $DD,
-                        'memberID' =>         $memberID,
-                        'MM' =>               $MM,
-                        'offset' =>           $offset,
-                        'personID' =>         $personID,
-                        'results_limit' =>    $limit,
-                        'results_order' =>   'date',
-                        'what' =>             $what,
-                        'YYYY' =>             $YYYY
+                        'byRemote' =>               true,
+                        'filter_category' =>        $category,
+                        'filter_category_master' => $category_master,
+                        'filter_container_path' =>  $container_path,
+                        'filter_container_subs' =>  $container_subs,
+                        'filter_date_DD' =>         $DD,
+                        'filter_date_MM' =>         $MM,
+                        'filter_date_YYYY' =>       $YYYY,
+                        'filter_memberID' =>        $memberID,
+                        'filter_personID' =>        $personID,
+                        'filter_what' =>            $what,
+                        'results_limit' =>          $limit,
+                        'results_offset' =>         $offset,
+                        'results_order' =>          'date',
                     )
                 );
                 $out = $results['data'];
@@ -132,9 +128,5 @@ class Remote
                 }
                 break;
         }
-    }
-    public static function getVersion()
-    {
-        return VERSION_REMOTE;
     }
 }

@@ -4,16 +4,13 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.6 (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-    2) Community_Posting::_get_records_get_sql() ->       Community_Posting::getRecordsGetSqlWithDelegate()
-    3) Community_Posting::BL_shared_source_link() ->      Community_Posting::BLsharedSourceLinkWithDelegate()
-    4) Community_Posting::BL_mini_shared_source_link() -> Community_Posting::BLminiSharedSourceLinkWithDelegate()
+  1.0.7 (2016-03-15)
+    1) Community_Posting::getRecordsGetSqlWithDelegate() now requires filter_... prefixed parameters for all filters
 */
 
 class Community_Posting extends Posting
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     public static function getRecordsGetSqlWithDelegate($Obj)
     {
@@ -46,16 +43,16 @@ class Community_Posting extends Posting
                 ."    `postings`\n"
                 ."  WHERE\n"
                 .$Obj->_get_records_get_sql_filter_date()
-                .($Obj->_get_records_args['category']!="*" ?
+                .($Obj->_get_records_args['filter_category']!="*" ?
                      "  `postings`.`category` REGEXP \""
-                    .implode("|", explode(',', $Obj->_get_records_args['category']))
+                    .implode("|", explode(',', $Obj->_get_records_args['filter_category']))
                     ."\" AND\n"
                 :
                     ""
                 )
-                .($Obj->_get_records_args['category_master'] ?
+                .($Obj->_get_records_args['filter_category_master'] ?
                      "  `postings`.`category` REGEXP \""
-                    .implode("|", explode(',', $Obj->_get_records_args['category_master']))
+                    .implode("|", explode(',', $Obj->_get_records_args['filter_category_master']))
                     ."\" AND\n"
                  :
                     ""
@@ -85,16 +82,16 @@ class Community_Posting extends Posting
             ."  `postings`.`type` = '".$Obj->_get_type()."' AND\n"
             ."  `postings`.`permSHARED` = 1 AND\n"
             .$Obj->_get_records_get_sql_filter_date()
-            .($Obj->_get_records_args['category']!="*" ?
+            .($Obj->_get_records_args['filter_category']!="*" ?
                  "  `postings`.`category` REGEXP \""
-                .implode("|", explode(',', $Obj->_get_records_args['category']))
+                .implode("|", explode(',', $Obj->_get_records_args['filter_category']))
                 ."\" AND\n"
              :
                 ""
             )
-            .($Obj->_get_records_args['category_master'] ?
+            .($Obj->_get_records_args['filter_category_master'] ?
                  "  `postings`.`category` REGEXP \""
-                .implode("|", explode(',', $Obj->_get_records_args['category_master']))
+                .implode("|", explode(',', $Obj->_get_records_args['filter_category_master']))
                 ."\" AND\n"
              :
                 ""

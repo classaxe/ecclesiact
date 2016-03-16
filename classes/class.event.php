@@ -1,12 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.106 (2016-01-18)
-    1) Now uses VERSION class constant for version control
+  1.0.107 (2016-03-15)
+    1) Updates to the following methods:
+         Event::get_calendar_dates()
+         Event::get_events_for_date()
+         Event::get_yearly_dates()
+       Each now provide filter_... prefixed parameters for all filters
 */
 class Event extends Posting
 {
-    const VERSION = '1.0.106';
+    const VERSION = '1.0.107';
 
     public static $cache_event_registrant_count =      array();
 
@@ -1051,11 +1055,11 @@ class Event extends Posting
     {
         $results =          $this->get_records(
             array(
-                'what' =>           'calendar',
-                'YYYY' =>           $YYYY,
-                'MM' =>             $MM,
-                'category' =>       $category,
-                'memberID' =>       $memberID
+                'filter_category' =>    $category,
+                'filter_date_MM' =>     $MM,
+                'filter_date_YYYY' =>   $YYYY,
+                'filter_memberID' =>    $memberID,
+                'filter_what' =>        'calendar'
             )
         );
         $records =          $results['data'];
@@ -1226,11 +1230,11 @@ class Event extends Posting
         sscanf($YYYYMMDD, "%4s-%2s-%2s", $YYYY, $MM, $DD);
         $result = $this->get_records(
             array(
-                'what' =>       'date',
-                'YYYY' =>       $YYYY,
-                'MM' =>         $MM,
-                'DD' =>         $DD,
-                'memberID' =>   $memberID
+                'filter_date_DD' =>     $DD,
+                'filter_date_MM' =>     $MM,
+                'filter_date_YYYY' =>   $YYYY,
+                'filter_memberID' =>    $memberID,
+                'filter_what' =>        'date'
             )
         );
         $records = $result['data'];
@@ -1274,7 +1278,7 @@ class Event extends Posting
     protected function _get_records_get_sql_filter_date()
     {
   //    y($this->_get_records_args);die;
-        $YYYY = $this->_get_records_args['YYYY'];
+        $YYYY = $this->_get_records_args['filter_date_YYYY'];
         $now =  get_timestamp();
         sscanf(
             $now,
@@ -1286,7 +1290,7 @@ class Event extends Posting
             $now_mm,
             $now_ss
         );
-        switch($this->_get_records_args['what']){
+        switch($this->_get_records_args['filter_what']){
             case 'all':
                 return '';
             break;
@@ -1295,9 +1299,9 @@ class Event extends Posting
                     0,
                     0,
                     0,
-                    $this->_get_records_args['MM'],
+                    $this->_get_records_args['filter_date_MM'],
                     0,
-                    $this->_get_records_args['YYYY']
+                    $this->_get_records_args['filter_date_YYYY']
                 );
                 $last_month_w =     adodb_date("w", $date_last_month);
                 $last_month_DD =    adodb_date("j", $date_last_month);
@@ -1307,9 +1311,9 @@ class Event extends Posting
                     0,
                     0,
                     0,
-                    $this->_get_records_args['MM'],
+                    $this->_get_records_args['filter_date_MM'],
                     42-$last_month_w,
-                    $this->_get_records_args['YYYY']
+                    $this->_get_records_args['filter_date_YYYY']
                 );
                 $next_month_DD =    adodb_date("j", $date_next_month);
                 $next_month_MM =    adodb_date("m", $date_next_month);
@@ -1334,18 +1338,18 @@ class Event extends Posting
                 return
                      "  (\n"
                     ."    `postings`.`effective_date_start` = '"
-                    .$this->_get_records_args['YYYY']."-"
-                    .$this->_get_records_args['MM']."-"
-                    .$this->_get_records_args['DD']."' OR\n"
+                    .$this->_get_records_args['filter_date_YYYY']."-"
+                    .$this->_get_records_args['filter_date_MM']."-"
+                    .$this->_get_records_args['filter_date_DD']."' OR\n"
                     ."    (\n"
                     ."      `postings`.`effective_date_start` < '"
-                    .$this->_get_records_args['YYYY']."-"
-                    .$this->_get_records_args['MM']."-"
-                    .$this->_get_records_args['DD']."' AND\n"
+                    .$this->_get_records_args['filter_date_YYYY']."-"
+                    .$this->_get_records_args['filter_date_MM']."-"
+                    .$this->_get_records_args['filter_date_DD']."' AND\n"
                     ."      `postings`.`effective_date_end` >= '"
-                    .$this->_get_records_args['YYYY']."-"
-                    .$this->_get_records_args['MM']."-"
-                    .$this->_get_records_args['DD']."'\n"
+                    .$this->_get_records_args['filter_date_YYYY']."-"
+                    .$this->_get_records_args['filter_date_MM']."-"
+                    .$this->_get_records_args['filter_date_DD']."'\n"
                     ."    )\n"
                     ."  ) AND\n";
             break;
@@ -1373,9 +1377,9 @@ class Event extends Posting
                 return
                      "  (\n"
                     ."    `postings`.`effective_date_start` >= '"
-                    .$this->_get_records_args['YYYY']."-".$this->_get_records_args['MM']."-01' AND\n"
+                    .$this->_get_records_args['filter_date_YYYY']."-".$this->_get_records_args['filter_date_MM']."-01' AND\n"
                     ."    `postings`.`effective_date_start` <= DATE_ADD('"
-                    .$this->_get_records_args['YYYY']."-".$this->_get_records_args['MM']."-01',INTERVAL 1 MONTH)\n"
+                    .$this->_get_records_args['filter_date_YYYY']."-".$this->_get_records_args['filter_date_MM']."-01',INTERVAL 1 MONTH)\n"
                     ."  ) AND\n";
             break;
             case 'past':
@@ -1401,8 +1405,8 @@ class Event extends Posting
             case 'year':
                 return
                      "  (\n"
-                    ."    `postings`.`effective_date_start` >= '".$this->_get_records_args['YYYY']."-01-01' AND\n"
-                    ."    `postings`.`effective_date_start` <  '".$this->_get_records_args['YYYY']."-12-01'\n"
+                    ."    `postings`.`effective_date_start` >= '".$this->_get_records_args['filter_date_YYYY']."-01-01' AND\n"
+                    ."    `postings`.`effective_date_start` <  '".$this->_get_records_args['filter_date_YYYY']."-12-01'\n"
                     ."  ) AND\n";
             break;
         }
@@ -1446,9 +1450,9 @@ class Event extends Posting
     {
         $records = $this->get_records(
             array(
-                'what' =>     'year',
-                'YYYY' =>     $YYYY,
-                'memberID' => $memberID
+                'filter_date_YYYY' =>   $YYYY,
+                'filter_memberID' =>    $memberID,
+                'filter_what' =>        'year'
             )
         );
         $days_in_year = date("z", adodb_mktime(0, 0, 0, 12, 31, $YYYY))+1;

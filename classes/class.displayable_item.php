@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.157 (2016-01-02)
-    1) Method do_tracking() now declared to be static
+  1.0.158 (2016-03-15)
+    1) Displayable_Item::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.157';
+    const VERSION = '1.0.158';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -998,16 +998,20 @@ class Displayable_Item extends Block_Layout
             array(
                 'byRemote' =>
                     false,
-                'category' =>
+                'filter_category' =>
                     $this->_cp['filter_category_list'],
-                'category_master' =>
+                'filter_category_master' =>
                     (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : false),
-                'container_path' =>
+                'filter_container_path' =>
                     (isset($this->_cp['filter_container_path']) ?     $this->_cp['filter_container_path'] : ''),
-                'container_subs' =>
+                'filter_container_subs' =>
                     (isset($this->_cp['filter_container_subs']) ?     $this->_cp['filter_container_subs'] : ''),
-                'DD' =>
+                'filter_date_DD' =>
                     '',
+                'filter_date_MM' =>
+                    $MM,
+                'filter_date_YYYY' =>
+                    $YYYY,
                 'filter_date_duration' =>
                     (isset($this->_cp['filter_date_duration']) ?      $this->_cp['filter_date_duration'] : ''),
                 'filter_date_units' =>
@@ -1022,24 +1026,20 @@ class Displayable_Item extends Block_Layout
                     (isset($this->_cp['filter_range_lon']) ?          $this->_cp['filter_range_lon'] : ''),
                 'filter_range_units' =>
                     (isset($this->_cp['filter_range_units']) ?        $this->_cp['filter_range_units'] : ''),
-                'important' =>
+                'filter_important' =>
                     (isset($this->_cp['filter_important']) ?          $this->_cp['filter_important'] : ''),
-                'memberID' =>
+                'filter_memberID' =>
                     (isset($this->_cp['filter_memberID']) ?           $this->_cp['filter_memberID'] : ''),
-                'MM' =>
-                    $MM,
-                'offset' =>
-                    $this->_filter_offset,
-                'personID' =>
+                'filter_personID' =>
                     (isset($this->_cp['filter_personID']) ?           $this->_cp['filter_personID'] : ''),
+                'filter_what' =>
+                    (isset($this->_cp['filter_what']) ?               $this->_cp['filter_what'] : 'all'),
                 'results_limit' =>
                     $this->_cp['results_limit'],
+                'results_offset' =>
+                    $this->_filter_offset,
                 'results_order' =>
-                    (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date'),
-                'what' =>
-                    (isset($this->_cp['filter_what']) ?               $this->_cp['filter_what'] : 'all'),
-                'YYYY' =>
-                    $YYYY
+                    (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date')
             )
         );
         $this->_records =           $results['data'];

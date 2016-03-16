@@ -7,14 +7,13 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.46 (2016-03-03)
-    1) Moved setupListingsLoadUserRights() into here from Community::_setup_load_user_rights()
-    2) Split out setupListingsLoadPopupSizes() from setupListingsLoadUserRights()
+  1.0.47 (2016-03-15)
+    1) Community_Display::drawSponsorsLocal() now provides filter_... prefixed parameters for all filters
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.46';
+    const VERSION = '1.0.47';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2087,10 +2086,11 @@ class Community_Display extends Community
         $Obj_GA->_set_ID($this->_community_record['sponsorship_gallery_albumID']);
         $path = $Obj_GA->get_field('path');
         $Obj_SP = new Sponsorship_Plan;
-        $args = array(
-            'container_path' =>  $path
+        $result = $Obj_SP->get_records(
+            array(
+                'filter_container_path' =>  $path
+            )
         );
-        $result = $Obj_SP->get_records($args);
         $Obj_CGT = new Component_Gallery_Thumbnails;
         $out = "";
         foreach ($result['data'] as $plan) {

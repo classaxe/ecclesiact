@@ -1,3 +1,6 @@
+  1.0.80 (2016-01-01)
+    1) Product::get_match_for_name() now declared as static
+    2) Now uses VERSION class constant for version control
   1.0.79 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.78 (2015-08-14)

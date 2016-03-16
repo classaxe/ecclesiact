@@ -1,17 +1,13 @@
 <?php
-define('COMMUNITY_MEMBER_POSTING_VERSION', '1.0.4');
 /*
 Version History:
-  1.0.5 (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
-    2) Community_Member_Posting::_get_records_get_sql() ->       Community_Member_Posting::getRecordsGetSqlWithDelegate()
-    3) Community_Member_Posting::BL_shared_source_link() ->      Community_Member_Posting::BLsharedSourceLinkWithDelegate()
-    4) Community_Member_Posting::BL_mini_shared_source_link() -> Community_Member_Posting::BLminiSharedSourceLinkWithDelegate()
+  1.0.6 (2016-03-15)
+    1) Community_Member_Posting::getRecordsGetSqlWithDelegate() now requires filter_... prefixed parameters for all filters
 */
 
 class Community_Member_Posting extends Posting
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     public static function getRecordsGetSqlWithDelegate($Obj)
     {
@@ -45,8 +41,18 @@ class Community_Member_Posting extends Posting
             .($Obj->partner_csv ? " OR (`memberID` IN(".$Obj->partner_csv.") AND `postings`.`permSHARED`=1)" : "")
             .") AND\n"
             .$Obj->_get_records_get_sql_filter_date()
-            .($Obj->_get_records_args['category']!="*" ?    "  `postings`.`category` REGEXP \"".implode("|", explode(',', $Obj->_get_records_args['category']))."\" AND\n": "")
-            .($Obj->_get_records_args['category_master'] ?  "  `postings`.`category` REGEXP \"".implode("|", explode(',', $Obj->_get_records_args['category_master']))."\" AND\n": "")
+            .($Obj->_get_records_args['filter_category']!="*" ?
+                 "  `postings`.`category` REGEXP \""
+                 .implode("|", explode(',', $Obj->_get_records_args['filter_category']))."\" AND\n"
+             :
+                ""
+            )
+            .($Obj->_get_records_args['filter_category_master'] ?
+                "  `postings`.`category` REGEXP \""
+                .implode("|", explode(',', $Obj->_get_records_args['filter_category_master']))."\" AND\n"
+             :
+                ""
+            )
             ."  `postings`.`systemID` = '".$Obj->_get_systemID()."'\n";
       //    z($sql);
         return $sql;

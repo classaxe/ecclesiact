@@ -1,3 +1,5 @@
+  1.0.157 (2016-01-02)
+    1) Method do_tracking() now declared to be static
   1.0.156 (2015-12-30)
     1) Now uses VERSION constant for version control
   1.0.155 (2015-09-19)

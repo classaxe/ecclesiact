@@ -1,13 +1,13 @@
 <?php
-  define("VERSION_COMPONENT_EVENTS_MAP", "1.0.3");
 /*
 Version History:
-  1.0.3 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.4 (2016-03-15)
+    1) Component_Events_Map::_setup_load_event_IDs() now provides filter_... prefixed parameters for all filters
 */
 class Component_Events_Map extends Component_Base
 {
+    const VERSION = '1.0.4';
+
     protected $_event_IDs;
     protected $_Obj_Event;
 
@@ -162,53 +162,54 @@ class Component_Events_Map extends Component_Base
     {
         global $YYYY, $MM;
         $this->_Obj_Event->set_group_concat_max_len(1000000);
-        $args = array(
-            'byRemote' =>
-                false,
-            'category' =>
-                $this->_cp['filter_category_list'],
-            'category_master' =>
-                (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : false),
-            'container_path' =>
-                (isset($this->_cp['filter_container_path']) ?     $this->_cp['filter_container_path'] : ''),
-            'container_subs' =>
-                (isset($this->_cp['filter_container_subs']) ?     $this->_cp['filter_container_subs'] : ''),
-            'DD' =>
-                '',
-            'filter_date_duration' =>
-                (isset($this->_cp['filter_date_duration']) ?      $this->_cp['filter_date_duration'] : ''),
-            'filter_date_units' =>
-                (isset($this->_cp['filter_date_units']) ?         $this->_cp['filter_date_units'] : ''),
-            'filter_range_address' =>
-                (isset($this->_cp['filter_range_address']) ?      $this->_cp['filter_range_address'] : ''),
-            'filter_range_distance' =>
-                (isset($this->_cp['filter_range_distance']) ?     $this->_cp['filter_range_distance'] : ''),
-            'filter_range_lat' =>
-                (isset($this->_cp['filter_range_lat']) ?          $this->_cp['filter_range_lat'] : ''),
-            'filter_range_lon' =>
-                (isset($this->_cp['filter_range_lon']) ?          $this->_cp['filter_range_lon'] : ''),
-            'filter_range_units' =>
-                (isset($this->_cp['filter_range_units']) ?        $this->_cp['filter_range_units'] : ''),
-            'important' =>
-                (isset($this->_cp['filter_important']) ?          $this->_cp['filter_important'] : ''),
-            'memberID' =>
-                (isset($this->_cp['filter_memberID']) ?           $this->_cp['filter_memberID'] : ''),
-            'MM' =>
-                $MM,
-            'offset' =>
-                $this->_filter_offset,
-            'personID' =>
-                (isset($this->_cp['filter_personID']) ?           $this->_cp['filter_personID'] : ''),
-            'results_limit' =>
-                $this->_cp['results_limit'],
-            'results_order' =>
-                (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date'),
-            'what' =>
-                (isset($this->_cp['filter_what']) ?               $this->_cp['filter_what'] : 'all'),
-            'YYYY' =>
-                $YYYY
+        $results = $this->_Obj_Event->get_records(
+            array(
+                'byRemote' =>
+                    false,
+                'filter_category' =>
+                    $this->_cp['filter_category_list'],
+                'filter_category_master' =>
+                    (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : false),
+                'filter_container_path' =>
+                    (isset($this->_cp['filter_container_path']) ?     $this->_cp['filter_container_path'] : ''),
+                'filter_container_subs' =>
+                    (isset($this->_cp['filter_container_subs']) ?     $this->_cp['filter_container_subs'] : ''),
+                'filter_date_DD' =>
+                    '',
+                'filter_date_MM' =>
+                    $MM,
+                'filter_date_YYYY' =>
+                    $YYYY,
+                'filter_date_duration' =>
+                    (isset($this->_cp['filter_date_duration']) ?      $this->_cp['filter_date_duration'] : ''),
+                'filter_date_units' =>
+                    (isset($this->_cp['filter_date_units']) ?         $this->_cp['filter_date_units'] : ''),
+                'filter_range_address' =>
+                    (isset($this->_cp['filter_range_address']) ?      $this->_cp['filter_range_address'] : ''),
+                'filter_range_distance' =>
+                    (isset($this->_cp['filter_range_distance']) ?     $this->_cp['filter_range_distance'] : ''),
+                'filter_range_lat' =>
+                    (isset($this->_cp['filter_range_lat']) ?          $this->_cp['filter_range_lat'] : ''),
+                'filter_range_lon' =>
+                    (isset($this->_cp['filter_range_lon']) ?          $this->_cp['filter_range_lon'] : ''),
+                'filter_range_units' =>
+                    (isset($this->_cp['filter_range_units']) ?        $this->_cp['filter_range_units'] : ''),
+                'filter_important' =>
+                    (isset($this->_cp['filter_important']) ?          $this->_cp['filter_important'] : ''),
+                'filter_memberID' =>
+                    (isset($this->_cp['filter_memberID']) ?           $this->_cp['filter_memberID'] : ''),
+                'filter_personID' =>
+                    (isset($this->_cp['filter_personID']) ?           $this->_cp['filter_personID'] : ''),
+                'results_limit' =>
+                    $this->_cp['results_limit'],
+                'results_offset' =>
+                    $this->_filter_offset,
+                'results_order' =>
+                    (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date'),
+                'filter_what' =>
+                    (isset($this->_cp['filter_what']) ?               $this->_cp['filter_what'] : 'all')
+            )
         );
-        $results = $this->_Obj_Event->get_records($args);
         $this->_records =           $results['data'];
         $this->_records_total =     $results['total'];
         $IDs = array();
@@ -228,10 +229,5 @@ class Component_Events_Map extends Component_Base
         $_POST['lon_field'] =       'map_lon';
         $_POST['loc_field'] =       'map_description';
         $_POST['maximize'] =        $this->_cp['maximize'];
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_COMPONENT_EVENTS_MAP;
     }
 }

@@ -1,3 +1,6 @@
+  1.0.46 (2016-03-03)
+    1) Moved setupListingsLoadUserRights() into here from Community::_setup_load_user_rights()
+    2) Split out setupListingsLoadPopupSizes() from setupListingsLoadUserRights()
   1.0.45 (2016-01-06)
     1) Now exits immediately if submode of css was given, sort-circuiting requests like this:
        ?submode=css&targetValue=wow_slider_profile

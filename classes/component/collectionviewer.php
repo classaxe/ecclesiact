@@ -2,12 +2,13 @@
 namespace Component;
 /*
 Version History:
-  1.0.55 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.56 (2016-03-15)
+    1) CollectionViewer::setupLoadPodcastAlbums() and CollectionViewer::setupLoadPodcasts()
+       now provide filter_... prefixed parameters for all filters
 */
 class CollectionViewer extends Base
 {
-    const VERSION = '1.0.55';
+    const VERSION = '1.0.56';
 
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
@@ -856,20 +857,20 @@ class CollectionViewer extends Base
         $Obj = new \Podcast_Album;
         $result = $Obj->get_records(
             array(
-                'category' =>
-                    ($this->_cp['filter_category_list']!='' ? $this->_cp['filter_category_list'] : ''),
-                'category_master' =>
-                    (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : ''),
-                'container_path' =>
-                    (isset($this->_cp['filter_container_path']) ?     $this->_cp['filter_container_path'] : ''),
-                'container_subs' =>
-                    (isset($this->_cp['filter_container_subs']) ?     $this->_cp['filter_container_subs'] : ''),
-                'memberID' =>
-                    (isset($this->_cp['filter_memberID']) ?           $this->_cp['filter_memberID'] : 0),
-                'personID' =>
-                    (isset($this->_cp['filter_personID']) ?           $this->_cp['filter_personID'] : 0),
+                'filter_category' =>
+                    ($this->_cp['filter_category_list']!='' ?       $this->_cp['filter_category_list'] : ''),
+                'filter_category_master' =>
+                    (isset($this->_cp['filter_category_master']) ?  $this->_cp['filter_category_master'] : ''),
+                'filter_container_path' =>
+                    (isset($this->_cp['filter_container_path']) ?   $this->_cp['filter_container_path'] : ''),
+                'filter_container_subs' =>
+                    (isset($this->_cp['filter_container_subs']) ?   $this->_cp['filter_container_subs'] : ''),
+                'filter_memberID' =>
+                    (isset($this->_cp['filter_memberID']) ?         $this->_cp['filter_memberID'] : 0),
+                'filter_personID' =>
+                    (isset($this->_cp['filter_personID']) ?         $this->_cp['filter_personID'] : 0),
                 'results_order' =>
-                    (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date')
+                    (isset($this->_cp['results_order']) ?           $this->_cp['results_order'] : 'date')
             )
         );
         $this->_podcast_albums = array();
@@ -1018,8 +1019,8 @@ class CollectionViewer extends Base
         $container_path = $this->record['path'];
         $result = $Obj->get_records(
             array(
-                'container_path' =>   $container_path,
-                'results_order' =>    ($this->_cp['filter_podcast_order']=='asc' ? 'date_a' : 'date')
+                'filter_container_path' =>  $container_path,
+                'results_order' =>          ($this->_cp['filter_podcast_order']=='asc' ? 'date_a' : 'date')
             )
         );
         $this->_podcasts = array();

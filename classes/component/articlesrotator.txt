@@ -1,3 +1,5 @@
+  1.0.9 (2016-02-27)
+    1) Now uses VERSION class constant for version control
   1.0.8 (2015-03-07)
     1) Moved from Component_Articles_Rotator and reworked to use namespaces
     2) Now has up-to-date constructor-based setup

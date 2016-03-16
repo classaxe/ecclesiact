@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.243 (2016-01-18)
-    1) Now uses VERSION class constant for version control
+  1.0.244 (2016-03-15)
+    1) Posting_Contained::get_records_matching()  now provides filter_... prefixed parameters for all filters
 */
 
 class Posting_Contained extends Posting
 {
-    const VERSION = '1.0.243';
+    const VERSION = '1.0.244';
 
     private $_container_object_type;
 
@@ -192,17 +192,17 @@ class Posting_Contained extends Posting
         $Obj_Parent_type =  $this->_get_container_object_type();
         $results = $this->get_records(
             array(
-                'YYYY' =>               $YYYY,
-                'MM' =>                 $MM,
-                'category' =>           $args['filter_category_list'],
-                'offset' =>             $this->_filter_offset,
-                'category_master' =>    $args['filter_category_master'],
-                'memberID' =>           $args['filter_memberID'],
-                'personID' =>           $args['filter_personID'],
-                'container_path' =>     $args['filter_container_path'],
-                'container_subs' =>     $args['filter_container_subs'],
-                'results_limit' =>      $args['results_limit'],
-                'results_order' =>      $args['results_order']
+                'filter_category' =>            $args['filter_category_list'],
+                'filter_category_master' =>     $args['filter_category_master'],
+                'filter_container_path' =>      $args['filter_container_path'],
+                'filter_container_subs' =>      $args['filter_container_subs'],
+                'filter_date_MM' =>             $MM,
+                'filter_date_YYYY' =>           $YYYY,
+                'filter_memberID' =>            $args['filter_memberID'],
+                'filter_personID' =>            $args['filter_personID'],
+                'results_limit' =>              $args['results_limit'],
+                'results_offset' =>             $this->_filter_offset,
+                'results_order' =>              $args['results_order']
             )
         );
         $parentTitles = array();
@@ -260,7 +260,7 @@ class Posting_Contained extends Posting
 
     protected function _get_records_sort_records()
     {
-        if ($this->_get_records_args['container_path']) {
+        if ($this->_get_records_args['filter_container_path']) {
             $this->_get_records_sort_records_by_sequence();
             return;
         }
