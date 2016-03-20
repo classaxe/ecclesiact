@@ -1,21 +1,13 @@
 <?php
-define('VERSION_RSS', '1.0.29');
 /*
 Version History:
-  1.0.29 (2015-01-31)
-    1) Changes to RSS::_serve_get_records() to rename internal arguments for getting records:
-         Old: limit,         order_by
-         New: results_limit, results_order
-    2) Changes to RSS::_serve_setup() to rename internal arguments for getting records:
-         Old: limit
-         New: results_limit
-    3) Moved RSS_Help into its own class file
-    4) Now PSR-2 Compliant
-
-  (Older version history in class.rss.txt)
+  1.0.30 (2016-03-20)
+    1) multiple changes to handle renamed filter and results arguments
 */
 class RSS extends Record
 {
+    const VERSION = '1.0.30';
+
     public $url;
 
     public function __construct($url = '')
@@ -119,16 +111,17 @@ class RSS extends Record
 
     private function _serve_get_records()
     {
+//        y($this->args, true);
         switch ($this->args['submode']) {
             case "articles":
                 $results = $this->Obj->get_records(
                     array(
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -136,12 +129,12 @@ class RSS extends Record
             case "shared_articles":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'byRemote' =>               true,
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -152,14 +145,17 @@ class RSS extends Record
             case "events":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       (isset($this->args['byRemote']) ? $this->args['byRemote'] : 0),
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'what' =>           $this->args['what']
+                        'byRemote' =>               $this->args['byRemote'],
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_date_DD' =>         $this->args['filter_date_DD'],
+                        'filter_date_MM' =>         $this->args['filter_date_MM'],
+                        'filter_date_YYYY' =>       $this->args['filter_date_YYYY'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_what' =>            $this->args['filter_what'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_limit' =>          $this->args['results_limit']
                     )
                 );
                 $this->records = $results['data'];
@@ -167,18 +163,18 @@ class RSS extends Record
             case "shared_events":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'DD' =>             $this->args['DD'],
-                        'memberID' =>       $this->args['memberID'],
-                        'MM' =>             $this->args['MM'],
-                        'offset' =>         $this->args['offset'],
-                        'personID' =>       $this->args['personID'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'results_order' =>  'date',
-                        'what' =>           $this->args['what'],
-                        'YYYY' =>           $this->args['YYYY']
+                        'byRemote' =>               true,
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_date_DD' =>         $this->args['filter_date_DD'],
+                        'filter_date_MM' =>         $this->args['filter_date_MM'],
+                        'filter_date_YYYY' =>       $this->args['filter_date_YYYY'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_personID' =>        $this->args['filter_personID'],
+                        'filter_what' =>            $this->args['filter_what'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_order' =>          'date'
                     )
                 );
                 $this->records = $results['data'];
@@ -186,16 +182,16 @@ class RSS extends Record
             case "gallery_images":
                 $results = $this->Obj->get_records(
                     array(
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'container_path' => $this->args['container_path'],
-                        'container_subs' => $this->args['container_subs'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'personID' =>       $this->args['personID'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'results_order' =>  'date'
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_container_path' =>  $this->args['filter_container_path'],
+                        'filter_container_subs' =>  $this->args['filter_container_subs'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_personID' =>        $this->args['filter_personID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_order' =>          'date'
                     )
                 );
                 $this->records = $results['data'];
@@ -203,16 +199,16 @@ class RSS extends Record
             case "shared_gallery_images":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'container_path' => $this->args['container_path'],
-                        'container_subs' => $this->args['container_subs'],
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'personID' =>       $this->args['personID'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'results_order' =>  'date'
+                        'byRemote' =>               true,
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_container_path' =>  $this->args['filter_container_path'],
+                        'filter_container_subs' =>  $this->args['filter_container_subs'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_personID' =>        $this->args['filter_personID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_order' =>          'date'
                     )
                 );
                 $this->records = $results['data'];
@@ -220,12 +216,12 @@ class RSS extends Record
             case "jobs":
                 $results = $this->Obj->get_records(
                     array(
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -233,12 +229,12 @@ class RSS extends Record
             case "shared_jobs":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'byRemote' =>               true,
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -246,12 +242,12 @@ class RSS extends Record
             case "news":
                 $results = $this->Obj->get_records(
                     array(
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -260,11 +256,11 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'results_limit' =>  $this->args['results_limit']
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset']
                     )
                 );
                 $this->records = $results['data'];
@@ -272,16 +268,16 @@ class RSS extends Record
             case "podcasts":
                 $results = $this->Obj->get_records(
                     array(
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'container_path' => $this->args['container_path'],
-                        'container_subs' => $this->args['container_subs'],
-                        'isShared' =>       (isset($this->args['isShared']) ? $this->args['isShared'] : 0),
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'personID' =>       $this->args['personID'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'results_order' =>  'date'
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_container_path' =>  $this->args['filter_container_path'],
+                        'filter_container_subs' =>  $this->args['filter_container_subs'],
+                        'filter_isShared' =>        $this->args['filter_isShared'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_personID' =>        $this->args['filter_personID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_order' =>          'date'
                     )
                 );
                 $this->records = $results['data'];
@@ -289,16 +285,16 @@ class RSS extends Record
             case "shared_podcasts":
                 $results = $this->Obj->get_records(
                     array(
-                        'byRemote' =>       true,
-                        'category' =>       $this->args['category'],
-                        'communityID' =>    $this->args['communityID'],
-                        'container_path' => $this->args['container_path'],
-                        'container_subs' => $this->args['container_subs'],
-                        'memberID' =>       $this->args['memberID'],
-                        'offset' =>         $this->args['offset'],
-                        'personID' =>       $this->args['personID'],
-                        'results_limit' =>  $this->args['results_limit'],
-                        'results_order' =>  'date'
+                        'byRemote' =>               true,
+                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_communityID' =>     $this->args['filter_communityID'],
+                        'filter_container_path' =>  $this->args['filter_container_path'],
+                        'filter_container_subs' =>  $this->args['filter_container_subs'],
+                        'filter_memberID' =>        $this->args['filter_memberID'],
+                        'filter_personID' =>        $this->args['filter_personID'],
+                        'results_limit' =>          $this->args['results_limit'],
+                        'results_offset' =>         $this->args['results_offset'],
+                        'results_order' =>          'date'
                     )
                 );
                 $this->records = $results['data'];
@@ -426,14 +422,14 @@ class RSS extends Record
             $content = absolute_path($content, trim($systemURL, '/').'/');
             if ($effective_date_start != "0000-00-00 00:00:00") {
                 sscanf($effective_date_start, "%04d-%02d-%02d", $_YYYY, $_MM, $_DD);
-                $_YYYY =  ($_YYYY == "0000" ? $this->args['YYYY'] : $_YYYY);
+                $_YYYY =  ($_YYYY == "0000" ? $this->args['filter_date_YYYY'] : $_YYYY);
                 $effective_date_start =    adodb_mktime(0, 0, 0, $_MM, $_DD, $_YYYY);
             } else {
                 $effective_date_start = "";
             }
             if ($effective_date_end != "0000-00-00 00:00:00") {
                 sscanf($effective_date_end, "%04d-%02d-%02d", $_YYYY, $_MM, $_DD);
-                $_YYYY =  ($_YYYY == "0000" ? $this->args['YYYY'] : $_YYYY);
+                $_YYYY =  ($_YYYY == "0000" ? $this->args['filter_date_YYYY'] : $_YYYY);
                 $effective_date_end =    adodb_mktime(0, 0, 0, $_MM, $_DD, $_YYYY);
             } else {
                 $effective_date_end = "";
@@ -779,103 +775,47 @@ class RSS extends Record
             }
         }
   //    y($args);
-        $category = (isset($category) ? $category : get_var('category', '*'));
-        $limit =    (isset($limit) ?    $limit :    get_var('limit', 10));
         $this->args = array(
-            'base_path' =>      (isset($args['base_path']) ?
-                $args['base_path']
-              :
-                trim($system_vars['URL'], '/').BASE_PATH.'rss/'
-            ),
-            'byRemote' =>       (isset($args['byRemote']) ?
-                $args['byRemote']
-              :
-                false
-             ),
-            'category' =>       $category,
-            'communityID' =>    (isset($args['communityID']) ?
-                $args['communityID']
-              :
-                $communityID
-             ),
-            'container_path' => (isset($args['container_path']) ?
-                $args['container_path']
-              :
-                $container_path
-             ),
-            'container_subs' => (isset($args['container_subs']) ?
-                $args['container_subs']
-              :
-                $container_subs
-             ),
-            'DD' =>             (isset($args['DD']) ?
-                $args['DD']
-              :
-                $DD
-             ),
-            'feed_title' =>     (isset($args['feed_title']) ?
-                $args['feed_title']
-              :
-                "RSS feeds for ".$system_vars['textEnglish']
-             ),
-            'isShared' =>       (isset($args['isShared']) ?
-                $args['isShared']
-              :
-                false
-             ),
-            'results_limit' =>  $limit,
-            'memberID' =>       (isset($args['memberID']) ?
-                $args['memberID']
-              :
-                $memberID
-             ),
-            'MM' =>             (isset($args['MM']) ?
-                $args['MM']
-              :
-                $MM
-             ),
-            'offset' =>         (isset($args['offset']) ?
-                $args['offset']
-              :
-                $offset
-             ),
-            'personID' =>       (isset($args['personID']) ?
-                $args['personID']
-              :
-                $personID
-             ),
-            'render' =>         (isset($args['render']) ?
-                $args['render']
-              :
-                true
-             ),
-            'submode' =>        (isset($args['submode']) ?
-                $args['submode']
-              :
-                $submode
-             ),
-            'title' =>          (isset($args['title']) ?
-                $args['title']
-              :
-                false
-             ),
-            'what' =>           (isset($args['what']) ?
-                $args['what']
-              :
-                $what
-             ),
-            'YYYY' =>           (isset($args['YYYY']) ?
-                $args['YYYY']
-              :
-                $YYYY
-             ),
+            'base_path' =>
+                (isset($args['base_path']) ?      $args['base_path'] : trim($system_vars['URL'], '/').BASE_PATH.'rss/'),
+            'byRemote' =>
+                (isset($args['byRemote']) ?       $args['byRemote'] : false),
+            'filter_category' =>
+                (isset($category) ?               $category : get_var('category', '*')),
+            'filter_communityID' =>
+                (isset($args['communityID']) ?    $args['communityID'] : $communityID),
+            'filter_container_path' =>
+                (isset($args['container_path']) ? $args['container_path'] : $container_path),
+            'filter_container_subs' =>
+                (isset($args['container_subs']) ? $args['container_subs'] : $container_subs),
+            'filter_date_DD' =>
+                (isset($args['DD']) ?             $args['DD'] : $DD),
+            'filter_date_MM' =>
+                (isset($args['MM']) ?             $args['MM'] : $MM),
+            'filter_date_YYYY' =>
+                (isset($args['YYYY']) ?           $args['YYYY'] : $YYYY),
+            'feed_title' =>
+                (isset($args['feed_title']) ?     $args['feed_title'] : "RSS feeds for ".$system_vars['textEnglish']),
+            'filter_isShared' =>
+                (isset($args['isShared']) ?       $args['isShared'] : 0),
+            'filter_memberID' =>
+                (isset($args['memberID']) ?       $args['memberID'] : $memberID),
+            'filter_personID' =>
+                (isset($args['personID']) ?       $args['personID'] : $personID),
+            'filter_what' =>
+                (isset($args['what']) ?           $args['what'] : $what),
+            'render' =>
+                (isset($args['render']) ?         $args['render'] : true),
+            'results_limit' =>
+                (isset($limit) ?                  $limit : get_var('limit', 10)),
+            'results_offset' =>
+                (isset($args['offset']) ?         $args['offset'] : $offset),
+            'submode' =>
+                (isset($args['submode']) ?        $args['submode'] : $submode),
+            'title' =>
+                (isset($args['title']) ?          $args['title'] : false)
         );
   //    y($this->args);die;
         $this->_serve_set_object();
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_RSS;
     }
 }

@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.5 (2016-02-13)
-    1) Changes to Community_Resource::drawSearchResults() to use refactored methods within Search object
+  1.0.6 (2016-03-20)
+    1) Community_Resource::drawRss() now correctly handles calendar date choices
 */
 
 class Community_Resource extends Community_Display
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     public function draw($cp, $path_extension, $community_record)
     {
@@ -96,19 +96,19 @@ class Community_Resource extends Community_Display
         $path_arr =  explode('/', $this->_path_extension);
         $submode =  (isset($path_arr[1]) ? $path_arr[1] : '');
         $Obj_RSS =  new RSS;
-        $args =
-        array(
+        $args = array(
             'base_path' =>      $this->_community_record['URL_external'].'/rss/',
             'feed_title' =>     $page_vars['title']." &gt; RSS Service",
             'isShared'=>        1,
             'communityID' =>    $this->_get_ID(),
-            'MM' =>             '',
-            'offset' =>         (get_var('offset') ? get_var('offset') : 0),
+            'DD' =>             get_var('DD', ''),
+            'MM' =>             get_var('MM', ''),
+            'offset' =>         get_var('offset', 0),
             'render' =>         true,
             'request' =>        $this->_path_extension,
             'title' =>          $page_vars['title']." > RSS".($submode ? " > ".title_case_string($submode) : ""),
             'what' =>           (get_var('what') ? get_var('what') : 'future'),
-            'YYYY' =>           '',
+            'YYYY' =>           get_var('YYYY', ''),
         );
         $Obj_RSS->serve($args);
     }

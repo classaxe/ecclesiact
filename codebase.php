@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.5.0");
+define("CODEBASE_VERSION", "4.5.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,100 +16,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.5.0.2438 (2016-03-15)
+4.5.1.2439 (2016-03-20)
 Summary:
-  1) Internal changes to get_records() methods to recategorise all filters with filter prefix:
-        category ->         filter_category
-        category_master ->  filter_category_master
-        communityID ->      filter_communityID
-        container_path ->   filter_container_path
-        container_subs ->   filter_container_subs
-        DD ->               filter_date_DD
-        MM ->               filter_date_MM
-        YYYY ->             filter_date_YYYY
-        important ->        filter_important
-        isShared ->         filter_isShared 
-        memberID ->         filter_memberID
-        personID ->         filter_personID
-        what ->             filter_what
-
-        offset ->           results_offset
+  1) Tweak to sitemap icon that was wrong width
+  2) Fixes for broken RSS feeds, and also calendar date filtering in community and member RSS feeds
 
 Final Checksums:
-  Classes     CS:b87ba2aa
+  Classes     CS:157ac4a4
   Database    CS:5d138354
-  Libraries   CS:36d4b57
+  Libraries   CS:f4157711
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.5.0     (2016-03-15)
+  codebase.php                                                                                   4.5.1     (2016-03-20)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.47    (2016-03-15)
-    1) Community_Display::drawSponsorsLocal() now provides filter_... prefixed parameters for all filters
-  classes/class.community_member_display.php                                                     1.0.45    (2016-03-15)
-    1) Community_Member_Display::drawSponsorsLocal()
-  classes/class.community_member_posting.php                                                     1.0.6     (2016-03-15)
-    1) Community_Member_Posting::getRecordsGetSqlWithDelegate()
-       now requires filter_... prefixed parameters for all filters
-  classes/class.community_posting.php                                                            1.0.7     (2016-03-15)
-    1) Community_Posting::getRecordsGetSqlWithDelegate() now requires filter_... prefixed parameters for all filters
-  classes/class.component_events_map.php                                                         1.0.4     (2016-03-15)
-    1) Component_Events_Map::_setup_load_event_IDs() now provides filter_... prefixed parameters for all filters
-  classes/class.displayable_item.php                                                             1.0.158   (2016-03-15)
-    1) Displayable_Item::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
-  classes/class.event.php                                                                        1.0.107   (2016-03-15)
-    1) Updates to the following methods:
-         Event::get_calendar_dates()
-         Event::get_events_for_date()
-         Event::get_yearly_dates()
-       Each now provide filter_... prefixed parameters for all filters
-  classes/class.person.php                                                                       1.0.126   (2016-03-15)
-    1) Person::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
-  classes/class.posting.php                                                                      1.0.125   (2016-03-15)
-    1) Big changes in Posting::get_records() - now requires now filter_... prefixed parameters for all filters
-  classes/class.posting_contained.php                                                            1.0.244   (2016-03-15)
-    1) Posting_Contained::get_records_matching()  now provides filter_... prefixed parameters for all filters
-  classes/class.product.php                                                                      1.0.81    (2016-03-15)
-    1) Product::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
-    2) Product::get_records() - now requires now filter_... prefixed parameters for all filters
-  classes/class.remote.php                                                                       1.0.12    (2016-03-15)
-    1) Remote::get_items() now provides filter_... prefixed parameters for all filters
-  classes/component/articlesrotator.php                                                          1.0.10    (2016-03-15)
-    1) ArticlesRotator::setupLoadRecords() now provides filter_... prefixed parameters for all filters
-  classes/component/collectionviewer.php                                                         1.0.56    (2016-03-15)
-    1) CollectionViewer::setupLoadPodcastAlbums() and CollectionViewer::setupLoadPodcasts()
-       now provide filter_... prefixed parameters for all filters
-  classes/component/latestyoutube.php                                                            1.0.1     (2016-03-15)
-    1) LatestYoutube::setupLoadLatestYoutube() now provides filter_... prefixed parameters for all filters
-  classes/component/searchcategorylist.php                                                       1.0.1     (2016-03-15)
-    1) SearchCategoryList::setupLoadCategories() now provides filter_... prefixed parameters for all filters
-  classes/component/searchwordcloud.php                                                          1.0.3     (2016-03-15)
-    1) SearchWordCloud::setupLoadText() now provides filter_... prefixed parameters for all filters
+  classes/class.community_member_resource.php                                                    1.0.9     (2016-03-20)
+    1) Community_Member_Resource::_draw_rss() now correctly handles calendar date choices
+  classes/class.community_resource.php                                                           1.0.6     (2016-03-20)
+    1) Community_Resource::drawRss() now correctly handles calendar date choices
+  classes/class.rss.php                                                                          1.0.30    (2016-03-20)
+    1) multiple changes to handle renamed filter and results arguments
+  classes/component/iconsitemap.php                                                              1.0.3     (2016-03-19)
+    1) Fix for bad CSS width of icon graphic
 
-2438.sql
+2439.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.5.0
-  classes/  (17 files changed)
-    class.community_display.php                       1.0.47    CS:c37dc540
-    class.community_member_display.php                1.0.45    CS:3deba111
-    class.community_member_posting.php                1.0.6     CS:41c70169
-    class.community_posting.php                       1.0.7     CS:a4402ef
-    class.component_events_map.php                    1.0.4     CS:543c6ff3
-    class.displayable_item.php                        1.0.158   CS:26b9c640
-    class.event.php                                   1.0.107   CS:4e455926
-    class.person.php                                  1.0.126   CS:bd5aab0e
-    class.posting.php                                 1.0.125   CS:e3d142e4
-    class.posting_contained.php                       1.0.244   CS:bf344ebf
-    class.product.php                                 1.0.81    CS:d72b5c7d
-    class.remote.php                                  1.0.12    CS:3d9c72d2
-    component/articlesrotator.php                     1.0.10    CS:8968fdf6
-    component/collectionviewer.php                    1.0.56    CS:97916f36
-    component/latestyoutube.php                       1.0.1     CS:be28dcbf
-    component/searchcategorylist.php                  1.0.1     CS:5b3edefd
-    component/searchwordcloud.php                     1.0.3     CS:76d1d37a
-
+  codebase.php                                        4.5.1
+  classes/  (4 files changed)
+    class.community_member_resource.php               1.0.9     CS:26b3ce91
+    class.community_resource.php                      1.0.6     CS:e5c30920
+    class.rss.php                                     1.0.30    CS:6e69a274
+    component/iconsitemap.php                         1.0.3     CS:d23d48f5
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

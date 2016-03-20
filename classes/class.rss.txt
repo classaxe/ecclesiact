@@ -1,3 +1,12 @@
+  1.0.29 (2015-01-31)
+    1) Changes to RSS::_serve_get_records() to rename internal arguments for getting records:
+         Old: limit,         order_by
+         New: results_limit, results_order
+    2) Changes to RSS::_serve_setup() to rename internal arguments for getting records:
+         Old: limit
+         New: results_limit
+    3) Moved RSS_Help into its own class file
+    4) Now PSR-2 Compliant
   1.0.28 (2014-01-23)
     1) Added support for communityID when retrieving records
   1.0.27 (2013-10-07)

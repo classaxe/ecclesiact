@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.8 (2016-02-13)
-    1) _draw_search_results() now calls renamed methods in Search
+  1.0.9 (2016-03-20)
+    1) Community_Member_Resource::_draw_rss() now correctly handles calendar date choices
 */
 
 class Community_Member_Resource extends Community_Member
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     protected $_member_name =                   '';
     protected $_member_page =                   '';
@@ -135,15 +135,16 @@ class Community_Member_Resource extends Community_Member
             'base_path' =>  $this->_record['URL_external'].'/rss/',
             'feed_title' => $page_vars['title']." &gt; ".$this->_record['title']." &gt; RSS Service",
             'memberID' =>   $this->_record['ID'],
-            'MM' =>         '',
-            'offset' =>     (get_var('offset') ? get_var('offset') : 0),
+            'DD' =>         get_var('DD', ''),
+            'MM' =>         get_var('MM', ''),
+            'offset' =>     get_var('offset', 0),
             'render' =>     true,
             'request' =>    $request,
             'title' =>
                  $page_vars['title']." > RSS > ".$this->_record['title']
                 .($submode ? " > ".title_case_string($submode) : ""),
             'what' =>       (get_var('what') ? get_var('what') : 'future'),
-            'YYYY' =>       '',
+            'YYYY' =>       get_var('YYYY', ''),
         );
         $Obj_RSS->serve($args);
     }

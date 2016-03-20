@@ -1,3 +1,5 @@
+  1.0.5 (2016-02-13)
+    1) Changes to Community_Resource::drawSearchResults() to use refactored methods within Search object
   1.0.4 (2015-03-13)
     1) Changes made following move of Community_Member_Calendar to namespaced \Component\CommunityMemberCalendar
   1.0.3 (2015-03-07)
