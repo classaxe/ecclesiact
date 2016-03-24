@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.96 (2016-01-01)
-    1) Record::get_record_for_sql() now declared to be static
+  1.0.97 (2016-03-24)
+    1) Record::set_edit_params() now allows for icon_edit_popup_disabled 
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.96';
+    const VERSION = '1.0.97';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1866,51 +1866,28 @@ class Record extends Portal
     public function set_edit_params($value)
     {
         $this->_edit_params_array = array(
-            'command_for_delete' =>     (isset($value['command_for_delete']) ?
-                $value['command_for_delete']
-             :
-                ''
-            ),
-            'report' =>                 (isset($value['report']) ?
-                $value['report']
-              :
-                ''
-             ),
-            'report_related_products' =>(isset($value['report_related_products']) ?
-                $value['report_related_products']
-             :
-                false
-            ),
-            'report_rename' =>          (isset($value['report_rename']) ?
-                $value['report_rename']
-             :
-                false
-            ),
-            'report_rename_label' =>    (isset($value['report_rename_label']) ?
-                $value['report_rename_label']
-             :
-                ''
-            ),
-            'icon_delete' =>            (isset($value['icon_delete']) ?
-                $value['icon_delete']
-             :
-                ''
-            ),
-            'icon_edit' =>              (isset($value['icon_edit']) ?
-                $value['icon_edit']
-             :
-                ''
-            ),
-            'icon_edit_disabled' =>     (isset($value['icon_edit_disabled']) ?
-                $value['icon_edit_disabled']
-             :
-                ''
-            ),
-            'icon_edit_popup' =>        (isset($value['icon_edit_popup']) ?
-                $value['icon_edit_popup']
-             :
-                ''
-            )
+            'command_for_delete' =>
+                (isset($value['command_for_delete']) ? $value['command_for_delete'] : ''),
+            'report' =>
+                (isset($value['report']) ? $value['report'] : ''),
+            'report_related_products' =>
+                (isset($value['report_related_products']) ? $value['report_related_products'] : false),
+            'report_rename' =>
+                (isset($value['report_rename']) ? $value['report_rename'] : false),
+            'report_rename_label' =>
+                (isset($value['report_rename_label']) ? $value['report_rename_label'] : ''),
+            'icon_delete' =>
+                (isset($value['icon_delete']) ? $value['icon_delete'] : ''),
+            'icon_delete_disabled' =>
+                (isset($value['icon_delete_disabled']) ? $value['icon_delete_disabled'] : ''),
+            'icon_edit' =>
+                (isset($value['icon_edit']) ? $value['icon_edit'] : ''),
+            'icon_edit_disabled' =>
+                (isset($value['icon_edit_disabled']) ? $value['icon_edit_disabled'] : ''),
+            'icon_edit_popup' =>
+                (isset($value['icon_edit_popup']) ? $value['icon_edit_popup'] : ''),
+            'icon_edit_popup_disabled' =>
+                (isset($value['icon_edit_popup_disabled']) ? $value['icon_edit_popup_disabled'] : '')
         );
     }
 

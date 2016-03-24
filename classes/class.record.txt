@@ -1,3 +1,5 @@
+  1.0.96 (2016-01-01)
+    1) Record::get_record_for_sql() now declared to be static
   1.0.95 (2016-01-01)    
     1) Record::get_field_for_sql() now declared statically
     2) Record::get_rows_for_sql() now declared statically

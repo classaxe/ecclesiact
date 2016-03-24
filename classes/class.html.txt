@@ -1,3 +1,5 @@
+  1.0.93 (2016-03-06)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
   1.0.92 (2016-01-01)
     1) The following methods are now declared to be static:
          HTML::draw_icon()

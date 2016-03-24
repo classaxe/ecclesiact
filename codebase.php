@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.5.1");
+define("CODEBASE_VERSION", "4.5.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,39 +16,40 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.5.1.2439 (2016-03-20)
+4.5.2.2440 (2016-03-24)
 Summary:
-  1) Tweak to sitemap icon that was wrong width
-  2) Fixes for broken RSS feeds, and also calendar date filtering in community and member RSS feeds
+  1) Security fixes to prevent regular admins from editing or deleting global pages
 
 Final Checksums:
-  Classes     CS:157ac4a4
+  Classes     CS:790ed210
   Database    CS:5d138354
-  Libraries   CS:f4157711
+  Libraries   CS:76c37eed
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.5.1     (2016-03-20)
+  codebase.php                                                                                   4.5.2     (2016-03-24)
     1) Updated version information
-  classes/class.community_member_resource.php                                                    1.0.9     (2016-03-20)
-    1) Community_Member_Resource::_draw_rss() now correctly handles calendar date choices
-  classes/class.community_resource.php                                                           1.0.6     (2016-03-20)
-    1) Community_Resource::drawRss() now correctly handles calendar date choices
-  classes/class.rss.php                                                                          1.0.30    (2016-03-20)
-    1) multiple changes to handle renamed filter and results arguments
-  classes/component/iconsitemap.php                                                              1.0.3     (2016-03-19)
-    1) Fix for bad CSS width of icon graphic
+  classes/class.html.php                                                                         1.0.94    (2016-03-24)
+    1) Changes to HTML::_draw_toolbar_type_page_edit() to prevent editing or deleting of pages belonging to
+       global system other than by master admins
+  classes/class.page.php                                                                         1.0.128   (2016-03-24)
+    1) Removed a number of methods out into PageDraw class
+  classes/class.record.php                                                                       1.0.97    (2016-03-24)
+    1) Record::set_edit_params() now allows for icon_edit_popup_disabled
+  classes/pagedraw.php                                                                           1.0.0     (2016-03-24)
+    1) Initial Release
 
-2439.sql
+2440.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.5.1
+  codebase.php                                        4.5.2
   classes/  (4 files changed)
-    class.community_member_resource.php               1.0.9     CS:26b3ce91
-    class.community_resource.php                      1.0.6     CS:e5c30920
-    class.rss.php                                     1.0.30    CS:6e69a274
-    component/iconsitemap.php                         1.0.3     CS:d23d48f5
+    class.html.php                                    1.0.94    CS:dffce68c
+    class.page.php                                    1.0.128   CS:90a0b602
+    class.record.php                                  1.0.97    CS:5c61e01d
+    pagedraw.php                                      1.0.0     CS:4d6ea4dc
+  images/icons.gif                                              CS:dd734563
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1351,19 +1352,19 @@ function draw_hide_show($div, $text, $expanded = 1)
 
 function draw_html_content($zone = 1)
 {
-    return Page::draw_html_content($zone);
+    return PageDraw::draw_html_content($zone);
 }
 
 function draw_html_error_403()
 {
     header("Status: 403 Unauthorised", true, 403);
-    return Page::draw_http_error('403');
+    return PageDraw::draw_http_error('403');
 }
 
 function draw_html_error_404()
 {
     header("Status: 404 Not Found", true, 404);
-    return Page::draw_http_error('404');
+    return PageDraw::draw_http_error('404');
 }
 
 function draw_section_tabs($arr, $divider_prefix, $selected_section, $js = "")

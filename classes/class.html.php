@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.93 (2016-03-06)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  1.0.94 (2016-03-24)
+    1) Changes to HTML::_draw_toolbar_type_page_edit() to prevent editing or deleting of pages belonging to
+       global system other than by master admins
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.93';
+    const VERSION = '1.0.94';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -770,6 +771,7 @@ class HTML extends Record
     {
         global $page_vars, $system_vars, $component_help;
         $allowEdit =        $this->_args['allowPopupEdit'];
+        $rightSite =        $this->_current_user_rights['isMASTERADMIN'] || $page_vars['systemID']==SYS_ID;
         $popup_arr = array();
         if ($allowEdit) {
             $popup_arr['pages'] =     get_popup_size($this->_args['edit_params']['report']);
@@ -866,34 +868,56 @@ class HTML extends Record
             }
 
             $out.=
-                 "<a class='ti' href=\".\""
-                ." onclick=\"geid('submode').value='edit';geid('form').submit();return false;\">"
-                .$this->_args['edit_params']['icon_edit']
+                ($this->_current_user_rights['isEDITOR'] && $rightSite ?
+                     "<a class='ti' href=\".\""
+                    ." onclick=\"geid('submode').value='edit';geid('form').submit();return false;\">"
+                    .$this->_args['edit_params']['icon_edit']
+                    ."</a>\n"
+                 :
+                     "<a class='ti' href=\".\""
+                    ." onclick=\"alert('Sorry - this page cannot be edited by you');return false;\">"
+                    .$this->_args['edit_params']['icon_edit_disabled']
+                    ."</a>\n"
+                )
                 ."</a>\n"
-                .($this->_current_user_rights['isEDITOR'] && $this->_args['allowPopupEdit']==1  ?
-                     "<a class='ti' href=\".\""
-                    ." onclick=\"details('".$this->_args['edit_params']['report']."','".$this->_args['ID']."',"
-                    ."'".$popup_arr['pages']['h']."','".$popup_arr['pages']['w']."');return false;\">"
-                    .$this->_args['edit_params']['icon_edit_popup']
-                    ."</a>\n"
+                .($this->_args['allowPopupEdit']==1 ?
+                    ($this->_current_user_rights['isEDITOR'] && $rightSite && $this->_args['allowPopupEdit']==1  ?
+                         "<a class='ti' href=\".\""
+                        ." onclick=\"details('".$this->_args['edit_params']['report']."','".$this->_args['ID']."',"
+                        ."'".$popup_arr['pages']['h']."','".$popup_arr['pages']['w']."');return false;\">"
+                        .$this->_args['edit_params']['icon_edit_popup']
+                        ."</a>\n"
+                    :
+                         "<a class='ti' href=\".\""
+                        ." onclick=\"alert('Sorry - this page cannot be edited by you');return false;\">"
+                        .$this->_args['edit_params']['icon_edit_popup_disabled']
+                        ."</a>\n"
+                    )
                  :
                     ""
                 )
-                .($this->_current_user_rights['isAPPROVER'] && $this->_args['allowSaveAs']==1 ?
-                     HTML::draw_toolbar_separator()
-                    ."<a class='ti' href=\".\""
-                    ." onclick=\"geid('submode').value='save_as';geid('form').submit();return false;\">"
-                    ."[ICON]16 16 315 Make a copy of this page[/ICON]"
-                    ."</a>\n"
-                 :
-                    ""
-                )
-                .($this->_current_user_rights['isEDITOR'] ?
-                     "<a class='ti' href=\".\""
-                    ." onclick=\"if(confirm('Delete this page?\\nThis change cannot be undone.')){"
-                    ."geid('submode').value='delete_page';geid('form').submit();};return false;\">"
-                    ."[ICON]16 16 3542 Delete this page[/ICON]"
-                    ."</a>\n"
+                .($this->_current_user_rights['isAPPROVER'] ?
+                     ($rightSite ?
+                         "<a class='ti' href=\".\""
+                        ." onclick=\"if(confirm('Delete this page?\\nThis change cannot be undone.')){"
+                        ."geid('submode').value='delete_page';geid('form').submit();};return false;\">"
+                        .$this->_args['edit_params']['icon_delete']
+                        ."</a>\n"
+                     :
+                         "<a class='ti' href=\".\""
+                        ." onclick=\"alert('Sorry - this page cannot be deleted by you');;return false;\">"
+                        .$this->_args['edit_params']['icon_delete_disabled']
+                        ."</a>\n"
+                     )
+                    .HTML::draw_toolbar_separator()
+                    .($this->_args['allowSaveAs']==1 ?
+                         "<a class='ti' href=\".\""
+                        ." onclick=\"geid('submode').value='save_as';geid('form').submit();return false;\">"
+                        ."[ICON]16 16 315 Make a copy of this page[/ICON]"
+                        ."</a>\n"
+                     :
+                        ""
+                    )
                  :
                     ""
                 )
