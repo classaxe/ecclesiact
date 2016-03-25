@@ -7,13 +7,13 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.47 (2016-03-15)
-    1) Community_Display::drawSponsorsLocal() now provides filter_... prefixed parameters for all filters
+  1.0.48 (2016-03-25)
+    1) Community_Display::checkDropboxUpdateGetDelta() no longer writes debug message to error log every time
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.47';
+    const VERSION = '1.0.48';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -872,7 +872,7 @@ class Community_Display extends Community
             'dropbox_delta_cursor' => $cursor
         );
         $this->update($data);
-        do_log(3, 'Dropbox', 'checkDropboxUpdateGetDelta()', print_r($entries, true));
+//        do_log(3, 'Dropbox', 'checkDropboxUpdateGetDelta()', print_r($entries, true));
         return $entries;
     }
 

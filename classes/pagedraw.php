@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.0 (2016-03-24)
-    1) Initial Release 
+  1.0.1 (2015-03-25)
+    1) PSR-2 Cleanup
 */
 class PageDraw extends Page
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     private static function isLanguageCode($page)
     {
@@ -27,7 +27,7 @@ class PageDraw extends Page
         );
     }
 
-    private function do_clone($page_heading_title)
+    private function makeClone($page_heading_title)
     {
         global $page_vars, $system_vars;
         $isMASTERADMIN =    get_person_permission("MASTERADMIN", $page_vars['group_assign_csv']);
@@ -53,7 +53,7 @@ class PageDraw extends Page
             $reserved_arr = explode(', ', SYS_RESERVED_URL_PARTS);
             sort($reserved_arr);
             return
-                 $this->draw_toolbar_page_edit(1, 1, 0)
+                 $this->toolbar(1, 1, 0)
                 ."<div class='status_error'><b>Error copying page:</b>\n"
                 ."<p>Sorry, \"<b>".$new_page."</b>\" is one of <b>Reserved Names</b>"
                 ." that can't be used for the naming of root-level (non-nested) pages.</p>"
@@ -66,15 +66,14 @@ class PageDraw extends Page
         }
         if ($parentID==0 && static::isLanguageCode($new_page)) {
             $this->do_tracking("403");
-
             return
-             $this->draw_toolbar_page_edit(1, 1, 0)
-            ."<div class='status_error'><b>Error copying page:</b>\n"
-            ."<p>Sorry, \"<b>".$new_page."</b>\" is one of the 2-letter codes used for switching "
-            ."between different languages.<br />\n"
-            ."You can't use these names for root-level (non-nested) pages.</b></p>"
-            ."<p>Please choose a different name and try again.</p></div>\n"
-            .$this->draw_detail_content($page_heading_title, $page_vars);
+                 $this->toolbar(1, 1, 0)
+                ."<div class='status_error'><b>Error copying page:</b>\n"
+                ."<p>Sorry, \"<b>".$new_page."</b>\" is one of the 2-letter codes used for switching "
+                ."between different languages.<br />\n"
+                ."You can't use these names for root-level (non-nested) pages.</b></p>"
+                ."<p>Please choose a different name and try again.</p></div>\n"
+                .$this->draw_detail_content($page_heading_title, $page_vars);
         }
         $new_systemID = ($isMASTERADMIN ? get_var('new_systemID') : $page_vars['systemID']);
   //    y($parent_path.$new_page);
@@ -82,7 +81,7 @@ class PageDraw extends Page
             $this->do_tracking("403");
 
             return
-             $this->draw_toolbar_page_edit(1, 1, 0)
+             $this->toolbar(1, 1, 0)
             ."<div class='status_error'><b>Error copying page:</b>\n"
             ."<p>Sorry, a page named \"<b>".$new_page."</b>\" already exists in "
             .($new_systemID==SYS_ID ? "this" : "the specified")." site"
@@ -133,7 +132,7 @@ class PageDraw extends Page
             $this->do_tracking("200");
 
             return
-             $this->draw_toolbar_page_edit(1, 1, 1, $new_page, $newPageID)
+             $this->toolbar(1, 1, 1, $new_page, $newPageID)
             ."<div class='status_okay'><b>Success:</b><br />Copied this page to <b>"
             ."<a href=\"".BASE_PATH.trim($parent_path, '/').'/'.$new_page."\">".$new_page."</a></b></div>\n"
             .$this->draw_detail_content($page_heading_title, $page_vars);
@@ -141,7 +140,7 @@ class PageDraw extends Page
             $this->do_tracking("403");
 
             return
-            $this->draw_toolbar_page_edit(1, 1, 0)
+            $this->toolbar(1, 1, 0)
             ."<div class='status_error'><b>Error copying page:</b><br />"
             ."A page named <b>".$new_page."</b> already exists in the system.</div>\n"
             .$this->draw_detail_content($page_heading_title, $page_vars);
@@ -160,25 +159,12 @@ class PageDraw extends Page
         $isSYSLOGON =       get_person_permission("SYSLOGON", $page_vars['group_assign_csv']);
         $isPUBLIC =         get_person_permission("PUBLIC", $page_vars['group_assign_csv']);
         $isVIEWER =         get_person_permission("VIEWER", $page_vars['group_assign_csv']);
-        $isMember = (
-        $isMASTERADMIN ||
-        $isSYSADMIN ||
-        $isSYSAPPROVER ||
-        $isSYSEDITOR ||
-        $isSYSMEMBER);
+        $isMember =         ($isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER || $isSYSEDITOR || $isSYSMEMBER);
         $visible =
             ($page_vars['permPUBLIC'] && $isPUBLIC) ||
             ($page_vars['permSYSLOGON'] && $isSYSLOGON) ||
             ($page_vars['permSYSMEMBER'] && $isMember) ||
             ($isVIEWER);
-        $page_heading_title = (isset($page_vars['include_title_heading']) && $page_vars['include_title_heading'] ?
-            "<h1 class='title'><a href=\"/".trim($page_vars['path'], '/')."\">"
-            .$page_vars['title']
-            ."</a></h1>"
-        :
-            ""
-        );
-
         // layoutID of 2 is for popups
         $canEdit = (
             $page_vars['layoutID']!=2 &&
@@ -187,6 +173,13 @@ class PageDraw extends Page
             )
         );
         $canPublish =   ($page_vars['layoutID']!=2 && ($isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER));
+        $page_heading_title = (isset($page_vars['include_title_heading']) && $page_vars['include_title_heading'] ?
+            "<h1 class='title'><a href=\"/".trim($page_vars['path'], '/')."\">"
+            .$page_vars['title']
+            ."</a></h1>"
+        :
+            ""
+        );
         if ($page_vars['ID']) {
             if ($canEdit) {
                 switch ($submode) {
@@ -201,7 +194,7 @@ class PageDraw extends Page
                         $Obj->update($data);
                         header("Location: ".BASE_PATH.$page);
                         return;
-                    break;
+                        break;
                     case "delete_page":
                         if ($isMASTERADMIN || ($isSYSAPPROVER && $page_vars['systemID']==SYS_ID)) {
                             $Obj = new Page($page_vars['ID']);
@@ -209,17 +202,17 @@ class PageDraw extends Page
                             header("Location: ".BASE_PATH.$page."?msg=page_deleted");
                             return;
                         }
-                    break;
+                        break;
                 }
             }
             if ($canEdit && $submode=='save_as' && $new_page!="") {
-                return $this->do_clone($page_heading_title, $canEdit);
+                return $this->makeClone($page_heading_title, $canEdit);
             }
             if ($canEdit && $submode!='save_page' && $submode!='save_as' && $submode!='edit') {
                 $this->do_tracking("200");
                 return
                     ($print!=1 ?
-                     $this->draw_toolbar_page_edit(1, 1, 0, '', '')
+                     $this->toolbar(1, 1, 0, '', '')
                     : "")
                     .$this->draw_detail_content($page_heading_title, $page_vars);
             }
@@ -260,7 +253,8 @@ class PageDraw extends Page
                      "<div class='dialog'>"
                     .($isMASTERADMIN ?
                          "<div class='clr_b'>\n"
-                        ."  <div class='fl' style='width:100px;'>Save ".($page_vars['systemID']=='1' ? "Global page " : "")
+                        ."  <div class='fl' style='width:100px;'>Save "
+                        .($page_vars['systemID']=='1' ? "Global page " : "")
                         ."to:&nbsp;</div>\n"
                         ."  <div class='fl'>\n"
                         ."<select name=\"new_systemID\" style=\"width: 255px;\" class='formField'>\n"
@@ -310,114 +304,100 @@ class PageDraw extends Page
                 }
                 $this->do_tracking("200");
                 $Obj_HTML =     new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_checkout[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_checkout[/ECL]";
             break;
             case "email-opt-in":
                 $this->do_tracking("200");
                 $ID = sanitize('ID', (isset($page_arr[1]) ? $page_arr[1] : ''));
                 $Obj_Mail_Queue_Item = new Mail_Queue_Item($ID);
                 $Obj_HTML =     new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_email_opt_in[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_email_opt_in[/ECL]";
             break;
             case "email-opt-out":
                 $this->do_tracking("200");
                 $ID = sanitize('ID', (isset($page_arr[1]) ? $page_arr[1] : ''));
                 $Obj_Mail_Queue_Item = new Mail_Queue_Item($ID);
                 $Obj_HTML =     new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_email_opt_out[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_email_opt_out[/ECL]";
             break;
             case "email-unsubscribe":
                 $this->do_tracking("200");
                 $ID = sanitize('ID', (isset($page_arr[1]) ? $page_arr[1] : ''));
                 $Obj_Mail_Queue_Item = new Mail_Queue_Item($ID);
                 $Obj_HTML =     new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_email_unsubscribe[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_email_unsubscribe[/ECL]";
             break;
             case 'emergency_signin':
                 $this->do_tracking("200");
                 $Obj_CSignin = new Component_Signin();
-
                 return     $Obj_CSignin->draw();
             break;
             case 'forgotten_password':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_forgotten_password[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_forgotten_password[/ECL]";
             break;
             case 'manage_profile':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]edit_your_profile[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]edit_your_profile[/ECL]";
             break;
             case 'password':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]draw_change_password[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]draw_change_password[/ECL]";
             break;
             case 'paypal_cancel':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]paypal_cancel_repopulate_cart[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]paypal_cancel_repopulate_cart[/ECL]";
             break;
             case 'paypal_return':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]paypal_return_check_payment[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]paypal_return_check_payment[/ECL]";
             break;
             case 'signin':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]draw_signin()[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]draw_signin()[/ECL]";
             break;
             case 'signed_in':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-             ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."<h3>Welcome ".get_userFullName()."</h3>\n"
-            ."<p>You have signed in with the following rights:\n"
-            ."[ECL]draw_rights()[/ECL]"
-            ."<p>Click <a href='".BASE_PATH."signin?command=signout'><b>here</b></a> to sign out.</p>\n";
-
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."<h3>Welcome ".get_userFullName()."</h3>\n"
+                    ."<p>You have signed in with the following rights:\n"
+                    ."[ECL]draw_rights()[/ECL]"
+                    ."<p>Click <a href='".BASE_PATH."signin?command=signout'><b>here</b></a> to sign out.</p>\n";
             break;
             case 'sitemap':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]draw_html_sitemap(1)[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]draw_html_sitemap(1)[/ECL]";
             break;
             case 'your_order_history':
                 if ($system_vars['gatewayID']==1) {
@@ -426,18 +406,16 @@ class PageDraw extends Page
                 }
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]your_order_history[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]your_order_history[/ECL]";
             break;
             case 'your_registered_events':
                 $this->do_tracking("200");
                 $Obj_HTML = new HTML();
-
                 return
-            ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted'=>1)) : "")
-            ."[ECL]component_your_registered_events[/ECL]";
+                     ($canPublish ? $Obj_HTML->draw_toolbar('page_create', array('wasSubstituted' => 1)) : "")
+                    ."[ECL]component_your_registered_events[/ECL]";
             break;
         }
         $this->do_tracking("404");
@@ -506,67 +484,25 @@ class PageDraw extends Page
             ;
     }
 
-    public static function draw_http_error($status)
-    {
-        global $page,$mode, $report_name, $selectID, $command, $targetID, $print;
-        if ($page=='home') {
-            $page='';
-        }
-        $uri_arr = array();
-        if ($command!='') {
-            $uri_arr[] = "command=$command";
-        }
-        if ($mode!='') {
-            $uri_arr[] = "mode=$mode";
-        }
-        if ($report_name!='') {
-            $uri_arr[] = "report_name=$report_name";
-        }
-        if ($selectID!='') {
-            $uri_arr[] = "selectID=$selectID";
-        }
-        if ($print!='') {
-            $uri_arr[] = "print=$print";
-        }
-        if ($targetID!='') {
-            $uri_arr[] = "targetID=$targetID";
-        }
-        $uri =  implode('&', $uri_arr);
-        $uri =  BASE_PATH.$page.($uri ? "?".$uri : "");
-        switch ($status) {
-            case "403":
-                $title =    "403 Permission Denied";
-                $problem =  "Sorry, you are not authorised to access this resource.";
-                break;
-            case "404":
-                $title =    "404 Page not found";
-                $problem =  "Sorry, we can't find the page you requested.";
-                break;
-        }
-
-        return
-         "<div style='background-color:#f0f0f0;margin:auto; border:2px solid #000; padding:10px;'>\n"
-        ."<h1>".$title."</h1>"
-        ."<p><a href=\"".$uri."\">".$uri."</a><br />\n<br />\n"
-        .$problem."<br />\n"
-        ."<a href='#' onclick=\"history.back();return false;\"><b>Click here</b></a> to go back.</p>\n"
-        ."<p>Please contact us if you believe this to be an error.</p>\n"
-        ."</div>&nbsp;<br class='clr_b' />";
-    }
-
     public static function draw_html_content($zone = 1)
     {
         $zone =     sanitize('range', $zone, 1, 'n', 1);
         global $mode, $page, $page_vars, $report_name, $ID;
         switch ($mode) {
             case "details":
-                return static::_draw_html_content_draw_details($report_name);
+                return static::drawContent($report_name);
             break;
             case "report":
-                return static::_draw_html_content_draw_report($report_name);
+                $Obj = new Report_Report();
+                return static::render(
+                    $Obj->draw_by_name($report_name)
+                );
             break;
             case "print_form":
-                return static::_draw_html_content_draw_print_form($report_name);
+                $Obj = new Report();
+                return static::render(
+                    $Obj->draw_form_view($report_name, $page_vars['ID'], true, true, false)
+                );
             break;
             default:
                 $posting_prefix_types = Portal::portal_param_get('path_type_prefixed_types');
@@ -575,7 +511,7 @@ class PageDraw extends Page
                     if ($mode==$Obj->_get_path_prefix()) {
                         $Obj->_set_ID($ID);
 
-                        return static::_draw_html_content_render(
+                        return static::render(
                             $Obj->draw_detail()
                         );
                     }
@@ -585,22 +521,22 @@ class PageDraw extends Page
         if ($zone==1) {
             $Obj = new static();
 
-            return static::_draw_html_content_render(
+            return static::render(
                 $Obj->draw_detail($page)
             );
         }
         if (isset($page_vars['content_zones'][$zone-1])) {
-            return static::_draw_html_content_render(
+            return static::render(
                 $page_vars['content_zones'][$zone-1]
             );
         }
 
-        return static::_draw_html_content_render(
+        return static::render(
             "<!-- Zone ".$zone." is empty -->"
         );
     }
 
-    protected static function _draw_html_content_draw_details($report_name)
+    protected static function drawContent($report_name)
     {
         $Obj = new Report_Form();
         $Obj->_set_ID($Obj->get_ID_by_name($report_name));
@@ -609,8 +545,8 @@ class PageDraw extends Page
             $Obj->do_tracking("404");
             header("Status: 404 Not Found", true, 404);
 
-            return static::_draw_html_content_render(
-                static::draw_http_error('404')
+            return static::render(
+                HttpError::draw('404')
             );
         }
         if (!$Obj->is_visible($record)) {
@@ -618,8 +554,8 @@ class PageDraw extends Page
             if (get_userID()) {
                 header("Status: 403 Unauthorised", true, 403);
 
-                return static::_draw_html_content_render(
-                    static::draw_http_error('403')
+                return static::render(
+                    HttpError::draw('403')
                 );
             }
             header("Location: ".BASE_PATH."signin");
@@ -629,61 +565,40 @@ class PageDraw extends Page
         $Obj->do_tracking("200");
         $componentID = $record['formComponentID'];
         if ($componentID!= "1") {
-            return static::_draw_html_content_render(
+            return static::render(
                 draw_component($componentID)
             );
         }
 
-        return static::_draw_html_content_render(
+        return static::render(
             draw_auto_form($report_name)
         );
     }
 
-    protected static function _draw_html_content_draw_print_form($report_name)
-    {
-        global $page_vars;
-        $ID = $page_vars['ID'];
-        $Obj = new Report();
-        return static::_draw_html_content_render(
-            $Obj->draw_print_form($report_name, $ID)
-        );
-    }
-
-    protected static function _draw_html_content_draw_report($report_name)
-    {
-        $Obj = new Report_Report();
-
-        return static::_draw_html_content_render(
-            $Obj->draw_by_name($report_name)
-        );
-    }
-
-    protected static function _draw_html_content_render($html)
+    protected static function render($html)
     {
         return
-        "\n"
-        ."<!-- html_content_start -->\n"
-        ."<span id='html_content_start'></span>\n"
-        .$html."\n"
-        ."<!-- html_content_end -->\n";
+             "\n"
+            ."<!-- html_content_start -->\n"
+            ."<span id='html_content_start'></span>\n"
+            .$html."\n"
+            ."<!-- html_content_end -->\n";
     }
 
-    private function draw_toolbar_page_edit(
+    private function toolbar(
         $allowPopupEdit = 0,
         $allowSaveAs = 0,
         $withCopy = 0,
         $newPage = '',
         $newPageID = ''
     ) {
-        global $page_vars;
-        $Obj = new Page();
         $args = array(
             'allowInpageEdit' =>  true,
             'allowPopupEdit' =>   $allowPopupEdit,
             'allowSaveAs' =>      $allowSaveAs,
-            'edit_params' =>      $Obj->get_edit_params(),
-            'ID' =>               $page_vars['ID'],
-            'object_name' =>      $Obj->_get_object_name(),
+            'edit_params' =>      $this->get_edit_params(),
+            'ID' =>               $this->_get_ID(),
+            'object_name' =>      $this->_get_object_name(),
             'withCopy' =>         $withCopy,
             'newPage' =>          $newPage,
             'newPageID' =>        $newPageID

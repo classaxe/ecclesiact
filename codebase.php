@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.5.2");
+define("CODEBASE_VERSION", "4.5.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.5.2.2440 (2016-03-24)
+4.5.3.2441 (2016-03-25)
 Summary:
-  1) Security fixes to prevent regular admins from editing or deleting global pages
+  1) Tidied PageDraw class, switched debug messages off for dropbox checks
 
 Final Checksums:
-  Classes     CS:790ed210
+  Classes     CS:416f3dfb
   Database    CS:5d138354
-  Libraries   CS:76c37eed
+  Libraries   CS:81bb42ab
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.5.2     (2016-03-24)
+  codebase.php                                                                                   4.5.3     (2016-03-25)
     1) Updated version information
-  classes/class.html.php                                                                         1.0.94    (2016-03-24)
-    1) Changes to HTML::_draw_toolbar_type_page_edit() to prevent editing or deleting of pages belonging to
-       global system other than by master admins
-  classes/class.page.php                                                                         1.0.128   (2016-03-24)
-    1) Removed a number of methods out into PageDraw class
-  classes/class.record.php                                                                       1.0.97    (2016-03-24)
-    1) Record::set_edit_params() now allows for icon_edit_popup_disabled
-  classes/pagedraw.php                                                                           1.0.0     (2016-03-24)
-    1) Initial Release
+  classes/class.community_display.php                                                            1.0.48    (2016-03-25)
+    1) Community_Display::checkDropboxUpdateGetDelta() no longer writes debug message to error log every time
+  classes/httperror.php                                                                          1.0.0     (2015-03-25)
+    1) Initial release
+  classes/pagedraw.php                                                                           1.0.1     (2015-03-25)
+    1) PSR-2 Cleanup
 
-2440.sql
+2441.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.5.2
-  classes/  (4 files changed)
-    class.html.php                                    1.0.94    CS:dffce68c
-    class.page.php                                    1.0.128   CS:90a0b602
-    class.record.php                                  1.0.97    CS:5c61e01d
-    pagedraw.php                                      1.0.0     CS:4d6ea4dc
-  images/icons.gif                                              CS:dd734563
+  codebase.php                                        4.5.3
+  classes/  (3 files changed)
+    class.community_display.php                       1.0.48    CS:628a06a0
+    httperror.php                                     1.0.0     CS:1c7d9f80
+    pagedraw.php                                      1.0.1     CS:5905d5de
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1358,13 +1353,13 @@ function draw_html_content($zone = 1)
 function draw_html_error_403()
 {
     header("Status: 403 Unauthorised", true, 403);
-    return PageDraw::draw_http_error('403');
+    return HttpError::draw('403');
 }
 
 function draw_html_error_404()
 {
     header("Status: 404 Not Found", true, 404);
-    return PageDraw::draw_http_error('404');
+    return HttpError::draw('404');
 }
 
 function draw_section_tabs($arr, $divider_prefix, $selected_section, $js = "")
