@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.30 (2016-03-20)
-    1) multiple changes to handle renamed filter and results arguments
+  1.0.31 (2016-03-26)
+    1) Multiple changes to handle replacement of parameter filter_category with filter_category_list
 */
 class RSS extends Record
 {
-    const VERSION = '1.0.30';
+    const VERSION = '1.0.31';
 
     public $url;
 
@@ -116,7 +116,7 @@ class RSS extends Record
             case "articles":
                 $results = $this->Obj->get_records(
                     array(
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_isShared' =>        $this->args['filter_isShared'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
@@ -130,7 +130,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
                         'results_limit' =>          $this->args['results_limit'],
@@ -146,7 +146,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               $this->args['byRemote'],
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_date_DD' =>         $this->args['filter_date_DD'],
                         'filter_date_MM' =>         $this->args['filter_date_MM'],
@@ -164,7 +164,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_date_DD' =>         $this->args['filter_date_DD'],
                         'filter_date_MM' =>         $this->args['filter_date_MM'],
@@ -182,7 +182,7 @@ class RSS extends Record
             case "gallery_images":
                 $results = $this->Obj->get_records(
                     array(
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_container_path' =>  $this->args['filter_container_path'],
                         'filter_container_subs' =>  $this->args['filter_container_subs'],
@@ -200,7 +200,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_container_path' =>  $this->args['filter_container_path'],
                         'filter_container_subs' =>  $this->args['filter_container_subs'],
@@ -216,7 +216,7 @@ class RSS extends Record
             case "jobs":
                 $results = $this->Obj->get_records(
                     array(
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_isShared' =>        $this->args['filter_isShared'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
@@ -230,7 +230,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
                         'results_limit' =>          $this->args['results_limit'],
@@ -242,7 +242,7 @@ class RSS extends Record
             case "news":
                 $results = $this->Obj->get_records(
                     array(
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_isShared' =>        $this->args['filter_isShared'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
@@ -256,7 +256,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>       true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_memberID' =>        $this->args['filter_memberID'],
                         'results_limit' =>          $this->args['results_limit'],
@@ -268,7 +268,7 @@ class RSS extends Record
             case "podcasts":
                 $results = $this->Obj->get_records(
                     array(
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_container_path' =>  $this->args['filter_container_path'],
                         'filter_container_subs' =>  $this->args['filter_container_subs'],
@@ -286,7 +286,7 @@ class RSS extends Record
                 $results = $this->Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $this->args['filter_category'],
+                        'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
                         'filter_container_path' =>  $this->args['filter_container_path'],
                         'filter_container_subs' =>  $this->args['filter_container_subs'],
@@ -780,7 +780,7 @@ class RSS extends Record
                 (isset($args['base_path']) ?      $args['base_path'] : trim($system_vars['URL'], '/').BASE_PATH.'rss/'),
             'byRemote' =>
                 (isset($args['byRemote']) ?       $args['byRemote'] : false),
-            'filter_category' =>
+            'filter_category_list' =>
                 (isset($category) ?               $category : get_var('category', '*')),
             'filter_communityID' =>
                 (isset($args['communityID']) ?    $args['communityID'] : $communityID),

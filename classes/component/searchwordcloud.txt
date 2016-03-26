@@ -1,3 +1,5 @@
+  1.0.3 (2016-03-15)
+    1) SearchWordCloud::setupLoadText() now provides filter_... prefixed parameters for all filters
   1.0.2 (2016-03-14)
     1) New CP 'link_path' to allow component to be used with pages other than search results
   1.0.1 (2016-03-12)

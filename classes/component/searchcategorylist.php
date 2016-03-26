@@ -3,18 +3,19 @@ namespace Component;
 
 /*
 Version History:
-  1.0.1 (2016-03-15)
-    1) SearchCategoryList::setupLoadCategories() now provides filter_... prefixed parameters for all filters
+  1.0.2 (2016-03-26)
+    1) SearchCategoryList::setupLoadCategories() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
 */
 class SearchCategoryList extends Base
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     protected $categories =      array();
 
     public function __construct()
     {
-        $this->_ident =            "search_word_cloud";
+        $this->_ident =            "search_category_list";
         $this->_parameter_spec = array(
             'colour_min' =>         array(
                 'match' =>      'hex3|#808080',
@@ -59,15 +60,15 @@ class SearchCategoryList extends Base
                 'default' =>    '',
                 'hint' =>       'Type of object to limit results to - or blank for anything'
             ),
+            'link_friendly' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1 - sets URL to friendly mode used with listings on pages having path extender flag'
+            ),
             'link_path' =>     array(
                 'match' =>      '',
                 'default' =>    '/search_results/',
                 'hint' =>       'URL to prefix all linked words with'
-            ),
-            'summary_show' =>       array(
-                'match' =>      'enum|0,1',
-                'default' =>    '0',
-                'hint' =>       '0|1'
             )
         );
     }
@@ -78,16 +79,22 @@ class SearchCategoryList extends Base
         $this->drawControlPanel(true);
         $this->_html.= "<ul id='".$this->_safe_ID."'>\n";
         foreach ($this->categories as $word => $count) {
+            if ($this->_cp['link_friendly']) {
+                $url =
+                    BASE_PATH.trim($this->_cp['link_path'], '/')
+                   ."/category/".$word;
+            } else {
+                $url =
+                     BASE_PATH.trim($this->_cp['link_path'], '/')
+                    ."?search_categories=".$word
+                    .($this->_cp['filter_type']!=='' ?
+                        "&amp;search_type=".strtolower($this->_cp['filter_type'])
+                        :
+                        ""
+                    );
+            }
             $this->_html.=
-                 "    <li><a href=\""
-                .BASE_PATH.trim($this->_cp['link_path'], '/')
-                ."?search_categories=".$word
-                .($this->_cp['filter_type']!=='' ?
-                    "&amp;search_type=".strtolower($this->_cp['filter_type'])
-                 :
-                    ""
-                 )
-                ."\""
+                 "    <li><a href=\"".$url."\""
                 ." style=\""
                 ."color:".get_color_for_weight(
                     100*$count/$this->maxMatches,
@@ -126,7 +133,7 @@ class SearchCategoryList extends Base
         $records = $Obj->get_records(
             array(
                 'byRemote' =>                   false,
-                'filter_category' =>            $this->_cp['filter_category_list'],
+                'filter_category_list' =>       $this->_cp['filter_category_list'],
                 'filter_category_master' =>     $this->_cp['filter_category_master'],
                 'filter_has_video' =>           $this->_cp['filter_has_video'],
                 'filter_important' =>           $this->_cp['filter_important'],

@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.244 (2016-03-15)
-    1) Posting_Contained::get_records_matching()  now provides filter_... prefixed parameters for all filters
+  1.0.245 (2016-03-26)
+    1) Posting_Contained::get_records_matching() replaced parameter filter_category with filter_category_list
 */
 
 class Posting_Contained extends Posting
 {
-    const VERSION = '1.0.244';
+    const VERSION = '1.0.245';
 
     private $_container_object_type;
 
@@ -192,7 +192,7 @@ class Posting_Contained extends Posting
         $Obj_Parent_type =  $this->_get_container_object_type();
         $results = $this->get_records(
             array(
-                'filter_category' =>            $args['filter_category_list'],
+                'filter_category_list' =>       $args['filter_category_list'],
                 'filter_category_master' =>     $args['filter_category_master'],
                 'filter_container_path' =>      $args['filter_container_path'],
                 'filter_container_subs' =>      $args['filter_container_subs'],

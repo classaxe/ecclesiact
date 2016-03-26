@@ -1,3 +1,5 @@
+  1.0.158 (2016-03-15)
+    1) Displayable_Item::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
   1.0.157 (2016-01-02)
     1) Method do_tracking() now declared to be static
   1.0.156 (2015-12-30)

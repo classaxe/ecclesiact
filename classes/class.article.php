@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.41 (2016-02-27)
-    1) Now has new CP for listings - filter_has_video
+  1.0.42 (2016-03-26)
+    1) New CP filter_text_list to require matches to contain one or more of the words giving in the CSV list
+    1) New CP filter_allow_override to allow for additional customisation of results by category, keyword or text
 */
 class Article extends Posting
 {
-    const VERSION = '1.0.41';
+    const VERSION = '1.0.42';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -230,6 +231,11 @@ class Article extends Posting
                 'default' =>    '',
                 'hint' =>       'CSV list format: field|label|group,field|label|group...'
             ),
+            'filter_allow_override' =>     array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1 Whether or not to allow URI parameters to override category_list'
+            ),
             'filter_category_list' =>     array(
                 'match' =>      '',
                 'default' =>    '*',
@@ -257,6 +263,11 @@ class Article extends Posting
                 'match' =>      'range|0,n',
                 'default' =>    '',
                 'hint' =>       'ID of Person to restrict by that criteria'
+            ),
+            'filter_text_list' =>         array(
+                'match' =>      '',
+                'default' =>    '',
+                'hint' =>       'If provided, matches must contain one of the words or phrases in this CSV list'
             ),
             'item_footer_component' =>    array(
                 'match' =>      '',

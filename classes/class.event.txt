@@ -1,3 +1,9 @@
+  1.0.107 (2016-03-15)
+    1) Updates to the following methods:
+         Event::get_calendar_dates()
+         Event::get_events_for_date()
+         Event::get_yearly_dates()
+       Each now provide filter_... prefixed parameters for all filters
   1.0.106 (2016-01-18)
     1) Now uses VERSION class constant for version control
   1.0.105 (2015-09-13)

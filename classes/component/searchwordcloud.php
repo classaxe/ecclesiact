@@ -3,12 +3,13 @@ namespace Component;
 
 /*
 Version History:
-  1.0.3 (2016-03-15)
-    1) SearchWordCloud::setupLoadText() now provides filter_... prefixed parameters for all filters
+  1.0.4 (2016-03-26)
+    1) SearchWordCloud::setupLoadText() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
 */
 class SearchWordCloud extends Base
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     protected $filtered =   array();
     protected $maxMatches = 0;
@@ -72,7 +73,12 @@ class SearchWordCloud extends Base
                 'default' =>    '1000',
                 'hint' =>       'Maximum number of matches for words shown'
             ),
-            'link_path' =>     array(
+            'link_friendly' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1 - sets URL to friendly mode used with listings on pages having path extender flag'
+            ),
+            'link_path' =>          array(
                 'match' =>      '',
                 'default' =>    '/search_results/',
                 'hint' =>       'URL to prefix all linked words with'
@@ -100,16 +106,22 @@ class SearchWordCloud extends Base
         $this->setup($instance, $args, $disable_params);
         $this->drawControlPanel(true);
         foreach ($this->filtered as $word => $count) {
+            if ($this->_cp['link_friendly']) {
+                $url =
+                    BASE_PATH.trim($this->_cp['link_path'], '/')
+                   ."/text/".$word;
+            } else {
+                $url =
+                     BASE_PATH.trim($this->_cp['link_path'], '/')
+                    ."?search_text=".$word
+                    .($this->_cp['filter_type']!=='' ?
+                        "&amp;search_type=".strtolower($this->_cp['filter_type'])
+                        :
+                        ""
+                    );
+            }
             $this->_html.=
-                 "<a href=\""
-                .BASE_PATH.trim($this->_cp['link_path'], '/')
-                ."?search_text=".$word
-                .($this->_cp['filter_type']!=='' ?
-                    "&amp;search_type=".strtolower($this->_cp['filter_type'])
-                 :
-                    ""
-                 )
-                ."\""
+                 "<a href=\"".$url."\""
                 ." style=\"font-size:".(int)(500*$count/$this->maxMatches)."%;"
                 ."color:"
                 .get_color_for_weight(
@@ -157,7 +169,7 @@ class SearchWordCloud extends Base
         $records = $Obj->get_records(
             array(
                 'byRemote' =>               false,
-                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],
                 'filter_has_video' =>       $this->_cp['filter_has_video'],
                 'filter_important' =>       $this->_cp['filter_important'],

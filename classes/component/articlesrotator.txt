@@ -1,3 +1,5 @@
+  1.0.10 (2016-03-15)
+    1) ArticlesRotator::setupLoadRecords() now provides filter_... prefixed parameters for all filters
   1.0.9 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.8 (2015-03-07)

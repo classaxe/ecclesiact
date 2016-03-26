@@ -1,3 +1,5 @@
+  1.0.41 (2016-02-27)
+    1) Now has new CP for listings - filter_has_video
   1.0.40 (2016-01-18)
     1) Now uses VERSION class constant for version control
   1.0.39 (2015-03-23)

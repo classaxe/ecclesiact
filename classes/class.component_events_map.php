@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.4 (2016-03-15)
-    1) Component_Events_Map::_setup_load_event_IDs() now provides filter_... prefixed parameters for all filters
+  1.0.5 (2016-03-26)
+    1) Component_Events_Map::_setup_load_event_IDs() replaced parameter filter_category with filter_category_list
 */
 class Component_Events_Map extends Component_Base
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     protected $_event_IDs;
     protected $_Obj_Event;
@@ -166,7 +166,7 @@ class Component_Events_Map extends Component_Base
             array(
                 'byRemote' =>
                     false,
-                'filter_category' =>
+                'filter_category_list' =>
                     $this->_cp['filter_category_list'],
                 'filter_category_master' =>
                     (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : false),

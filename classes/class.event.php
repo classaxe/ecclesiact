@@ -1,16 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.107 (2016-03-15)
-    1) Updates to the following methods:
-         Event::get_calendar_dates()
-         Event::get_events_for_date()
-         Event::get_yearly_dates()
-       Each now provide filter_... prefixed parameters for all filters
+  1.0.108 (2016-03-26)
+    1) Event::get_calendar_dates() now replaces parameter filter_category with filter_category_list
 */
 class Event extends Posting
 {
-    const VERSION = '1.0.107';
+    const VERSION = '1.0.108';
 
     public static $cache_event_registrant_count =      array();
 
@@ -1055,11 +1051,11 @@ class Event extends Posting
     {
         $results =          $this->get_records(
             array(
-                'filter_category' =>    $category,
-                'filter_date_MM' =>     $MM,
-                'filter_date_YYYY' =>   $YYYY,
-                'filter_memberID' =>    $memberID,
-                'filter_what' =>        'calendar'
+                'filter_category_list' =>   $category,
+                'filter_date_MM' =>         $MM,
+                'filter_date_YYYY' =>       $YYYY,
+                'filter_memberID' =>        $memberID,
+                'filter_what' =>            'calendar'
             )
         );
         $records =          $results['data'];

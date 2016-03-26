@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.81 (2016-03-15)
-    1) Product::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
-    2) Product::get_records() - now requires now filter_... prefixed parameters for all filters
+  1.0.82 (2016-03-26)
+    1) Product::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
+    2) Product::get_records() - now requires filter_category_list
 */
 class Product extends Displayable_Item
 {
-    const VERSION = '1.0.81';
+    const VERSION = '1.0.82';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $type;
@@ -567,7 +567,7 @@ class Product extends Displayable_Item
     {
         $results = $this->get_records(
             array(
-                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],
                 'filter_important' =>       $this->_cp['filter_important'],
                 'results_limit' =>          $this->_cp['results_limit'],
@@ -1146,7 +1146,7 @@ class Product extends Displayable_Item
         $args = func_get_args();
         $vars = array(
             'byRemote' =>               0,
-            'filter_category' =>        '*',
+            'filter_category_list' =>   '*',
             'filter_category_master' => '',
             'filter_container_path' =>  '',
             'filter_container_subs' =>  0,
@@ -1184,8 +1184,8 @@ class Product extends Displayable_Item
             ."  `product`.`systemID` = `system`.`ID`\n"
             ."WHERE\n"
             ."  `product`.`systemID` = ".$this->_get_systemID()." AND\n"
-            .($vars['filter_category']!="*" ?
-                "  `product`.`category` REGEXP \"".implode("|", explode(',', $vars['filter_category']))."\" AND\n"
+            .($vars['filter_category_list']!="*" ?
+                "  `product`.`category` REGEXP \"".implode("|", explode(',', $vars['filter_category_list']))."\" AND\n"
               :
                 ""
              )

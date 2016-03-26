@@ -2,13 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.56 (2016-03-15)
-    1) CollectionViewer::setupLoadPodcastAlbums() and CollectionViewer::setupLoadPodcasts()
-       now provide filter_... prefixed parameters for all filters
+  1.0.57 (2016-03-26)
+    1) In CollectionViewer::setupLoadPodcastAlbums replaced parameter filter_category with filter_category_list
 */
 class CollectionViewer extends Base
 {
-    const VERSION = '1.0.56';
+    const VERSION = '1.0.57';
 
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
@@ -857,7 +856,7 @@ class CollectionViewer extends Base
         $Obj = new \Podcast_Album;
         $result = $Obj->get_records(
             array(
-                'filter_category' =>
+                'filter_category_list' =>
                     ($this->_cp['filter_category_list']!='' ?       $this->_cp['filter_category_list'] : ''),
                 'filter_category_master' =>
                     (isset($this->_cp['filter_category_master']) ?  $this->_cp['filter_category_master'] : ''),

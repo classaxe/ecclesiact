@@ -1,2 +1,4 @@
+  1.0.1 (2016-03-15)
+    1) LatestYoutube::setupLoadLatestYoutube() now provides filter_... prefixed parameters for all filters
   1.0.0 (2016-02-25)
     1) Initial Release

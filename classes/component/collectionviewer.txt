@@ -1,3 +1,6 @@
+  1.0.56 (2016-03-15)
+    1) CollectionViewer::setupLoadPodcastAlbums() and CollectionViewer::setupLoadPodcasts()
+       now provide filter_... prefixed parameters for all filters
   1.0.55 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.54 (2015-11-29)

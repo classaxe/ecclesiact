@@ -4,13 +4,13 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 
 /*
 Version History:
-  1.0.7 (2016-03-15)
-    1) Community_Posting::getRecordsGetSqlWithDelegate() now requires filter_... prefixed parameters for all filters
+  1.0.8 (2016-03-26)
+    1) Community_Posting::getRecordsGetSqlWithDelegate() replaced filter_category with filter_category_list
 */
 
 class Community_Posting extends Posting
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     public static function getRecordsGetSqlWithDelegate($Obj)
     {
@@ -43,9 +43,9 @@ class Community_Posting extends Posting
                 ."    `postings`\n"
                 ."  WHERE\n"
                 .$Obj->_get_records_get_sql_filter_date()
-                .($Obj->_get_records_args['filter_category']!="*" ?
+                .($Obj->_get_records_args['filter_category_list']!="*" ?
                      "  `postings`.`category` REGEXP \""
-                    .implode("|", explode(',', $Obj->_get_records_args['filter_category']))
+                    .implode("|", explode(',', $Obj->_get_records_args['filter_category_list']))
                     ."\" AND\n"
                 :
                     ""
@@ -82,9 +82,9 @@ class Community_Posting extends Posting
             ."  `postings`.`type` = '".$Obj->_get_type()."' AND\n"
             ."  `postings`.`permSHARED` = 1 AND\n"
             .$Obj->_get_records_get_sql_filter_date()
-            .($Obj->_get_records_args['filter_category']!="*" ?
+            .($Obj->_get_records_args['filter_category_list']!="*" ?
                  "  `postings`.`category` REGEXP \""
-                .implode("|", explode(',', $Obj->_get_records_args['filter_category']))
+                .implode("|", explode(',', $Obj->_get_records_args['filter_category_list']))
                 ."\" AND\n"
              :
                 ""

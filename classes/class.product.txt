@@ -1,3 +1,6 @@
+  1.0.81 (2016-03-15)
+    1) Product::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
+    2) Product::get_records() - now requires filter_... prefixed parameters for all filters
   1.0.80 (2016-01-01)
     1) Product::get_match_for_name() now declared as static
     2) Now uses VERSION class constant for version control

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.5.3");
+define("CODEBASE_VERSION", "4.6.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,35 +16,87 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.5.3.2441 (2016-03-25)
+4.6.0.2442 (2016-03-26)
 Summary:
-  1) Tidied PageDraw class, switched debug messages off for dropbox checks
+  1) Now allows URL-based category or text filtering for article listings - introduced for BNN
+     Now allows for CP filtering of specific text appearing in articles text content or title
+     Search Word Cloud and Search Category List components can now work in URL-friendly mode for
+     use with Articles Listings on pages that have Path Extender options set
 
 Final Checksums:
-  Classes     CS:416f3dfb
+  Classes     CS:e6e96f21
   Database    CS:5d138354
-  Libraries   CS:81bb42ab
+  Libraries   CS:3e7a3e5
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.5.3     (2016-03-25)
+  codebase.php                                                                                   4.6.0     (2016-03-26)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.48    (2016-03-25)
-    1) Community_Display::checkDropboxUpdateGetDelta() no longer writes debug message to error log every time
-  classes/httperror.php                                                                          1.0.0     (2015-03-25)
-    1) Initial release
-  classes/pagedraw.php                                                                           1.0.1     (2015-03-25)
-    1) PSR-2 Cleanup
+  classes/class.article.php                                                                      1.0.42    (2016-03-26)
+    1) New CP filter_text_list to require matches to contain one or more of the words giving in the CSV list
+    1) New CP filter_allow_override to allow for additional customisation of results by category, keyword or text
+  classes/class.community_member_posting.php                                                     1.0.7     (2016-03-26)
+    1) Community_Member_Posting::getRecordsGetSqlWithDelegate() replaced filter_category with filter_category_list
+  classes/class.community_posting.php                                                            1.0.8     (2016-03-26)
+    1) Community_Posting::getRecordsGetSqlWithDelegate() replaced filter_category with filter_category_list
+  classes/class.component_events_map.php                                                         1.0.5     (2016-03-26)
+    1) Component_Events_Map::_setup_load_event_IDs() replaced parameter filter_category with filter_category_list
+  classes/class.displayable_item.php                                                             1.0.159   (2016-03-26)
+    1) Complete revamp of Displayable_Item::_draw_listings_load_records() which now allows for replaced parameter
+       filter_category with filter_category_list
+    2) Now allows path extension to be used for listings filter override for category or text
+  classes/class.event.php                                                                        1.0.108   (2016-03-26)
+    1) Event::get_calendar_dates() now replaces parameter filter_category with filter_category_list
+  classes/class.person.php                                                                       1.0.127   (2016-03-26)
+    1) Person::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
+  classes/class.posting.php                                                                      1.0.126   (2016-03-26)
+    1) Internal references to filter_category normalised to filter_category_list
+    2) Added filter_text_list for Posting::get_records()
+  classes/class.posting_contained.php                                                            1.0.245   (2016-03-26)
+    1) Posting_Contained::get_records_matching() replaced parameter filter_category with filter_category_list
+  classes/class.product.php                                                                      1.0.82    (2016-03-26)
+    1) Product::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
+    2) Product::get_records() - now requires filter_category_list
+  classes/class.remote.php                                                                       1.0.13    (2016-03-26)
+    1) Local calls to obj::get_records() changeged arg filter_category to filter_category_list
+  classes/class.rss.php                                                                          1.0.31    (2016-03-26)
+    1) Multiple changes to handle replacement of parameter filter_category with filter_category_list
+  classes/component/articlesrotator.php                                                          1.0.11    (2016-03-26)
+    1) ArticlesRotator::setupLoadRecords replaced parameter filter_category with filter_category_list
+  classes/component/collectionviewer.php                                                         1.0.57    (2016-03-26)
+    1) In CollectionViewer::setupLoadPodcastAlbums replaced parameter filter_category with filter_category_list
+  classes/component/latestyoutube.php                                                            1.0.2     (2016-03-26)
+    1) LatestYoutube::setupLoadLatestYoutube replaced parameter filter_category with filter_category_list
+  classes/component/searchcategorylist.php                                                       1.0.2     (2016-03-26)
+    1) SearchCategoryList::setupLoadCategories() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
+  classes/component/searchwordcloud.php                                                          1.0.4     (2016-03-26)
+    1) SearchWordCloud::setupLoadText() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
 
-2441.sql
+2442.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.5.3
-  classes/  (3 files changed)
-    class.community_display.php                       1.0.48    CS:628a06a0
-    httperror.php                                     1.0.0     CS:1c7d9f80
-    pagedraw.php                                      1.0.1     CS:5905d5de
+  codebase.php                                        4.6.0
+  classes/  (17 files changed)
+    class.article.php                                 1.0.42    CS:2ba75a58
+    class.community_member_posting.php                1.0.7     CS:da390d2e
+    class.community_posting.php                       1.0.8     CS:ebbc7571
+    class.component_events_map.php                    1.0.5     CS:b86072cb
+    class.displayable_item.php                        1.0.159   CS:8574848b
+    class.event.php                                   1.0.108   CS:a53a7810
+    class.person.php                                  1.0.127   CS:3185f507
+    class.posting.php                                 1.0.126   CS:d8f1e14e
+    class.posting_contained.php                       1.0.245   CS:ae756d29
+    class.product.php                                 1.0.82    CS:f9ab12a5
+    class.remote.php                                  1.0.13    CS:cdd0cb1a
+    class.rss.php                                     1.0.31    CS:ca5afd7c
+    component/articlesrotator.php                     1.0.11    CS:b26f5b59
+    component/collectionviewer.php                    1.0.57    CS:67d1e706
+    component/latestyoutube.php                       1.0.2     CS:2e54b1aa
+    component/searchcategorylist.php                  1.0.2     CS:b9afe379
+    component/searchwordcloud.php                     1.0.4     CS:6637599b
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

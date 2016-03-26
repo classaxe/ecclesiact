@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.158 (2016-03-15)
-    1) Displayable_Item::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
+  1.0.159 (2016-03-26)
+    1) Complete revamp of Displayable_Item::_draw_listings_load_records() which now allows for replaced parameter
+       filter_category with filter_category_list
+    2) Now allows path extension to be used for listings filter override for category or text
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.158';
+    const VERSION = '1.0.159';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -878,6 +880,41 @@ class Displayable_Item extends Block_Layout
         sort($this->_categories_arr);
     }
 
+    protected function _draw_listings_load_args()
+    {
+        global $YYYY, $MM;
+        $this->_args = array(
+            'byRemote' =>           false,
+            'filter_date_DD' =>     '',
+            'filter_date_MM' =>     $MM,
+            'filter_date_YYYY' =>   $YYYY,
+            'results_offset' =>     $this->_filter_offset
+        );
+        $possible_args = array(
+            'filter_category_list' =>   '',
+            'filter_category_master' => '',
+            'filter_container_path' =>  '',
+            'filter_container_subs' =>  '',
+            'filter_date_duration' =>   '',
+            'filter_date_units' =>      '',
+            'filter_important' =>       '',
+            'filter_memberID' =>        '',
+            'filter_personID' =>        '',
+            'filter_range_address' =>   '',
+            'filter_range_distance' =>  '',
+            'filter_range_lat' =>       '',
+            'filter_range_lon' =>       '',
+            'filter_range_units' =>     '',
+            'filter_text_list' =>       '',
+            'filter_what' =>            'all',
+            'results_limit' =>          '',
+            'results_order' =>          'date'
+        );
+        foreach ($possible_args as $key => $default) {
+            $this->_args[$key] = (isset($this->_cp[$key]) ? $this->_cp[$key] : $default);
+        }
+    }
+
     protected function _draw_listings_load_paging_controls()
     {
         global $page_vars;
@@ -993,57 +1030,32 @@ class Displayable_Item extends Block_Layout
 
     protected function _draw_listings_load_records()
     {
-        global $YYYY, $MM;
-        $results = $this->get_records(
-            array(
-                'byRemote' =>
-                    false,
-                'filter_category' =>
-                    $this->_cp['filter_category_list'],
-                'filter_category_master' =>
-                    (isset($this->_cp['filter_category_master']) ?    $this->_cp['filter_category_master'] : false),
-                'filter_container_path' =>
-                    (isset($this->_cp['filter_container_path']) ?     $this->_cp['filter_container_path'] : ''),
-                'filter_container_subs' =>
-                    (isset($this->_cp['filter_container_subs']) ?     $this->_cp['filter_container_subs'] : ''),
-                'filter_date_DD' =>
-                    '',
-                'filter_date_MM' =>
-                    $MM,
-                'filter_date_YYYY' =>
-                    $YYYY,
-                'filter_date_duration' =>
-                    (isset($this->_cp['filter_date_duration']) ?      $this->_cp['filter_date_duration'] : ''),
-                'filter_date_units' =>
-                    (isset($this->_cp['filter_date_units']) ?         $this->_cp['filter_date_units'] : ''),
-                'filter_range_address' =>
-                    (isset($this->_cp['filter_range_address']) ?      $this->_cp['filter_range_address'] : ''),
-                'filter_range_distance' =>
-                    (isset($this->_cp['filter_range_distance']) ?     $this->_cp['filter_range_distance'] : ''),
-                'filter_range_lat' =>
-                    (isset($this->_cp['filter_range_lat']) ?          $this->_cp['filter_range_lat'] : ''),
-                'filter_range_lon' =>
-                    (isset($this->_cp['filter_range_lon']) ?          $this->_cp['filter_range_lon'] : ''),
-                'filter_range_units' =>
-                    (isset($this->_cp['filter_range_units']) ?        $this->_cp['filter_range_units'] : ''),
-                'filter_important' =>
-                    (isset($this->_cp['filter_important']) ?          $this->_cp['filter_important'] : ''),
-                'filter_memberID' =>
-                    (isset($this->_cp['filter_memberID']) ?           $this->_cp['filter_memberID'] : ''),
-                'filter_personID' =>
-                    (isset($this->_cp['filter_personID']) ?           $this->_cp['filter_personID'] : ''),
-                'filter_what' =>
-                    (isset($this->_cp['filter_what']) ?               $this->_cp['filter_what'] : 'all'),
-                'results_limit' =>
-                    $this->_cp['results_limit'],
-                'results_offset' =>
-                    $this->_filter_offset,
-                'results_order' =>
-                    (isset($this->_cp['results_order']) ?             $this->_cp['results_order'] : 'date')
-            )
-        );
+        $results =                  $this->get_records($this->_args);
         $this->_records =           $results['data'];
         $this->_records_total =     $results['total'];
+    }
+
+    protected function _draw_listings_override_filters()
+    {
+        if (isset($this->_cp['filter_allow_override']) && $this->_cp['filter_allow_override']==='1') {
+            if ($this->_path_extension) {
+                $filter = explode('/', $this->_path_extension);
+                switch ($filter[0]) {
+                    case 'category':
+                        $this->_args['filter_category_list'] =  addslashes($filter[1]);
+                        $this->_args['filter_text_list'] =      '';
+                        break;
+                    case 'text':
+                        $this->_args['filter_category_list'] =  '';
+                        $this->_args['filter_text_list'] =      addslashes($filter[1]);
+                }
+                return;
+            }
+            if (get_var('search_text') || get_var('search_categories')) {
+                $this->_args['filter_text_list'] =      addslashes(get_var('search_text'));
+                $this->_args['filter_category_list'] =  addslashes(get_var('search_categories'));
+            }
+        }
     }
 
     protected function _draw_listings_render()
@@ -1084,6 +1096,8 @@ class Displayable_Item extends Block_Layout
 
     protected function _draw_listings_setup($instance = '', $args = array(), $cp_are_fixed = false)
     {
+        global $page_vars;
+        $this->_path_extension =    $page_vars['path_extension'];
         $this->_filter_offset =     (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0);
         $this->_args =              $args;
         $this->_instance =          $instance;
@@ -1105,6 +1119,8 @@ class Displayable_Item extends Block_Layout
         if ($this->_current_user_rights['canEdit'] && get_var('source')==$this->_safe_ID) {
             $this->_msg = $this->do_submode();
         }
+        $this->_draw_listings_load_args();
+        $this->_draw_listings_override_filters();
         $this->_draw_listings_load_records();
         $this->_draw_listings_load_grouping_tabs();
         $this->_draw_listings_load_paging_controls();

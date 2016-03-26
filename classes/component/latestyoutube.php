@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.1 (2016-03-15)
-    1) LatestYoutube::setupLoadLatestYoutube() now provides filter_... prefixed parameters for all filters
+  1.0.2 (2016-03-26)
+    1) LatestYoutube::setupLoadLatestYoutube replaced parameter filter_category with filter_category_list
 */
 class LatestYoutube extends Base
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     protected $youtubeURL;
 
@@ -77,7 +77,7 @@ class LatestYoutube extends Base
         $this->Article = new \Article();
         $results = $this->Article->get_records(
             array(
-                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],
                 'filter_has_video' =>       true,
                 'filter_important' =>       $this->_cp['filter_important'],

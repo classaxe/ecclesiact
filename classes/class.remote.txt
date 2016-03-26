@@ -1,3 +1,5 @@
+  1.0.12 (2016-03-15)
+    1) Remote::get_items() now provides filter_... prefixed parameters for all filters
   1.0.11 (2015-01-31)
     1) Changes to Remote::get_items() to use newer argument parameters to retrieve records:
          Old: limit

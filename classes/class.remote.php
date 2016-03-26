@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.12 (2016-03-15)
-    1) Remote::get_items() now provides filter_... prefixed parameters for all filters
+  1.0.13 (2016-03-26)
+    1) Local calls to obj::get_records() changeged arg filter_category to filter_category_list
 */
 class Remote extends Base
 {
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
 
     public $URL;
     public $isLocal;
@@ -77,7 +77,7 @@ class Remote extends Base
                 $results =  $Obj->get_records(
                     array(
                         'byRemote' =>               true,
-                        'filter_category' =>        $category,
+                        'filter_category_list' =>   $category,
                         'filter_category_master' => $category_master,
                         'filter_container_path' =>  $container_path,
                         'filter_container_subs' =>  $container_subs,

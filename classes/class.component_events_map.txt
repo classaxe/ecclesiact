@@ -1,3 +1,5 @@
+  1.0.4 (2016-03-15)
+    1) Component_Events_Map::_setup_load_event_IDs() now provides filter_... prefixed parameters for all filters
   1.0.3 (2015-09-13)
     1) References to Page::push_content() now changed to Output::push()
   1.0.2 (2015-01-31)

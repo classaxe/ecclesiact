@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.10 (2016-03-15)
-    1) ArticlesRotator::setupLoadRecords() now provides filter_... prefixed parameters for all filters
+  1.0.11 (2016-03-26)
+    1) ArticlesRotator::setupLoadRecords replaced parameter filter_category with filter_category_list
 */
 class ArticlesRotator extends Base
 {
-    const VERSION = '1.0.10';
+    const VERSION = '1.0.11';
 
     protected $_ObjArticle;
     protected $_records;
@@ -352,7 +352,7 @@ class ArticlesRotator extends Base
         // Get last n articles
         $results = $this->_ObjArticle->get_records(
             array(
-                'filter_category' =>        $this->_cp['filter_category_list'],
+                'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],
                 'filter_memberID' =>        $this->_cp['filter_memberID'],
                 'filter_personID' =>        $this->_cp['filter_personID'],

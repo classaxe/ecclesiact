@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.125 (2016-03-15)
-    1) Big changes in Posting::get_records() - now requires now filter_... prefixed parameters for all filters
+  1.0.126 (2016-03-26)
+    1) Internal references to filter_category normalised to filter_category_list
+    2) Added filter_text_list for Posting::get_records()
 */
 
 class Posting extends Displayable_Item
 {
-    const VERSION = '1.0.125';
+    const VERSION = '1.0.126';
     const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $subtype;
@@ -644,7 +645,7 @@ class Posting extends Displayable_Item
         $args = func_get_args();
         $vars = array(
             'byRemote' =>                   0,
-            'filter_category' =>            '*',
+            'filter_category_list' =>       '*',
             'filter_category_master' =>     '',
             'filter_communityID' =>         '',
             'filter_container_path' =>      '',
@@ -656,6 +657,7 @@ class Posting extends Displayable_Item
             'filter_date_units' =>          '',
             'filter_has_video' =>           '',
             'filter_important' =>           '',
+            'filter_text_list' =>           '',
             'filter_range_address' =>       '',
             'filter_range_distance' =>      '',
             'filter_range_lat' =>           '',
@@ -672,33 +674,7 @@ class Posting extends Displayable_Item
         if (!$this->_get_args($args, $vars, true)) {
             die('Error - no parameters passed');
         }
-        $this->_get_records_args = array(
-            'byRemote' =>               $vars['byRemote'],
-            'filter_category' =>        $vars['filter_category'],
-            'filter_category_master' => $vars['filter_category_master'],
-            'filter_communityID' =>     $vars['filter_communityID'],
-            'filter_container_path' =>  $vars['filter_container_path'],
-            'filter_container_subs' =>  $vars['filter_container_subs'],
-            'filter_date_DD' =>         $vars['filter_date_DD'],
-            'filter_date_MM' =>         $vars['filter_date_MM'],
-            'filter_date_YYYY' =>       $vars['filter_date_YYYY'],
-            'filter_date_duration' =>   $vars['filter_date_duration'],
-            'filter_date_units' =>      $vars['filter_date_units'],
-            'filter_has_video' =>       $vars['filter_has_video'],
-            'filter_important' =>       $vars['filter_important'],
-            'filter_range_address' =>   $vars['filter_range_address'],
-            'filter_range_distance' =>  $vars['filter_range_distance'],
-            'filter_range_lat' =>       $vars['filter_range_lat'],
-            'filter_range_lon' =>       $vars['filter_range_lon'],
-            'filter_range_units' =>     $vars['filter_range_units'],
-            'filter_isShared' =>        $vars['filter_isShared'],
-            'filter_memberID' =>        $vars['filter_memberID'],
-            'filter_personID' =>        $vars['filter_personID'],
-            'filter_what' =>            $vars['filter_what'],
-            'results_limit' =>          $vars['results_limit'],
-            'results_offset' =>         $vars['results_offset'],
-            'results_order' =>          $vars['results_order'],
-        );
+        $this->_get_records_args = $vars;
         $this->_get_records_get_initial_records();
         $this->_get_records_load_permissions();
         $this->_get_records_available();
@@ -739,7 +715,7 @@ class Posting extends Displayable_Item
     {
         global $system_vars;
         $byRemote =         $this->_get_records_args['byRemote'];
-        $category =         $this->_get_records_args['filter_category'];
+        $category =         $this->_get_records_args['filter_category_list'];
         $category_master =  $this->_get_records_args['filter_category_master'];
         $container_path =   $this->_get_records_args['filter_container_path'];
         $container_subs =   $this->_get_records_args['filter_container_subs'];
@@ -918,14 +894,26 @@ class Posting extends Displayable_Item
               :
                 ""
              )
-            .($this->_get_records_args['filter_category']!=='*' && $this->_get_records_args['filter_category']!==''?
+            .(!in_array($this->_get_records_args['filter_category_list'], array('','*')) ?
                  "  `postings`.`category` REGEXP \""
-                .implode("|", explode(',', $this->_get_records_args['filter_category']))
+                .implode("|", explode(',', $this->_get_records_args['filter_category_list']))
                 ."\" AND\n"
               :
                 ""
              )
-            .($this->_get_records_args['filter_category_master'] ?
+            .($this->_get_records_args['filter_text_list']!==''?
+                 "  (\n"
+                ."    (`postings`.`content_text` REGEXP \""
+                .implode("|", explode(',', $this->_get_records_args['filter_text_list']))
+                ."\") OR\n"
+                ."    (`postings`.`title` REGEXP \""
+                .implode("|", explode(',', $this->_get_records_args['filter_text_list']))
+                ."\")\n"
+                ."  ) AND\n"
+              :
+                ""
+             )
+             .($this->_get_records_args['filter_category_master'] ?
                  "  `postings`.`category` REGEXP \""
                 .implode("|", explode(',', $this->_get_records_args['filter_category_master']))
                 ."\" AND\n"
@@ -1043,8 +1031,8 @@ class Posting extends Displayable_Item
             ."    (`postings`.`date`='0000-00-00')\n"
             ."  ) AND\n"
             ."  (\n"
-            ."    `postings`.`date_end` > \"".$now_YYYY."-".$now_MM."-".$now_DD."\" OR\n"
-            ."    `postings`.`date_end`='0000-00-00'\n"
+            ."    (`postings`.`date_end` > \"".$now_YYYY."-".$now_MM."-".$now_DD."\") OR\n"
+            ."    (`postings`.`date_end`='0000-00-00')\n"
             ."  ) AND\n";
     }
 

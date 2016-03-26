@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.6 (2016-03-15)
-    1) Community_Member_Posting::getRecordsGetSqlWithDelegate() now requires filter_... prefixed parameters for all filters
+  1.0.7 (2016-03-26)
+    1) Community_Member_Posting::getRecordsGetSqlWithDelegate() replaced filter_category with filter_category_list
 */
 
 class Community_Member_Posting extends Posting
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     public static function getRecordsGetSqlWithDelegate($Obj)
     {
@@ -41,9 +41,9 @@ class Community_Member_Posting extends Posting
             .($Obj->partner_csv ? " OR (`memberID` IN(".$Obj->partner_csv.") AND `postings`.`permSHARED`=1)" : "")
             .") AND\n"
             .$Obj->_get_records_get_sql_filter_date()
-            .($Obj->_get_records_args['filter_category']!="*" ?
+            .($Obj->_get_records_args['filter_category_list']!="*" ?
                  "  `postings`.`category` REGEXP \""
-                 .implode("|", explode(',', $Obj->_get_records_args['filter_category']))."\" AND\n"
+                 .implode("|", explode(',', $Obj->_get_records_args['filter_category_list']))."\" AND\n"
              :
                 ""
             )
