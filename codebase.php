@@ -21,6 +21,28 @@ Summary:
   1) Bug fix: /email-unsubscribe was broken
   2) Bug fix: / Polls display was broken: http://desktop.saministryresources.ca/home-missions-survey
 
+Final Checksums:
+  Classes     CS:fee74c6f
+  Database    CS:5d138354
+  Libraries   CS:f49f9fa3
+  Reports     CS:ed22cc30
+
+Code Changes:
+  codebase.php                                                                                   4.6.1     (2016-03-26)
+    1) Updated version information
+  classes/class.component_survey.php                                                             1.0.1     (2016-03-26)
+    1) Refactored and fixed for filter and limit
+  classes/component/emailunsubscribe.php                                                         1.0.3     (2016-03-26)
+    1) Bug fix for setup call to parent
+
+2443.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        4.6.1
+  classes/  (2 files changed)
+    class.component_survey.php                        1.0.1     CS:9d020711
+    component/emailunsubscribe.php                    1.0.3     CS:70445a30
 
 
 Bug:
