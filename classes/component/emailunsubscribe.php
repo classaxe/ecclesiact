@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.2 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.3 (2016-03-26)
+    1) Bug fix for setup call to parent
 */
 class EmailUnsubscribe extends Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     public function __construct()
     {
@@ -117,7 +117,7 @@ class EmailUnsubscribe extends Base
 
     protected function setup($instance = '', $args = array(), $disable_params = false)
     {
-        parent::_setup($instance, $args, $disable_params);
+        parent::setup($instance, $args, $disable_params);
         global $page_vars;
         $this->_Obj_MQI =   new \Mail_Queue_Item(sanitize('ID', $page_vars['path_extension']));
         if (!$this->_record = $this->_Obj_MQI->get_message_details()) {
