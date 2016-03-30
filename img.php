@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.94");
+define("VERSION", "2.0.95");
 /*
 Version History:
-  2.0.94 (2016-02-13)
-    1) Now includes support for 'searchprovider' - ajax driven search mode
+  2.0.95 (2016-03-29)
+    1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -1359,11 +1359,11 @@ function sysjs()
         case "jquery.knob":
         case "jquery.ui.totop":
         case "jquery.ui.widget":
+        case "jquery.zrssfeed":
         case "jquery-ui":
         case "jquery-migrate":
         case "spectrum":
         case "tmstickup":
-        case "zrssfeed":
             img_set_cache(3600*24*7); // expire in one week
             header('Content-Type: text/javascript');
             print file_get_contents(SYS_JS.$submode.'.min.js');

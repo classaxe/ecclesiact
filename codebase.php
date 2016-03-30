@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.1");
+define("CODEBASE_VERSION", "4.6.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,34 +16,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.1.2443 (2016-03-26)
+4.6.2.2444 (2016-03-29)
 Summary:
-  1) Bug fix: /email-unsubscribe was broken
-  2) Bug fix: / Polls display was broken: http://desktop.saministryresources.ca/home-missions-survey
+  1) Bug fix: RSS Displayer Component was broken - now refactored for PSR-2 and fixed
 
 Final Checksums:
-  Classes     CS:fee74c6f
+  Classes     CS:d1c147c8
   Database    CS:5d138354
-  Libraries   CS:f49f9fa3
+  Libraries   CS:38be77c5
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.6.1     (2016-03-26)
+  codebase.php                                                                                   4.6.2     (2016-03-29)
     1) Updated version information
-  classes/class.component_survey.php                                                             1.0.1     (2016-03-26)
-    1) Refactored and fixed for filter and limit
-  classes/component/emailunsubscribe.php                                                         1.0.3     (2016-03-26)
-    1) Bug fix for setup call to parent
+  classes/class.posting.php                                                                      1.0.127   (2016-03-29)
+    1) Fix for Posting::get_n_per_category() to match correct categopry label to category even if category has wrong
+       capitalisation in words
+  classes/component/rssdisplayer.php                                                             1.0.3     (2016-03-29)
+    1) Moved to component namespace and now fully PSR-2 compliant
+    2) Fix for bad JS call on library file
+  img.php                                                                                        2.0.95    (2016-03-29)
+    1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
 
-2443.sql
-  1) Set version information
+2444.sql
+  1) Changes to ECL tag 'rss_displayer' for new namespaced component
+  2) Set version information
+
+Delete:
+    class.component_rss_displayer.php                 1.0.2
 
 Promote:
-  codebase.php                                        4.6.1
+  codebase.php                                        4.6.2
   classes/  (2 files changed)
-    class.component_survey.php                        1.0.1     CS:9d020711
-    component/emailunsubscribe.php                    1.0.3     CS:70445a30
-
+    class.posting.php                                 1.0.127   CS:78bfa1f9
+    component/rssdisplayer.php                        1.0.3     CS:619d6f6e
+  img.php                                             2.0.95    CS:2ef8148e
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

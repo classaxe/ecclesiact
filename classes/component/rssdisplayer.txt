@@ -1,3 +1,5 @@
+  1.0.2 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.1 (2014-01-28)
     1) Added newline and semicolon after JS onload code
   1.0.0 (2013-05-15
