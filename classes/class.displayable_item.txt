@@ -1,3 +1,7 @@
+  1.0.159 (2016-03-26)
+    1) Complete revamp of Displayable_Item::_draw_listings_load_records() which now allows for replaced parameter
+       filter_category with filter_category_list
+    2) Now allows path extension to be used for listings filter override for category or text
   1.0.158 (2016-03-15)
     1) Displayable_Item::_draw_listings_load_records() now provides filter_... prefixed parameters for all filters
   1.0.157 (2016-01-02)

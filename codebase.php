@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.2");
+define("CODEBASE_VERSION", "4.6.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.2.2444 (2016-03-29)
+4.6.3.2445 (2016-04-04)
 Summary:
-  1) Bug fix: RSS Displayer Component was broken - now refactored for PSR-2 and fixed
+  1) Download Link Icons no longer show up if there is no asset to download 
 
 Final Checksums:
-  Classes     CS:d1c147c8
+  Classes     CS:76e24364
   Database    CS:5d138354
-  Libraries   CS:38be77c5
+  Libraries   CS:cfc64b83
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.6.2     (2016-03-29)
+  codebase.php                                                                                   4.6.3     (2016-04-04)
     1) Updated version information
-  classes/class.posting.php                                                                      1.0.127   (2016-03-29)
-    1) Fix for Posting::get_n_per_category() to match correct categopry label to category even if category has wrong
-       capitalisation in words
-  classes/component/rssdisplayer.php                                                             1.0.3     (2016-03-29)
-    1) Moved to component namespace and now fully PSR-2 compliant
-    2) Fix for bad JS call on library file
-  img.php                                                                                        2.0.95    (2016-03-29)
-    1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
+  classes/class.displayable_item.php                                                             1.0.160   (2016-04-04)
+    1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
+       to be downloaded
 
-2444.sql
-  1) Changes to ECL tag 'rss_displayer' for new namespaced component
-  2) Set version information
-
-Delete:
-    class.component_rss_displayer.php                 1.0.2
+2445.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.6.2
-  classes/  (2 files changed)
-    class.posting.php                                 1.0.127   CS:78bfa1f9
-    component/rssdisplayer.php                        1.0.3     CS:619d6f6e
-  img.php                                             2.0.95    CS:2ef8148e
+  codebase.php                                        4.6.3
+  classes/  (1 file changed)
+    class.displayable_item.php                        1.0.160   CS:3851fe1f
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.159 (2016-03-26)
-    1) Complete revamp of Displayable_Item::_draw_listings_load_records() which now allows for replaced parameter
-       filter_category with filter_category_list
-    2) Now allows path extension to be used for listings filter override for category or text
+  1.0.160 (2016-04-04)
+    1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
+       to be downloaded 
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.159';
+    const VERSION = '1.0.160';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -520,14 +519,18 @@ class Displayable_Item extends Block_Layout
                     .HTML::draw_icon('map', true)."</a>";
             break;
             case "media_download":
-                $media_URL =
-                ($record['enclosure_url']!='' ?
-                ($systemID!=SYS_ID && substr($record['enclosure_url'], 0, 4)!="http" ?
-                 trim($record['systemURL'], "/")."/".trim($record['enclosure_url'], "/")
+                $media_URL = ($record['enclosure_url']!='' ?
+                    ($systemID!=SYS_ID && substr($record['enclosure_url'], 0, 4)!="http" ?
+                        trim($record['systemURL'], "/")."/".trim($record['enclosure_url'], "/")
+                     :
+                        $record['enclosure_url']
+                    )
                 :
-                 $record['enclosure_url']
-                )
-                : false);
+                    false
+                );
+                if ($media_URL===false) {
+                    return '';
+                }
                 return
                      "<a href=\"".$media_URL."\" rel='external'"
                     ." title=\"Save Media"
