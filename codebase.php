@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.3");
+define("CODEBASE_VERSION", "4.6.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,30 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.3.2445 (2016-04-04)
+4.6.4.2446 (2016-04-15)
 Summary:
-  1) Download Link Icons no longer show up if there is no asset to download 
+  1) Changes to droplib to prevent strange multiple declaration bug seen on new PHP 5.6.19 server
 
 Final Checksums:
-  Classes     CS:76e24364
+  Classes     CS:64607253
   Database    CS:5d138354
-  Libraries   CS:cfc64b83
+  Libraries   CS:663df492
   Reports     CS:ed22cc30
 
 Code Changes:
-  codebase.php                                                                                   4.6.3     (2016-04-04)
+  codebase.php                                                                                   4.6.4     (2016-04-15)
     1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.160   (2016-04-04)
-    1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
-       to be downloaded
+  classes/class.droplib.php                                                                      2.1.0.d   (2016-04-15)
+    1) Changes to prevent strange multiple declaration of DropLib that was occuring on new server in PHP 5.6.19
 
-2445.sql
+2446.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.6.3
+  codebase.php                                        4.6.4
   classes/  (1 file changed)
-    class.displayable_item.php                        1.0.160   CS:3851fe1f
+    class.droplib.php                                 2.1.0.d   CS:ed927455
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
