@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.4");
+define("CODEBASE_VERSION", "4.6.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,13 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.4.2446 (2016-04-15)
+4.6.5.2447 (2016-04-17
 Summary:
-  1) Changes to droplib to prevent strange multiple declaration bug seen on new PHP 5.6.19 server
+  1) Bug fix for newslettersignup
+  2) Bug fix for RSS Proxy when cached content is empty
+  3) Bug fix for Page_Vars:get() for when user-agent string isn't sent by client (e.g. by our RSS proxy client)
 
-Final Checksums:
-  Classes     CS:64607253
-  Database    CS:5d138354
-  Libraries   CS:663df492
-  Reports     CS:ed22cc30
 
-Code Changes:
-  codebase.php                                                                                   4.6.4     (2016-04-15)
-    1) Updated version information
-  classes/class.droplib.php                                                                      2.1.0.d   (2016-04-15)
-    1) Changes to prevent strange multiple declaration of DropLib that was occuring on new server in PHP 5.6.19
-
-2446.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.6.4
-  classes/  (1 file changed)
-    class.droplib.php                                 2.1.0.d   CS:ed927455
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

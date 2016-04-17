@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.3 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.4 (2016-04-17)
+    1) Bug fix for Output::push() to correctly reference global namespace
 */
 class EmailNewsletterSignup extends Base
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     protected $badCaptcha = false;
 
@@ -233,7 +233,7 @@ class EmailNewsletterSignup extends Base
 
     protected function drawJs()
     {
-        Output::push(
+        \Output::push(
             'javascript',
             "function email_newsletter_signup_validate() {\n"
             ."  var err = [];\n"

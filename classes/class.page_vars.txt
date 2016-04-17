@@ -1,3 +1,6 @@
+  1.0.26 (2015-09-12)
+    1) Page_Vars::_swap_layout_if_other_language() call to Layout::get_language_options() now getLanguageOptions()
+    2) References to Page::push_content() now changed to Output::push()
   1.0.25 (2015-03-23)
     1) Function function get_version() now static getVersion()
   1.0.24 (2015-01-02)
