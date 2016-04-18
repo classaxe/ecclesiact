@@ -1,3 +1,5 @@
+  1.0.2 (2016-04-17)
+    1) Bug fix for reading from cache when file is empty
   1.0.1 (2011-12-31)
     1) Replaced deprecated ereg_replace functions which would fail in newer PHP
   1.0.0 (2010-03-13)

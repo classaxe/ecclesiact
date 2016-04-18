@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.5");
+define("CODEBASE_VERSION", "4.6.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,12 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.5.2447 (2016-04-17
+4.6.6.2448 (2016-04-17
 Summary:
-  1) Bug fix for newslettersignup
-  2) Bug fix for RSS Proxy when cached content is empty
-  3) Bug fix for Page_Vars:get() for when user-agent string isn't sent by client (e.g. by our RSS proxy client)
+  1) Bug fix for RSS Proxy because calling context canot autoload Base class
 
+Final Checksums:
+  Classes     CS:d5f97006
+  Database    CS:5d138354
+  Libraries   CS:53bc8a5f
+  Reports     CS:ed22cc30
+
+Code Changes:
+  codebase.php                                                                                   4.6.6     (2016-04-17)
+    1) Updated version information
+  classes/class.rss_proxy.php                                                                    1.0.3     (2016-04-17)
+    1) No longer tries to extend Base class - called from a context that doesn't know about autoloading
+
+2448.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        4.6.6
+  classes/  (1 file changed)
+    class.rss_proxy.php                               1.0.3     CS:44b6751d
 
 
 Bug:

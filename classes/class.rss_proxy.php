@@ -1,14 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.2 (2016-04-17)
-    1) Bug fix for reading from cache when file is empty
+  1.0.3 (2016-04-17)
+    1) No longer tries to extend Base class - called from a context that doesn't know about autoloading
 */
 
-class RSS_Proxy extends \Base
+// This cannot extend Base as it is called from a context that doesn't support autoloading
+class RSS_Proxy
 {
+    const VERSION = '1.0.3';
+
     static private $_cache_dir;
-    const VERSION = '1.0.2';
   
     private static function _safe_url($sFolder)
     {
@@ -74,5 +76,10 @@ class RSS_Proxy extends \Base
             RSS_Proxy::_cache_save($sLocalName, $sFile);
         }
         return $sFile;
+    }
+
+    public static function getVersion()
+    {
+        return static::VERSION;
     }
 }
