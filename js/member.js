@@ -1,9 +1,9 @@
-// 1.0.146
+// 1.0.147
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.146 (2015-12-13)
-    1) Added function add_note_unstamped(), and error if person attempts to add a note without any content
+  1.0.147 (2016-04-19)
+    1) Added support for 'selected_send_again' to selected_operation()
 */
 
 // ************************************
@@ -1194,6 +1194,15 @@ function export_sql(report_name,targetID) {
   popWin_post(url,800,640);
 }
 
+function selected_send_again(targetReportID,popup_w,popup_h) {
+  var opts = row_select_list(targetReportID);
+  popWin(
+    base_url+'_admin_send_again' +
+    '?targetReportID='+targetReportID +
+    (opts!=="" ? "&targetID="+opts : ""),
+    "send_again",'scrollbars=0,resizable=0',popup_w,popup_h,'centre');
+}
+
 function selected_send_email(targetReportID,popup_w,popup_h) {
   var opts = row_select_list(targetReportID);
   popWin(
@@ -1274,13 +1283,24 @@ function selected_operation(form,report_name,reportID,args) {
       }
       else {alert('No orders selected to process');}
     break;
-    case 'selected_send_email':
+    case 'selected_send_again':
       if (num>0) {
-        selected_send_email(args.selected_send_email,760,500);
+          if (confirm('Resend '+num+' selected email job'+(num==1 ? '': 's')+' - are you sure?')) {
+              geid_set('submode','send_again');
+          } else {
+              alert('Resend Email cancelled');
+          }
+      } else {
+          alert('No persons to send email to');
       }
-      else {alert('No persons to send email to');}
-      geid_set(control,'');
-      return;
+    break;
+    case 'selected_send_email':
+        if (num>0) {
+          selected_send_email(args.selected_send_email,760,500);
+        }
+        else {alert('No persons to send email to');}
+        geid_set(control,'');
+        return;
     case 'selected_set_as_approved':
       if (num>0) {
         if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as being approved - are you sure?')) {

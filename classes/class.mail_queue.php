@@ -1,14 +1,13 @@
 <?php
-define('VERSION_MAIL_QUEUE', '1.0.39');
 /*
 Version History:
-  1.0.39 (2016-01-19)
-    1) Now more PSR-2 compliant
-    2)Version control now via class constant
+  1.0.40 (2016-04-19)
+    1) Mail_Queue::get_recipients() now has option to get ALL recipients, not just non-sent-to ones
+    2) New method Mail_Queue::sendAgain()
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.39';
+    const VERSION = '1.0.40';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -19,10 +18,10 @@ class Mail_Queue extends Record
         $this->_set_name_field('');
     }
 
-    public function create_queue($mailidentityID, $mailtemplateID, $groupID)
+    public function create_queue($mailidentityID, $mailtemplateID, $groupID, $systemID = SYS_ID)
     {
         $data = array(
-            'systemID' =>       SYS_ID,
+            'systemID' =>       $systemID,
             'groupID' =>        $groupID,
             'mailidentityID' => $mailidentityID,
             'mailtemplateID' => $mailtemplateID,
@@ -205,6 +204,10 @@ class Mail_Queue extends Record
                 }
                 $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID);
                 $msg = "<b>Success:</b> the Mail Job has been created but has not yet been started.";
+                break;
+            case "send_again":
+                $this->_set_ID($targetID);
+                $msg = $this->sendAgain();
                 break;
             case "send":
                 $this->_set_ID($selectID);
@@ -773,7 +776,7 @@ class Mail_Queue extends Record
         return $this->get_records_for_sql($sql);
     }
 
-    public function get_recipients()
+    public function get_recipients($all=false)
     {
         $sql =
              "SELECT\n"
@@ -787,7 +790,7 @@ class Mail_Queue extends Record
             ."FROM\n"
             ."  `mailqueue_item`\n"
             ."WHERE\n"
-            ."  `mail_sent` = 0 AND\n"
+            .($all ? "" : "  `mail_sent` = 0 AND\n")
             ."  `mailQueueID` = ".$this->_get_ID();
         return $this->get_records_for_sql($sql);
     }
@@ -881,6 +884,21 @@ class Mail_Queue extends Record
             $this->set_field('date_started', get_timestamp());
         }
         return "<b>Status:</b> Job has been accepted for delivery. Delivery will commence shortly.";
+    }
+
+    public function sendAgain()
+    {
+        $record = $this->get_record();
+        if ($record===false) {
+            return "<b>Error:</b> That job no longer exists";
+        }
+        $selectID = $this->create_queue(
+            $record['mailidentityID'],
+            $record['mailtemplateID'],
+            $record['groupID'],
+            $record['systemID']
+        );
+        $msg = "<b>Success:</b> the Mail Job has been recreated but has not yet been started.";
     }
 
     public function save_sender_and_template_snapshot()

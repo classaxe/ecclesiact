@@ -1,3 +1,8 @@
+  1.0.88 (2016-01-01)
+    1) Report::convert_xml_field_for_sort() now declared to be static
+    2) Rather complex refactoring of Report::convert_xml_field_for_sort() and Report::convert_xml_field_for_filter()
+       to use preg_replace_callback() intead of preg_replace() with /e modifier, deprecated in PHP 5.5:
+       Ref: http://php.net/manual/en/function.preg-replace-callback.php#109938
   1.0.87 (2015-09-12)
     1) Report::handle_delete() now provides support for PSR-2 compliant named method handleReportDelete()
   1.0.86 (2015-03-23)

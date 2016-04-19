@@ -1,3 +1,5 @@
+  1.0.146 (2015-12-13)
+    1) Added function add_note_unstamped(), and error if person attempts to add a note without any content
   1.0.145 (2015-09-20)
     1) CM_SDMenu_Over() and CM_Responsive_Over() now set _CM.seq to active seq operations in context menus
   1.0.144 (2015-09-20)

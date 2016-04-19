@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.6");
+define("CODEBASE_VERSION", "4.6.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.6.2448 (2016-04-17
+4.6.7.2449 (2016-04-19)
 Summary:
-  1) Bug fix for RSS Proxy because calling context canot autoload Base class
-
-Final Checksums:
-  Classes     CS:d5f97006
-  Database    CS:5d138354
-  Libraries   CS:53bc8a5f
-  Reports     CS:ed22cc30
-
-Code Changes:
-  codebase.php                                                                                   4.6.6     (2016-04-17)
-    1) Updated version information
-  classes/class.rss_proxy.php                                                                    1.0.3     (2016-04-17)
-    1) No longer tries to extend Base class - called from a context that doesn't know about autoloading
-
-2448.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.6.6
-  classes/  (1 file changed)
-    class.rss_proxy.php                               1.0.3     CS:44b6751d
+  1) Added ability to 'Send Again' email queue - will be used for fine tuning messages and for testing 
+  2) Update to ECL tag draw_date('l MMMM DD YYYY') (used in DCC) to fix deprecated function call
 
 
 Bug:
@@ -1241,12 +1222,15 @@ function draw_date($format, $now = false)
     switch($format) {
         case "DD MMM YYYY":
             return date("j F Y", $now);
-        break;
+            break;
         case "MMM DD YYYY": // Includes <sup>th</sup> etc
             return date("F j\<\s\u\p\>S\<\/\s\u\p\> Y", $now);
-        break;
+            break;
+        case "l MMMM DD YYYY":  // Sunday January 1<sup>st</sup> 2009 (Used in DCC)
+            return date('l F j\<\s\u\p\>S\<\/\s\u\p\> Y', $now);
+            break;
     }
-    return "";
+    return "Unrecognised date format - ".$format;
 }
 
 function draw_form_header($title, $help = "", $shadow = 0)
@@ -2191,17 +2175,16 @@ function lead_zero($text, $places)
     return (substr("0000", 0, $places-strlen($text)).$text);
 }
 
-
 function mailto($data)
 {
     global $system_vars;
     $mail = new PHPMailer(true);  // We want to throw exceptions
     try {
         $mail->IsSMTP();
-        $mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
+        $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
         $mail->IsHtml(true);
         $mail->CharSet =    (ini_get('default_charset') ? ini_get('default_charset') : "UTF-8");
-        $mail->Host =        component_result('smtp_host');
+        $mail->Host =       component_result('smtp_host');
         $mail->SMTPAuth =   component_result('smtp_authenticate');
         $mail->Username =   component_result('smtp_username');
         $mail->Password =   component_result('smtp_password');

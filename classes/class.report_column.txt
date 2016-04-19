@@ -1,3 +1,9 @@
+  1.0.135 (2016-01-16)
+    1) Report_Column::draw_label() is now statically declared
+    2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given
+       and properly applies colours where these are given
+    3) Report_Column::draw_form_field() for cases radio_csvlist and selector_csvlist now better handle cases where
+       text and bg colors are not given
   1.0.134 (2015-12-13)
     1) Report_Column::draw_form_field() for 'notes' now allows unstamped notes also IF feature 'Allow-Unstamped-Notes'
        is enabled for the site

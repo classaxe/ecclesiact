@@ -1,17 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.135 (2016-01-16)
-    1) Report_Column::draw_label() is now statically declared
-    2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given
-       and properly applies colours where these are given
-    3) Report_Column::draw_form_field() for cases radio_csvlist and selector_csvlist now better handle cases where
-       text and bg colors are not given
+  1.0.136 (2016-04-19)
+    1) Report_Column::draw_selector_with_selected() now handles 'selected_send_again'
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.135';
+    const VERSION = '1.0.136';
 
     public function __construct($ID = "")
     {
@@ -3205,6 +3201,11 @@ class Report_Column extends Record
              :
                 ""
             )
+            .($s['selected_send_again']!==false ?
+                "    selected_send_again: ".$s['selected_send_again'].",\n"
+             :
+                ""
+            )
             .($s['selected_view_email_addresses']!==false ?
                 "    selected_view_email_addresses: ".$s['selected_view_email_addresses'].",\n"
              :
@@ -3320,6 +3321,12 @@ class Report_Column extends Record
                 ""
             )
 */
+            .($s['selected_send_again']!==false ?
+                 "  <option value='selected_send_again' style='background-color: RGB(200,255,255);'>"
+                ."Resend Email</option>\n"
+             :
+                ""
+            )
             .($s['selected_view_email_addresses']!==false ?
                  "  <option value='selected_view_email_addresses' style='background-color: RGB(200,255,255);'>"
                 ."View Email Addresses</option>\n"

@@ -1,3 +1,6 @@
+  1.0.39 (2016-01-19)
+    1) Now more PSR-2 compliant
+    2) Version control now via class constant
   1.0.38 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.37 (2014-03-11)
