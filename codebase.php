@@ -21,6 +21,38 @@ Summary:
   1) Added ability to 'Send Again' email queue - will be used for fine tuning messages and for testing 
   2) Update to ECL tag draw_date('l MMMM DD YYYY') (used in DCC) to fix deprecated function call
 
+Final Checksums:
+  Classes     CS:a5793c24
+  Database    CS:5d138354
+  Libraries   CS:a2ca866e
+  Reports     CS:7381ba6e
+
+Code Changes:
+  codebase.php                                                                                   4.6.7     (2016-04-19)
+    1) Updated version information
+  classes/class.mail_queue.php                                                                   1.0.40    (2016-04-19)
+    1) Mail_Queue::get_recipients() now has option to get ALL recipients, not just non-sent-to ones
+    2) New method Mail_Queue::sendAgain()
+  classes/class.report.php                                                                       1.0.89    (2016-04-19)
+    1) Added 'selected_send_again' to Report::REPORT_FEATURES list
+  classes/class.report_column.php                                                                1.0.136   (2016-04-19)
+    1) Report_Column::draw_selector_with_selected() now handles 'selected_send_again'
+  js/member.js                                                                                   1.0.147   (2016-04-19)
+    1) Added support for 'selected_send_again' to selected_operation()
+
+2449.sql
+  1) Update to ECL tag draw_date('l MMMM DD YYYY')
+  2) New report column type - 'selected_send_again'
+  3) Added 'Send again' functionality to 'mail_queue' report
+  4) Set version information
+
+Promote:
+  codebase.php                                        4.6.7
+  classes/  (3 files changed)
+    class.mail_queue.php                              1.0.40    CS:f6d4e79d
+    class.report.php                                  1.0.89    CS:82329b92
+    class.report_column.php                           1.0.136   CS:de8226e1
+  js/member.js                                        1.0.147a7 CS:5eda0347
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
