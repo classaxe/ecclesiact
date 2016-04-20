@@ -1,9 +1,9 @@
-// 1.0.147
+// 1.0.148
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.147 (2016-04-19)
-    1) Added support for 'selected_send_again' to selected_operation()
+  1.0.148 (2016-04-19)
+    1) Added support for 'selected_queue_again' to selected_operation()
 */
 
 // ************************************
@@ -1283,9 +1283,20 @@ function selected_operation(form,report_name,reportID,args) {
       }
       else {alert('No orders selected to process');}
     break;
+    case 'selected_queue_again':
+        if (num>0) {
+            if (confirm('Requeue '+num+' selected email job'+(num==1 ? '': 's')+' for deliver later - are you sure?')) {
+                geid_set('submode','queue_again');
+            } else {
+                alert('Requeue Email cancelled');
+            }
+        } else {
+            alert('No persons to requeue email for');
+        }
+      break;
     case 'selected_send_again':
       if (num>0) {
-          if (confirm('Resend '+num+' selected email job'+(num==1 ? '': 's')+' - are you sure?')) {
+          if (confirm('Resend '+num+' selected email job'+(num==1 ? '': 's')+' for immediate delivery - are you sure?')) {
               geid_set('submode','send_again');
           } else {
               alert('Resend Email cancelled');

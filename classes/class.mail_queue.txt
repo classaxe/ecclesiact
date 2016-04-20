@@ -1,3 +1,6 @@
+  1.0.40 (2016-04-19)
+    1) Mail_Queue::get_recipients() now has option to get ALL recipients, not just non-sent-to ones
+    2) New method Mail_Queue::sendAgain()
   1.0.39 (2016-01-19)
     1) Now more PSR-2 compliant
     2) Version control now via class constant

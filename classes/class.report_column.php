@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.136 (2016-04-19)
-    1) Report_Column::draw_selector_with_selected() now handles 'selected_send_again'
+  1.0.137 (2016-04-19)
+    1) Report_Column::draw_selector_with_selected() now handles 'selected_queue_again'
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.136';
+    const VERSION = '1.0.137';
 
     public function __construct($ID = "")
     {
@@ -3201,6 +3201,11 @@ class Report_Column extends Record
              :
                 ""
             )
+            .($s['selected_queue_again']!==false ?
+                "    selected_queue_again: ".$s['selected_queue_again'].",\n"
+             :
+                ""
+            )
             .($s['selected_send_again']!==false ?
                 "    selected_send_again: ".$s['selected_send_again'].",\n"
              :
@@ -3321,9 +3326,15 @@ class Report_Column extends Record
                 ""
             )
 */
+            .($s['selected_queue_again']!==false ?
+                 "  <option value='selected_queue_again' style='background-color: RGB(200,255,255);'>"
+                ."Requeue Email for delivery later</option>\n"
+             :
+                ""
+            )
             .($s['selected_send_again']!==false ?
                  "  <option value='selected_send_again' style='background-color: RGB(200,255,255);'>"
-                ."Resend Email</option>\n"
+                ."Resend Email now</option>\n"
              :
                 ""
             )

@@ -1,3 +1,5 @@
+  1.0.136 (2016-04-19)
+    1) Report_Column::draw_selector_with_selected() now handles 'selected_send_again'
   1.0.135 (2016-01-16)
     1) Report_Column::draw_label() is now statically declared
     2) Report_Column::checkbox_csvlist_scrollbox() now handles case where text and bg colors are not given

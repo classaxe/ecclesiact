@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.40 (2016-04-19)
-    1) Mail_Queue::get_recipients() now has option to get ALL recipients, not just non-sent-to ones
-    2) New method Mail_Queue::sendAgain()
+  1.0.41 (2016-04-19)
+    1) New method Mail_Queue::queueAgain() and wired this into draw_broadcast_form()
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.40';
+    const VERSION = '1.0.41';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -115,6 +114,10 @@ class Mail_Queue extends Record
                 $data = array(
                     'mail_error'=>$mail_result
                 );
+            } elseif ($mail_result=='Error: too much mail from ') {
+                $data = array(
+                    'mail_error'=>$mail_result
+                );
             } else {
                 $data = array(
                     'mail_error'=>$mail_result,
@@ -205,13 +208,44 @@ class Mail_Queue extends Record
                 $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID);
                 $msg = "<b>Success:</b> the Mail Job has been created but has not yet been started.";
                 break;
-            case "send_again":
-                $this->_set_ID($targetID);
-                $msg = $this->sendAgain();
+            case "queue_again":
+                $targetIDs = explode(',', $targetID);
+                $new_targetIDs = array();
+                foreach ($targetIDs as $t) {
+                    $this->_set_ID($t);
+                    if ($this->queueAgain()) {
+                        $new_targetIDs[] = $this->_get_ID();
+                    }
+                }
+                $targetID = implode(',', $new_targetIDs);
+                $msg =
+                    "<b>Success:</b> The "
+                    .(count($new_targetIDs)===1 ? '' : count($new_targetIDs))
+                    ." Mail Job"
+                    .(count($new_targetIDs)===1 ? " has" : "s have")
+                    ." been recreated but delivery has not yet been started.<br />"
+                    ."To start queued jobs, click the job number then press the 'Begin Delivery' button that will appear below the Mail Jobs list.";
                 break;
             case "send":
                 $this->_set_ID($selectID);
                 $msg = $this->send();
+                break;
+            case "send_again":
+                $targetIDs = explode(',', $targetID);
+                $new_targetIDs = array();
+                foreach ($targetIDs as $t) {
+                    $this->_set_ID($t);
+                    if ($this->sendAgain()) {
+                        $new_targetIDs[] = $this->_get_ID();
+                    }
+                }
+                $targetID = implode(',', $new_targetIDs);
+                $msg =
+                     "<b>Success:</b> The "
+                    .(count($new_targetIDs)===1 ? '' : count($new_targetIDs))
+                    ." Mail Job"
+                    .(count($new_targetIDs)===1 ? " has" : "s have")
+                    ." been recreated and delivery will commence shortly.";
                 break;
             case "send_now":
                 if ($groupID==0) {
@@ -886,19 +920,30 @@ class Mail_Queue extends Record
         return "<b>Status:</b> Job has been accepted for delivery. Delivery will commence shortly.";
     }
 
-    public function sendAgain()
+    public function queueAgain()
     {
         $record = $this->get_record();
         if ($record===false) {
-            return "<b>Error:</b> That job no longer exists";
+            return false;;
         }
-        $selectID = $this->create_queue(
-            $record['mailidentityID'],
-            $record['mailtemplateID'],
-            $record['groupID'],
-            $record['systemID']
+        $this->_set_ID(
+            $this->create_queue(
+                $record['mailidentityID'],
+                $record['mailtemplateID'],
+                $record['groupID'],
+                $record['systemID']
+            )
         );
-        $msg = "<b>Success:</b> the Mail Job has been recreated but has not yet been started.";
+        return true;
+    }
+
+    public function sendAgain()
+    {
+        if (!$this->queueAgain()) {
+            return false;
+        }
+        $this->set_field('date_started', get_timestamp());
+        return true;
     }
 
     public function save_sender_and_template_snapshot()

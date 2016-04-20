@@ -1,3 +1,5 @@
+  1.0.89 (2016-04-19)
+    1) Added 'selected_send_again' to Report::REPORT_FEATURES list
   1.0.88 (2016-01-01)
     1) Report::convert_xml_field_for_sort() now declared to be static
     2) Rather complex refactoring of Report::convert_xml_field_for_sort() and Report::convert_xml_field_for_filter()
