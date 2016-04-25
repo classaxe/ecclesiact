@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.8");
+define("CODEBASE_VERSION", "4.6.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,31 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.8.2450 (2016-04-19)
+4.6.9.2451 (2016-04-24)
 Summary:
-  1) Email broadcast now has separate options for 'with selected' queue and send
-  2) These new options now correctly handle multiple selections at once
+  1) Fix for email to allow self-signed certificates for TLS email communications (needed with PHP 5.6 and later)
+  2) Fix for Jumploader component used in BNN
 
 Final Checksums:
-  Classes     CS:2723807a
+  Classes     CS:1fef5339
   Database    CS:5d138354
-  Libraries   CS:3926c2e8
+  Libraries   CS:ce5efeae
   Reports     CS:c95aa76d
 
 Code Changes:
-  codebase.php                                                                                   4.6.8     (2016-04-19)
+  codebase.php                                                                                   4.6.9     (2016-04-24)
     1) Updated version information
-  classes/class.mail_queue.php                                                                   1.0.41    (2016-04-19)
-    1) New method Mail_Queue::queueAgain() and wired this into draw_broadcast_form()
-  classes/class.report.php                                                                       1.0.90    (2016-04-19)
-    1) Added 'selected_queue_again' to Report::REPORT_FEATURES list
-  classes/class.report_column.php                                                                1.0.137   (2016-04-19)
-    1) Report_Column::draw_selector_with_selected() now handles 'selected_queue_again'
-  js/member.js                                                                                   1.0.148   (2016-04-19)
-    1) Added support for 'selected_queue_again' to selected_operation()
+  classes/class.component_jumploader.php                                                         1.0.7     (2016-04-24)
+    1) Tweak to Component_Jumploader::_draw_setup_jumploader_init() to set extensions list as csv, not pipe delimited
 
-2449.sql
-  1) New report column type - 'selected_queue_again'
-  2) Added 'Queue again' functionality to 'mail_queue' report
-  3) Set version information
+2451.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.6.8
-  classes/  (3 files changed)
-    class.mail_queue.php                              1.0.41    CS:62ad71e4
-    class.report.php                                  1.0.90    CS:ca11fcbb
-    class.report_column.php                           1.0.137   CS:98d990f8
-  js/member.js                                        1.0.148   CS:239686f6
+  codebase.php                                        4.6.9
+  classes/  (1 file changed)
+    class.component_jumploader.php                    1.0.7     CS:d3457cc0
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -2209,6 +2199,13 @@ function mailto($data)
 {
     global $system_vars;
     $mail = new PHPMailer(true);  // We want to throw exceptions
+    $mail->SMTPOptions = array(
+        'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true
+        )
+    );
     try {
         $mail->IsSMTP();
         $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)

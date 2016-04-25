@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.6 (2015-11-29)
-    1) Added support for Ajax HTML5 file uploader that replaces Java version as previously
+  1.0.7 (2016-04-24)
+    1) Tweak to Component_Jumploader::_draw_setup_jumploader_init() to set extensions list as csv, not pipe delimited
 */
 class Component_Jumploader extends Component_Base
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     protected $_cp;
     protected $_args;
@@ -129,7 +129,7 @@ class Component_Jumploader extends Component_Base
             $this->_cp['height'],
             $this->_cp['mode'],
             $this->_cp['type'],
-            $this->_cp['ext'],
+            implode(',',explode('|',$this->_cp['ext'])),
             $this->_cp['show_summary']
         );
     }
