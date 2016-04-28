@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.6.9");
+define("CODEBASE_VERSION", "4.7.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,30 +16,55 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.6.9.2451 (2016-04-24)
+4.7.0.2452 (2016-04-28)
 Summary:
-  1) Fix for email to allow self-signed certificates for TLS email communications (needed with PHP 5.6 and later)
-  2) Fix for Jumploader component used in BNN
+  1) Working towards fix for bounce notification that isn't working with the new setup.
+     See Roundcube mailbox for bounce@churchesinyourtown.ca for proof of this.
+  2) Some refactoring of Record method names to be be available with PSR2 compliant names
 
 Final Checksums:
-  Classes     CS:1fef5339
+  Classes     CS:dfe67e62
   Database    CS:5d138354
-  Libraries   CS:ce5efeae
-  Reports     CS:c95aa76d
+  Libraries   CS:666f5aa0
+  Reports     CS:98fa28ac
 
 Code Changes:
-  codebase.php                                                                                   4.6.9     (2016-04-24)
+  codebase.php                                                                                   4.7.0     (2016-04-28)
     1) Updated version information
-  classes/class.component_jumploader.php                                                         1.0.7     (2016-04-24)
-    1) Tweak to Component_Jumploader::_draw_setup_jumploader_init() to set extensions list as csv, not pipe delimited
+  classes/class.mail_queue.php                                                                   1.0.42    (2016-04-27)
+    1) Moved bounce checking code out into new emailbouncechecker class
+    2) Changes following renaming of Mail_Identity class to MailIdentity
+    3) References to $this->do_sql_query() now changed to static::doSqlQuery()
+  classes/class.record.php                                                                       1.0.98    (2016-04-28)
+    1) Added Record::doSqlQuery() and made Record::do_sql_query() an alias to that
+    2) Added Record::getRecordsForSql() and made Record::get_records_for_sql() an alias to that
+  classes/class.system_copy.php                                                                  1.0.9     (2016-04-27)
+    1) References to Mail_Identity now MailIdentity
+  classes/emailbouncechecker.php                                                                 1.0.0     (2016-04-28)
+    1) Initial Release - extracted from mail_queue class
+  classes/mailidentity.php                                                                       1.0.8     (2016-04-27)
+    1) Refactored for PSR-2
 
-2451.sql
-  1) Set version information
+2452.sql
+  1) Changes to report 'mailidentity' to deal with renaming of Mail_Identity to MailIdentity class
+  2) Set version information
+
+Delete:
+    class.mail_identity.php                           1.0.6
 
 Promote:
-  codebase.php                                        4.6.9
-  classes/  (1 file changed)
-    class.component_jumploader.php                    1.0.7     CS:d3457cc0
+  codebase.php                                        4.7.0
+  classes/  (5 files changed)
+    class.mail_queue.php                              1.0.42    CS:ff64b4ff
+    class.record.php                                  1.0.98    CS:c8e63166
+    class.system_copy.php                             1.0.9     CS:e649470e
+    emailbouncechecker.php                            1.0.0     CS:1826a649
+    mailidentity.php                                  1.0.8     CS:24dd2e06
+
+  2) When entering a site with a given path using wrong protocol - e.g.:
+       http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
+
+
 
 
 Bug:
@@ -1116,7 +1141,7 @@ function do_sql_query($sql)
 {
     deprecated();
     $Obj = new Record;
-    return $Obj->do_sql_query($sql);
+    return $Obj->doSqlQuery($sql);
 }
 
 function do_tracking($status, $allow_redirect = true)
@@ -1786,8 +1811,8 @@ function get_mailsender_to_component_results($mailidentityID = 1)
         component_result_set('smtp_username', trim($system_vars['smtp_username']));
         return;
     }
-    $Obj_Mail_Identity = new Mail_Identity($mailidentityID);
-    if (!$row = $Obj_Mail_Identity->load()) {
+    $Obj_MailIdentity = new MailIdentity($mailidentityID);
+    if (!$row = $Obj_MailIdentity->load()) {
         return get_mailsender_to_component_results(1);
     }
     component_result_set('bounce_email', trim($row['bounce_email']));

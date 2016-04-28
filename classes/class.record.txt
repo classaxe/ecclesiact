@@ -1,3 +1,5 @@
+  1.0.97 (2016-03-24)
+    1) Record::set_edit_params() now allows for icon_edit_popup_disabled 
   1.0.96 (2016-01-01)
     1) Record::get_record_for_sql() now declared to be static
   1.0.95 (2016-01-01)    

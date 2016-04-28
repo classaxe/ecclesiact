@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.41 (2016-04-19)
-    1) New method Mail_Queue::queueAgain() and wired this into draw_broadcast_form()
+  1.0.42 (2016-04-27)
+    1) Moved bounce checking code out into new emailbouncechecker class
+    2) Changes following renaming of Mail_Identity class to MailIdentity
+    3) References to $this->do_sql_query() now changed to static::doSqlQuery()
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.41';
+    const VERSION = '1.0.42';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -55,7 +57,7 @@ class Mail_Queue extends Record
             ."  `mailqueue_item`\n"
             ."WHERE\n"
             ."  `mailQueueID` IN (".$this->_get_ID().")";
-        $this->do_sql_query($sql);
+        static::doSqlQuery($sql);
         parent::delete();
     }
 
@@ -259,8 +261,12 @@ class Mail_Queue extends Record
                 $msg = $this->send();
                 break;
             case "status":
-                $msg = "<b>Status:</b> Message status for all Mail Jobs was updated at ".get_timestamp();
-                $this->handle_bounced_messages();
+                $msg =
+                     "<b>Status:</b> Message status for all Mail Jobs "
+                    .(get_person_permission("MASTERADMIN") ? "on all sites " : "")
+                    ."was updated at ".get_timestamp();
+                $Obj = new EmailBounceChecker;
+                $Obj->check();
                 break;
         }
         $out.=
@@ -282,7 +288,7 @@ class Mail_Queue extends Record
                 ."      <tr class='table_header'>\n"
                 ."        <td>&nbsp;From:&nbsp;</td>\n"
                 ."        <td><select name=\"mailidentityID\" class='admin_formFixed' style='width: 500px;'>"
-                .draw_select_options(Mail_Identity::get_selector_SQL(), $mailidentityID)
+                .draw_select_options(MailIdentity::getSelectorSQL(), $mailidentityID)
                 ."</select></td>\n"
                 ."      </tr>\n"
                 ."      <tr class='table_header'>\n"
@@ -351,8 +357,10 @@ class Mail_Queue extends Record
             .draw_auto_report('mail_queue', 1)
             ."<p>Click <a href=\"".BASE_PATH."report/mail_broadcast?submode=status&amp;selectID=".$selectID."\""
             ." onclick=\"show_popup_please_wait('Please wait...<br />Checking for bounced messages.',240,200);"
-            ."return true;\"><b>here</b></a>"
-            ." to check all previous Mail Jobs for bounced messages to update final message counts.</p>";
+            ."return true;\"><b>here</b></a> "
+            ."to check all previous Mail Jobs "
+            .(get_person_permission("MASTERADMIN") ? "on all sites (Masteradmins only) " : "")
+            ."for bounced messages to update final message counts.</p>";
         if ($selectID) {
             if ($record['date_started'] == "0000-00-00 00:00:00") {
                 $out.=
@@ -388,8 +396,8 @@ class Mail_Queue extends Record
                 $zones[$i] = get_var('content_zone_'.$i);
             }
             if ($mailidentityID) {
-                $Obj_Mail_Identity = new Mail_Identity($mailidentityID);
-                $Obj_Mail_Identity->load();
+                $Obj_MailIdentity = new MailIdentity($mailidentityID);
+                $Obj_MailIdentity->load();
             }
             if ($groupID) {
                 $Obj_Mail_Group = new Group($groupID);
@@ -400,7 +408,7 @@ class Mail_Queue extends Record
             case "preview":
                 print $this->_draw_wizard_preview(
                     $Obj_Mail_Group,
-                    $Obj_Mail_Identity,
+                    $Obj_MailIdentity,
                     $Obj_Mail_Template,
                     $subject,
                     $zones
@@ -416,7 +424,7 @@ class Mail_Queue extends Record
             case "queue":
                 $mailQueueID = $this->_draw_wizard_queue(
                     $Obj_Mail_Group,
-                    $Obj_Mail_Identity,
+                    $Obj_MailIdentity,
                     $Obj_Mail_Template,
                     $subject,
                     $zones
@@ -428,7 +436,7 @@ class Mail_Queue extends Record
             case "send":
                 $mailQueueID = $this->_draw_wizard_queue(
                     $Obj_Mail_Group,
-                    $Obj_Mail_Identity,
+                    $Obj_MailIdentity,
                     $Obj_Mail_Template,
                     $subject,
                     $zones
@@ -469,7 +477,7 @@ class Mail_Queue extends Record
                 $mailidentityID,
                 "selector",
                 "600px",
-                Mail_Identity::get_selector_SQL(),
+                MailIdentity::getSelectorSQL(),
                 0,
                 "onchange=\"email_wizard_reload()\""
             )
@@ -569,7 +577,7 @@ class Mail_Queue extends Record
     private function _draw_wizard_get_mail_identity()
     {
         $out =  get_var('mailidentityID');
-        $sql =  Mail_Identity::get_selector_SQL();
+        $sql =  MailIdentity::getSelectorSQL();
         $records = $this->get_records_for_sql($sql);
         if (count($records)==2) {
             $out = $records[1]['value'];
@@ -588,9 +596,9 @@ class Mail_Queue extends Record
         return $records[1]['value'];
     }
 
-    private function _draw_wizard_preview($Obj_Mail_Group, $Obj_Mail_Identity, $Obj_Mail_Template, $subject, $zones)
+    private function _draw_wizard_preview($Obj_Mail_Group, $Obj_MailIdentity, $Obj_Mail_Template, $subject, $zones)
     {
-        $sender =           $Obj_Mail_Identity->record['name'].' ['.$Obj_Mail_Identity->record['email'].']';
+        $sender =           $Obj_MailIdentity->record['name'].' ['.$Obj_MailIdentity->record['email'].']';
         $recipient =        $Obj_Mail_Group->record['name'];
         $recipient_count =  $Obj_Mail_Group->get_email_recipients_count();
         $html =             $Obj_Mail_Template->record['body_html'];
@@ -667,7 +675,7 @@ class Mail_Queue extends Record
             ."</html>";
     }
 
-    private function _draw_wizard_queue($Obj_Mail_Group, $Obj_Mail_Identity, $Obj_Mail_Template, $subject, $zones)
+    private function _draw_wizard_queue($Obj_Mail_Group, $Obj_MailIdentity, $Obj_Mail_Template, $subject, $zones)
     {
         $html =  $Obj_Mail_Template->record['body_html'];
         for ($i=1; $i<=count($zones); $i++) {
@@ -700,7 +708,7 @@ class Mail_Queue extends Record
         $mailtemplateID = $Obj_Mail_Template2->insert($data);
         $Obj_Mail_Template2->fix_subject_bodytext_and_path();
         return $this->create_queue(
-            $Obj_Mail_Identity->_get_ID(),
+            $Obj_MailIdentity->_get_ID(),
             $mailtemplateID,
             $Obj_Mail_Group->_get_ID()
         );
@@ -735,24 +743,6 @@ class Mail_Queue extends Record
             .($isMASTERADMIN ? "" : "  `groups`.`systemID` = ".SYS_ID." AND\n")
             ."  `group_members`.`permEMAILRECIPIENT` = 1\n";
         return $this->get_field_for_sql($sql);
-    }
-
-    public function get_mail_identites_in_use()
-    {
-        $isMASTERADMIN = get_person_permission("MASTERADMIN");
-        $sql =
-             "SELECT DISTINCT\n"
-            ."  `mailidentity`.`bounce_pop3_host`,\n"
-            ."  `mailidentity`.`bounce_pop3_password`,\n"
-            ."  `mailidentity`.`bounce_pop3_port`,\n"
-            ."  `mailidentity`.`bounce_pop3_username`\n"
-            ."FROM\n"
-            ."  `mailqueue`\n"
-            ."LEFT JOIN `mailidentity` ON\n"
-            ."  `mailidentity`.`ID` = `mailqueue`.`mailidentityID`\n"
-            ."WHERE\n"
-            .($isMASTERADMIN ? "  1" : "  `mailqueue`.`systemID` = ".SYS_ID);
-        return $this->get_records_for_sql($sql);
     }
 
     public function get_mailqueueID_for_messageID($messageID)
@@ -807,7 +797,7 @@ class Mail_Queue extends Record
             ."  `date_started`!='0000-00-00 00:00:00' AND\n"
             ."  `date_completed`='0000-00-00 00:00:00' AND\n"
             ."  `date_aborted`='0000-00-00 00:00:00'";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_recipients($all=false)
@@ -826,83 +816,7 @@ class Mail_Queue extends Record
             ."WHERE\n"
             .($all ? "" : "  `mail_sent` = 0 AND\n")
             ."  `mailQueueID` = ".$this->_get_ID();
-        return $this->get_records_for_sql($sql);
-    }
-
-    public function handle_bounced_messages()
-    {
-        @set_time_limit(600);    // Extend maximum execution time to 10 mins
-      // Get login credentials for mailqueues
-        $mailidentities = $this->get_mail_identites_in_use();
-        foreach ($mailidentities as $mailidentity) {
-            $Obj_POP3 = new phPOP3(
-                $mailidentity['bounce_pop3_host'],
-                $mailidentity['bounce_pop3_port'],
-                $mailidentity['bounce_pop3_username'],
-                $mailidentity['bounce_pop3_password']
-            );
-            $mailbox = $Obj_POP3->pop3_list();
-            if ($mailbox["messages"] > 0) {
-                for ($i=1; $i<$mailbox["messages"]+1; $i++) {
-                    $message = $Obj_POP3->pop3_retrieve($i);
-                    $body = implode('', $message->body);
-                    if ($start = strpos($body, "Content-Type: message/delivery-status")) {
-                        $text = substr($body, $start);
-                        preg_match("/Status: ([0-9.]+)/", $text, $status);
-                        preg_match("/Message-ID: <([^>]+)>/", $text, $messageID);
-                        preg_match("/Diagnostic-Code:(.*?)\r\n\r\n/s", $text, $diagnostic);
-                        $status =
-                            (isset($status[1]) ? $status[1] : false);
-                        $messageID =
-                            (isset($messageID[1]) ? $messageID[1] : "");
-                        $diagnostic =
-                            (isset($diagnostic[1]) ? str_replace(array('\r\n','  '), ' ', $diagnostic[1]) : "");
-                        if ($messageID) {
-                            $soft = substr($status, 0, 1)!='5';  // Not permanent error
-                            $mailqueueID = $this->get_mailqueueID_for_messageID($messageID);
-                            if ($mailqueueID) {
-                                $error =    $status." ".$diagnostic;
-                                if ($soft) {
-                                    $this->_handle_bounced_messages_set_soft_bounce($messageID, $error);
-                                    $this->set_field('date_completed', '0000-00-00 00:00:00');
-                                } else {
-                                    $this->_handle_bounced_messages_set_hard_bounce($messageID, $error);
-                                }
-                                $Obj_POP3->pop3_delete($i);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $Obj_POP3->pop3_quit();
-    }
-
-    private function _handle_bounced_messages_set_hard_bounce($messageID, $error)
-    {
-        $sql =
-             "UPDATE\n"
-            ."  `mailqueue_item`\n"
-            ."SET\n"
-            ."  `mail_error` = \"".$error."\",\n"
-            ."  `mail_failed` = 1\n"
-            ."WHERE\n"
-            ."  `mail_messageID` = \"".$messageID."\"";
-        $this->do_sql_query($sql);
-    }
-
-    private function _handle_bounced_messages_set_soft_bounce($messageID, $error)
-    {
-        $sql =
-             "UPDATE\n"
-            ."  `mailqueue_item`\n"
-            ."SET\n"
-            ."  `mail_error` = \"".$error."\",\n"
-            ."  `mail_bounce_count` = `mail_bounce_count`+1,\n"
-            ."  `mail_sent` = 0\n"
-            ."WHERE\n"
-            ."  `mail_messageID` = \"".$messageID."\"";
-        $this->do_sql_query($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function send()
@@ -964,6 +878,6 @@ class Mail_Queue extends Record
             ."  `mailqueue`.`mailidentityID` = `mailidentity`.`ID` AND\n"
             ."  `mailqueue`.`mailtemplateID` = `mailtemplate`.`ID` AND\n"
             ."  `mailqueue`.`ID` = ".$this->_get_ID();
-        $this->do_sql_query($sql);
+        static::doSqlQuery($sql);
     }
 }

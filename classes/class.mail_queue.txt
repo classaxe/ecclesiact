@@ -1,3 +1,5 @@
+  1.0.41 (2016-04-19)
+    1) New method Mail_Queue::queueAgain() and wired this into draw_broadcast_form()
   1.0.40 (2016-04-19)
     1) Mail_Queue::get_recipients() now has option to get ALL recipients, not just non-sent-to ones
     2) New method Mail_Queue::sendAgain()

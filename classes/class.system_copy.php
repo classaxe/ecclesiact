@@ -1,12 +1,10 @@
 <?php
-define('VERSION_SYSTEM_COPY','1.0.8');
+define('VERSION_SYSTEM_COPY','1.0.9');
 
 /*
 Version History:
-  1.0.8 (2015-08-02)
-    1) References to Navbutton now \Nav\Button
-    2) References to Navsuite now \Nav\Suite
-
+  1.0.9 (2016-04-27)
+    1) References to Mail_Identity now MailIdentity
 */
 
 class System_Copy extends System {
@@ -24,7 +22,7 @@ class System_Copy extends System {
     $this->_map['Layout'] =             array();
     $this->_map['Listdata'] =           array();
     $this->_map['Listtype'] =           array();
-    $this->_map['Mail_Identity'] =      array();
+    $this->_map['MailIdentity'] =       array();
     $this->_map['Mail_Template'] =      array();
     $this->_map['Mail_Queue'] =         array();
     $this->_map['\Nav\Button'] =        array();
@@ -196,8 +194,8 @@ class System_Copy extends System {
 
   private function _copied_item_remap_mail_identities($Obj, $record){
     $oldVal =                 $record['mailidentityID'];
-    if (isset($this->_map['Mail_Identity'][$oldVal]['newID'])) {
-      $newVal =    $this->_map['Mail_Identity'][$oldVal]['newID'];
+    if (isset($this->_map['MailIdentity'][$oldVal]['newID'])) {
+      $newVal =    $this->_map['MailIdentity'][$oldVal]['newID'];
       $Obj->set_field('mailidentityID',$newVal,false);
     }
   }
@@ -439,7 +437,7 @@ class System_Copy extends System {
     foreach ($Items as $ID) {
       $Obj->_set_ID($ID);
       $newID =              $Obj->copy("",$this->_New_SystemID);
-      $this->_map['Mail_Identity'][$ID] =  array('newID'=>$newID);
+      $this->_map['MailIdentity'][$ID] =  array('newID'=>$newID);
     }
   }
 

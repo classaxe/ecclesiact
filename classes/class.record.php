@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.97 (2016-03-24)
-    1) Record::set_edit_params() now allows for icon_edit_popup_disabled 
+  1.0.98 (2016-04-28)
+    1) Added Record::doSqlQuery() and made Record::do_sql_query() an alias to that
+    2) Added Record::getRecordsForSql() and made Record::get_records_for_sql() an alias to that
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.97';
+    const VERSION = '1.0.98';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -390,7 +391,7 @@ class Record extends Portal
             .implode(",\n", $sql_arr)
             .")";
   //    z($sql);
-        $this->do_sql_query($sql);
+        $this->doSqlQuery($sql);
         $this->copy_actions($newID);
         $this->copy_category_assign($newID);
         $this->copy_group_assign($newID);
@@ -597,7 +598,7 @@ class Record extends Portal
             ."  `ID` IN(".$this->_get_ID().")"
             .($this->_get_has_archive() ? " OR `archiveID` IN(".$this->_get_ID().")" : "");
   //    z($sql);
-        return $this->do_sql_query($sql);
+        return $this->doSqlQuery($sql);
     }
 
     public function delete_actions()
@@ -613,14 +614,14 @@ class Record extends Portal
         return;
     }
 
-    public static function do_sql_query($sql, $connection = false)
+    public static function doSqlQuery($sql, $connection = false)
     {
         global $system_vars, $Obj_MySQLi;
         if (!$connection) {
             $connection = $Obj_MySQLi;
         }
         if (isset($system_vars) && isset($system_vars['debug']) && $system_vars['debug']=='1') {
-            return Record::_do_sql_query_log($sql, $connection);
+            return static::_do_sql_query_log($sql, $connection);
         }
         return $Obj_MySQLi->query($sql);
     }
@@ -632,7 +633,7 @@ class Record extends Portal
       // Furthermore, we don't have page vars or even page or mode name at this point
       // so cannot write the debug query header anyway.
         global $sql_debug_filename, $sql_debug_filepath, $sql_debug_hits, $sql_debug_total_period;
-        Record::_do_sql_query_log_setup();
+        static::_do_sql_query_log_setup();
         $sql_debug_hits++;
         $start =        microtime_float();
         $result =       $connection->query($sql);
@@ -769,7 +770,7 @@ class Record extends Portal
             ."  `seq`,\n"
             ."  `destinationOperation`,\n"
             ."  `destinationValue`";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public static function get_affected_rows()
@@ -797,7 +798,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `assign_type` = \"".$this->_get_assign_type()."\" AND\n"
             ."  `assignID` = \"".$this->_get_ID()."\"";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_coords($address)
@@ -816,7 +817,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `systemID` = ".SYS_ID." AND\n"
             ."  `parentID` IN(".$this->_get_ID().")";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_children_by_ID($ID)
@@ -834,7 +835,7 @@ class Record extends Portal
             ."  `parent`.`systemID` = ".SYS_ID." AND\n"
             ."  `parent`.`ID` = `".$this->_get_table_name()."`.`parentID` AND\n"
             ."  `parent`.`ID` = ".$ID;
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_children_by_parentID($ID, $sortBy = '', $apply_visibility = false)
@@ -856,7 +857,7 @@ class Record extends Portal
             ."  `parent`.`ID` = $ID\n"
             .($sortBy!='' ? "ORDER BY $sortBy" : "");
   //    z($sql);
-        $records = $this->get_records_for_sql($sql);
+        $records = static::getRecordsForSql($sql);
         if (!$apply_visibility) {
             return $records;
         }
@@ -956,7 +957,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `assign_type` = \"".$this->_get_assign_type()."\" AND\n"
             ."  `assignID` = \"".$this->_get_ID()."\"";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_group_assign_csv()
@@ -1031,7 +1032,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `assign_type` = \"".$this->_get_assign_type()."\" AND\n"
             ."  `assignID` = \"".$this->_get_ID()."\"";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public static function get_last_db_error_msg()
@@ -1084,7 +1085,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `assign_type` = \"".$this->_get_assign_type()."\" AND\n"
             ."  `assignID` = \"".$this->_get_ID()."\"";
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_record($Caching = true)
@@ -1121,7 +1122,7 @@ class Record extends Portal
             .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
             ."  1\n"
             .($sortBy !="" ? "ORDER BY ".$sortBy : "");
-        return Record::get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_records_by_ID($systemID = '', $sortBy = '')
@@ -1135,7 +1136,7 @@ class Record extends Portal
             .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
             ."  `ID` IN(".$this->_get_ID().")\n"
             .($sortBy !="" ? "ORDER BY = $sortBy" : "");
-        return Record::get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_record_by_name($name, $systemID = SYS_ID)
@@ -1152,7 +1153,7 @@ class Record extends Portal
             ."ORDER BY\n"
             ."  `systemID` = ".$systemID." DESC\n"
             ."LIMIT 0,1";
-        return Record::get_record_for_sql($sql);
+        return static::get_record_for_sql($sql);
     }
 
     public function get_records_by_parentID($parentID, $systemID = '', $sortBy = '')
@@ -1168,20 +1169,20 @@ class Record extends Portal
             .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
             ."  1\n"
             .($sortBy !="" ? "ORDER BY ".$sortBy : "");
-        return Record::get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public static function get_record_for_sql($sql)
     {
-        if (!$records = static::get_records_for_sql($sql)) {
+        if (!$records = static::getRecordsForSql($sql)) {
             return false;
         }
         return $records[0];
     }
 
-    public static function get_records_for_sql($sql)
+    public static function getRecordsForSql($sql)
     {
-        if (!$result = static::do_sql_query($sql)) {
+        if (!$result = static::doSqlQuery($sql)) {
             do_log(
                 3,
                 __CLASS__.'::'.__FUNCTION__.'()',
@@ -1209,7 +1210,7 @@ class Record extends Portal
             ."  `systemID` = $systemID"
             .($sortBy ? "\nORDER BY\n  $sortBy" : "");
   //    z($sql);
-        return Record::get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_records_since($datetime, $systemID = false, $filter = '')
@@ -1226,7 +1227,7 @@ class Record extends Portal
             .($filter ? $filter." AND\n" : "")
             ."  `history_created_date`>='".$datetime."'";
   //    z($sql);
-        return $this->get_records_for_sql($sql);
+        return static::getRecordsForSql($sql);
     }
 
     public function get_remote_xml_file($url)
@@ -1278,7 +1279,7 @@ class Record extends Portal
 
     public static function get_rows_for_sql($sql)
     {
-        if (!$result = static::do_sql_query($sql)) {
+        if (!$result = static::doSqlQuery($sql)) {
             do_log(
                 3,
                 __CLASS__.'::'.__FUNCTION__.'()',
@@ -1352,7 +1353,7 @@ class Record extends Portal
     public function get_table_fields($name)
     {
         $sql =    "SHOW COLUMNS FROM ".$name;
-        $records = $this->get_records_for_sql($sql);
+        $records = static::getRecordsForSql($sql);
         if ($records==false) {
             return false;
         }
@@ -1403,7 +1404,7 @@ class Record extends Portal
 
     public function get_xml_for_sql($sql, $enc = 'UTF-8')
     {
-        $records = $this->get_records_for_sql($sql);
+        $records = static::getRecordsForSql($sql);
         $fields_arr = array();
         if ($records===false) {
             return $sql;
@@ -1610,7 +1611,7 @@ class Record extends Portal
         ."`".$this->_get_table_name()."`\n"
         ."SET\n"
         .implode(",\n", $sql_fields);
-        if (!$this->do_sql_query($sql)) {
+        if (!$this->doSqlQuery($sql)) {
             print draw_sql_debug(__CLASS__.'::'.__FUNCTION__.'()', $sql, Record::get_last_db_error_msg());
             do_log(
                 3,
@@ -1916,7 +1917,7 @@ class Record extends Portal
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."SET\n"
             ."  `".$field."` = \"".$value."\"";
-            $this->do_sql_query($sql);
+            $this->doSqlQuery($sql);
         return Record::get_affected_rows();
     }
 
@@ -1929,7 +1930,7 @@ class Record extends Portal
             ."  `".$field."` = ".$new_value."\n"
             ."WHERE\n"
             ."  `".$field."` IN(".$old_value_csv.")";
-        $this->do_sql_query($sql);
+        $this->doSqlQuery($sql);
         return Record::get_affected_rows();
     }
 
@@ -1939,7 +1940,7 @@ class Record extends Portal
         $sql =
              "SET SESSION\n"
             ."  group_concat_max_len = ".$len;
-        $this->do_sql_query($sql);
+        $this->doSqlQuery($sql);
     }
 
     public function set_ID_by_name($name, $systemID = false, $no_cache = false)
@@ -2428,16 +2429,16 @@ class Record extends Portal
             }
             natcasesort($sql_fields);
             $sql =
-            "UPDATE\n"
-            ."  "
-            .($this->_get_db_name() ? "`".$this->_get_db_name()."`." : "")
-            ."`".$this->_get_table_name()."`\n"
-            ."SET\n"
-            .implode(",\n", $sql_fields)."\n"
-            ."WHERE\n"
-            ."  `ID`=".$ID."";
+                 "UPDATE\n"
+                ."  "
+                .($this->_get_db_name() ? "`".$this->_get_db_name()."`." : "")
+                ."`".$this->_get_table_name()."`\n"
+                ."SET\n"
+                .implode(",\n", $sql_fields)."\n"
+                ."WHERE\n"
+                ."  `ID`=".$ID."";
     //      z($sql); die;
-            if (!$this->do_sql_query($sql)) {
+            if (!$this->doSqlQuery($sql)) {
                 do_log(
                     3,
                     __CLASS__.'::'.__FUNCTION__.'()',
@@ -2548,5 +2549,15 @@ class Record extends Portal
             $out[$key] = $value;
         }
         $row = $out;
+    }
+
+    public static function do_sql_query($sql, $connection = false)
+    {
+        return static::doSqlQuery($sql, $connection);
+    }
+
+    public static function get_records_for_sql($sql)
+    {
+        return static::getRecordsForSql($sql);
     }
 }
