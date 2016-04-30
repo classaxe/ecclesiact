@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.98 (2016-04-28)
-    1) Added Record::doSqlQuery() and made Record::do_sql_query() an alias to that
-    2) Added Record::getRecordsForSql() and made Record::get_records_for_sql() an alias to that
+  1.0.99 (2016-04-30)
+    1) Added Record::get_record_for_sql() and made Record::get_record_for_sql() into an alias for that
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.98';
+    const VERSION = '1.0.99';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -328,7 +327,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `ID` IN(".$this->_get_ID().")";
   //    z($sql);
-        $fields = $this->get_record_for_sql($sql);
+        $fields = static::getRecordForSql($sql);
         $sql_arr = array();
         foreach ($fields as $key => $value) {
             switch($key) {
@@ -1104,7 +1103,7 @@ class Record extends Portal
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
             ."  `ID` = ".$ID;
-        $value = $this->get_record_for_sql($sql);
+        $value = static::getRecordForSql($sql);
   //    z($sql);
         Record::$cache_record_array[$key] = $value;
         return $value;
@@ -1153,7 +1152,7 @@ class Record extends Portal
             ."ORDER BY\n"
             ."  `systemID` = ".$systemID." DESC\n"
             ."LIMIT 0,1";
-        return static::get_record_for_sql($sql);
+        return static::getRecordForSql($sql);
     }
 
     public function get_records_by_parentID($parentID, $systemID = '', $sortBy = '')
@@ -1172,7 +1171,7 @@ class Record extends Portal
         return static::getRecordsForSql($sql);
     }
 
-    public static function get_record_for_sql($sql)
+    public static function getRecordForSql($sql)
     {
         if (!$records = static::getRecordsForSql($sql)) {
             return false;
@@ -2180,28 +2179,6 @@ class Record extends Portal
         return $this->sqlExport($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
     }
 
-    public function sql_export_delete(
-        $targetID,
-        $show_fields,
-        $header = "",
-        $orderBy = "",
-        $extra_delete = "",
-        $extra_select = ""
-    ) {
-        return $this->sqlExportDelete($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
-    }
-
-    public function sql_export_select(
-        $targetID,
-        $show_fields,
-        $header = "",
-        $orderBy = "",
-        $extra_delete = "",
-        $extra_select = ""
-    ) {
-        return $this->sqlExportSelect($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
-    }
-
     public function sql_header($text)
     {
         global $db,$system_vars;
@@ -2242,11 +2219,6 @@ class Record extends Portal
     {
         $data = array();
         $this->update($data);
-    }
-
-    public function try_copy(&$newID, &$msg, &$msg_tooltip, $name = false, $global = false)
-    {
-        return $this->tryCopy($newID, $msg, $msg_tooltip, $name, $global);
     }
 
     public function tryCopy(&$newID, &$msg, &$msg_tooltip, $name = false, $global = false)
@@ -2551,13 +2523,48 @@ class Record extends Portal
         $row = $out;
     }
 
+// These remaining methods are deprecated and act merely as aliases for their newer PSR-2 compliant replacements
+// TODO: Eliminate remaining references and formally deprecate these ones
     public static function do_sql_query($sql, $connection = false)
     {
         return static::doSqlQuery($sql, $connection);
+    }
+
+    public static function get_record_for_sql($sql)
+    {
+        return static::getRecordForSql($sql);
     }
 
     public static function get_records_for_sql($sql)
     {
         return static::getRecordsForSql($sql);
     }
+
+    public function sql_export_delete(
+        $targetID,
+        $show_fields,
+        $header = "",
+        $orderBy = "",
+        $extra_delete = "",
+        $extra_select = ""
+    ) {
+        return $this->sqlExportDelete($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+    }
+
+    public function sql_export_select(
+        $targetID,
+        $show_fields,
+        $header = "",
+        $orderBy = "",
+        $extra_delete = "",
+        $extra_select = ""
+    ){
+        return $this->sqlExportSelect($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
+    }
+
+    public function try_copy(&$newID, &$msg, &$msg_tooltip, $name = false, $global = false)
+    {
+        return $this->tryCopy($newID, $msg, $msg_tooltip, $name, $global);
+    }
+
 }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.0");
+define("CODEBASE_VERSION", "4.7.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,55 +16,45 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.0.2452 (2016-04-28)
+4.7.1.2453 (2016-04-30)
 Summary:
-  1) Working towards fix for bounce notification that isn't working with the new setup.
-     See Roundcube mailbox for bounce@churchesinyourtown.ca for proof of this.
-  2) Some refactoring of Record method names to be be available with PSR2 compliant names
+  1) Fixed Email Bounce Checking has been broken since version 4.3.4.2423 which included new version of PHP Mailer.
+     Message sent since that release have not recorded their messageID in the mailqueue_item records
 
 Final Checksums:
-  Classes     CS:dfe67e62
+  Classes     CS:47911db0
   Database    CS:5d138354
-  Libraries   CS:666f5aa0
+  Libraries   CS:911766e6
   Reports     CS:98fa28ac
 
 Code Changes:
-  codebase.php                                                                                   4.7.0     (2016-04-28)
-    1) Updated version information
-  classes/class.mail_queue.php                                                                   1.0.42    (2016-04-27)
-    1) Moved bounce checking code out into new emailbouncechecker class
-    2) Changes following renaming of Mail_Identity class to MailIdentity
-    3) References to $this->do_sql_query() now changed to static::doSqlQuery()
-  classes/class.record.php                                                                       1.0.98    (2016-04-28)
-    1) Added Record::doSqlQuery() and made Record::do_sql_query() an alias to that
-    2) Added Record::getRecordsForSql() and made Record::get_records_for_sql() an alias to that
-  classes/class.system_copy.php                                                                  1.0.9     (2016-04-27)
-    1) References to Mail_Identity now MailIdentity
-  classes/emailbouncechecker.php                                                                 1.0.0     (2016-04-28)
-    1) Initial Release - extracted from mail_queue class
-  classes/mailidentity.php                                                                       1.0.8     (2016-04-27)
-    1) Refactored for PSR-2
+  codebase.php                                                                                   4.7.1     (2016-04-30)
+    1) Changes to mailto() to use PHPMailer::getLastMessageID() to get correct messageID
+    2) Updated version information
+  classes/class.mail_queue.php                                                                   1.0.43    (2016-04-30)
+    1) Moved Mail_Queue::get_mailqueueID_for_messageID() to EmailBounceChecker::getMailqueueIDForMessageID()
+  classes/class.record.php                                                                       1.0.99    (2016-04-30)
+    1) Added Record::get_record_for_sql() and made Record::get_record_for_sql() into an alias for that
+  classes/emailbouncechecker.php                                                                 1.0.1     (2016-04-30)
+    1) Made internal methods protected and bux fix for instance based call to newly static method
 
-2452.sql
-  1) Changes to report 'mailidentity' to deal with renaming of Mail_Identity to MailIdentity class
-  2) Set version information
-
-Delete:
-    class.mail_identity.php                           1.0.6
+2453.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.7.0
-  classes/  (5 files changed)
-    class.mail_queue.php                              1.0.42    CS:ff64b4ff
-    class.record.php                                  1.0.98    CS:c8e63166
-    class.system_copy.php                             1.0.9     CS:e649470e
-    emailbouncechecker.php                            1.0.0     CS:1826a649
-    mailidentity.php                                  1.0.8     CS:24dd2e06
+  codebase.php                                        4.7.1
+  classes/  (3 files changed)
+    class.mail_queue.php                              1.0.43    CS:8a46cbec
+    class.record.php                                  1.0.99    CS:4137c293
+    emailbouncechecker.php                            1.0.1     CS:93f743a9
 
-  2) When entering a site with a given path using wrong protocol - e.g.:
+
+
+
+
+  1) Fixing http / https protocol path switcher:
+     When entering a site with a given path using wrong protocol - e.g.:
        http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
-
-
 
 
 Bug:
@@ -2289,7 +2279,7 @@ function mailto($data)
             $mail->AltBody =    convert_safe_to_php(str_replace("<br />", "\n", $data['text']));
         }
         $mail->Send();
-        return "Message-ID: ".$mail->MessageID;
+        return "Message-ID: ".$mail->getLastMessageID();
     } catch (phpmailerException $e) {
         return $e->getMessage();
     }

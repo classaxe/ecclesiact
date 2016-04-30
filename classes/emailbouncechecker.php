@@ -1,54 +1,59 @@
 <?php
 /*
 Version History:
-  1.0.0 (2016-04-28)
-    1) Initial Release - extracted from mail_queue class
+  1.0.1 (2016-04-30)
+    1) Made internal methods protected and bux fix for instance based call to newly static method
 */
 class EmailBounceChecker extends MailIdentity
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     public function check()
     {
         @set_time_limit(600);    // Extend maximum execution time to 10 mins
         // Get login credentials for mailqueues
-        $mailidentities = static::getIdentitesUsed();
-        foreach ($mailidentities as $mi) {
-            $Obj_POP3 = new phPOP3(
-                $mi['bounce_pop3_host'],
-                $mi['bounce_pop3_port'],
-                $mi['bounce_pop3_username'],
-                $mi['bounce_pop3_password']
-            );
-            $mailbox = $Obj_POP3->pop3_list();
-            if ($mailbox["messages"] > 0) {
-                for ($i=1; $i<$mailbox["messages"]+1; $i++) {
-                    $message = $Obj_POP3->pop3_retrieve($i);
-                    $body = implode('', $message->body);
-                    if ($start = strpos($body, "Content-Type: message/delivery-status")) {
-                        $text = substr($body, $start);
-                        preg_match("/Status: ([0-9.]+)/", $text, $status);
-                        preg_match("/Message-ID: <([^>]+)>/", $text, $messageID);
-                        preg_match("/Diagnostic-Code:(.*?)\r\n\r\n/s", $text, $diagnostic);
-                        $status =
-                            (isset($status[1]) ? $status[1] : false);
-                        $messageID =
-                            (isset($messageID[1]) ? $messageID[1] : "");
-                        $diagnostic =
-                            (isset($diagnostic[1]) ? str_replace(array('\r\n','  '), ' ', $diagnostic[1]) : "");
-                        if ($messageID) {
-                            $soft = substr($status, 0, 1)!='5';  // Not permanent error
-                            $mailqueueID = $this->get_mailqueueID_for_messageID($messageID);
-                            if ($mailqueueID) {
-                                $error =    $status." ".$diagnostic;
-                                if ($soft) {
-                                    static::setSoftBounce($messageID, $error);
-                                    $this->set_field('date_completed', '0000-00-00 00:00:00');
-                                } else {
-                                    static::setHardBounce($messageID, $error);
-                                }
-                                $Obj_POP3->pop3_delete($i);
+        $mailIdentities = static::getMailIdentitesUsed();
+        foreach ($mailIdentities as $mailIdentity) {
+            static::checkForMailIdentity($mailIdentity);
+        }
+    }
+
+    protected static function checkForMailIdentity($mailIdentity)
+    {
+        $Obj_POP3 = new phPOP3(
+            $mailIdentity['bounce_pop3_host'],
+            $mailIdentity['bounce_pop3_port'],
+            $mailIdentity['bounce_pop3_username'],
+            $mailIdentity['bounce_pop3_password']
+        );
+        $mailbox = $Obj_POP3->pop3_list();
+        if ($mailbox["messages"] > 0) {
+            for ($i=1; $i<$mailbox["messages"]+1; $i++) {
+                $message = $Obj_POP3->pop3_retrieve($i);
+                $body = implode('', $message->body);
+                if ($start = strpos($body, "Content-Type: message/delivery-status")) {
+                    $text = substr($body, $start);
+                    preg_match("/Status: ([0-9.]+)/", $text, $status);
+                    preg_match("/Message-ID: <([^>]+)>/", $text, $messageID);
+                    preg_match("/Diagnostic-Code:(.*?)\r\n\r\n/s", $text, $diagnostic);
+                    $status =
+                        (isset($status[1]) ? $status[1] : false);
+                    $messageID =
+                        (isset($messageID[1]) ? strip_tags($messageID[1]) : "");
+                    $diagnostic =
+                        (isset($diagnostic[1]) ? str_replace(array('\r\n','  '), ' ', $diagnostic[1]) : "");
+                    if ($messageID) {
+                        $soft = substr($status, 0, 1)!='5';  // Not permanent error
+                        $mailqueueID = static::getMailqueueIDForMessageID($messageID);
+                        if ($mailqueueID) {
+                            $error =    $status." ".$diagnostic;
+                            if ($soft) {
+                                static::setSoftBounce($messageID, $error);
+                                $this->set_field('date_completed', '0000-00-00 00:00:00');
+                            } else {
+                                static::setHardBounce($messageID, $error);
                             }
+                            $Obj_POP3->pop3_delete($i);
                         }
                     }
                 }
@@ -57,7 +62,7 @@ class EmailBounceChecker extends MailIdentity
         $Obj_POP3->pop3_quit();
     }
 
-    public static function getIdentitesUsed()
+    protected static function getMailIdentitesUsed()
     {
         $isMASTERADMIN = get_person_permission("MASTERADMIN");
         $sql =
@@ -74,7 +79,19 @@ class EmailBounceChecker extends MailIdentity
         return static::getRecordsForSql($sql);
     }
 
-    private static function setHardBounce($messageID, $error)
+    protected static function getMailqueueIDForMessageID($messageID)
+    {
+        $sql =
+             "SELECT\n"
+            ."  `mailqueueID`\n"
+            ."FROM\n"
+            ."  `mailqueue_item`\n"
+            ."WHERE\n"
+            ."  `mail_messageID` = \"".$messageID."\"";
+        return static::getRecordForSql($sql);
+    }
+
+    protected static function setHardBounce($messageID, $error)
     {
         $sql =
              "UPDATE\n"
@@ -87,7 +104,7 @@ class EmailBounceChecker extends MailIdentity
         static::doSqlQuery($sql);
     }
     
-    private static function setSoftBounce($messageID, $error)
+    protected static function setSoftBounce($messageID, $error)
     {
         $sql =
              "UPDATE\n"

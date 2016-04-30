@@ -1,3 +1,7 @@
+  1.0.42 (2016-04-27)
+    1) Moved bounce checking code out into new emailbouncechecker class
+    2) Changes following renaming of Mail_Identity class to MailIdentity
+    3) References to $this->do_sql_query() now changed to static::doSqlQuery()
   1.0.41 (2016-04-19)
     1) New method Mail_Queue::queueAgain() and wired this into draw_broadcast_form()
   1.0.40 (2016-04-19)

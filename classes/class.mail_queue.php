@@ -1,14 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.42 (2016-04-27)
-    1) Moved bounce checking code out into new emailbouncechecker class
-    2) Changes following renaming of Mail_Identity class to MailIdentity
-    3) References to $this->do_sql_query() now changed to static::doSqlQuery()
+  1.0.43 (2016-04-30)
+    1) Moved Mail_Queue::get_mailqueueID_for_messageID() to EmailBounceChecker::getMailqueueIDForMessageID()
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.42';
+    const VERSION = '1.0.43';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -743,18 +741,6 @@ class Mail_Queue extends Record
             .($isMASTERADMIN ? "" : "  `groups`.`systemID` = ".SYS_ID." AND\n")
             ."  `group_members`.`permEMAILRECIPIENT` = 1\n";
         return $this->get_field_for_sql($sql);
-    }
-
-    public function get_mailqueueID_for_messageID($messageID)
-    {
-        $sql =
-             "SELECT\n"
-            ."  `mailqueueID`\n"
-            ."FROM\n"
-            ."  `mailqueue_item`\n"
-            ."WHERE\n"
-            ."  `mail_messageID` = \"".$messageID."\"";
-        return $this->get_record_for_sql($sql);
     }
 
     public function get_mailqueue_count()
