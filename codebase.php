@@ -19,9 +19,36 @@ define(
 4.7.2.2454 (2016-05-01)
 Summary:
   1) More work on Email Bounce Checking.
-  2) Added 'Subject' line for Mail Jobs report 
+  2) Added 'Subject' line for Mail Jobs report
+  3) For now - EmailBounceChecker is in PRUNE mode, to remove ALL bounce notification messages even those that
+     don't match up with an email broadcast job.
+     This is because we had 4 months where we didn't record messageIDs in mailqueue_items and so cannot match those
+     up with actual messages.
+     This setting will be changed shortly.
 
+Final Checksums:
+  Classes     CS:5e56fb6f
+  Database    CS:5d138354
+  Libraries   CS:53ee246d
+  Reports     CS:c072c591
 
+Code Changes:
+  codebase.php                                                                                   4.7.2     (2016-05-01)
+    1) Updated version information
+  classes/class.record.php                                                                       1.0.100   (2016-05-01)
+    1) Added Record::getFieldForSql and made Record::get_field_for_sql() into an alias for that
+  classes/emailbouncechecker.php                                                                 1.0.2     (2016-05-01)
+    1) Code nesting reductions to simplify code, added debug capability
+
+2454.sql
+  1) Updates to Mail Jobs report to include subject of message
+  2) Set version information
+
+Promote:
+  codebase.php                                        4.7.2
+  classes/  (2 files changed)
+    class.record.php                                  1.0.100   CS:c8e54369
+    emailbouncechecker.php                            1.0.2     CS:c426285a
 
 
   1) Fixing http / https protocol path switcher:
