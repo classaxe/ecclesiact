@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.1");
+define("CODEBASE_VERSION", "4.7.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,38 +16,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.1.2453 (2016-04-30)
+4.7.2.2454 (2016-05-01)
 Summary:
-  1) Fixed Email Bounce Checking has been broken since version 4.3.4.2423 which included new version of PHP Mailer.
-     Message sent since that release have not recorded their messageID in the mailqueue_item records
-
-Final Checksums:
-  Classes     CS:47911db0
-  Database    CS:5d138354
-  Libraries   CS:911766e6
-  Reports     CS:98fa28ac
-
-Code Changes:
-  codebase.php                                                                                   4.7.1     (2016-04-30)
-    1) Changes to mailto() to use PHPMailer::getLastMessageID() to get correct messageID
-    2) Updated version information
-  classes/class.mail_queue.php                                                                   1.0.43    (2016-04-30)
-    1) Moved Mail_Queue::get_mailqueueID_for_messageID() to EmailBounceChecker::getMailqueueIDForMessageID()
-  classes/class.record.php                                                                       1.0.99    (2016-04-30)
-    1) Added Record::get_record_for_sql() and made Record::get_record_for_sql() into an alias for that
-  classes/emailbouncechecker.php                                                                 1.0.1     (2016-04-30)
-    1) Made internal methods protected and bux fix for instance based call to newly static method
-
-2453.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.7.1
-  classes/  (3 files changed)
-    class.mail_queue.php                              1.0.43    CS:8a46cbec
-    class.record.php                                  1.0.99    CS:4137c293
-    emailbouncechecker.php                            1.0.1     CS:93f743a9
-
+  1) More work on Email Bounce Checking.
+  2) Added 'Subject' line for Mail Jobs report 
 
 
 
@@ -2279,7 +2251,7 @@ function mailto($data)
             $mail->AltBody =    convert_safe_to_php(str_replace("<br />", "\n", $data['text']));
         }
         $mail->Send();
-        return "Message-ID: ".$mail->getLastMessageID();
+        return "Message-ID: ".str_replace(array('<','>'), array('',''),$mail->getLastMessageID());
     } catch (phpmailerException $e) {
         return $e->getMessage();
     }

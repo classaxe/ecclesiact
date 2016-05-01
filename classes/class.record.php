@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.99 (2016-04-30)
-    1) Added Record::get_record_for_sql() and made Record::get_record_for_sql() into an alias for that
+  1.0.100 (2016-05-01)
+    1) Added Record::getFieldForSql and made Record::get_field_for_sql() into an alias for that
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.99';
+    const VERSION = '1.0.100';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -913,7 +913,7 @@ class Record extends Portal
         }
     }
 
-    public static function get_field_for_sql($sql)
+    public static function getFieldForSql($sql)
     {
         if (!$records = static::get_rows_for_sql($sql)) {
             return false;
@@ -2523,11 +2523,16 @@ class Record extends Portal
         $row = $out;
     }
 
-// These remaining methods are deprecated and act merely as aliases for their newer PSR-2 compliant replacements
-// TODO: Eliminate remaining references and formally deprecate these ones
+    // These remaining methods are deprecated and act merely as aliases for their newer PSR-2 compliant replacements
+    // TODO: Eliminate remaining references and formally deprecate these ones
     public static function do_sql_query($sql, $connection = false)
     {
         return static::doSqlQuery($sql, $connection);
+    }
+
+    public static function get_field_for_sql($sql)
+    {
+        return static::getFieldForSql($sql);
     }
 
     public static function get_record_for_sql($sql)
@@ -2558,7 +2563,7 @@ class Record extends Portal
         $orderBy = "",
         $extra_delete = "",
         $extra_select = ""
-    ){
+    ) {
         return $this->sqlExportSelect($targetID, $show_fields, $header, $orderBy, $extra_delete, $extra_select);
     }
 
@@ -2566,5 +2571,4 @@ class Record extends Portal
     {
         return $this->tryCopy($newID, $msg, $msg_tooltip, $name, $global);
     }
-
 }
