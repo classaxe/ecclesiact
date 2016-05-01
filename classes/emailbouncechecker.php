@@ -1,17 +1,19 @@
 <?php
 /*
 Version History:
-  1.0.3 (2016-05-01)
-    1) Changes to allow this to be used as a VCRON schedualable task, always checking all identities
+  1.0.4 (2016-05-01)
+    1) Now saves debug log to 'logs/email_bounce.log'
+    2) Summary counts for all mailboxes checked now returned to caller
 */
 class EmailBounceChecker extends MailIdentity
 {
-    const VERSION = '1.0.3';
-    const DEBUG =   true;   // writes debug messages to debug log
-    const PRUNE =   true;   // Removes all delivery status notifications, even those not matched to broadcast message
-    const LIMIT =   300;    // Maximum limit of messages to process in a single run
+    const VERSION = '1.0.4';
+    const DEBUG =   true;   // writes progress to logs/email_bounce.log
+    const PRUNE =   true;   // Removes ALL delivery status notifications, even those not matched to broadcast message
+    const LIMIT =   300;    // Maximum limit of messages to process in a single batch
 
     protected $mailIdentity;
+    protected $summary = array();
 
     public function check()
     {
@@ -22,6 +24,7 @@ class EmailBounceChecker extends MailIdentity
             $this->mailIdentity = $mailIdentity;
             $this->checkForMailIdentity();
         }
+        return implode("\n", $this->summary);
     }
 
     protected function checkForMailIdentity()
@@ -37,6 +40,7 @@ class EmailBounceChecker extends MailIdentity
         static::d('getting messages');
         if ($mailbox["messages"] === 0) {
             static::d('No Messages');
+            $this->summary[] = $this->mailIdentity['bounce_pop3_username']." - no messages in mailbox";
             $Obj_POP3->pop3_quit();
             return;
         }
@@ -46,6 +50,9 @@ class EmailBounceChecker extends MailIdentity
             if ($processed > static::LIMIT) {
                 static::d('Limit of messages per operaration is '.static::LIMIT.' - quitting for now');
                 $Obj_POP3->pop3_quit();
+                $this->summary[] =
+                     $this->mailIdentity['bounce_pop3_username']." - processed "
+                    .$processed." messages (limited to ".static::LIMIT." messages)";
                 return;
             }
             static::d('Message #'.$i.' is being retrieved');
@@ -93,12 +100,20 @@ class EmailBounceChecker extends MailIdentity
         }
         static::d('Logging out');
         $Obj_POP3->pop3_quit();
+        $this->summary[] = $this->mailIdentity['bounce_pop3_username']." - processed ".$processed." messages";
     }
 
     protected function d($message = false)
     {
         if (self::DEBUG) {
-            d($message ? $this->mailIdentity['bounce_pop3_username'].' | '.$message : str_repeat('*', 100));
+            d(
+                ($message ?
+                    $this->mailIdentity['bounce_pop3_username'].' | '.$message
+                 :
+                    str_repeat('*', 100)
+                ),
+                SYS_LOGS.'email_bounce.log'
+            );
         }
     }
 

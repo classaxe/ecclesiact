@@ -1,3 +1,5 @@
+  1.0.3 (2016-05-01)
+    1) Changes to allow this to be used as a VCRON schedualable task, always checking all identities
   1.0.2 (2016-05-01)
     1) Code nesting reductions to simplify code, added debug capability
   1.0.1 (2016-04-30)

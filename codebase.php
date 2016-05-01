@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.3");
+define("CODEBASE_VERSION", "4.7.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.3.2455 (2016-05-01)
+4.7.4.2456 (2016-05-01)
 Summary:
-  1) Email Bounce Checking now performed automatically by a VCRON job, carefully configured NOT to run in dev servers
-  2) Mail Broadcast component changes to only run on production servers to prevent possible duplication of messages
+  1) Email Checker now writes to 'logs/email_bounce.log' not 'logs/debug.log'
+  2) Email checker now provides summary to VCRON log of last operation
 
 Final Checksums:
-  Classes     CS:e2a933f
+  Classes     CS:53243bc2
   Database    CS:5d138354
-  Libraries   CS:a496182b
+  Libraries   CS:d6da73a
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.3     (2016-05-01)
+  codebase.php                                                                                   4.7.4     (2016-05-01)
     1) Updated version information
-  classes/class.mail_queue.php                                                                   1.0.44    (2016-05-01)
-    1) Removed status checking - this is now performed exclusively via a VCRON job
-  classes/emailbouncechecker.php                                                                 1.0.3     (2016-05-01)
-    1) Changes to allow this to be used as a VCRON schedualable task, always checking all identities
+  classes/emailbouncechecker.php                                                                 1.0.4     (2016-05-01)
+    1) Now saves debug log to 'logs/email_bounce.log'
+    2) Summary counts for all mailboxes checked now returned to caller
 
-2455.sql
-  1) New component 'SCHEDULE: Check Mailboxes for bounced Messages'
-  2) Modifications to 'SCHEDULE: Mail Broadcast' to prevent it from running in Dev Sites
-  3) New Schedule item for checking mailboxes for bounced messages every 5 minutes
-  4) Set version information
+2456.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.7.3
-  classes/  (2 files changed)
-    class.mail_queue.php                              1.0.44    CS:6620fcd6
-    emailbouncechecker.php                            1.0.3     CS:f332a236
+  codebase.php                                        4.7.4
+  classes/  (1 file changed)
+    emailbouncechecker.php                            1.0.4     CS:85f024
 
 
 
-  1) Fixing http / https protocol path switcher:
+  2) Fixing http / https protocol path switcher:
      When entering a site with a given path using wrong protocol - e.g.:
        http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
 
