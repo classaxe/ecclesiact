@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.2 (2016-05-01)
-    1) Code nesting reductions to simplify code, added debug capability
+  1.0.3 (2016-05-01)
+    1) Changes to allow this to be used as a VCRON schedualable task, always checking all identities
 */
 class EmailBounceChecker extends MailIdentity
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
     const DEBUG =   true;   // writes debug messages to debug log
     const PRUNE =   true;   // Removes all delivery status notifications, even those not matched to broadcast message
     const LIMIT =   300;    // Maximum limit of messages to process in a single run
@@ -104,7 +104,6 @@ class EmailBounceChecker extends MailIdentity
 
     protected static function getMailIdentitesUsed()
     {
-        $isMASTERADMIN = get_person_permission("MASTERADMIN");
         $sql =
              "SELECT DISTINCT\n"
             ."  `mailidentity`.`bounce_pop3_host`,\n"
@@ -114,8 +113,7 @@ class EmailBounceChecker extends MailIdentity
             ."FROM\n"
             ."  `mailqueue`\n"
             ."LEFT JOIN `mailidentity` ON\n"
-            ."  `mailidentity`.`ID` = `mailqueue`.`mailidentityID`\n"
-            .($isMASTERADMIN ? "" : "WHERE\n  `mailqueue`.`systemID` = ".SYS_ID);
+            ."  `mailidentity`.`ID` = `mailqueue`.`mailidentityID`\n";
         return static::getRecordsForSql($sql);
     }
 

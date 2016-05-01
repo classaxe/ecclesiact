@@ -1,3 +1,5 @@
+  1.0.2 (2016-05-01)
+    1) Code nesting reductions to simplify code, added debug capability
   1.0.1 (2016-04-30)
     1) Made internal methods protected and bux fix for instance based call to newly static method
   1.0.0 (2016-04-28)

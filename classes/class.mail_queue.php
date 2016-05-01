@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.43 (2016-04-30)
-    1) Moved Mail_Queue::get_mailqueueID_for_messageID() to EmailBounceChecker::getMailqueueIDForMessageID()
+  1.0.44 (2016-05-01)
+    1) Removed status checking - this is now performed exclusively via a VCRON job
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.43';
+    const VERSION = '1.0.44';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -258,14 +258,6 @@ class Mail_Queue extends Record
                 $this->_set_ID($selectID);
                 $msg = $this->send();
                 break;
-            case "status":
-                $msg =
-                     "<b>Status:</b> Message status for all Mail Jobs "
-                    .(get_person_permission("MASTERADMIN") ? "on all sites " : "")
-                    ."was updated at ".get_timestamp();
-                $Obj = new EmailBounceChecker;
-                $Obj->check();
-                break;
         }
         $out.=
              "<h3 class='admin_heading' style='display: inline;'>Create Mail Job</h3><br />\n"
@@ -352,13 +344,7 @@ class Mail_Queue extends Record
                 )
                 ."</p>\n"
             )
-            .draw_auto_report('mail_queue', 1)
-            ."<p>Click <a href=\"".BASE_PATH."report/mail_broadcast?submode=status&amp;selectID=".$selectID."\""
-            ." onclick=\"show_popup_please_wait('Please wait...<br />Checking for bounced messages.',240,200);"
-            ."return true;\"><b>here</b></a> "
-            ."to check all previous Mail Jobs "
-            .(get_person_permission("MASTERADMIN") ? "on all sites (Masteradmins only) " : "")
-            ."for bounced messages to update final message counts.</p>";
+            .draw_auto_report('mail_queue', 1);
         if ($selectID) {
             if ($record['date_started'] == "0000-00-00 00:00:00") {
                 $out.=

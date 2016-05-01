@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.2");
+define("CODEBASE_VERSION", "4.7.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,39 +16,37 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.2.2454 (2016-05-01)
+4.7.3.2455 (2016-05-01)
 Summary:
-  1) More work on Email Bounce Checking.
-  2) Added 'Subject' line for Mail Jobs report
-  3) For now - EmailBounceChecker is in PRUNE mode, to remove ALL bounce notification messages even those that
-     don't match up with an email broadcast job.
-     This is because we had 4 months where we didn't record messageIDs in mailqueue_items and so cannot match those
-     up with actual messages.
-     This setting will be changed shortly.
+  1) Email Bounce Checking now performed automatically by a VCRON job, carefully configured NOT to run in dev servers
+  2) Mail Broadcast component changes to only run on production servers to prevent possible duplication of messages
 
 Final Checksums:
-  Classes     CS:5e56fb6f
+  Classes     CS:e2a933f
   Database    CS:5d138354
-  Libraries   CS:53ee246d
+  Libraries   CS:a496182b
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.2     (2016-05-01)
+  codebase.php                                                                                   4.7.3     (2016-05-01)
     1) Updated version information
-  classes/class.record.php                                                                       1.0.100   (2016-05-01)
-    1) Added Record::getFieldForSql and made Record::get_field_for_sql() into an alias for that
-  classes/emailbouncechecker.php                                                                 1.0.2     (2016-05-01)
-    1) Code nesting reductions to simplify code, added debug capability
+  classes/class.mail_queue.php                                                                   1.0.44    (2016-05-01)
+    1) Removed status checking - this is now performed exclusively via a VCRON job
+  classes/emailbouncechecker.php                                                                 1.0.3     (2016-05-01)
+    1) Changes to allow this to be used as a VCRON schedualable task, always checking all identities
 
-2454.sql
-  1) Updates to Mail Jobs report to include subject of message
-  2) Set version information
+2455.sql
+  1) New component 'SCHEDULE: Check Mailboxes for bounced Messages'
+  2) Modifications to 'SCHEDULE: Mail Broadcast' to prevent it from running in Dev Sites
+  3) New Schedule item for checking mailboxes for bounced messages every 5 minutes
+  4) Set version information
 
 Promote:
-  codebase.php                                        4.7.2
+  codebase.php                                        4.7.3
   classes/  (2 files changed)
-    class.record.php                                  1.0.100   CS:c8e54369
-    emailbouncechecker.php                            1.0.2     CS:c426285a
+    class.mail_queue.php                              1.0.44    CS:6620fcd6
+    emailbouncechecker.php                            1.0.3     CS:f332a236
+
 
 
   1) Fixing http / https protocol path switcher:
