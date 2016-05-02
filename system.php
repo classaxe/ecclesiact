@@ -2,13 +2,13 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.36 (ECC)");
+define("SYSTEM_VERSION", "1.0.37 (ECC)");
 
 /*
 Version History:
-  1.0.36 (2015-10-06)
-    1) Now allows for URL aliases that don't force a redirect when accesed
-
+  1.0.37 (2016-05-02)
+    1) Bug fix for protocol path switching -
+       http://www.prayforthem.ca/aurora/contact now goes correctly to https://prayforthem.ca/aurora/contact 
 */
 
 if (get_magic_quotes_gpc()) {
@@ -53,7 +53,7 @@ function main($mode)
                 header(
                     "Location: ".$site_url
                     .(isset($_SERVER["REQUEST_URI"]) ?
-                        substr($_SERVER["REQUEST_URI"], strlen(BASE_PATH))
+                        substr($_SERVER["REQUEST_URI"], strlen(BASE_PATH)-1)
                       :
                         ""
                      )

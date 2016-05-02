@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.5");
+define("CODEBASE_VERSION", "4.7.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,41 +16,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.5.2457 (2016-05-01)
+4.7.6.2458 (2016-05-02)
 Summary:
-  1) Now correctly detects when a mail bounce check fails to authenticate to check for bounced messages
-  2) Some tidy up of phpop3 class
+  1) Fixed http / https protocol path switcher:
+     When entering a site with a given path using wrong protocol - e.g.:
+       http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
 
 Final Checksums:
   Classes     CS:8ab37014
   Database    CS:5d138354
-  Libraries   CS:fa159b7c
+  Libraries   CS:38ecd9f7
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.5     (2016-05-01)
+  codebase.php                                                                                   4.7.6     (2016-05-02)
     1) Updated version information
-  classes/class.phpop3.php                                                                       1.0.3     (2016-05-01)
-    1) Made more PSR-2 compliant and constructor now returns true for success, false for fail
-    2) Now uses an stdClass as a message container
-  classes/emailbouncechecker.php                                                                 1.0.5     (2016-05-01)
-    1) Switched off PRUNE mode
-    2) EmailBounceChecker::getMailIdentitesUsed() now filters out bad settings
+  system.php                                                                                     1.0.37    (2016-05-02)
+    1) Bug fix for protocol path switching -
+       http://www.prayforthem.ca/aurora/contact now goes correctly to https://prayforthem.ca/aurora/contact 
 
-2457.sql
+2458.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.7.5
-  classes/  (2 files changed)
-    class.phpop3.php                                  1.0.3     CS:d193def8
-    emailbouncechecker.php                            1.0.5     CS:b0555dca
+  codebase.php                                        4.7.6
+  system.php                                          1.0.37 
 
 
-
-  1) Fixing http / https protocol path switcher:
-     When entering a site with a given path using wrong protocol - e.g.:
-       http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
 
 
 Bug:
