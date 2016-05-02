@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.4");
+define("CODEBASE_VERSION", "4.7.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,35 +16,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.4.2456 (2016-05-01)
+4.7.5.2457 (2016-05-01)
 Summary:
-  1) Email Checker now writes to 'logs/email_bounce.log' not 'logs/debug.log'
-  2) Email checker now provides summary to VCRON log of last operation
+  1) Now correctly detects when a mail bounce check fails to authenticate to check for bounced messages
+  2) Some tidy up of phpop3 class
 
 Final Checksums:
-  Classes     CS:53243bc2
+  Classes     CS:8ab37014
   Database    CS:5d138354
-  Libraries   CS:d6da73a
+  Libraries   CS:fa159b7c
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.4     (2016-05-01)
+  codebase.php                                                                                   4.7.5     (2016-05-01)
     1) Updated version information
-  classes/emailbouncechecker.php                                                                 1.0.4     (2016-05-01)
-    1) Now saves debug log to 'logs/email_bounce.log'
-    2) Summary counts for all mailboxes checked now returned to caller
+  classes/class.phpop3.php                                                                       1.0.3     (2016-05-01)
+    1) Made more PSR-2 compliant and constructor now returns true for success, false for fail
+    2) Now uses an stdClass as a message container
+  classes/emailbouncechecker.php                                                                 1.0.5     (2016-05-01)
+    1) Switched off PRUNE mode
+    2) EmailBounceChecker::getMailIdentitesUsed() now filters out bad settings
 
-2456.sql
+2457.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.7.4
-  classes/  (1 file changed)
-    emailbouncechecker.php                            1.0.4     CS:85f024
+  codebase.php                                        4.7.5
+  classes/  (2 files changed)
+    class.phpop3.php                                  1.0.3     CS:d193def8
+    emailbouncechecker.php                            1.0.5     CS:b0555dca
 
 
 
-  2) Fixing http / https protocol path switcher:
+  1) Fixing http / https protocol path switcher:
      When entering a site with a given path using wrong protocol - e.g.:
        http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
 
