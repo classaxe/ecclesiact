@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.6");
+define("CODEBASE_VERSION", "4.7.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,31 +16,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.6.2458 (2016-05-02)
+4.7.7.2459 (2016-05-05)
 Summary:
-  1) Fixed http / https protocol path switcher:
-     When entering a site with a given path using wrong protocol - e.g.:
-       http://prayforthem.ca/aurora -> https://prayforthem.caaurora (wrong!)
+  1) Changes to Youtube embeds to make them use same protocol as site to avoid mixed protocol warnings
+  2) Changes to Twitter component to obtain external code libraries using same protocol as site
 
 Final Checksums:
-  Classes     CS:8ab37014
+  Classes     CS:a6ea9355
   Database    CS:5d138354
-  Libraries   CS:38ecd9f7
+  Libraries   CS:cf94e5b1
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.6     (2016-05-02)
+  codebase.php                                                                                   4.7.7     (2016-05-05)
     1) Updated version information
-  system.php                                                                                     1.0.37    (2016-05-02)
-    1) Bug fix for protocol path switching -
-       http://www.prayforthem.ca/aurora/contact now goes correctly to https://prayforthem.ca/aurora/contact 
+  classes/class.block_layout.php                                                                 1.0.70    (2016-05-05)
+    1) Changes to BL_link() when option 'links_switch_video' is set -
+       Youtube embeds now use same protocol as main site
+  classes/class.component_twitter.php                                                            1.0.4     (2016-05-04)
+    1) Path to js widget.js and twitter.min.js scripts now protocol neutral
+    2) This needs refactoring into two separate classes
+  classes/class.media_youtube.php                                                                1.0.7     (2016-05-05)
+    1) Modified to make clips use same transfer protocol as site to avoid mixed protocol warning messages
 
-2458.sql
-  1) Set version information
+2459.sql
+  1) Ecclesiact Bug Tracker path now HTTPS
+  2) Set version information
 
 Promote:
-  codebase.php                                        4.7.6
-  system.php                                          1.0.37 
+  codebase.php                                        4.7.7
+  classes/  (3 files changed)
+    class.block_layout.php                            1.0.70    CS:845bf6a1
+    class.component_twitter.php                       1.0.4     CS:1afdd6c8
+    class.media_youtube.php                           1.0.7     CS:b8d7eeeb
 
 
 

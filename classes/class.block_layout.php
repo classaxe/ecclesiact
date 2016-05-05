@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.69 (2016-02-21)
-    1) New BL tag BL_sequence_content - selects item from sequence_content_list according to displayed order
-    2) New BL tag BL_link_URL - just the linked URL and nothing else
-
+  1.0.70 (2016-05-05)
+    1) Changes to BL_link() when option 'links_switch_video' is set -
+       Youtube embeds now use same protocol as main site
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.69';
+    const VERSION = '1.0.70';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -82,7 +81,8 @@ class Block_Layout extends Record
         switch ($this->_mode){
             case "detail":
                 $_href =    "#anchor_comments_list";
-                $_onclick = " onclick=\"comment('".get_js_safe_ID($this->_get_type())."',".$this->record['ID'].",'new')\"";
+                $_onclick =
+                    " onclick=\"comment('".get_js_safe_ID($this->_get_type())."',".$this->record['ID'].",'new')\"";
                 $_popup =   false;
                 break;
             case "list":
@@ -124,7 +124,11 @@ class Block_Layout extends Record
         if (!isset($this->_cp['content_show']) || $this->_cp['content_show']!='1') {
             return;
         }
-        if (isset($this->_cp['content_use_summary']) && $this->_cp['content_use_summary']=='1' && trim($this->record['content_summary'])) {
+        if ((
+            isset($this->_cp['content_use_summary']) &&
+            $this->_cp['content_use_summary']=='1' &&
+            trim($this->record['content_summary'])
+        )) {
             return
              $this->record['content_summary']
             ." <span title=\"Continues&hellip;\">&hellip;</span> "
@@ -161,7 +165,11 @@ class Block_Layout extends Record
     protected function BL_context_selection_end()
     {
         $ID =       $this->record['ID'];
-        $canEdit =  ($ID && $this->_current_user_rights['canEdit'] && ($this->record['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN']));
+        $canEdit =  (
+            $ID &&
+            $this->_current_user_rights['canEdit'] &&
+            ($this->record['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN'])
+        );
         if (!$canEdit) {
             return "";
         }
@@ -170,7 +178,11 @@ class Block_Layout extends Record
 
     protected function BL_context_selection_start()
     {
-        $canEdit =  ($this->record['ID'] && $this->_current_user_rights['canEdit'] && ($this->record['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN']));
+        $canEdit =  (
+            $this->record['ID'] &&
+            $this->_current_user_rights['canEdit'] &&
+            ($this->record['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN'])
+        );
         if (!$canEdit) {
             return;
         }
@@ -194,11 +206,30 @@ class Block_Layout extends Record
         ."_CM_text[0]='&quot;".str_replace(array("'","\""), '', $this->record['title'])."&quot;';"
         ."_CM_text[1]=_CM_text[0];"
         .(isset($this->record['parentID']) ? "_CM_ID[2]='".$this->record['parentID']."';" : "")
-        ."_CM_text[2]='".(isset($this->record['parentTitle']) && $this->record['parentTitle']!='' ? "&quot;".str_replace(array("'","\""), '', $this->record['parentTitle'])."&quot;" : "")."';"
-        .($this->_current_user_rights['isSYSADMIN'] && isset($this->_block_layout['systemID']) && $this->_block_layout['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN'] ?
-        (isset($this->_block_layout['ID']) ? "_CM_ID[3]='".$this->_block_layout['ID']."';" : "")
-         .(isset($this->_block_layout['name']) ? "_CM_text[3]='&quot;".str_replace("'", '', $this->_block_layout['name'])."&quot;';" : "")
-        : '')
+        ."_CM_text[2]='"
+        .(isset($this->record['parentTitle']) && $this->record['parentTitle']!='' ?
+            "&quot;".str_replace(array("'","\""), '', $this->record['parentTitle'])."&quot;"
+         :
+            ""
+        )
+        ."';"
+        .(
+            $this->_current_user_rights['isSYSADMIN'] &&
+            isset($this->_block_layout['systemID']) &&
+            $this->_block_layout['systemID']==SYS_ID || $this->_current_user_rights['isMASTERADMIN'] ?
+                (isset($this->_block_layout['ID']) ?
+                     "_CM_ID[3]='".$this->_block_layout['ID']."';"
+                  :
+                     ""
+                )
+                .(isset($this->_block_layout['name']) ?
+                    "_CM_text[3]='&quot;".str_replace("'", '', $this->_block_layout['name'])."&quot;';"
+                 :
+                    ""
+                )
+             :
+            ''
+        )
         .($this->_get_type()=='event' ? "_CM.event_registrants=".$registrations.";" : "")
         ."}\" "
         ." onmouseout=\"_replaceContext = false; this.style.backgroundColor='';_CM.type=''\">";
@@ -310,8 +341,14 @@ class Block_Layout extends Record
         return $extra_fields;
     }
 
-    protected function BL_field($field = false, $match = '', $found_text = '', $not_found_text = '', $pre_line = '', $post_line = '')
-    {
+    protected function BL_field(
+        $field = false,
+        $match = '',
+        $found_text = '',
+        $not_found_text = '',
+        $pre_line = '',
+        $post_line = ''
+    ) {
         if (!$field) {
             return "&#91;BL&#93;field(<b>name</b>)&#91;BL&#93; - <b>name</b> is required";
         }
@@ -340,10 +377,18 @@ class Block_Layout extends Record
             return;
         }
         if (!$field) {
-            return "&#91;BL&#93;BL_field_for_group_member(<b>name</b>, <b>groups_csv</b>)&#91;BL&#93; - <b>name</b> is required";
+            return
+                 "&#91;BL&#93;BL_field_for_group_member("
+                ."<b>name</b>, <b>groups_csv</b>"
+                .")&#91;BL&#93;"
+                ." - <b>name</b> is required";
         }
         if (!$groups_csv) {
-            return "&#91;BL&#93;BL_field_for_group_member(<b>name</b>, <b>groups_csv</b>)&#91;BL&#93; - <b>groups_csv</b> is required";
+            return
+                "&#91;BL&#93;BL_field_for_group_member("
+                ."<b>name</b>, <b>groups_csv</b>"
+                .")&#91;BL&#93;"
+                ."- <b>groups_csv</b> is required";
         }
         $valid =    false;
         $groups =   explode(",", $groups_csv);
@@ -368,7 +413,11 @@ class Block_Layout extends Record
             if (substr($field, 0, 4)=='xml:') {
                 return "";
             }
-            return "&#91;BL&#93;BL_field_for_group_member('<b>".$field."</b>, <b>groups_csv</b>')&#91;BL&#93; - <b>".$field."</b> is not available";
+            return
+                 "&#91;BL&#93;BL_field_for_group_member("
+                ."'<b>".$field."</b>, <b>groups_csv</b>'"
+                .")&#91;BL&#93;"
+                ." - <b>".$field."</b> is not available";
         }
         return $this->record[$field];
     }
@@ -379,13 +428,21 @@ class Block_Layout extends Record
             return;
         }
         if (!$field) {
-            return "&#91;BL&#93;BL_field_for_site_member(<b>name</b>)&#91;BL&#93; - <b>name</b> is required";
+            return
+                "&#91;BL&#93;BL_field_for_site_member("
+               ."<b>name</b>"
+               .")&#91;BL&#93;"
+               ." - <b>name</b> is required";
         }
         if (!isset($this->record[$field])) {
             if (substr($field, 0, 4)=='xml:') {
                 return "";
             }
-            return "&#91;BL&#93;BL_field_for_site_member('<b>".$field."</b>')&#91;BL&#93; - <b>".$field."</b> is not available";
+            return
+                 "&#91;BL&#93;BL_field_for_site_member("
+                ."'<b>".$field."</b>'"
+                .")&#91;BL&#93;"
+                ." - <b>".$field."</b> is not available";
         }
         return $this->record[$field];
     }
@@ -404,7 +461,8 @@ class Block_Layout extends Record
             return;
         }
         $old_letter = $letter;
-        return "<a name=\"#".$letter."\">".$letter."</a>";
+        return
+            "<a name=\"#".$letter."\">".$letter."</a>";
     }
 
     protected function BL_letter_anchor_quicklinks()
@@ -431,17 +489,18 @@ class Block_Layout extends Record
         foreach ($letters as $letter) {
             $out[] = "<a href=\"#".$letter."\">".$letter."</a>";
         }
-        return implode(' ', $out);
+        return
+            implode(' ', $out);
     }
 
     protected function BL_grouping_tab_controls()
     {
         return
-        HTML::draw_section_tabs(
-            $this->_grouping_tabs,
-            $this->_ident."_tabs_".strToLower($this->_instance),
-            $this->_grouping_tab_selected
-        );
+            HTML::draw_section_tabs(
+                $this->_grouping_tabs,
+                $this->_ident."_tabs_".strToLower($this->_instance),
+                $this->_grouping_tab_selected
+            );
     }
 
     protected function BL_grouping_tab_div_close()
@@ -452,16 +511,17 @@ class Block_Layout extends Record
     protected function BL_grouping_tab_div_open()
     {
         return
-        draw_section_tab_div(
-            $this->_grouping_tab_current,
-            $this->_grouping_tab_selected
-        );
+            draw_section_tab_div(
+                $this->_grouping_tab_current,
+                $this->_grouping_tab_selected
+            );
     }
 
     protected function BL_grouping_tab_footer()
     {
         if (count($this->_grouping_tabs)) {
-            return "</div>";
+            return
+                "</div>";
         }
     }
 
@@ -469,8 +529,8 @@ class Block_Layout extends Record
     {
         if (count($this->_grouping_tabs)) {
             return
-            $this->BL_grouping_tab_controls()
-            .$this->BL_grouping_tab_div_open();
+                 $this->BL_grouping_tab_controls()
+                .$this->BL_grouping_tab_div_open();
         }
     }
 
@@ -489,8 +549,8 @@ class Block_Layout extends Record
                 if ($idx != $this->_grouping_tab_current) {
                     $this->_grouping_tab_current = $idx;
                     return
-                    $this->BL_grouping_tab_div_close()
-                    .$this->BL_grouping_tab_div_open();
+                         $this->BL_grouping_tab_div_close()
+                        .$this->BL_grouping_tab_div_open();
                 }
                 break;
             case "year":
@@ -498,8 +558,8 @@ class Block_Layout extends Record
                 if ($idx != $this->_grouping_tab_current) {
                     $this->_grouping_tab_current = $idx;
                     return
-                    $this->BL_grouping_tab_div_close()
-                    .$this->BL_grouping_tab_div_open();
+                         $this->BL_grouping_tab_div_close()
+                        .$this->BL_grouping_tab_div_open();
                 }
                 break;
         }
@@ -515,41 +575,67 @@ class Block_Layout extends Record
 
     protected function BL_link()
     {
-        if (isset($this->_cp['links_point_to_URL']) && $this->_cp['links_point_to_URL']==1 && isset($this->record['URL']) && $this->record['URL']!='') {
+        if ((
+            isset($this->_cp['links_point_to_URL']) &&
+            $this->_cp['links_point_to_URL']==1 &&
+            isset($this->record['URL']) &&
+            $this->record['URL']!=''
+        )) {
             $URL =        $this->record['URL'];
             $URL_popup =  ($this->record['popup']==1 ? true : false);
             $URL_title =  " title=\"Linked content".($URL_popup ? " (opens in a new window)" : "")."\"";
             return
+                 "<a href=\"".BASE_PATH.trim($URL, '/')."\""
+                .$URL_title
+                .($URL_popup ? " rel='external'" : "")
+                .">";
+        }
+        if ((
+            isset($this->_cp['links_switch_video']) &&
+            $this->_cp['links_switch_video']==1 &&
+            isset($this->record['video']) &&
+            $this->record['video']!=''
+        )) {
+            $URL =
+                 (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? "https:" : "http:")
+                .substr($this->record['video'], strpos($this->record['video'], '/'));
+            $URL_title =  " title=\"View Video for ".$this->record['title']."\"";
+            return
+                 "<a href=\"".$URL."\""
+                ." onclick=\"return video_setup('lyo_video_large','".$URL."')\""
+                .$URL_title
+                .">";
+        }
+        $URL =        $this->get_URL($this->record);
+        $URL_popup =  $this->record['systemID']!=SYS_ID;
+        $URL_title =
+             " title=\"View Details for "
+            .$this->record['title']
+            .($URL_popup ? " (opens in a new window)" : "")
+            ."\"";
+        return
              "<a href=\"".BASE_PATH.trim($URL, '/')."\""
             .$URL_title
             .($URL_popup ? " rel='external'" : "")
             .">";
-        }
-        if (isset($this->_cp['links_switch_video']) && $this->_cp['links_switch_video']==1 && isset($this->record['video']) && $this->record['video']!='') {
-            $URL =        $this->record['video'];
-            $URL_title =  " title=\"View Video for ".$this->record['title']."\"";
-            return
-             "<a href=\"".$URL."\""
-            ." onclick=\"return video_setup('lyo_video_large','".$URL."')\""
-            .$URL_title
-            .">";
-        }
-        $URL =        $this->get_URL($this->record);
-        $URL_popup =  $this->record['systemID']!=SYS_ID;
-        $URL_title =  " title=\"View Details for ".$this->record['title'].($URL_popup ? " (opens in a new window)" : "")."\"";
-        return
-         "<a href=\"".BASE_PATH.trim($URL, '/')."\""
-        .$URL_title
-        .($URL_popup ? " rel='external'" : "")
-        .">";
     }
 
     protected function BL_link_URL()
     {
-        if (isset($this->_cp['links_point_to_URL']) && $this->_cp['links_point_to_URL']==1 && isset($this->record['URL']) && $this->record['URL']!='') {
+        if ((
+            isset($this->_cp['links_point_to_URL']) &&
+            $this->_cp['links_point_to_URL']==1 &&
+            isset($this->record['URL']) &&
+            $this->record['URL']!=''
+        )) {
             return BASE_PATH.trim($this->record['URL'], '/');
         }
-        if (isset($this->_cp['links_switch_video']) && $this->_cp['links_switch_video']==1 && isset($this->record['video']) && $this->record['video']!='') {
+        if ((
+            isset($this->_cp['links_switch_video']) &&
+            $this->_cp['links_switch_video']==1 &&
+            isset($this->record['video']) &&
+            $this->record['video']!=''
+        )) {
             return $this->record['video'];
         }
         return BASE_PATH.trim($this->get_URL($this->record), '/');
@@ -580,7 +666,12 @@ class Block_Layout extends Record
                 );
             }
         }
-        if (isset($this->record['URL']) && $this->record['URL']!='' && !(isset($this->_cp['links_point_to_URL']) && $this->_cp['links_point_to_URL']==1)) {
+        if ((
+            isset($this->record['URL']) &&
+            $this->record['URL']!='' &&
+            !(isset($this->_cp['links_point_to_URL']) &&
+            $this->_cp['links_point_to_URL']==1)
+        )) {
             $link_arr[] = $this->draw_link('link');
         }
         if (count($link_arr)) {
@@ -682,7 +773,9 @@ class Block_Layout extends Record
         "<a href=\"".$this->record['systemURL']."\""
         ." title=\"Shared by ".$this->record['systemTitle']." - click to visit\""
         ." rel=\"external\">"
-        ."<img src='".BASE_PATH."img/spacer' class='icons' style='padding:0;margin:0 2px 0 0;height:13px;width:15px;background-position:-1173px 0px;' alt=\"External content from ".$this->record['systemTitle']."\" />\n"
+        ."<img src='".BASE_PATH."img/spacer' class='icons'"
+        ." style='padding:0;margin:0 2px 0 0;height:13px;width:15px;background-position:-1173px 0px;'"
+        ." alt=\"External content from ".$this->record['systemTitle']."\" />\n"
         ."</a> "
         ."<b>".$this->record['systemTitle']."</b>";
     }
@@ -775,7 +868,8 @@ class Block_Layout extends Record
         $wm =   isset($this->_cp['show_watermark']) && $this->_cp['show_watermark']==1;
         $img =  $this->BL_thumbnail_image_filepath();
         $cs =   (isset($this->record['thumbnail_cs_'.$image_name]) ? $this->record['thumbnail_cs_'.$image_name] : '');
-        $thumbnail_file = (substr($img, 0, strlen(BASE_PATH))==BASE_PATH ? BASE_PATH.substr($img, strlen(BASE_PATH)) : $img);
+        $thumbnail_file =
+            (substr($img, 0, strlen(BASE_PATH))==BASE_PATH ? BASE_PATH.substr($img, strlen(BASE_PATH)) : $img);
         if (!$img || !file_exists('.'.$thumbnail_file)) {
             $img = false;
         }
@@ -875,8 +969,10 @@ class Block_Layout extends Record
         if (!isset($this->record['video']) || !$this->record['video']) {
             return;
         }
-        $width =    (isset($this->_cp['video_width']) && (int)$this->_cp['video_width'] ? $this->_cp['video_width'] : 240);
-        $height =   (isset($this->_cp['video_height']) && (int)$this->_cp['video_height'] ? $this->_cp['video_height'] : 180);
+        $width =
+            (isset($this->_cp['video_width']) && (int)$this->_cp['video_width'] ? $this->_cp['video_width'] : 240);
+        $height =
+            (isset($this->_cp['video_height']) && (int)$this->_cp['video_height'] ? $this->_cp['video_height'] : 180);
         $video =    $this->record['video'];
         return "[youtube: ".$video."|".$width."|".$height."]";
     }
