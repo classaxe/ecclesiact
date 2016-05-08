@@ -1,3 +1,5 @@
+  1.0.108 (2016-03-26)
+    1) Event::get_calendar_dates() now replaces parameter filter_category with filter_category_list
   1.0.107 (2016-03-15)
     1) Updates to the following methods:
          Event::get_calendar_dates()

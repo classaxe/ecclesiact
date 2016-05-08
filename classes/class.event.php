@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.108 (2016-03-26)
-    1) Event::get_calendar_dates() now replaces parameter filter_category with filter_category_list
+  1.0.109 (2016-05-08)
+    1) Bug fix - copy without name wasn't working so I implemented rename on the clone action instead
 */
 class Event extends Posting
 {
-    const VERSION = '1.0.108';
+    const VERSION = '1.0.109';
 
     public static $cache_event_registrant_count =      array();
 
@@ -22,8 +22,8 @@ class Event extends Posting
                 'command_for_delete' =>     'event_delete',
                 'report' =>                 'events',
                 'report_related_products' =>'products_for_event',
-                'report_rename' =>          false,
-                'report_rename_label' =>    '',
+                'report_rename' =>          true,
+                'report_rename_label' =>    'new title',
                 'icon_delete' =>            '[ICON]20 20 4401 Delete this Event[/ICON]',
                 'icon_edit' =>              '[ICON]20 20 104 Edit this Event[/ICON]',
                 'icon_edit_disabled' =>     '[ICON]20 20 2425 (Edit this Event)[/ICON]',

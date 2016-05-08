@@ -1,12 +1,17 @@
 <?php
 /*
 Version History:
-  1.0.38 (2016-01-01)
-    1) Portal::isDev() is now declared statically
+  1.0.39 (2016-05-06)
+    1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
+       to be Dev sites, so therefore redirects can force them to https as with other sites
+    2) Portal::isDev() DOES now consider accesses to 'well-known' to be treated as Dev sites, bypassing manditory
+       redirects to HTTPs to allow Letsencrypt to function properly
+    3) Any request that involves a path with .well-known now checks document root to see if path exists there.
+       If the path segment can be matched at the document root, the file is returned without any redirect to HTTPS
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.38';
+    const VERSION = '1.0.39';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -39,9 +44,19 @@ class Portal extends Base
         $serverhost =     getenv("SERVER_NAME");
         return
             $serverhost === 'localhost' ||
-            substr($serverhost, -17) === '.auroraonline.com' ||
-            substr($serverhost, -13) === '.classaxe.com' ||
-            substr($serverhost, -15) === '.ecclesiact.com' ||
+            strpos($_SERVER["REQUEST_URI"], '.well-known/') !== false ||
+            (
+                !in_array($serverhost, array('auroraonline.com', 'www.auroraonline.com')) &&
+                substr($serverhost, -17) === '.auroraonline.com'
+            ) ||
+            (
+                !in_array($serverhost, array('classaxe.com', 'www.classaxe.com')) &&
+                substr($serverhost, -13) === '.classaxe.com'
+            ) ||
+            (
+                !in_array($serverhost, array('ecclesiact.com', 'www.ecclesiact.com')) &&
+                substr($serverhost, -15) === '.ecclesiact.com'
+            ) ||
             substr($serverhost, 0, 7) === 'backup.' ||
             substr($serverhost, 0, 8) === 'desktop.' ||
             substr($serverhost, 0, 4) === 'dev.' ||
@@ -85,6 +100,13 @@ class Portal extends Base
             return true;
         }
         $request = Portal::get_request_path();
+        if (strpos($request, '.well-known/')!==false) {
+            $wellknown = substr($request, strpos($request, '.well-known/'));
+            if (file_exists($wellknown)) {
+                readfile($wellknown);
+                die;
+            }
+        }
         Portal::_parse_request_special($request);
         if (Portal::_parse_request_type_prefix($request, $mode, $ID, $page, $search_type)) {
             return true;

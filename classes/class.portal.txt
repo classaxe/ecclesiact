@@ -1,3 +1,5 @@
+  1.0.38 (2016-01-01)
+    1) Portal::isDev() is now declared statically
   1.0.37 (2015-10-16)
     1) Version now given statically
     2) Now uses getVersion() in parent

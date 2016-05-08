@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.7");
+define("CODEBASE_VERSION", "4.7.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,39 +16,46 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.7.2459 (2016-05-05)
+4.7.8.2460 (2016-05-08)
 Summary:
-  1) Changes to Youtube embeds to make them use same protocol as site to avoid mixed protocol warnings
-  2) Changes to Twitter component to obtain external code libraries using same protocol as site
+  1) Live sites for auroraonline.com, classaxe.com and ecclesiact.com can now be forced to https where enabled
+  2) Accesses to well-known/ by LetsEncypt no longer redirected to https even if enabled for site
+  3) Bug fix for Event Copy
 
 Final Checksums:
-  Classes     CS:a6ea9355
+  Classes     CS:d791f176
   Database    CS:5d138354
-  Libraries   CS:cf94e5b1
+  Libraries   CS:b06aa194
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.7     (2016-05-05)
+  codebase.php                                                                                   4.7.8     (2016-05-08)
     1) Updated version information
-  classes/class.block_layout.php                                                                 1.0.70    (2016-05-05)
-    1) Changes to BL_link() when option 'links_switch_video' is set -
-       Youtube embeds now use same protocol as main site
-  classes/class.component_twitter.php                                                            1.0.4     (2016-05-04)
-    1) Path to js widget.js and twitter.min.js scripts now protocol neutral
-    2) This needs refactoring into two separate classes
-  classes/class.media_youtube.php                                                                1.0.7     (2016-05-05)
-    1) Modified to make clips use same transfer protocol as site to avoid mixed protocol warning messages
+  classes/class.event.php                                                                        1.0.109   (2016-05-08)
+    1) Bug fix - copy without name wasn't working so I implemented rename on the clone action instead
+  classes/class.portal.php                                                                       1.0.39    (2016-05-06)
+    1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
+       to be Dev sites, so therefore redirects can force them to https as with other sites
+    2) Portal::isDev() DOES now consider accesses to 'well-known' to be treated as Dev sites, bypassing manditory
+       redirects to HTTPs to allow Letsencrypt to function properly
+    3) Any request that involves a path with .well-known now checks document root to see if path exists there.
+       If the path segment can be matched at the document root, the file is returned without any redirect to HTTPS
 
-2459.sql
-  1) Ecclesiact Bug Tracker path now HTTPS
-  2) Set version information
+2460.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.7.7
-  classes/  (3 files changed)
-    class.block_layout.php                            1.0.70    CS:845bf6a1
-    class.component_twitter.php                       1.0.4     CS:1afdd6c8
-    class.media_youtube.php                           1.0.7     CS:b8d7eeeb
+  codebase.php                                        4.7.8
+  classes/  (2 files changed)
+    class.event.php                                   1.0.109   CS:c842087d
+    class.portal.php                                  1.0.39    CS:94eeb59f
+
+  4) Fix twitter components which don't seem to be working right now, probably haven't for some time.
+        TWITTER WIDGET: The Twitter API v1.0 is deprecated, and this widget has ceased functioning.
+        TWITTER WIDGET: You can replace it with a new, upgraded widget from
+           <https://twitter.com/settings/widgets/new/user?screen_name=ecclesiact>
+        TWITTER WIDGET: For more information on alternative Twitter tools, see
+           <https://dev.twitter.com/docs/twitter-for-websites>
 
 
 
