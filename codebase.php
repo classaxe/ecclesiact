@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.8");
+define("CODEBASE_VERSION", "4.7.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,49 +16,49 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.8.2460 (2016-05-08)
+4.7.9.2461 (2016-05-14)
 Summary:
-  1) Live sites for auroraonline.com, classaxe.com and ecclesiact.com can now be forced to https where enabled
-  2) Accesses to well-known/ by LetsEncypt no longer redirected to https even if enabled for site
-  3) Bug fix for Event Copy
+  1) Changes to Search Results component to not show errors when sites list contains only invalid entries -
+     showed as a query bomb in SAMR after site and its two partner sites URLs changed to https
+  2) Twitter Feed redone
 
 Final Checksums:
-  Classes     CS:d791f176
+  Classes     CS:d07adb53
   Database    CS:5d138354
-  Libraries   CS:b06aa194
+  Libraries   CS:f0496b8b
   Reports     CS:c072c591
 
 Code Changes:
-  codebase.php                                                                                   4.7.8     (2016-05-08)
+  codebase.php                                                                                   4.7.9     (2016-05-14)
     1) Updated version information
-  classes/class.event.php                                                                        1.0.109   (2016-05-08)
-    1) Bug fix - copy without name wasn't working so I implemented rename on the clone action instead
-  classes/class.portal.php                                                                       1.0.39    (2016-05-06)
-    1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
-       to be Dev sites, so therefore redirects can force them to https as with other sites
-    2) Portal::isDev() DOES now consider accesses to 'well-known' to be treated as Dev sites, bypassing manditory
-       redirects to HTTPs to allow Letsencrypt to function properly
-    3) Any request that involves a path with .well-known now checks document root to see if path exists there.
-       If the path segment can be matched at the document root, the file is returned without any redirect to HTTPS
+  classes/class.report_column.php                                                                1.0.138   (2016-05-13)
+    1) Made almost all methods static
+  classes/class.search.php                                                                       1.0.13    (2016-05-13)
+    1) Refactored controls into smaller helper functions for simplicity
+    2) Now screens searched sites against 'official' list of sites defined in component parameters
+  classes/class.system.php                                                                       1.0.174   (2016-05-13)
+    1) System::get_global_date_range() now safely handles case where no valid system IDs are passed
+  classes/component/twitter.php                                                                  1.0.0     (2016-05-15)
+    1) Moved here from class.component_twitter.php
+  functions.php                                                                                  1.0.20    (2016-05-09)
+    1) Bug fix in errorHandler() for when $_SERVER[REMOTE_ADDR] isn't set
 
-2460.sql
-  1) Set version information
+2461.sql
+  1) ECL tag 'twitter_tweets' now marked as non-functional
+  2) ECL tag 'twitter_profile' use new API and is namespaced component
+  3) Set version information
+
+Delete:
+    class.component_twitter.php                       1.0.4
 
 Promote:
-  codebase.php                                        4.7.8
-  classes/  (2 files changed)
-    class.event.php                                   1.0.109   CS:c842087d
-    class.portal.php                                  1.0.39    CS:94eeb59f
-
-  4) Fix twitter components which don't seem to be working right now, probably haven't for some time.
-        TWITTER WIDGET: The Twitter API v1.0 is deprecated, and this widget has ceased functioning.
-        TWITTER WIDGET: You can replace it with a new, upgraded widget from
-           <https://twitter.com/settings/widgets/new/user?screen_name=ecclesiact>
-        TWITTER WIDGET: For more information on alternative Twitter tools, see
-           <https://dev.twitter.com/docs/twitter-for-websites>
-
-
-
+  codebase.php                                        4.7.9
+  classes/  (4 files changed)
+    class.report_column.php                           1.0.138   CS:a72a93fb
+    class.search.php                                  1.0.13    CS:7cfb87f4
+    class.system.php                                  1.0.174   CS:dabf1d43
+    component/twitter.php                             1.0.0     CS:55692264
+  functions.php                                       1.0.20    CS:afe6785b
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,9 +1,0 @@
-  1.0.3 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-  1.0.2 (2012-05-04)
-    1) Added Component_Twitter::draw_tweets()
-  1.0.1 (2012-04-05)
-    1) Changes to Component_Twitter::draw() to exit cleanly if running in
-       debug_no_internet mode
-  1.0.0 (2011-03-11)
-    1) Initial release

@@ -1,3 +1,5 @@
+  1.0.19 (2016-01-02)
+    1) Comments fix within errorHandler()
   1.0.18 (2016-01-01)
     1) Added custom error handler that will show strict errors pertaining to static method calls but only
        if viewed in dev environment

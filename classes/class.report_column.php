@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.137 (2016-04-19)
-    1) Report_Column::draw_selector_with_selected() now handles 'selected_queue_again'
+  1.0.138 (2016-05-13)
+    1) Made almost all methods static
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.137';
+    const VERSION = '1.0.138';
 
     public function __construct($ID = "")
     {
@@ -17,12 +17,12 @@ class Report_Column extends Record
         $this->_set_object_name('Report Column');
     }
 
-    public function attach_behaviour($field, $type, $args = "")
+    public static function attach_behaviour($field, $type, $args = "")
     {
         Output::push('javascript_onload', "  afb(\"".$field."\",\"".$type."\",\"".$args."\");\n");
     }
 
-    public function bulk_update(&$data, $bulk_update, $field, $value)
+    public static function bulk_update(&$data, $bulk_update, $field, $value)
     {
         if (!$bulk_update) {
             $data[$field] = addslashes($value);
@@ -35,12 +35,12 @@ class Report_Column extends Record
         return false;
     }
 
-    public function draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode)
+    public static function draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode)
     {
         $out = array();
         $field_alt =    $field."_alt";
         $field_sel =    $field."_selector";
-        $records =      $this->get_records_for_sql(get_sql_constants($selectorSQL));
+        $records =      static::get_records_for_sql(get_sql_constants($selectorSQL));
         $value_alt =    $value;
         $value_sel =    "--";
         foreach ($records as $record) {
@@ -60,7 +60,7 @@ class Report_Column extends Record
             ."<select id=\"".$field_sel."\"style=\"width: ".(((int)$width)+4)."px;\" class=\"formField\""
             .($jsCode ? $jsCode : " onchange=\"combo_selector_set('".$field."','".$width."')\"")
             .">"
-            .$this->draw_select_options($value_sel, $selectorSQL)
+            .static::draw_select_options($value_sel, $selectorSQL)
             ."</select>"
             ."</td>\n"
             ."    <td>&nbsp;</td>\n"
@@ -74,7 +74,7 @@ class Report_Column extends Record
             ."</table>\n";
     }
 
-    public function draw_form_field(
+    public static function draw_form_field(
         $row,
         $field,
         $value,
@@ -285,7 +285,7 @@ class Report_Column extends Record
                     break;
                 case "file_upload":
                     if ($value!='') {
-                        $file_params = $this->get_embedded_file_properties($value);
+                        $file_params = static::get_embedded_file_properties($value);
                         $out =
                              "<a href=\"".BASE_PATH."?command=download_data"
                             ."&amp;reportID=".$reportID
@@ -397,7 +397,7 @@ class Report_Column extends Record
                 case "selector_listdata":
                     $out_arr = array();
                     $sql =   get_sql_constants($selectorSQL);
-                    $records = $this->get_records_for_sql($sql);
+                    $records = static::get_records_for_sql($sql);
                     if ($records===false) {
                         $out_arr[]=z($sql);
                     } else {
@@ -815,7 +815,7 @@ class Report_Column extends Record
                     break;
                 case "checkbox_listdata_csv":
                 case "checkbox_sql_csv":
-                    $options = $this->get_records_for_sql($selectorSQL);
+                    $options = static::get_records_for_sql($selectorSQL);
                     $options_values_arr = array();
                     foreach ($options as $option) {
                         $options_values_arr[] = $option['value'];
@@ -876,7 +876,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                             "<span class=\"fl\">"
-                            .$this->draw_combo_selector(
+                            .static::draw_combo_selector(
                                 $field,
                                 $value,
                                 $selectorSQL,
@@ -903,11 +903,11 @@ class Report_Column extends Record
                             );
                     } else {
                         $out =
-                            $this->draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode);
+                            static::draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode);
                     }
                     break;
                 case "combo_selector":
-                    $out = $this->draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode);
+                    $out = static::draw_combo_selector($field, $value, $selectorSQL, $width, $reportID, $jsCode);
                     break;
                 case "csv":
                     $value = explode(",", str_replace(", ", ",", $value));
@@ -937,14 +937,14 @@ class Report_Column extends Record
                          $system_vars['defaultCurrencySymbol']
                         ."<input id=\"".$field."\" name=\"".$field."\" type=\"text\" value=\"".$value."\""
                         ." class='formField txt_r' style=\"width: ".$width.";\" $jsCode/>"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "date":
                     $value = ($value=='0000-00-00' || $value=='0000-00-00 00:00:00' ? '' : $value);
                     $out =
                          "<input id=\"".$field."\" name=\"".$field."\" type=\"text\" value=\"".$value."\""
                         ." size=\"12\" maxlength=\"10\" class='admin_formFixed' $jsCode />\n"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "datetime":
                     $value = ($value=='0000-00-00' || $value=='0000-00-00 00:00:00' ? '' : $value);
@@ -952,7 +952,7 @@ class Report_Column extends Record
                          "<input id=\"".$field."\" name=\"".$field."\" type=\"text\" value=\"".$value."\""
                         ." size=\"20\" maxlength=\"19\" class='admin_formFixed' $jsCode />\n"
                         ." <span style='font-size: 80%'>(YYYY-MM-DD hh:mm:ss)</span>"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "email":
                     $out =
@@ -1164,7 +1164,7 @@ class Report_Column extends Record
                 break;
                 case "file_upload":
                     if ($value!='') {
-                        $file_params = $this->get_embedded_file_properties($value);
+                        $file_params = static::get_embedded_file_properties($value);
                         $out =
                              "<a href=\"".BASE_PATH."?command=download_data"
                             ."&amp;reportID=".$reportID
@@ -1184,7 +1184,7 @@ class Report_Column extends Record
                 case "file_upload_to_userfile_folder":
                     if (isset($row['ID'])) {
                         if ($value!='') {
-                            $file_params = $this->get_embedded_file_properties($value);
+                            $file_params = static::get_embedded_file_properties($value);
                             $out =
                                  "<input class='fl' id=\"".$field."_mark_delete\" type=\"checkbox\""
                                 ." name=\"".$field."_mark_delete\" value=\"1\""
@@ -1239,15 +1239,14 @@ class Report_Column extends Record
                     }
                     break;
                 case "groups_assign":
-                    $out =
-                        $this->draw_list_selector(
-                            $field,
-                            $value,
-                            $selectorSQL,
-                            false,
-                            $width,
-                            ($height ? $height : 110)
-                        );
+                    $out = static::draw_list_selector(
+                        $field,
+                        $value,
+                        $selectorSQL,
+                        false,
+                        $width,
+                        ($height ? $height : 110)
+                    );
                     break;
                 case "groups_assign_person":
                     if ($value=='') {
@@ -1268,7 +1267,7 @@ class Report_Column extends Record
                     $out =
                          "<input type=\"text\" id=\"$field\" name=\"$field\" value=\"$value\""
                          ." size=\"6\" maxlength=\"5\" class='admin_formFixed' $jsCode/>"
-                         .$this->attach_behaviour($field, $type);
+                         .static::attach_behaviour($field, $type);
                     break;
                 case "hidden":
                     $out =
@@ -1447,7 +1446,7 @@ class Report_Column extends Record
                     $out =
                          "<input id=\"$field\" type=\"text\" name=\"$field\" value=\"".$value."\""
                         ." style=\"width: ".$width.";\" class='formField txt_r' $jsCode/>"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "json":
                     $out =
@@ -1467,7 +1466,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                             "<div class=\"fl\">"
-                            .$this->draw_selector_csv(
+                            .static::draw_selector_csv(
                                 $field,
                                 $value,
                                 $selectorSQL,
@@ -1499,7 +1498,7 @@ class Report_Column extends Record
                             .convert_icons("[ICON]17 16 4805 Manage Keywords...[/ICON]")."</a>"
                             ."</div>";
                     } else {
-                        $out = $this->draw_selector_csv(
+                        $out = static::draw_selector_csv(
                             $field,
                             $value,
                             $selectorSQL,
@@ -1537,7 +1536,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                             "<div class=\"fl\">"
-                            .$this->draw_selector_csv(
+                            .static::draw_selector_csv(
                                 $field,
                                 $value,
                                 $selectorSQL,
@@ -1564,7 +1563,7 @@ class Report_Column extends Record
                                  .convert_icons("[ICON]14 14 715 Add new ListType[/ICON]")."</a>"
                             );
                     } else {
-                        $out = $this->draw_selector_csv(
+                        $out = static::draw_selector_csv(
                             $field,
                             $value,
                             $selectorSQL,
@@ -1600,26 +1599,24 @@ class Report_Column extends Record
                         .");return false;\" title=\"Validate content at W3C\">Validate Content</a>";
                     break;
                 case "list (a-z)":
-                    $out =
-                        $this->draw_list_selector(
-                            $field,
-                            $value,
-                            $selectorSQL,
-                            false,
-                            $width,
-                            ($height ? $height : 110)
-                        );
+                    $out = static::draw_list_selector(
+                        $field,
+                        $value,
+                        $selectorSQL,
+                        false,
+                        $width,
+                        ($height ? $height : 110)
+                    );
                     break;
                 case "list (sequenced)":
-                    $out =
-                        $this->draw_list_selector(
-                            $field,
-                            $value,
-                            $selectorSQL,
-                            true,
-                            $width,
-                            ($height ? $height : 110)
-                        );
+                    $out = static::draw_list_selector(
+                        $field,
+                        $value,
+                        $selectorSQL,
+                        true,
+                        $width,
+                        ($height ? $height : 110)
+                    );
                     break;
                 case "listdata_value":
                     $path_unsafe = preg_replace('/[^0-9\_\-a-zA-Z]/', '', $value)!==$value;
@@ -1636,7 +1633,7 @@ class Report_Column extends Record
                         .($path_unsafe ? "" : " checked=\"checked\"")
                         ."/>\n"
                         ."</label>"
-                        .$this->attach_behaviour($field, 'listdata_value');
+                        .static::attach_behaviour($field, 'listdata_value');
                     break;
                 case "media_file_upload":
                     $out =
@@ -1755,7 +1752,7 @@ class Report_Column extends Record
                     $out =
                          "<input id=\"$field\" type=\"text\" name=\"$field\" value=\"$value\""
                         ." style=\"width: ".$width.";\" class='formField txt_r' ".$jsCode."/>%"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "php":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
@@ -1826,16 +1823,16 @@ class Report_Column extends Record
                         .$prefix."</div>"
                         ."<input id=\"$field\" type=\"text\" name=\"$field\" value=\"".$value."\" class='formField'"
                         ." style=\"width: ".$width."px;\" $jsCode/>"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "posting_name_unprefixed":
                     $out =
                          "<input id=\"".$field."\" type=\"text\" name=\"".$field."\" value=\"".$value."\""
                         ." class='formField' style=\"width: ".(int)$width."px;\" ".$jsCode."/>"
-                        .$this->attach_behaviour($field, 'posting_name');
+                        .static::attach_behaviour($field, 'posting_name');
                     break;
                 case "push_products_assign":
-                    $out = $this->draw_selector_csv(
+                    $out = static::draw_selector_csv(
                         $field,
                         $value,
                         $selectorSQL,
@@ -1858,16 +1855,16 @@ class Report_Column extends Record
                         ." src=\"".BASE_PATH."img/spacer\" class='icons'"
                         ." style=\"height:8px;width:11px;background-position: -1423px 8px;\" />\n"
                         ."  </div>\n"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "radio_csvlist":
-                    $out = $this->draw_radio_selector($field, $value, $entries_arr, $width, $jsCode);
+                    $out = static::draw_radio_selector($field, $value, $entries_arr, $width, $jsCode);
                     break;
                 case "radio_listdata":
-                    $out = $this->draw_radio_selector_for_sql($field, $value, $selectorSQL, $width, $jsCode);
+                    $out = static::draw_radio_selector_for_sql($field, $value, $selectorSQL, $width, $jsCode);
                     break;
                 case "radio_selector":
-                    $out = $this->draw_radio_selector_for_sql($field, $value, $selectorSQL, $width, $jsCode);
+                    $out = static::draw_radio_selector_for_sql($field, $value, $selectorSQL, $width, $jsCode);
                     break;
                 case "read_only":
                     $out = $value;
@@ -1877,12 +1874,12 @@ class Report_Column extends Record
                     $out = $Obj->draw_person_info();
                     break;
                 case "sample_buttonstyle":
-                    $out =  $this->drawNavStyleSample($field, $value, $row);
+                    $out =  static::drawNavStyleSample($field, $value, $row);
                     break;
                 case "sample_navsuite":
                     $Obj =  new \Nav\Style($row['buttonStyleID']);
                     $row =  $Obj->get_record();
-                    $out =  $this->drawNavSuiteSample($field, $value, $row);
+                    $out =  static::drawNavSuiteSample($field, $value, $row);
                     break;
                 case "sample_fontface":
                     if (!isset($row['ID']) || $row['ID']=="") {
@@ -1894,9 +1891,9 @@ class Report_Column extends Record
                     break;
                 case "select_group_for_person":
                     global $selectID;
-                    $Obj = new Group();
+                    $Obj = new Group;
                     $selectorSQL = $Obj->get_selector_groups_SQL(false, $selectID);
-                    $out = $this->draw_selector($field, $value, $selectorSQL, $width, $jsCode);
+                    $out = static::draw_selector($field, $value, $selectorSQL, $width, $jsCode);
                     break;
                 case "categories_assign":
                 case "selector_listdata_csv":
@@ -1919,7 +1916,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                             "<div class=\"fl\">"
-                            .$this->draw_selector_csv(
+                            .static::draw_selector_csv(
                                 $field,
                                 $value,
                                 $selectorSQL,
@@ -1945,7 +1942,7 @@ class Report_Column extends Record
                                  .convert_icons("[ICON]14 14 715 Add new ListType[/ICON]")."</a>"
                             );
                     } else {
-                        $out = $this->draw_selector_csv($field, $value, $selectorSQL, $width, ($height ? $height : 35));
+                        $out = static::draw_selector_csv($field, $value, $selectorSQL, $width, ($height ? $height : 35));
                     }
                     break;
                 case "selector_csvlist":
@@ -1980,7 +1977,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                               "<span class=\"fl\">"
-                             .$this->draw_selector($field, $value, $selectorSQL, ($width-22)."px", $jsCode)
+                             .static::draw_selector($field, $value, $selectorSQL, ($width-22)."px", $jsCode)
                              ."&nbsp; </span>"
                              .($ID!="" ?
                                     "<a class='fl' "
@@ -2000,7 +1997,7 @@ class Report_Column extends Record
                                    .convert_icons("[ICON]14 14 715 Add new ListType[/ICON]")."</a>"
                              );
                     } else {
-                        $out = $this->draw_selector($field, $value, $selectorSQL, $width, $jsCode);
+                        $out = static::draw_selector($field, $value, $selectorSQL, $width, $jsCode);
                     }
                     break;
                 case "selector_contact":
@@ -2044,7 +2041,7 @@ class Report_Column extends Record
                         if (isset($row['ID'])) {
                             $out =
                                  "<span class=\"fl\">"
-                                .$this->draw_selector($field, $value, $selectorSQL, ($width-24)."px", $jsCode)
+                                .static::draw_selector($field, $value, $selectorSQL, ($width-24)."px", $jsCode)
                                 ."&nbsp; </span>"
                                 ."<a class='fl' "
                                 ."onmouseover=\"window.status='".$_tooltip."';return true;\" "
@@ -2054,10 +2051,10 @@ class Report_Column extends Record
                                 ."'resizable=1,scrollbars=1',".$_w.",".$_h.",true);return false;\">"
                                 .convert_icons($_icon)."</a>";
                         } else {
-                            $out = $this->draw_selector($field, $value, $selectorSQL, $width, $jsCode);
+                            $out = static::draw_selector($field, $value, $selectorSQL, $width, $jsCode);
                         }
                     } else {
-                        $out = $this->draw_selector($field, $value, $selectorSQL, $width, $jsCode);
+                        $out = static::draw_selector($field, $value, $selectorSQL, $width, $jsCode);
                     }
                     break;
                 case "selector_timezone":
@@ -2096,7 +2093,7 @@ class Report_Column extends Record
                     ) {
                         $value=SYS_ID;  // Prevents MASTERADMIN from accidentally selecting 'All' by mistake
                     }
-                    $out = $this->draw_selector($field, $value, $selectorSQL, $width, $jsCode);
+                    $out = static::draw_selector($field, $value, $selectorSQL, $width, $jsCode);
                     break;
                 case "seq":
                     $out =
@@ -2113,7 +2110,7 @@ class Report_Column extends Record
                         ." style=\"height:8px;width:11px;background-position: -1445px 8px;\" />"
                         ."  </div>"
                         ."</div>"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "server_file":
                     $out =
@@ -2223,7 +2220,7 @@ class Report_Column extends Record
                         ." onchange=\"\$('#'+this.id+'_s').spectrum('set',this.value)\"/>"
                         ."<input type='text' class='spectrum' id='".$field."_s' value='".$value."' />"
                         ."<br class='clear' />"
-                        .$this->attach_behaviour($field, $type);
+                        .static::attach_behaviour($field, $type);
                     break;
                 case "tax_name_and_rate":
                     static $tax_regime_record = false;
@@ -2247,7 +2244,7 @@ class Report_Column extends Record
                         ."</div>"
                         ."<input id=\"".$_tax_rate_field."\" type=\"text\" name=\"".$_tax_rate_field."\""
                         ." value=\"".$_tax_rate_value."\" style=\"width:40px;\" class='formField txt_r'/>%"
-                        .$this->attach_behaviour($_tax_rate_field, 'percent');
+                        .static::attach_behaviour($_tax_rate_field, 'percent');
                     break;
                 case "textarea":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);
@@ -2686,7 +2683,7 @@ class Report_Column extends Record
         return $out;
     }
 
-    public function draw_form_field_lookup(
+    public static function draw_form_field_lookup(
         $field,
         $value,
         $control_num,
@@ -2703,7 +2700,6 @@ class Report_Column extends Record
         $lookup_result_initial = '',
         $results_height = 100
     ) {
-        $Obj_RFFL = new Report_Form_Field_Lookup;
         $args = array(
             'field' =>                    $field,
             'value' =>                    $value,
@@ -2721,6 +2717,7 @@ class Report_Column extends Record
             'lookup_result_initial' =>    $lookup_result_initial,
             'results_height' =>           $results_height
         );
+        $Obj_RFFL = new Report_Form_Field_Lookup;
         $Obj_RFFL->init($args);
         return $Obj_RFFL->draw();
     }
@@ -2749,7 +2746,7 @@ class Report_Column extends Record
             ."</div>";
     }
 
-    public function draw_list_selector($field, $value, $selectorSQL, $order = false, $width = 100, $height = 110)
+    public static function draw_list_selector($field, $value, $selectorSQL, $order = false, $width = 100, $height = 110)
     {
         $c2 = ($order ? 80 : 42);
         $c1 = ((int)$width/2)-$c2;
@@ -2757,15 +2754,14 @@ class Report_Column extends Record
         $options =    array();
         $chosen =     array();
         if ($selectorSQL!="") {
-            $records = $this->get_records_for_sql($selectorSQL);
+            $records = static::get_records_for_sql($selectorSQL);
             foreach ($records as $record) {
-                $options[] =
-                array(
-                'value' =>              $record['value'],
-                'text' =>               get_image_alt($record['text']),
-                'color_background' =>   (isset($record['color_background']) ? $record['color_background'] : 'ffffff'),
-                'color_text' =>         (isset($record['color_text']) ? $record['color_text'] : '000000'),
-                'available' =>          true
+                $options[] = array(
+                    'value' =>              $record['value'],
+                    'text' =>               get_image_alt($record['text']),
+                    'color_background' =>   (isset($record['color_background']) ? $record['color_background'] : 'ffffff'),
+                    'color_text' =>         (isset($record['color_text']) ? $record['color_text'] : '000000'),
+                    'available' =>          true
                 );
             }
         }
@@ -2875,7 +2871,7 @@ class Report_Column extends Record
         return $out;
     }
 
-    public function draw_radio_selector($field, $value, $entries_arr, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
+    public static function draw_radio_selector($field, $value, $entries_arr, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
     {
         $out = '';
         if ((int)$width && !$stacked) {
@@ -2918,18 +2914,18 @@ class Report_Column extends Record
         return $out;
     }
 
-    public function draw_radio_selector_for_sql($field, $value, $sql, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
+    public static function draw_radio_selector_for_sql($field, $value, $sql, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
     {
         $out =    array();
         $sql =    get_sql_constants($sql);
-        $records = $this->get_records_for_sql($sql);
+        $records = static::get_records_for_sql($sql);
         if ($records===false) {
             return '';
         }
-        return $this->draw_radio_selector($field, $value, $records, $width, $jsCode, $ajax_mode, $stacked);
+        return static::draw_radio_selector($field, $value, $records, $width, $jsCode, $ajax_mode, $stacked);
     }
 
-    public function draw_report_field(
+    public static function draw_report_field(
         $column,
         $row,
         $popupFormHeight,
@@ -2958,23 +2954,23 @@ class Report_Column extends Record
         );
     }
 
-    public function drawNavStyleSample($field, $value, $row)
+    public static function drawNavStyleSample($field, $value, $row)
     {
         if ($value=="") {
             return "(Save this Button Style first)";
         }
-        return $this->drawNavSample($value, "btn_style", $row);
+        return static::drawNavSample($value, "btn_style", $row);
     }
 
-    public function drawNavSuiteSample($field, $value, $row)
+    public static function drawNavSuiteSample($field, $value, $row)
     {
         if ($value=="") {
             return "(Save this Button Suite first)";
         }
-        return $this->drawNavSample($value, "btn_style", $row);
+        return static::drawNavSample($value, "btn_style", $row);
     }
 
-    public function drawNavSample($value, $submode, $row)
+    public static function drawNavSample($value, $submode, $row)
     {
         $orientation =  $row['orientation'];
         $height =       $row['img_height'];
@@ -3026,19 +3022,17 @@ class Report_Column extends Record
             ."</div>";
     }
 
-    public function draw_select_options($value, $sql)
+    public static function draw_select_options($value, $sql)
     {
         global $report_name;
-        $sql =    get_sql_constants($sql);
-  //    z($sql);
-        $records = $this->get_records_for_sql($sql);
+        $records = static::get_records_for_sql(get_sql_constants($sql));
         if ($records===false) {
             return '';
         }
-        return $this->draw_select_options_from_records($value, $records);
+        return static::draw_select_options_from_records($value, $records);
     }
 
-    public function draw_select_options_from_records($value, $records)
+    public static function draw_select_options_from_records($value, $records)
     {
         $out =    "";
         $headerLevel=0;
@@ -3094,21 +3088,20 @@ class Report_Column extends Record
         return $out;
     }
 
-    public function draw_selector($field, $value, $sql, $width, $jsCode)
+    public static function draw_selector($field, $value, $sql, $width, $jsCode)
     {
         return
              "<select id=\"$field\" name=\"$field\" style=\"width: ".(((int)$width)+4)."px;\""
             ." class=\"formField\"".($jsCode ? " ".$jsCode : "").">\n"
-            .$this->draw_select_options($value, $sql)
+            .static::draw_select_options($value, $sql)
             ."</select>";
     }
 
-    public function draw_selector_csv($field, $value, $sql, $width, $height, $hasWeight = 0)
+    public static function draw_selector_csv($field, $value, $sql, $width, $height, $hasWeight = 0)
     {
-        $records =       $this->get_records_for_sql($sql);
+        $records =      static::get_records_for_sql($sql);
         $value_arr =    explode(",", $value);
         $list_arr =     array();
-
         Output::push(
             'javascript_onload',
             "  selector_csv_show(\"".$field."\",".($hasWeight ? "1" : "0").");\n"
@@ -3120,7 +3113,7 @@ class Report_Column extends Record
             ."onchange=\"selector_csv_add('".$field."',this.options[this.selectedIndex].value,"
             .($hasWeight ? "1" : "0")
             .");\">\n"
-            .Report_Column::draw_select_options('', $sql)
+            .static::draw_select_options('', $sql)
             ."</select>"
             ."<div id=\"selector_csv_div_".$field."\" class='formField fl txt_l'"
             ." style='width:".(((int)$width)*0.55)."px;height:".$height."px;"
@@ -3128,7 +3121,7 @@ class Report_Column extends Record
             ."</div>";
     }
 
-    public function draw_selector_with_selected($report_name, $reportID, $ajax_popup_url = false, $toolbar = 0)
+    public static function draw_selector_with_selected($report_name, $reportID, $ajax_popup_url = false, $toolbar = 0)
     {
         $features = explode(',', Report::REPORT_FEATURES);
         $s = array();
@@ -3453,7 +3446,7 @@ class Report_Column extends Record
         return $this->sqlExport($targetID, $show_fields);
     }
 
-    public function get_column_for_report($reportName, $formField)
+    public static function get_column_for_report($reportName, $formField)
     {
         $sql =
              "SELECT\n"
@@ -3469,10 +3462,10 @@ class Report_Column extends Record
             ."ORDER BY\n"
             ."  `report_columns`.`systemID` = 1\n"
             ."LIMIT 0,1";
-        return $this->get_record_for_sql($sql);
+        return static::get_record_for_sql($sql);
     }
 
-    public function get_selector_sql($type, $isMASTERADMIN, $formSelectorSQLMaster, $formSelectorSQLMember)
+    public static function get_selector_sql($type, $isMASTERADMIN, $formSelectorSQLMaster, $formSelectorSQLMember)
     {
         switch ($type) {
             case "checkbox_sql_csv":
@@ -3492,7 +3485,7 @@ class Report_Column extends Record
         return parent::try_copy($newID, $msg, $msg_tooltip, false);
     }
 
-    public function note_prepend($text)
+    public static function note_prepend($text)
     {
         $timestamp =    get_timestamp();
         $PUsername =    get_userPUsername();
