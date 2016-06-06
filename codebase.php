@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.9");
+define("CODEBASE_VERSION", "4.7.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,49 +16,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.9.2461 (2016-05-14)
+4.7.10.2462 (2016-06-04)
 Summary:
-  1) Changes to Search Results component to not show errors when sites list contains only invalid entries -
-     showed as a query bomb in SAMR after site and its two partner sites URLs changed to https
-  2) Twitter Feed redone
+  1) Bug fix for redirects for HTTP to HTTPS for sites NOT in root folder -
+     e.g. http://www.classaxe.com/smarties
+  2) Added privacy options for User and Contact Photos and 'About' messages
+  3) Added support for displaying a user or contacts Image in listings -
+     Used for correspondents in new BNN site
 
 Final Checksums:
-  Classes     CS:d07adb53
-  Database    CS:5d138354
-  Libraries   CS:f0496b8b
-  Reports     CS:c072c591
+  Classes     CS:ac8586f8
+  Database    CS:8cb3d09e
+  Libraries   CS:12b21bf9
+  Reports     CS:b018e297
 
 Code Changes:
-  codebase.php                                                                                   4.7.9     (2016-05-14)
+  codebase.php                                                                                   4.7.10    (2016-06-05)
     1) Updated version information
-  classes/class.report_column.php                                                                1.0.138   (2016-05-13)
-    1) Made almost all methods static
-  classes/class.search.php                                                                       1.0.13    (2016-05-13)
-    1) Refactored controls into smaller helper functions for simplicity
-    2) Now screens searched sites against 'official' list of sites defined in component parameters
-  classes/class.system.php                                                                       1.0.174   (2016-05-13)
-    1) System::get_global_date_range() now safely handles case where no valid system IDs are passed
-  classes/component/twitter.php                                                                  1.0.0     (2016-05-15)
-    1) Moved here from class.component_twitter.php
-  functions.php                                                                                  1.0.20    (2016-05-09)
-    1) Bug fix in errorHandler() for when $_SERVER[REMOTE_ADDR] isn't set
+  classes/class.person.php                                                                       1.0.128   (2016-06-05)
+    1) New parameters show_image, image_height and image_width now available for person listings
+    2) New block layout tag for Person - BL_image()
+    3) Added privacy_image to fields list
+  style/labels.css                                                                               1.0.49    (2016-06-05)
+    1) Added lbl_CYAN-privacy-image
 
-2461.sql
-  1) ECL tag 'twitter_tweets' now marked as non-functional
-  2) ECL tag 'twitter_profile' use new API and is namespaced component
-  3) Set version information
-
-Delete:
-    class.component_twitter.php                       1.0.4
+2462.sql
+  1) New `privacy_image` column for `person` table
+  2) New privacy control for image in Contacts report
+  3) New privacy control for image in Users report
+  4) Set version information
 
 Promote:
-  codebase.php                                        4.7.9
-  classes/  (4 files changed)
-    class.report_column.php                           1.0.138   CS:a72a93fb
-    class.search.php                                  1.0.13    CS:7cfb87f4
-    class.system.php                                  1.0.174   CS:dabf1d43
-    component/twitter.php                             1.0.0     CS:55692264
-  functions.php                                       1.0.20    CS:afe6785b
+  codebase.php                                        4.7.10
+  classes/  (1 file changed)
+    class.person.php                                  1.0.128   CS:753df20
+  images/labels.gif                                             CS:37e90a7b
+  style/labels.css                                    1.0.49    CS:75a378f1
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

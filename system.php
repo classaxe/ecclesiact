@@ -2,13 +2,13 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.37 (ECC)");
+define("SYSTEM_VERSION", "1.0.38 (ECC)");
 
 /*
 Version History:
-  1.0.37 (2016-05-02)
-    1) Bug fix for protocol path switching -
-       http://www.prayforthem.ca/aurora/contact now goes correctly to https://prayforthem.ca/aurora/contact 
+  1.0.38 (2016-06-05)
+    1) Additional fix for path switching to correctyly redirect for sites whose root folder isn't /
+       e.g. http://www.classaxe.com/smarties
 */
 
 if (get_magic_quotes_gpc()) {
@@ -39,6 +39,8 @@ function main($mode)
     $server_url =       $server_scheme.getenv("SERVER_NAME");
     $site_scheme =      (substr($system_vars['URL'], 0, 6)=='https:' ?   "https://" : "http://");
     $site_url =         trim($system_vars['URL'], '/');
+    $site_bits =        parse_url($site_url);
+    $site_path =        (isset($site_bits['path']) ? $site_bits['path'] : '');
     if (!Portal::isDev()) {
         if ($server_url!== $site_url) {
             $aliases = explode(',', str_replace(' ', '', $system_vars['URL_aliases']));
@@ -60,7 +62,7 @@ function main($mode)
                 );
                 die;
             }
-            if ($server_url!== $site_url) {
+            if ($server_url.$site_path!== $site_url) {
                 header("HTTP/1.1 302 Moved");
                 header(
                     "Location: ".$site_url.'/'

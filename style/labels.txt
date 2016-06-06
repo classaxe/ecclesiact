@@ -1,3 +1,7 @@
+  1.0.48 (2015-12-25)
+    1) Added lbl_YELLOW-num-contacts
+    2) Added lbl_YELLOW-num-emails-sent
+    3) Added lbl_YELLOW-num-users
   1.0.47 (2015-09-12)
     1) Added lbl_responsive
   1.0.46 (2015-08-29)

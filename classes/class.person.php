@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.127 (2016-03-26)
-    1) Person::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
+  1.0.128 (2016-06-05)
+    1) New parameters show_image, image_height and image_width now available for person listings
+    2) New block layout tag for Person - BL_image()
+    3) Added privacy_image to fields list
 */
 class Person extends Displayable_Item
 {
-    const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_address, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_address, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.127';
+    const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_address, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_image, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_address, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.128';
 
     public function __construct($ID = "")
     {
@@ -96,6 +98,16 @@ class Person extends Displayable_Item
                 'default' =>    'NTitle,NFirst,NMiddle,NLast',
                 'hint' =>       'CSV list with any combination of NTitle,NFirst,NMiddle,NLast'
             ),
+            'image_height' =>             array(
+                'match' =>      'range|1,n',
+                'default' =>    '300',
+                'hint' =>       '|1..n or blank - height in px to resize'
+            ),
+            'image_width' =>              array(
+                'match' =>      'range|1,n',
+                'default' =>    '400',
+                'hint' =>       '|1..n or blank - width in px to resize'
+            ),
             'keywords_show' =>            array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
@@ -157,6 +169,11 @@ class Person extends Displayable_Item
                 'hint' =>       '0|1'
             ),
             'show_email' =>               array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       '0|1'
+            ),
+            'show_image' =>               array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
@@ -586,6 +603,56 @@ class Person extends Displayable_Item
         }
         $prefix =   'W';
         return $this->_fax($prefix);
+    }
+
+    protected function BL_image()
+    {
+        if (isset($this->_cp['image_show']) && $this->_cp['image_show']=='0') {
+            return;
+        }
+        if (!$this->_check_view_permissions($this->record, 'privacy_image')) {
+            return;
+        }
+        $wm =   isset($this->_cp['show_watermark']) && $this->_cp['show_watermark']==1;
+        $img =  $this->record['image'];
+        $thumbnail_file =
+            (substr($img, 0, strlen(BASE_PATH))==BASE_PATH ? BASE_PATH.substr($img, strlen(BASE_PATH)) : $img);
+        if (!$img || !file_exists('.'.$thumbnail_file)) {
+            $img = false;
+        }
+        if (!$img) {
+            return;
+        }
+        $thumbnail_img =
+        ($this->_cp['image_width'] ?
+         ($this->_cp['image_height'] ?
+             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
+            ."?width=".$this->_cp['image_width']
+            ."&amp;height=".$this->_cp['image_height']
+            .($cs ? "&amp;cs=".$cs : "")
+          :
+             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
+            ."?width=".$this->_cp['image_width']
+            .($cs ? "&amp;cs=".$cs : "")
+         )
+         :
+         ($this->_cp['image_height'] ?
+             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
+            ."?height=".$this->_cp['image_height']
+            .($cs ? "&amp;cs=".$cs : "")
+          :
+             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
+            ."?"
+            .($cs ? "&amp;cs=".$cs : "")
+         )
+        );
+        return
+             "<div class='thumbnail'>"
+            .(isset($this->_cp['image_link']) && $this->_cp['image_link'] ? $read_link : "")
+            ."<img role=\"presentation\" alt=\"".$this->BL_name()."\""
+            ." src=\"".$thumbnail_img."\" />"
+            .(isset($this->_cp['image_link']) && $this->_cp['image_link'] ? "</a>" : "")
+            ."</div>";
     }
 
     protected function BL_linkedin($bare = false)
