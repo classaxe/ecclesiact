@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.10");
+define("CODEBASE_VERSION", "4.7.11");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,42 +16,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.10.2462 (2016-06-04)
+4.7.11.2463 (2016-06-08)
 Summary:
-  1) Bug fix for redirects for HTTP to HTTPS for sites NOT in root folder -
-     e.g. http://www.classaxe.com/smarties
-  2) Added privacy options for User and Contact Photos and 'About' messages
-  3) Added support for displaying a user or contacts Image in listings -
-     Used for correspondents in new BNN site
+  1) Added Instagram icon to Social Icons component for ULM
+  2) Tidy up for emailed message format from community member contact form 
 
 Final Checksums:
-  Classes     CS:ac8586f8
+  Classes     CS:9312e70
   Database    CS:8cb3d09e
-  Libraries   CS:12b21bf9
+  Libraries   CS:8dfa8760
   Reports     CS:b018e297
 
 Code Changes:
-  codebase.php                                                                                   4.7.10    (2016-06-05)
+  codebase.php                                                                                   4.7.11    (2016-06-08)
     1) Updated version information
-  classes/class.person.php                                                                       1.0.128   (2016-06-05)
-    1) New parameters show_image, image_height and image_width now available for person listings
-    2) New block layout tag for Person - BL_image()
-    3) Added privacy_image to fields list
-  style/labels.css                                                                               1.0.49    (2016-06-05)
-    1) Added lbl_CYAN-privacy-image
+  classes/class.community_member_display.php                                                     1.0.46    (2016-06-08)
+    1) Work to tidy up message format in email contact form
+  classes/component/iconsocial.php                                                               1.0.6     (2016-06-08)
+    1) Added support for Instagram
 
-2462.sql
-  1) New `privacy_image` column for `person` table
-  2) New privacy control for image in Contacts report
-  3) New privacy control for image in Users report
-  4) Set version information
+2463.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.7.10
-  classes/  (1 file changed)
-    class.person.php                                  1.0.128   CS:753df20
-  images/labels.gif                                             CS:37e90a7b
-  style/labels.css                                    1.0.49    CS:75a378f1
+  codebase.php                                        4.7.11
+  classes/  (2 files changed)
+    class.community_member_display.php                1.0.46    CS:17faf8
+    component/iconsocial.php                          1.0.6     CS:4b33c6cf
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -2,19 +2,20 @@
 namespace Component;
 /*
 Version History:
-  1.0.5 (2016-03-12)
-    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
+  1.0.6 (2016-06-08)
+    1) Added support for Instagram
 */
 class IconSocial extends Base
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     public function __construct()
     {
         $this->_ident =
             "draw_social_icon";
         $this->_types_csv =
-            "delicious,digg,email,facebook,flickr,google,linkedin,rss,skype,stumbleupon,twitter,vimeo,youtube";
+            "delicious,digg,email,facebook,flickr,google,instagram,linkedin,"
+            ."rss,skype,stumbleupon,twitter,vimeo,youtube";
         $this->_parameter_spec =    array(
             'disable' =>      array(
                 'match' =>      'enum|0,1',

@@ -1,3 +1,5 @@
+  1.0.5 (2016-03-12)
+    1) Replaced html width and height with inline CSS settings to protect against mangling by bootstrap
   1.0.4 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.3 (2015-09-14)

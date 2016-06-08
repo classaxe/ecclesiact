@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.45 (2016-03-15)
-    1) Community_Member_Display::drawSponsorsLocal()
+  1.0.46 (2016-06-08)
+    1) Work to tidy up message format in email contact form
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.45';
+    const VERSION = '1.0.46';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -462,20 +462,26 @@ class Community_Member_Display extends Community_Member
                         break;
                     }
                 }
+                $subject =
+                     "Website contact via ".$this->_record['title']." church profile at "
+                    .$this->_community_record['URL_external']."/".$this->_record['name'].'#contact';
+                $message =
+                     "<b>Subject:</b> Website contact via ".$this->_record['title']." church profile\n"
+                    ."<b>Source:</b> ".$this->_community_record['URL_external']."/".$this->_record['name']."#contact\n"
+                    ."<b>Sender:</b> ".$this->contact_sender_name." &lt;".$this->contact_sender_email."&gt;\n"
+                    ."<b>Message:\n"
+                    .$this->contact_message;
                 get_mailsender_to_component_results();      // Use system default mail sender details
-                $data =
-                array(
+                $data = array(
                     'NName' =>            $this->contact_recipient_name.' <'.$this->contact_recipient_email.'>',
                     'PEmail' =>           $this->contact_recipient_email,
                     'bcc_email' =>        'info@churchesinyourtown.ca',
                     'bcc_name' =>         'Martin Francis',
                     'replyto_email' =>    $this->contact_sender_email,
                     'replyto_name' =>     $this->contact_sender_name,
-                    'subject' =>
-                         "Contact via ".$this->_record['title']." church profile at "
-                        .$this->_community_record['URL_external']."/".$this->_record['name'].'#contact',
-                    'html' =>             nl2br($this->contact_message),
-                    'text' =>             wordwrap(html_entity_decode(strip_tags($this->contact_message)))
+                    'subject' =>          strip_tags($subject),
+                    'html' =>             nl2br($message),
+                    'text' =>             wordwrap(html_entity_decode(strip_tags($message)))
                 );
                 if ($this->_current_user_rights['isEditor']) {
                     $data['cc_email'] = $this->contact_sender_email;
