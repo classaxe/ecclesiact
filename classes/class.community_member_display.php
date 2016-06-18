@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.46 (2016-06-08)
-    1) Work to tidy up message format in email contact form
+  1.0.47 (2016-06-08)
+    1) More work to tidy up email contact form message format
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.46';
+    const VERSION = '1.0.47';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -465,12 +465,37 @@ class Community_Member_Display extends Community_Member
                 $subject =
                      "Website contact via ".$this->_record['title']." church profile at "
                     .$this->_community_record['URL_external']."/".$this->_record['name'].'#contact';
-                $message =
-                     "<b>Subject:</b> Website contact via ".$this->_record['title']." church profile\n"
-                    ."<b>Source:</b> ".$this->_community_record['URL_external']."/".$this->_record['name']."#contact\n"
-                    ."<b>Sender:</b> ".$this->contact_sender_name." &lt;".$this->contact_sender_email."&gt;\n"
-                    ."<b>Message:\n"
-                    .$this->contact_message;
+                $message_html =
+                     "<table cellspacing='0' cellpadding='2' border='1'>"
+                    ."<tr>"
+                    ."<td valign='top'><b>Subject:</b></td>"
+                    ."<td valign='top'>"
+                    ."Website contact via ".$this->_record['title']." church profile at "
+                    ."Churches in ".$this->_community_record['title']
+                    ."</td>"
+                    ."</tr>"
+                    ."<tr>"
+                    ."<td valign='top'><b>Source:</b></td>"
+                    ."<td valign='top'>"
+                    .$this->_community_record['URL_external']."/".$this->_record['name']."#contact"
+                    ."</td>"
+                    ."</tr>"
+                    ."<tr>"
+                    ."<td valign='top'><b>Sender:</b></td>"
+                    ."<td valign='top'>".$this->contact_sender_name." &lt;".$this->contact_sender_email."&gt;</td>"
+                    ."</tr>\n"
+                    ."<tr>"
+                    ."<td valign='top'><b>Message:</b></td>"
+                    ."<td valign='top'>".strip_tags($this->contact_message)."</td>"
+                    ."</tr>"
+                    ."</table>";
+                $message_text =
+                     "Subject: Website contact via ".$this->_record['title']." church profile at "
+                    ."Churches in ".$this->_community_record['title']."\n"
+                    ."Source: "
+                    .$this->_community_record['URL_external']."/".$this->_record['name']."#contact\n"
+                    ."Sender: ".$this->contact_sender_name." <".$this->contact_sender_email.">\n"
+                    ."Message: ".strip_tags($this->contact_message)."\n";
                 get_mailsender_to_component_results();      // Use system default mail sender details
                 $data = array(
                     'NName' =>            $this->contact_recipient_name.' <'.$this->contact_recipient_email.'>',
@@ -480,8 +505,8 @@ class Community_Member_Display extends Community_Member
                     'replyto_email' =>    $this->contact_sender_email,
                     'replyto_name' =>     $this->contact_sender_name,
                     'subject' =>          strip_tags($subject),
-                    'html' =>             nl2br($message),
-                    'text' =>             wordwrap(html_entity_decode(strip_tags($message)))
+                    'html' =>             nl2br($message_html),
+                    'text' =>             wordwrap(html_entity_decode(strip_tags($message_text)))
                 );
                 if ($this->_current_user_rights['isEditor']) {
                     $data['cc_email'] = $this->contact_sender_email;

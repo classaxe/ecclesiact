@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.11");
+define("CODEBASE_VERSION", "4.7.12");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,33 +16,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.11.2463 (2016-06-08)
+4.7.12.2464 (2016-06-18)
 Summary:
-  1) Added Instagram icon to Social Icons component for ULM
-  2) Tidy up for emailed message format from community member contact form 
+  1) Better formatting of message sent on from community member contact form
 
 Final Checksums:
-  Classes     CS:9312e70
+  Classes     CS:e9e5198a
   Database    CS:8cb3d09e
-  Libraries   CS:8dfa8760
+  Libraries   CS:f752248a
   Reports     CS:b018e297
 
 Code Changes:
-  codebase.php                                                                                   4.7.11    (2016-06-08)
+  codebase.php                                                                                   4.7.12    (2016-06-18)
     1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.46    (2016-06-08)
-    1) Work to tidy up message format in email contact form
-  classes/component/iconsocial.php                                                               1.0.6     (2016-06-08)
-    1) Added support for Instagram
+  classes/class.community_member_display.php                                                     1.0.47    (2016-06-08)
+    1) More work to tidy up email contact form message format
 
-2463.sql
+2464.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.7.11
-  classes/  (2 files changed)
-    class.community_member_display.php                1.0.46    CS:17faf8
-    component/iconsocial.php                          1.0.6     CS:4b33c6cf
+  codebase.php                                        4.7.12
+  classes/  (1 file changed)
+    class.community_member_display.php                1.0.47    CS:84a74085
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
