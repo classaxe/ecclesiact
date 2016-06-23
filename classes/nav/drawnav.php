@@ -1,13 +1,15 @@
 <?php
 namespace Nav;
+
 /*
 Version History:
-  1.0.7 (2016-02-27)
-    1) Now extends \Base so it can use getVersion() from there instead
+  1.0.8 (2016-06-18)
+    1) Simplified DrawNav::drawResponsiveMenu() by adding helper DrawNav::drawResponsiveMenuButton()
+    2) DrawNav::drawResponsiveMenu() now only marks first navbar as having data-type navbar
 */
 class DrawNav extends \Base
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     protected $buttons;
     protected $buttonsCount = 0;
@@ -193,54 +195,14 @@ class DrawNav extends \Base
                  " class='"
                 .($this->navsuite['orientation']==='|' ? 'rvnavmenu' : 'rhnavmenu')
                 ." navbar-nav sf-menu navbar-left'"
-                ." data-type='navbar'"
+                .($this->nav === 1 ? " data-type='navbar'" : "")
              :
                 " class='dropdown-menu'"
              )
             ." id='nav_".$this->navsuite['ID']."'"
             .">\n";
         foreach ($this->buttons as $b) {
-            static::setupButton($b);
-            if ($b['visible'] || $this->isAdmin) {
-                $this->html.=
-                     "          <li"
-                    ." id=\"btn_".$b['ID']."\""
-                    .($b['active'] || ($b['dropdown'] && $this->depth<2) ?
-                         " class=\""
-                        .($b['active'] ? "active" : "")
-                        .($b['dropdown'] && $this->depth<2 ? ($b['active'] ? " " : "")."dropdown" : "")
-                        ."\""
-                     :
-                        ""
-                     )
-                    ."><a href=\"".$b['URL']."\""
-                    .($b['popup'] ?  " rel='external'" : "")
-                    .(($this->isAdmin && $b['systemID']==SYS_ID) || $this->isMasterAdmin ?
-                         " onmouseout=\"this.style.backgroundColor=''\""
-                        ." onmouseover=\""
-                        ."this.style.backgroundColor='#80ff80';CM_Responsive_Over("
-                        .$b['ID'].","
-                        .$this->navsuite['buttonStyleID'].","
-                        .$b['canAddSubmenu'].","
-                        ."'".$b['suiteNameSafe']."',"
-                        ."'".sanitize('html', $this->navsuite['navstyle_name'])."'"
-                        .");"
-                        ."\""
-                      :
-                        ""
-                     )
-                    .">"
-                    .$b['text1']
-                    ."</a>\n";
-                if ($b['childID']) {
-                    $subnav = new DrawNav('submenu', $b['childID'], $this->depth);
-                    $this->html.=
-                         $subnav->draw()
-                        .str_repeat('  ', $this->depth+1);
-                }
-                $this->html.=
-                     "          </li>\n";
-            }
+            $this->drawResponsiveMenuButton($b);
         }
         $this->html.=
              str_repeat('  ', $this->depth)
@@ -255,28 +217,55 @@ class DrawNav extends \Base
             );
     }
 
-    protected function drawResponsiveMenuSub($ID)
+    protected function drawResponsiveMenuButton($b)
     {
-             "    <li class=\"active\"><a href=\"/home2\">Home</a></li>\n"
-            ."    <li><a href=\"/index-1.html\">Patient services</a></li>\n"
-            ."    <li><a href=\"/index-2.html\">Specialties &amp; physicians</a></li>\n"
-            ."    <li><a href=\"/index-3.html\">Patient information</a></li>\n"
-            ."    <li class=\"dropdown\"><a href=\"/index-4.html\">Employment</a>\n"
-            ."        <ul class=\"dropdown-menu\">\n"
-            ."            <li><a href=\"#\">Lorem</a></li>\n"
-            ."            <li><a href=\"#\">Ipsum</a>\n"
-            ."                <ul class=\"dropdown-menu\">\n"
-            ."                    <li><a href=\"#\">Massa</a></li>\n"
-            ."                    <li><a href=\"#\">Laoretum</a></li>\n"
-            ."                </ul>\n"
-            ."            </li>\n"
-            ."            <li><a href=\"#\">Dolore</a></li>\n"
-            ."        </ul>\n"
-            ."    </li>\n"
-            ."    <li><a href=\"/index-5.html\">Contacts</a></li>\n"
-            ."</ul>";
-
-
+        if (!$b['visible'] && !$this->isAdmin) {
+            return;
+        }
+        $this->setupButton($b);
+        $this->html.=
+             "          <li"
+            ." id=\"btn_".$b['ID']."\""
+            .($b['active'] || ($b['dropdown'] && $this->depth<2) ?
+                 " class=\""
+                .($b['active'] ? "active" : "")
+                .($b['dropdown'] && $this->depth<2 ? ($b['active'] ? " " : "")."dropdown" : "")
+                ."\""
+             :
+                ""
+             )
+            .($b['visible'] ?
+                ""
+             :
+                " title=\"This button would normally be hidden,\nbut administrators can still see it.\""
+             )
+             ."><a href=\"".$b['URL']."\""
+            .($b['popup'] ?  " rel='external'" : "")
+            .(($this->isAdmin && $b['systemID']==SYS_ID) || $this->isMasterAdmin ?
+                 " onmouseout=\"this.style.backgroundColor=''\""
+                ." onmouseover=\""
+                ."this.style.backgroundColor='#80ff80';CM_Responsive_Over("
+                .$b['ID'].","
+                .$this->navsuite['buttonStyleID'].","
+                .$b['canAddSubmenu'].","
+                ."'".$b['suiteNameSafe']."',"
+                ."'".sanitize('html', $this->navsuite['navstyle_name'])."'"
+                .");"
+                ."\""
+              :
+                ""
+             )
+            .">"
+            .$b['text1']
+            ."</a>\n";
+        if ($b['childID']) {
+            $subnav = new DrawNav('submenu', $b['childID'], $this->depth);
+            $this->html.=
+                 $subnav->draw()
+                .str_repeat('  ', $this->depth+1);
+        }
+        $this->html.=
+             "          </li>\n";
     }
 
     protected function drawSDMenuJS()
@@ -378,7 +367,8 @@ class DrawNav extends \Base
         if (substr($b['URL'], 0, 8)=='./?page=') {
             $b['URL'] = BASE_PATH.substr($b['URL'], 8);
         }
-        $b['URL'] = htmlentities(html_entity_decode($b['URL']));    }
+        $b['URL'] = htmlentities(html_entity_decode($b['URL']));
+    }
 
     protected function setupGetDimensions()
     {

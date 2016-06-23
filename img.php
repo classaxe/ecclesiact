@@ -1,9 +1,10 @@
 <?php
-define("VERSION", "2.0.95");
+define("VERSION", "2.0.96");
 /*
 Version History:
-  2.0.95 (2016-03-29)
-    1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
+  2.0.96 (2016-06-22)
+    1) Added support for superfish responsive dropdown menus
+    2) Added support for many new JS libraries used with reponsive layouts
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -505,9 +506,9 @@ function css()
                 : "")
                 .($record['style']!="" ? "\r\n".$record['style'] : "")
                 ;
-                if (trim($out)!='') {
-                    $out = "/* [Layout Style] */\r\n".$out;
-                }
+            if (trim($out)!='') {
+                $out = "/* [Layout Style] */\r\n".$out;
+            }
             print $out;
             break;
         case "pie":
@@ -1296,24 +1297,60 @@ function sysimg()
         $arr_bbox =    imagettfbbox($size, 0, $font, "y_@d|");
         $height =   1.3*($arr_bbox[3]-$arr_bbox[7]);
         $img2 =         ImageCreateTruecolor($width+5, $height+5);
-        $RGB_transp =   imagecolorallocatealpha($img2, HexDec(substr($bgcolor, 0, 2)), HexDec(substr($bgcolor, 2, 2)), HexDec(substr($bgcolor, 4, 2)), 60);
-        $RGB =        ImageColorAllocate($img2, HexDec(substr($color, 0, 2)), HexDec(substr($color, 2, 2)), HexDec(substr($color, 4, 2)));
+        $RGB_transp =   imagecolorallocatealpha(
+            $img2,
+            HexDec(substr($bgcolor, 0, 2)),
+            HexDec(substr($bgcolor, 2, 2)),
+            HexDec(substr($bgcolor, 4, 2)),
+            60
+        );
+        $RGB =        ImageColorAllocate(
+            $img2,
+            HexDec(substr($color, 0, 2)),
+            HexDec(substr($color, 2, 2)),
+            HexDec(substr($color, 4, 2))
+        );
         ImageFilledRectangle($img2, 2, 2, $width, $height, $RGB_transp);
         ImageTTFText($img2, $size, 0, 3, ($height*0.75), $RGB, $font, $text);
   //    ImageColorTransparent($img2,$RGB_transp);
         switch ($ext){
             case "gif":
-                ImageCopyMerge($img, $img2, (imagesx($img)/2)-($width/2), imagesy($img)-$height, 0, 0, imagesx($img2), imagesy($img2), 80);
+                ImageCopyMerge(
+                    $img,
+                    $img2,
+                    (imagesx($img)/2)-($width/2),
+                    imagesy($img)-$height,
+                    0,
+                    0,
+                    imagesx($img2),
+                    imagesy($img2),
+                    80
+                );
                 break;
             case "png":
             case "jpg":
             case "jpeg":
-                ImageCopyMerge($img, $img2, (imagesx($img)/2)-($width/2), imagesy($img)-$height, 0, 0, imagesx($img2), imagesy($img2), 80);
+                ImageCopyMerge(
+                    $img,
+                    $img2,
+                    (imagesx($img)/2)-($width/2),
+                    imagesy($img)-$height,
+                    0,
+                    0,
+                    imagesx($img2),
+                    imagesy($img2),
+                    80
+                );
                 break;
         }
     }
     if ($border && strlen($border)==6) {
-        $RGB_border =    ImageColorAllocate($img, HexDec(substr($border, 0, 2)), HexDec(substr($border, 2, 2)), HexDec(substr($border, 4, 2)));
+        $RGB_border =    ImageColorAllocate(
+            $img,
+            HexDec(substr($border, 0, 2)),
+            HexDec(substr($border, 2, 2)),
+            HexDec(substr($border, 4, 2))
+        );
         ImagePolygon(
             $img,
             array(
@@ -1348,22 +1385,38 @@ function sysjs()
     $submode = $_REQUEST['submode'];
     switch ($submode) {
         case "ajaxupload":
+        case "camera":
         case "device":
         case "jquery":
         case "jquery.cookie":
         case "jquery.easing":
         case "jquery.equalheights":
+        case "jquery.fancybox":
+        case "jquery.fancybox-buttons":
+        case "jquery.fancybox-media":
         case "jquery.fileupload":
+        case "jquery.form":
         case "jquery.iframe-transport":
         case "jquery.json":
         case "jquery.knob":
+        case "jquery.mobile.customized":
+        case "jquery.rd-google-map":
+        case "jquery.rd-mailform":
+        case "jquery.rd-navbar":
+        case "jquery.rd-parallax":
+        case "jquery.responsive.tabs":
+        case "jquery.ui.accordion": // Comes with jquery-ui
         case "jquery.ui.totop":
-        case "jquery.ui.widget":
+        case "jquery.ui.widget":  // comes with jquery-ui
         case "jquery.zrssfeed":
         case "jquery-ui":
         case "jquery-migrate":
+        case "owl.carousel":
         case "spectrum":
+        case "superfish":
         case "tmstickup":
+        case "TMSearch":
+        case "wow":
             img_set_cache(3600*24*7); // expire in one week
             header('Content-Type: text/javascript');
             print file_get_contents(SYS_JS.$submode.'.min.js');
@@ -1466,18 +1519,46 @@ function text()
     $dx =         1-($arr_bbox[0]);
     $dy =         1-$arr_bbox[5];
     $img =        ImageCreate($width, $height);
-    $RGB_transp = ImageColorAllocate($img, HexDec(substr($bgcolor, 0, 2)), HexDec(substr($bgcolor, 2, 2)), HexDec(substr($bgcolor, 4, 2)));
-    $RGB =        ImageColorAllocate($img, HexDec(substr($color, 0, 2)), HexDec(substr($color, 2, 2)), HexDec(substr($color, 4, 2)));
+    $RGB_transp = ImageColorAllocate(
+        $img,
+        HexDec(substr($bgcolor, 0, 2)),
+        HexDec(substr($bgcolor, 2, 2)),
+        HexDec(substr($bgcolor, 4, 2))
+    );
+    $RGB =        ImageColorAllocate(
+        $img,
+        HexDec(substr($color, 0, 2)),
+        HexDec(substr($color, 2, 2)),
+        HexDec(substr($color, 4, 2))
+    );
     switch ($bold) {
         case "1":
             $_x = array(0, 0, 1, 1);
             $_y = array(0, 1, 0, 1);
             for ($n=0; $n<=3; $n++) {
-                ImageTTFText($img, $size, 0, $dx+$_x[$n], $dy+$_y[$n], $RGB, $font, $text);
+                ImageTTFText(
+                    $img,
+                    $size,
+                    0,
+                    $dx+$_x[$n],
+                    $dy+$_y[$n],
+                    $RGB,
+                    $font,
+                    $text
+                );
             }
             break;
         default:
-            ImageTTFText($img, $size, 0, $dx, $dy, $RGB, $font, $text);
+            ImageTTFText(
+                $img,
+                $size,
+                0,
+                $dx,
+                $dy,
+                $RGB,
+                $font,
+                $text
+            );
             break;
     }
     header("Content-type: image/gif");

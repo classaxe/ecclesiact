@@ -1,3 +1,5 @@
+  2.0.95 (2016-03-29)
+    1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
   2.0.94 (2016-02-13)
     1) Now includes support for 'searchprovider' - ajax driven search mode
   2.0.93 (2016-01-01)

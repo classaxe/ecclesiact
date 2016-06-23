@@ -1,3 +1,5 @@
+  1.0.7 (2016-02-27)
+    1) Now extends \Base so it can use getVersion() from there instead
   1.0.6 (2015-09-21)
     1) DrawNav::drawResponsiveMenu() now wraps menu in a container for attaching mousover and mouseout events
        to make Context Menu go away whern clicking outside after moving over a tracked menu item.

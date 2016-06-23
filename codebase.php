@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.7.12");
+define("CODEBASE_VERSION", "4.8.0");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,12 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.7.12.2464 (2016-06-18)
+4.8.0.2465 (2016-06-22)
 Summary:
-  1) Better formatting of message sent on from community member contact form
+  1) IE8 and below now shows 'upgrade' banner in reponsive layouts
+  2) Many more new js libraries added to image streamer for use in responsive layouts
+  3) Layouts form now expanded Head and Body sections into their own tabs
 
-Final Checksums:
-  Classes     CS:e9e5198a
-  Database    CS:8cb3d09e
-  Libraries   CS:f752248a
-  Reports     CS:b018e297
-
-Code Changes:
-  codebase.php                                                                                   4.7.12    (2016-06-18)
-    1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.47    (2016-06-08)
-    1) More work to tidy up email contact form message format
-
-2464.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        4.7.12
-  classes/  (1 file changed)
-    class.community_member_display.php                1.0.47    CS:84a74085
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
