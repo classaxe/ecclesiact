@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.8.0");
+define("CODEBASE_VERSION", "4.8.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,44 +16,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.8.0.2465 (2016-06-22)
+4.8.1.2466 (2016-07-01)
 Summary:
-  1) IE8 and below now shows 'upgrade' banner in reponsive layouts
-  2) Many more new js libraries added to image streamer for use in responsive layouts
-  3) Layouts form now expanded Head and Body sections into their own tabs
+  1) Added native image streamer support for fancybox helper graphics
 
 Final Checksums:
-  Classes     CS:61f16562
+  Classes     CS:a8c747de
   Database    CS:8cb3d09e
-  Libraries   CS:95e660c1
+  Libraries   CS:a98b950e
   Reports     CS:19a55448
 
 Code Changes:
-  codebase.php                                                                                   4.8.0     (2016-06-22)
+  codebase.php                                                                                   4.8.1     (2016-07-01)
     1) Updated version information
-  classes/class.layout.php                                                                       1.0.38    (2016-06-20)
-    1) Layout::prepareResponsiveHead() now includes 'upgrade' banner for IE 8 and below
-    2) Layout::prepareResponsiveFoot() now includes
-  classes/nav/drawnav.php                                                                        1.0.8     (2016-06-18)
-    1) Simplified DrawNav::drawResponsiveMenu() by adding helper DrawNav::drawResponsiveMenuButton()
-    2) DrawNav::drawResponsiveMenu() now only marks first navbar as having data-type navbar
+  classes/class.layout.php                                                                       1.0.39    (2016-07-01)
+    1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
   img.php                                                                                        2.0.96    (2016-06-22)
     1) Added support for superfish responsive dropdown menus
     2) Added support for many new JS libraries used with reponsive layouts
-  js/jquery-ui.min.js                                                                            1.10.4c   (2016-06-20)
-    1) List of included files now in a block for ease of reading
 
-2465.sql
+2466.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.8.0
-  classes/  (2 files changed)
-    class.layout.php                                  1.0.38    CS:8317cb6f
-    nav/drawnav.php                                   1.0.8     CS:d54b2460
-  img.php                                             2.0.96    CS:6f6e3a19
-  js/jquery-ui.min.js                                 1.10.4c   CS:918dce94
-
+  codebase.php                                        4.8.1
+  classes/  (1 file changed)
+    class.layout.php                                  1.0.39    CS:50c0a7ee
+  img.php                                             2.0.96    CS:e0ad6e75
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:

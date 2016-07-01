@@ -438,6 +438,9 @@ function css()
     img_set_cache(3600*24*7); // expire in one year
     header("Content-type: text/css");
     switch ($_REQUEST['submode']){
+        case "animate":
+        case "camera":
+        case "jquery.fancybox":
         case "bootstrap":
         case "community":
         case "labels":
@@ -446,10 +449,6 @@ function css()
         case "tcal":
         case "uploader":
             css_compress_cache(SYS_STYLE.($_REQUEST['submode']).'.css');
-            break;
-        case "animate.css":
-        case "jquery.fancybox.css":
-            css_compress_cache(SYS_STYLE.($_REQUEST['submode']));
             break;
         case "breadcrumbs":
             if (!isset($_REQUEST['ID'])) {
@@ -638,12 +637,10 @@ function css_compress_cache($file)
     $submode =      $_REQUEST['submode'];
     $ID =           (isset($_REQUEST['ID']) ? $_REQUEST['ID'] : false);
     $filename =     SYS_STYLE."cache/".str_replace('.', '_', $submode).($ID ? '_'.$ID : "").'.cache';
-    if (file_exists($filename)) {
-        readfile($filename);
-        return;
+    if (!file_exists($filename)) {
+        file_put_contents($filename, css_compress($file));
     }
-    file_put_contents($filename, css_compress($file));
-    readfile($filename);
+    print str_replace('BASE_PATH', BASE_PATH, file_get_contents($filename));
 }
 
 function custom_button()
@@ -905,29 +902,23 @@ function js_compress($file)
     $resource =       $_REQUEST['submode'];
     $level =          $_REQUEST['level'];
     $filename =       SYS_JS."cache/".str_replace('.', '_', $resource).$level.'.cache';
-    if (file_exists($filename)) {
-        readfile($filename);
-        return;
+    if (!file_exists($filename)) {
+        use_codebase();
+        switch($resource){
+            case "member":
+            case "rss_reader":
+            case "sys":
+            case "treeview":
+                $Obj_FS =     new FileSystem;
+                $version =    '_'.trim(substr($Obj_FS->get_line($file), 3));
+                break;
+            default:
+                $version = "";
+                break;
+        }
+        $filename =   SYS_JS."cache/".str_replace('.', '_', $resource.$version).'.cache';
+        file_put_contents($filename, trim(JSMin::minify(file_get_contents($file))));
     }
-    use_codebase();
-    switch($resource){
-        case "member":
-        case "rss_reader":
-        case "sys":
-        case "treeview":
-            $Obj_FS =     new FileSystem;
-            $version =    '_'.trim(substr($Obj_FS->get_line($file), 3));
-            break;
-        default:
-            $version = "";
-            break;
-    }
-    $filename =   SYS_JS."cache/".str_replace('.', '_', $resource.$version).'.cache';
-    if (file_exists($filename)) {
-        readfile($filename);
-        return;
-    }
-    file_put_contents($filename, trim(JSMin::minify(file_get_contents($file))));
     readfile($filename);
 }
 
@@ -1384,6 +1375,13 @@ function sysjs()
 //  }
     $submode = $_REQUEST['submode'];
     switch ($submode) {
+        case "member":
+        case "rss_reader":
+        case "treeview":
+            img_set_cache(3600*24*365, SYS_JS.$submode.'.js'); // expire in one year
+            header('Content-Type: text/javascript');
+            js_compress(SYS_JS.$submode.'.js');
+            break;
         case "ajaxupload":
         case "camera":
         case "device":
@@ -1420,13 +1418,6 @@ function sysjs()
             img_set_cache(3600*24*7); // expire in one week
             header('Content-Type: text/javascript');
             print file_get_contents(SYS_JS.$submode.'.min.js');
-            break;
-        case "member":
-        case "rss_reader":
-        case "treeview":
-            img_set_cache(3600*24*365, SYS_JS.$submode.'.js'); // expire in one year
-            header('Content-Type: text/javascript');
-            js_compress(SYS_JS.$submode.'.js');
             break;
         case "jdplayer":
             img_set_cache(3600*24*7); // expire in one week

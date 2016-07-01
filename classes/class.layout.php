@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.38 (2016-06-20)
-    1) Layout::prepareResponsiveHead() now includes 'upgrade' banner for IE 8 and below
-    2) Layout::prepareResponsiveFoot() now includes 
+  1.0.39 (2016-07-01)
+    1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.38';
+    const VERSION = '1.0.39';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -837,6 +836,7 @@ class Layout extends Record
         Output::push(
             'html_bottom',
             "<script src=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\"></script>\n"
+            ."<script src=\"".BASE_PATH."sysjs/jquery-ui\"></script>\n"
             ."<script src=\"".BASE_PATH."sysjs/superfish\"></script>\n"
             ."<script src=\"".BASE_PATH."sysjs/jquery.rd-navbar\"></script>\n"
             ."<script src=\"".BASE_PATH."sysjs/jquery.ui.totop\"></script>\n"

@@ -1,3 +1,6 @@
+  1.0.38 (2016-06-20)
+    1) Layout::prepareResponsiveHead() now includes 'upgrade' banner for IE 8 and below
+    2) Layout::prepareResponsiveFoot() now includes 
   1.0.37 (2016-01-30)
     1) Updated bootstrap library references
   1.0.36 (2016-01-01)
