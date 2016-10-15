@@ -16,18 +16,56 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.8.2.2467 (2016-07-02)
+4.8.2.2467 (2016-10-15)
 Summary:
   1) Streamed JS and CSS now has BASE_PATH awareness meaning that script includes contained within it
      can now work properly regardless of whether the site is located at a document root or not.
-
   2) Fixed image paths for the following to make them work with subsites:
      Community member, Gallery Album, Image Gallery, Product, Image Uploader
-
   3) Layout may now bring in tmscripts for better native support of bootstrap for responsive sites
-
   4) Image streamer now allows for substitution of base path in JS calls
      
+Final Checksums:
+  Classes     CS:1311682d
+  Database    CS:8cb3d09e
+  Libraries   CS:367ce4e4
+  Reports     CS:19a55448
+
+Code Changes:
+  codebase.php                                                                                   4.8.2     (2016-10-15)
+    1) Updated version information
+  classes/class.community_member.php                                                             1.0.113   (2016-07-04)
+    1) Fixed path for dashboard tabs images to respect BASE_PATH
+  classes/class.component_gallery_album.php                                                      1.0.75    (2016-07-04)
+    1) Fixed paths for gallery album folder images to respect BASE_PATH
+  classes/class.component_image_gallery.php                                                      1.0.2     (2016-07-04)
+    1) Fixed paths for gallery album folder images to respect BASE_PATH
+  classes/class.layout.php                                                                       1.0.40    (2016-07-02)
+    1) Layout::prepareResponsiveFoot() now brings in tmscripts for better native support for responsive sites
+  classes/class.product.php                                                                      1.0.83    (2016-07-04)
+    1) Fixed image paths for add to cart icons to respect BASE_PATH
+  img.php                                                                                        2.0.97    (2016-07-02)
+    1) JS code now allows for substitution of BASE_PATH when streamed
+  style/breadcrumbs.css                                                                          1.0.3     (2016-07-04)
+    1) Changed variables pattern bounding to single %n% instead of %%n%%
+    2) Now uses BASE_PATH substition to allow use in sites not located at document root
+  style/default.css                                                                              1.0.173   (2016-07-04)
+    1) Changes to sdmenu to use BASE_PATH substitution
+
+2467.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        4.8.2
+  classes/  (5 files changed)
+    class.community_member.php                        1.0.113   CS:61af23fa
+    class.component_gallery_album.php                 1.0.75    CS:cf31ad4c
+    class.component_image_gallery.php                 1.0.2     CS:c06ff2a0
+    class.layout.php                                  1.0.40    CS:b3c33065
+    class.product.php                                 1.0.83    CS:4064c9c7
+  img.php                                             2.0.97    CS:1de2f324
+  style/breadcrumbs.css                               1.0.3     CS:5449aa5f
+  style/default.css                                   1.0.173   CS:814b1647
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

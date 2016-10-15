@@ -1,3 +1,5 @@
+  1.0.39 (2016-07-01)
+    1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
   1.0.38 (2016-06-20)
     1) Layout::prepareResponsiveHead() now includes 'upgrade' banner for IE 8 and below
     2) Layout::prepareResponsiveFoot() now includes 

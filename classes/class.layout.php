@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.39 (2016-07-01)
-    1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
+  1.0.40 (2016-07-02)
+    1) Layout::prepareResponsiveFoot() now brings in tmscripts for better native support for responsive sites
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.39';
+    const VERSION = '1.0.40';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
