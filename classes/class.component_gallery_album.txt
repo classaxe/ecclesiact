@@ -1,3 +1,5 @@
+  1.0.74 (2015-11-29)
+    1) Now checks context of uploader before opening uploader form
   1.0.73 (2015-11-23)
     1) Now more PSR-2 compliant
   1.0.72 (2015-09-13)

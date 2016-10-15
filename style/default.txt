@@ -1,3 +1,5 @@
+  1.0.172 (2016-03-12)
+    1) popupTitleBar now sets line-height
   1.0.171 (2016-01-08)
     1) Added pre.admin_fixed that reduces top ad bottom margins
   1.0.170 (2015-09-20)

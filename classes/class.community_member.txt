@@ -1,3 +1,5 @@
+  1.0.112 (2016-01-08)
+    1) Now gives total time for number crunching of Piwik Stats at bottom
   1.0.111 (2016-01-07)
     1) Performance improvements for Piwik stats crunching
   1.0.110 (2015-12-31)

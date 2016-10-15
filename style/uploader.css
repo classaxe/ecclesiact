@@ -1,3 +1,12 @@
+/* 1.0.1
+
+Version History:
+  1.0.0 (2015-12-01)
+    1) Initial release as part of 4.2.1.2409
+  1.0.1 (2016-07-04)
+    1) Now uses BASE_PATH substition to allow use in sites not located at document root
+*/
+
 #uploader {
 	background-color:#ebebec;
 	margin:0;
@@ -17,7 +26,7 @@
 	margin-bottom:30px;
 	border:20px solid transparent;
 	border-radius:3px;
-	border-image:url(../../../img/sysimg/uploadborder.png) 25 repeat;
+	border-image:url(%BASE_PATH%img/sysimg/uploadborder.png) 25 repeat;
 	text-align:center;
 	font-size:16px;
 	font-weight:700;
@@ -92,7 +101,7 @@
 }
 #upload ul li span{
 	height:12px;
-	background:url(../../../img/sysimg/uploadicons.png) no-repeat
+	background:url(%BASE_PATH%img/sysimg/uploadicons.png) no-repeat
 }
 #upload ul li.working span{
 	height:16px;
@@ -103,5 +112,5 @@
 }
 #upload ul li.error span{
 	height:12px;
-	background:url(../../../img/sysimg/uploadicons.png) 0 100% no-repeat
+	background:url(%BASE_PATH%img/sysimg/uploadicons.png) 0 100% no-repeat
 }

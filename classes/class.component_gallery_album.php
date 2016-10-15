@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.74 (2015-11-29)
-    1) Now checks context of uploader before opening uploader form
+  1.0.75 (2016-07-04)
+    1) Fixed paths for gallery album folder images to respect BASE_PATH
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.74';
+    const VERSION = '1.0.75';
     private $_Obj_JL =                false;
     private $_albums =                false;
     private $_album_ID =              false;
@@ -161,7 +161,7 @@ class Component_Gallery_Album extends Component_Base
             ),
             'skin_album_image' =>         array(
                 'match' =>      '',
-                'default' =>    '/img/sysimg/album_128x96.png',
+                'default' =>    BASE_PATH.'img/sysimg/album_128x96.png',
                 'hint' =>       'Path for image to use to represent folders'
             ),
             'skin_album_image_size' =>    array(
@@ -181,7 +181,7 @@ class Component_Gallery_Album extends Component_Base
             ),
             'skin_folder_image' =>        array(
                 'match' =>      '',
-                'default' =>    '/img/sysimg/folder_128x96.png',
+                'default' =>    BASE_PATH.'img/sysimg/folder_128x96.png',
                 'hint' =>       'Path for image to use to represent folders'
             ),
             'skin_folder_image_size' =>   array(

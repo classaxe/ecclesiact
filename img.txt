@@ -1,3 +1,6 @@
+  2.0.96 (2016-06-22)
+    1) Added support for superfish responsive dropdown menus
+    2) Added support for many new JS libraries used with reponsive layouts
   2.0.95 (2016-03-29)
     1) Fix for bad JS library name jquery.zrssfeed - was just zrssfeed
   2.0.94 (2016-02-13)

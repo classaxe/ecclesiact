@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.82 (2016-03-26)
-    1) Product::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
-    2) Product::get_records() - now requires filter_category_list
+  1.0.83 (2016-07-04)
+    1) Fixed image paths for add to cart icons to respect BASE_PATH
 */
 class Product extends Displayable_Item
 {
-    const VERSION = '1.0.82';
+    const VERSION = '1.0.83';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $type;
@@ -83,7 +82,8 @@ class Product extends Displayable_Item
             'cart_skin_image' =>            array(
                 'match' =>      '',
                 'default' =>
-                    "/img/sysimg/cart_skin.gif,C6D6FF,4273E7,C6D6FF,3D4C8B,E7EFEF,A5A594,E7F7FF,4A63D6,0000FF,7BA5F7",
+                    BASE_PATH
+                    ."img/sysimg/cart_skin.gif,C6D6FF,4273E7,C6D6FF,3D4C8B,E7EFEF,A5A594,E7F7FF,4A63D6,0000FF,7BA5F7",
                 'hint' =>       'Graphic to use for cart operations'
             ),
             'cart_skin_classname' =>        array(
@@ -250,7 +250,8 @@ class Product extends Displayable_Item
             'cart_skin_image' =>            array(
                 'match' =>      '',
                 'default' =>
-                    "/img/sysimg/cart_skin.gif,C6D6FF,4273E7,C6D6FF,3D4C8B,E7EFEF,A5A594,E7F7FF,4A63D6,0000FF,7BA5F7",
+                    BASE_PATH
+                    ."img/sysimg/cart_skin.gif,C6D6FF,4273E7,C6D6FF,3D4C8B,E7EFEF,A5A594,E7F7FF,4A63D6,0000FF,7BA5F7",
                 'hint' =>       'Graphic to use for cart operations'
             ),
             'cart_skin_classname' =>        array(

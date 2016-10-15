@@ -1,7 +1,7 @@
-/* 1.0.172
+/* 1.0.173
 Version History:
-  1.0.172 (2016-03-12)
-    1) popupTitleBar now sets line-height
+  1.0.173 (2016-07-04)
+    1) Changes to sdmenu to use BASE_PATH substitution
 */
 
 .swatch {
@@ -535,8 +535,13 @@ div#content img.std_control {
 .sdmenu li                { margin:0; padding:0; list-style-type:none; overflow:hidden; }
 .sdmenu li a              { display:block; padding:3px 10px; text-decoration: none; }
 .sdmenu li a:active, .sdmenu li a:hover, .sdmenu li a:link, .sdmenu li a:visited { text-decoration: none; }
-.sdmenu li span           { display:block; padding:5px 25px; cursor:default; background: url(/img/sysimg/_sdmenu_expanded.gif) no-repeat 10px center; }
-.sdmenu li.collapsed span { background-image: url(/img/sysimg/_sdmenu_collapsed.gif); }
+.sdmenu li span           {
+    display:block; padding:5px 25px; cursor:default;
+    background: url(%BASE_PATH%img/sysimg/_sdmenu_expanded.gif) no-repeat 10px center;
+}
+.sdmenu li.collapsed span {
+    background-image: url(%BASE_PATH%img/sysimg/_sdmenu_collapsed.gif);
+}
 
 /*
 *******************************

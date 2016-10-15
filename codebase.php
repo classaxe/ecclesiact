@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.8.1");
+define("CODEBASE_VERSION", "4.8.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,33 +16,19 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.8.1.2466 (2016-07-01)
+4.8.2.2467 (2016-07-02)
 Summary:
-  1) Added native image streamer support for fancybox helper graphics
+  1) Streamed JS and CSS now has BASE_PATH awareness meaning that script includes contained within it
+     can now work properly regardless of whether the site is located at a document root or not.
 
-Final Checksums:
-  Classes     CS:a8c747de
-  Database    CS:8cb3d09e
-  Libraries   CS:a98b950e
-  Reports     CS:19a55448
+  2) Fixed image paths for the following to make them work with subsites:
+     Community member, Gallery Album, Image Gallery, Product, Image Uploader
 
-Code Changes:
-  codebase.php                                                                                   4.8.1     (2016-07-01)
-    1) Updated version information
-  classes/class.layout.php                                                                       1.0.39    (2016-07-01)
-    1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
-  img.php                                                                                        2.0.96    (2016-06-22)
-    1) Added support for superfish responsive dropdown menus
-    2) Added support for many new JS libraries used with reponsive layouts
+  3) Layout may now bring in tmscripts for better native support of bootstrap for responsive sites
 
-2466.sql
-  1) Set version information
+  4) Image streamer now allows for substitution of base path in JS calls
+     
 
-Promote:
-  codebase.php                                        4.8.1
-  classes/  (1 file changed)
-    class.layout.php                                  1.0.39    CS:50c0a7ee
-  img.php                                             2.0.96    CS:e0ad6e75
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:

@@ -1,10 +1,9 @@
 <?php
-  define ("VERSION_COMPONENT_IMAGE_GALLERY","1.0.1");
+  define ("VERSION_COMPONENT_IMAGE_GALLERY","1.0.2");
 /*
 Version History:
-  1.0.1 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.2 (2016-07-04)
+    1) Fixed paths for gallery album folder images to respect BASE_PATH
 */
 class Component_Image_Gallery extends Component_Base {
 
@@ -68,7 +67,7 @@ class Component_Image_Gallery extends Component_Base {
     foreach ($fileList as $filePath) {
       if ($filePath != '.' && $filePath != '..' && !is_dir($cp['folder'].$filePath)) {
         if (!$first_image){
-          $first_image = "/img/sysimg/?img=".$cp['folder'].$filePath;
+          $first_image = BASE_PATH."img/sysimg/?img=".$cp['folder'].$filePath;
           break;
         }
       }
@@ -85,7 +84,7 @@ class Component_Image_Gallery extends Component_Base {
         $out.=
            "<img src=\"/img/width/".$cp['width']
           .$cp['folder'].$filePath."\""
-          ." onclick=\"".$safe_ID."('/img/sysimg/?img=".$cp['folder'].$filePath."');\" />";
+          ." onclick=\"".$safe_ID."('".BASE_PATH."img/sysimg/?img=".$cp['folder'].$filePath."');\" />";
       }
     }
     if ($cp['main_image_position']=='bottom') {

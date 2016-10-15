@@ -570,9 +570,7 @@ class Layout extends Record
              )
             ."    <title>".strip_tags(convert_safe_to_php($page_vars['title']))."</title>\n"
             ."    <link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\">\n"
-            ."    <link rel=\"stylesheet\" href=\"".BASE_PATH."css/responsive/"
-            .System::get_item_version('codebase')
-            ."\">\n"
+            ."    <link rel=\"stylesheet\" href=\"".BASE_PATH."css/responsive/".System::get_item_version('codebase')."\">\n"
             ."    <script src=\"/sysjs/device\"></script>\n"  // Needed for Animate to work properly
         );
 
@@ -836,12 +834,7 @@ class Layout extends Record
         Output::push(
             'html_bottom',
             "<script src=\"//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/jquery-ui\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/superfish\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/jquery.rd-navbar\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/jquery.ui.totop\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/tmstickup\"></script>\n"
-            ."<script src=\"".BASE_PATH."sysjs/wow\"></script>\n"
+            ."<script src=\"".BASE_PATH."sysjs/tmscripts\"></script>\n"
             ."</form></body>\n"
             ."</html>"
         );

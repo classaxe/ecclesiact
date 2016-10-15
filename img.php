@@ -1,10 +1,9 @@
 <?php
-define("VERSION", "2.0.96");
+define("VERSION", "2.0.97");
 /*
 Version History:
-  2.0.96 (2016-06-22)
-    1) Added support for superfish responsive dropdown menus
-    2) Added support for many new JS libraries used with reponsive layouts
+  2.0.97 (2016-07-02)
+    1) JS code now allows for substitution of BASE_PATH when streamed
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -435,6 +434,16 @@ function css()
     if (!stristr(strtolower(@$_SERVER['HTTP_USER_AGENT']), "msie 8.0")) {
         ob_start("ob_gzhandler");
     }
+    if ($_REQUEST['submode']==='bs2') {
+        header("Content-type: text/css");
+        header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: no-store, no-cache, must-revalidate");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+        print file_get_contents(SYS_STYLE.'bootstrap2.css');
+        die;
+    }
     img_set_cache(3600*24*7); // expire in one year
     header("Content-type: text/css");
     switch ($_REQUEST['submode']){
@@ -444,24 +453,24 @@ function css()
         case "bootstrap":
         case "community":
         case "labels":
-        case "responsive":
         case "spectrum":
         case "tcal":
         case "uploader":
-            css_compress_cache(SYS_STYLE.($_REQUEST['submode']).'.css');
+            css_compress_cache($_REQUEST['submode'], SYS_STYLE.($_REQUEST['submode']).'.css');
             break;
+        case "responsive":
+            css_compress_cache('responsive', SYS_STYLE.'responsive.css');
+            css_compress_cache('animate', SYS_STYLE.'animate.css');
+            css_compress_cache('camera', SYS_STYLE.'camera.css');
+            css_compress_cache('jquery.fancybox', SYS_STYLE.'jquery.fancybox.css');
+            break;
+        case "bs2":
+            
         case "breadcrumbs":
             if (!isset($_REQUEST['ID'])) {
                 return "";
             }
-            $file = file_get_contents(SYS_STYLE."breadcrumbs.css");
-            if (isset($_REQUEST['map'])) {
-                $map_arr = explode(',', $_REQUEST['map']);
-                for ($i=0; $i<count($map_arr); $i++) {
-                    $file = str_replace('%%'.($i+1).'%%', $map_arr[$i], $file);
-                }
-            }
-            print $file;
+            print substitute_vars_for_file(SYS_STYLE."breadcrumbs.css");
             break;
         case "block_layout_detail":
             if (!isset($_REQUEST['ID'])) {
@@ -616,10 +625,10 @@ function css()
             break;
         case "ws":
             //header('Content-Type: text/css');
-            css_compress_cache(SYS_WS."ws.css");
+            css_compress_cache($_REQUEST['submode'], SYS_WS."ws.css");
             break;
         default:
-            css_compress_cache(SYS_STYLE."default.css");
+            css_compress_cache($_REQUEST['submode'], SYS_STYLE."default.css");
             break;
     }
     die;
@@ -632,15 +641,14 @@ function css_compress($file)
 }
 
 
-function css_compress_cache($file)
+function css_compress_cache($submode, $file)
 {
-    $submode =      $_REQUEST['submode'];
     $ID =           (isset($_REQUEST['ID']) ? $_REQUEST['ID'] : false);
     $filename =     SYS_STYLE."cache/".str_replace('.', '_', $submode).($ID ? '_'.$ID : "").'.cache';
     if (!file_exists($filename)) {
         file_put_contents($filename, css_compress($file));
     }
-    print str_replace('BASE_PATH', BASE_PATH, file_get_contents($filename));
+    print substitute_vars_for_file($filename);
 }
 
 function custom_button()
@@ -919,7 +927,7 @@ function js_compress($file)
         $filename =   SYS_JS."cache/".str_replace('.', '_', $resource.$version).'.cache';
         file_put_contents($filename, trim(JSMin::minify(file_get_contents($file))));
     }
-    readfile($filename);
+    print substitute_vars_for_file($filename);
 }
 
 function lib($request_arr)
@@ -932,16 +940,6 @@ function lib($request_arr)
             return lib_wowslider($request_arr);
         break;
     }
-}
-
-function lib_wowslider_js($file)
-{
-    $content = file_get_contents($file);
-    return str_replace(
-        array('$AppName$ $AppVersion$','$WmkT$'),
-        array('Ecclesiact','#\"'),
-        $content
-    );
 }
 
 function lib_wowslider($request_arr)
@@ -965,7 +963,9 @@ function lib_wowslider($request_arr)
             header('Content-Type: text/javascript');
             switch($request_arr[3]){
                 case 'wowslider.js':
-                    print lib_wowslider_js(SYS_WS."common/js/wowslider.js");
+                    print substitute_vars_for_file(
+                        SYS_WS."common/js/wowslider.js"
+                    );
                     break;
             }
             break;
@@ -1000,14 +1000,20 @@ function lib_wowslider($request_arr)
             switch($request_arr[3]){
                 case 'flip':
                 case 'rotate':
-                    print lib_wowslider_js(SYS_WS.$request_arr[2].'/'.$request_arr[3]."/jquery.2dtransform.js");
+                    print substitute_vars_for_file(
+                        SYS_WS.$request_arr[2].'/'.$request_arr[3]."/jquery.2dtransform.js"
+                    );
                     break;
                 case 'squares':
-                    print lib_wowslider_js(SYS_WS.$request_arr[2].'/'.$request_arr[3]."/coin-slider.js");
+                    print substitute_vars_for_file(
+                        SYS_WS.$request_arr[2].'/'.$request_arr[3]."/coin-slider.js"
+                    );
                     break;
             }
             if (in_array($request_arr[3], $effects)) {
-                print lib_wowslider_js(SYS_WS.$request_arr[2].'/'.$request_arr[3]."/script.js");
+                print substitute_vars_for_file(
+                    SYS_WS.$request_arr[2].'/'.$request_arr[3]."/script.js"
+                );
             }
             break;
     }
@@ -1051,6 +1057,38 @@ function qrcode()
     $Obj->setup($text, $ecc);
     header("Content-Type: image/gif; name=\"qrcode.gif\"");
     $Obj->image($size);
+}
+
+function substitute_vars($text)
+{
+    if (isset($_REQUEST['map'])) {
+        $map_arr = explode(',', $_REQUEST['map']);
+        for ($i=0; $i<count($map_arr); $i++) {
+            $text = str_replace('%'.($i+1).'%', $map_arr[$i], $text);
+        }
+    }
+    return str_replace(
+        array(
+            '%BASE_PATH%',
+            '%SYS_URL%',
+            '$AppName$ $AppVersion$',
+            '$WmkT$'
+        ),
+        array(
+            BASE_PATH,
+            ($_SERVER["SERVER_PORT"]==443 ? 'https://' : 'http://').$_SERVER["HTTP_HOST"],
+            'Ecclesiact ',
+            '#\"'
+        ),
+        $text
+    );
+}
+
+function substitute_vars_for_file($filename)
+{
+    return substitute_vars(
+        file_get_contents($filename)
+    );
 }
 
 function resource()
@@ -1413,11 +1451,12 @@ function sysjs()
         case "spectrum":
         case "superfish":
         case "tmstickup":
+        case "tmscripts":
         case "TMSearch":
         case "wow":
             img_set_cache(3600*24*7); // expire in one week
             header('Content-Type: text/javascript');
-            print file_get_contents(SYS_JS.$submode.'.min.js');
+            print substitute_vars_for_file(SYS_JS.$submode.'.min.js');
             break;
         case "jdplayer":
             img_set_cache(3600*24*7); // expire in one week
@@ -1428,7 +1467,7 @@ function sysjs()
             $path =   SYS_JS.$request_arr[1].'/'.$request_arr[3];
             $bits =   explode('.', $path);
             $ext =    array_pop($bits);
-            $file =   file_get_contents($path);
+            $file =   str_replace('BASE_PATH', BASE_PATH, file_get_contents($path));
             img_ext_mime_header($ext);
             print($file);
             break;
