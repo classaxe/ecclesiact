@@ -1,3 +1,5 @@
+  1.0.9 (2016-03-20)
+    1) Community_Member_Resource::_draw_rss() now correctly handles calendar date choices
   1.0.8 (2016-02-13)
     1) _draw_search_results() now calls renamed methods in Search
   1.0.7 (2015-03-23)

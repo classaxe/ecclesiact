@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.83 (2016-07-04)
-    1) Fixed image paths for add to cart icons to respect BASE_PATH
+  1.0.84 (2016-10-16)
+    1) Added support for filtering by Community, Member and Person in Product::get_search_results()
 */
 class Product extends Displayable_Item
 {
-    const VERSION = '1.0.83';
+    const VERSION = '1.0.84';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $type;
@@ -1261,35 +1261,39 @@ class Product extends Displayable_Item
     public function get_search_results($args)
     {
         $search_categories =
-            (isset($args['search_categories']) ? $args['search_categories'] : "");
+            (isset($args['search_categories']) ?            $args['search_categories'] : "");
+        $search_communityID =
+            (isset($args['search_communityID']) ?           $args['search_communityID'] : 0);
         $search_date_end =
-            (isset($args['search_date_end']) ? $args['search_date_end'] : "");
+            (isset($args['search_date_end']) ?              $args['search_date_end'] : "");
         $search_date_start =
-            (isset($args['search_date_start']) ? $args['search_date_start'] : "");
+            (isset($args['search_date_start']) ?            $args['search_date_start'] : "");
         $search_keywordIDs =
-            (isset($args['search_keywordIDs']) ? $args['search_keywordIDs'] : "");
+            (isset($args['search_keywordIDs']) ?            $args['search_keywordIDs'] : "");
         $search_memberID =
-            (isset($args['search_memberID']) ? $args['search_memberID'] : 0);
+            (isset($args['search_memberID']) ?              $args['search_memberID'] : 0);
         $search_name =
-            (isset($args['search_name']) ? $args['search_name'] : "");
+            (isset($args['search_name']) ?                  $args['search_name'] : "");
         $search_name_label =
-            (isset($args['search_name_label']) ? $args['search_name_label'] : "");
+            (isset($args['search_name_label']) ?            $args['search_name_label'] : "");
         $search_offset =
-            (isset($args['search_offset']) ? $args['search_offset'] : 0);
+            (isset($args['search_offset']) ?                $args['search_offset'] : 0);
+        $search_personID =
+            (isset($args['search_personID']) ?              $args['search_personID'] : 0);
         $search_sites =
-            (isset($args['search_sites']) ? $args['search_sites'] : "");
+            (isset($args['search_sites']) ?                 $args['search_sites'] : "");
         $search_text =
-            (isset($args['search_text']) ? $args['search_text'] : "");
+            (isset($args['search_text']) ?                  $args['search_text'] : "");
         $search_type =
-            (isset($args['search_type']) ? $args['search_type'] : "*");
+            (isset($args['search_type']) ?                  $args['search_type'] : "*");
         $systems_csv =
-            (isset($args['systems_csv']) ? $args['systems_csv'] : "");
+            (isset($args['systems_csv']) ?                  $args['systems_csv'] : "");
         $systemIDs_csv =
-            (isset($args['systemIDs_csv']) ? $args['systemIDs_csv'] : "");
+            (isset($args['systemIDs_csv']) ?                $args['systemIDs_csv'] : "");
         $limit =
-            (isset($args['search_results_page_limit']) ? $args['search_results_page_limit'] : false);
+            (isset($args['search_results_page_limit']) ?    $args['search_results_page_limit'] : false);
         $sortBy =
-            (isset($args['search_results_sortBy']) ? $args['search_results_sortBy'] : 'relevance');
+            (isset($args['search_results_sortBy']) ?        $args['search_results_sortBy'] : 'relevance');
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
         $isSYSADMIN =       get_person_permission("SYSADMIN");
         $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
@@ -1423,13 +1427,31 @@ class Product extends Displayable_Item
                 "  `p`.`category` REGEXP \"".implode("|", explode(', ', $search_categories))."\" AND\n"
               :
                 ""
-             )
+            )
+            .($search_personID!=0 ?
+                "  `p`.`personID` IN(".$search_personID.") AND\n"
+              :
+                ""
+            )
+            .($search_memberID!=0 ?
+                "  `p`.`memberID` IN(".$search_memberID.") AND\n"
+              :
+                ""
+            )
+            .($search_communityID!=0 ?
+                 "  (`p`.`communityID` IN(".$search_communityID.") OR"
+                ." `p`.`memberID` IN("
+                ."SELECT `memberID` FROM `community_membership` WHERE `communityID` IN(".$search_communityID.")"
+                .")) AND\n"
+              :
+                ""
+            )
             ."  (`p`.`systemID`=".SYS_ID." OR `p`.`permPUBLIC` = 1)\n"
             .($search_keywordIDs!="" ?
                 "GROUP BY `p`.`ID`\n"
               :
                 ""
-             )
+            )
             ."ORDER BY ".$order;
   //    z($sql);
         $records = $this->get_records_for_sql($sql);

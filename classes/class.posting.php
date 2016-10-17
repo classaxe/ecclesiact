@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.127 (2016-03-29)
-    1) Fix for Posting::get_n_per_category() to match correct categopry label to category even if category has wrong
-       capitalisation in words
+  1.0.128 (2016-10-16)
+    1) Added support for searching by Person in Posting::get_search_results()
+    2) Now displays Community and Member name if these fields are available to show
 */
 
 class Posting extends Displayable_Item
 {
-    const VERSION = '1.0.127';
+    const VERSION = '1.0.128';
     const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $subtype;
@@ -270,16 +270,19 @@ class Posting extends Displayable_Item
         $limit =        $result['limit'];
         $search_text =  $result['search_text'];
         $search_name =  $result['search_name'];
+        $has_system =       isset($result['results'][0]['textEnglish']);
+        $has_community =    isset($result['results'][0]['community_name']);
+        $has_member =       isset($result['results'][0]['member_name']);
         $retrieved =    count($result['results']);
         if ($found) {
             $out.=
                  $this->draw_search_results_paging_nav($result, $search_text)
                 ."<table cellpadding='2' cellspacing='0' border='1' class='table_border' width='100%'>\n"
                 ."  <tr class='table_header'>\n"
-                .(isset($result['results'][0]['textEnglish']) ?
-                 "    <th class='table_border txt_l'>Site</th>\n"
-                 : "")
-                .($search_name ? "    <th class='table_border txt_l'>".$result['search_name_label']."</th>\n" : "")
+                .($has_system ?     "    <th class='table_border txt_l'>Site</th>\n" : "")
+                .($has_community ?  "    <th class='table_border txt_l'>Community</th>\n" : "")
+                .($has_member ?     "    <th class='table_border txt_l'>Community Member</th>\n" : "")
+                .($search_name ?    "    <th class='table_border txt_l'>".$result['search_name_label']."</th>\n" : "")
                 ."    <th class='table_border txt_l'>Title</th>\n"
                 ."    <th class='table_border txt_l'>Summary</th>\n"
                 ."    <th class='table_border'>Date</th>\n"
@@ -309,10 +312,10 @@ class Posting extends Displayable_Item
                     .(!$non_enabled && $active=='expired' ? " style='color:#808080' title='(Expired publication)'" : "")
                     .(!$non_enabled && $active=='pending' ? " style='color:#808080' title='(Future publication)'" : "")
                     .">\n"
-                    .(isset($row['textEnglish']) ?
-                    "    <td class='table_border va_t'>".$row['textEnglish']."</td>\n"
-                    : "")
-                    .($search_name!=="" ? "    <td class='table_border va_t'>".$name."</td>" : "")
+                    .($has_system ?         "    <td class='table_border va_t'>".$row['textEnglish']."</td>\n" : "")
+                    .($has_community ?      "    <td class='table_border va_t'>".$row['community_name']."</td>\n" : "")
+                    .($has_member ?         "    <td class='table_border va_t'>".$row['member_name']."</td>\n" : "")
+                    .($search_name!=="" ?   "    <td class='table_border va_t'>".$name."</td>" : "")
                     ."    <td class='table_border va_t'><a"
                     .($row['title']!=strip_tags($title) ? " title=\"".$row['title']."\"" : "")
                     ." href=\"".$URL."\""
@@ -1185,35 +1188,41 @@ class Posting extends Displayable_Item
     public function get_search_results($args, $cp)
     {
         $search_categories =
-            (isset($args['search_categories']) ?    $args['search_categories'] : "");
+            (isset($args['search_categories']) ?            $args['search_categories'] : "");
         $search_communityID =
-            (isset($args['search_communityID']) ?   $args['search_communityID'] : 0);
+            (isset($args['search_communityID']) ?           $args['search_communityID'] : 0);
         $search_date_end =
-            (isset($args['search_date_end']) ?      $args['search_date_end'] : "");
+            (isset($args['search_date_end']) ?              $args['search_date_end'] : "");
         $search_date_start =
-            (isset($args['search_date_start']) ?    $args['search_date_start'] : "");
+            (isset($args['search_date_start']) ?            $args['search_date_start'] : "");
         $search_keywordIDs =
-            (isset($args['search_keywordIDs']) ?    $args['search_keywordIDs'] : "");
+            (isset($args['search_keywordIDs']) ?            $args['search_keywordIDs'] : "");
         $search_memberID =
-            (isset($args['search_memberID']) ?      $args['search_memberID'] : 0);
+            (isset($args['search_memberID']) ?              $args['search_memberID'] : 0);
         $search_name =
-            (isset($args['search_name']) ?          $args['search_name'] : "");
+            (isset($args['search_name']) ?                  $args['search_name'] : "");
         $search_name_label =
-            (isset($args['search_name_label']) ?    $args['search_name_label'] : "");
+            (isset($args['search_name_label']) ?            $args['search_name_label'] : "");
         $search_offset =
-            (isset($args['search_offset']) ?        $args['search_offset'] : 0);
+            (isset($args['search_offset']) ?                $args['search_offset'] : 0);
+        $search_personID =
+            (isset($args['search_personID']) ?              $args['search_personID'] : 0);
         $search_sites =
-            (isset($args['search_sites']) ?         $args['search_sites'] : "");
+            (isset($args['search_sites']) ?                 $args['search_sites'] : "");
         $search_text =
-            (isset($args['search_text']) ?          $args['search_text'] : "");
+            (isset($args['search_text']) ?                  $args['search_text'] : "");
         $search_type =
-            (isset($args['search_type']) ?          $args['search_type'] : "*");
+            (isset($args['search_type']) ?                  $args['search_type'] : "*");
         $systems_csv =
-            (isset($args['systems_csv']) ?          $args['systems_csv'] : "");
+            (isset($args['systems_csv']) ?                  $args['systems_csv'] : "");
         $systemIDs_csv =
-            (isset($args['systemIDs_csv']) ?        $args['systemIDs_csv'] : "");
+            (isset($args['systemIDs_csv']) ?                $args['systemIDs_csv'] : "");
         $limit =
             (isset($args['search_results_page_limit']) ?    $args['search_results_page_limit'] : false);
+        $show_community =
+            (isset($args['show_community']) ?               $args['show_community'] : 0);
+        $show_member =
+            (isset($args['show_member']) ?                  $args['show_member'] : 0);
         $sortBy =
             (isset($args['search_results_sortBy']) ?        $args['search_results_sortBy'] : 'relevance');
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
@@ -1279,7 +1288,8 @@ class Posting extends Displayable_Item
                    ."  `p`.`content` LIKE \"%".$search_text." %\" DESC,\n"
                    ."  `p`.`title` LIKE \"%".$search_text." %\" DESC\n"
                 :
-                    "  `search_date` DESC, `p`.`title`\n"
+                    "  `search_date` DESC,\n"
+                   ."  `p`.`title`\n"
                 );
                 break;
             case 'title':
@@ -1292,7 +1302,9 @@ class Posting extends Displayable_Item
             ."  `p`.`ID`,\n"
             ."  `p`.`systemID`,\n"
             ."  `p`.`communityID`,\n"
+            .($show_community ? "  `c`.`title` as `community_name`,\n" : "")
             ."  `p`.`memberID`,\n"
+            .($show_member ?    "  `cm`.`title` as `member_name`,\n" : "")
             ."  `p`.`content_text`,\n"
             ."  `p`.`date`,\n"
             ."  `p`.`date_end`,\n"
@@ -1330,22 +1342,21 @@ class Posting extends Displayable_Item
               :
                 ""
              )
+            .($show_community ?
+                "LEFT JOIN `community` `c` ON\n"
+               ."  `p`.`communityID` = `c`.`ID`"
+              :
+                ""
+            )
+            .($show_member ?
+                "LEFT JOIN `community_member` `cm` ON\n"
+               ."  `p`.`memberID` = `cm`.`ID`"
+              :
+                ""
+            )
             ."WHERE\n"
             ."  `p`.`systemID` IN (".$systemIDs_csv.") AND\n"
             ."  `p`.`type` IN(".implode(',', $search_types).") AND\n"
-            .($search_communityID!=0 ?
-                 "  (`p`.`communityID`=".$search_communityID." OR"
-                ." `p`.`memberID` IN("
-                ."SELECT `memberID` FROM `community_membership` WHERE `communityID`=".$search_communityID
-                .")) AND\n"
-              :
-                ""
-             )
-            .($search_memberID!=0 ?
-                "  `p`.`memberID` IN(".$search_memberID.") AND\n"
-              :
-                ""
-             )
             .($userIsAdmin ?
                 ""
               :
@@ -1396,9 +1407,27 @@ class Posting extends Displayable_Item
               :
                 ""
              )
+            .($search_personID!=0 ?
+                "  `p`.`personID` IN(".$search_personID.") AND\n"
+              :
+                ""
+            )
+            .($search_memberID!=0 ?
+                "  `p`.`memberID` IN(".$search_memberID.") AND\n"
+              :
+                ""
+             )
+            .($search_communityID!=0 ?
+                 "  (`p`.`communityID` IN(".$search_communityID.") OR"
+                ." `p`.`memberID` IN("
+                ."SELECT `memberID` FROM `community_membership` WHERE `communityID` IN(".$search_communityID.")"
+                .")) AND\n"
+              :
+                ""
+             )
             ."  (`p`.`systemID`=".SYS_ID." OR `p`.`permPUBLIC` = 1)\n"
             .($search_keywordIDs!="" ? "GROUP BY `p`.`ID`\n" : "")
-            ."ORDER BY ".$order;
+            ."ORDER BY\n".$order;
   //    z($sql);
         $records = $this->get_records_for_sql($sql);
         if ($records) {

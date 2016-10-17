@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.6 (2016-03-20)
-    1) Community_Resource::drawRss() now correctly handles calendar date choices
+  1.0.7 (2016-10-16)
+    1) Fixed Community_Resource::drawSearchResults() - was broken
 */
 
 class Community_Resource extends Community_Display
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     public function draw($cp, $path_extension, $community_record)
     {
@@ -116,30 +116,19 @@ class Community_Resource extends Community_Display
     protected function drawSearchResults($search_date_start, $search_date_end, $search_type)
     {
         $args = array(
-             'search_date_end' =>             $search_date_end,
-             'search_date_start' =>           $search_date_start,
-             'search_communityID' =>          $this->_get_ID(),
-             'search_offset' =>               get_var('search_offset', 0),
-             'search_results_page_limit' =>   10,
-             'search_type' =>                 get_var('search_type', $search_type),
-             'systemIDs_csv' =>               SYS_ID
+            'search_date_end' =>            $search_date_end,
+            'search_date_start' =>          $search_date_start,
+            'search_communityID' =>         $this->_get_ID(),
+            'search_offset' =>              get_var('search_offset', 0),
+            'search_results_page_limit' =>  10,
+            'search_type' =>                get_var('search_type', $search_type),
+            'systemIDs_csv' =>              SYS_ID,
+            'show_member' =>                1,
+            'title' =>                      "<h1>Search Results for Community of ".$this->_community_record['title']."</h1>"
         );
-        $cps = array(
-            'controls' =>                 false,
-            'search_articles' =>          true,
-            'search_events' =>            true,
-            'search_jobs' =>              false,
-            'search_news' =>              true,
-            'search_jobs' =>              false,
-            'search_gallery_images' =>    true,
-            'search_pages' =>             false,
-            'search_podcasts' =>          true,
-            'search_products' =>          false
-        );
+        
         $Obj_Search = new Search(SYS_ID);
-        $Obj_Search->setComponentParameters($cps);
-        $search_results = $Obj_Search->getResults($args);
-        return $Obj_Search->drawResults($search_results, $args);
+        return $Obj_Search->draw('', $args, true);
     }
 
     protected function drawSermons()

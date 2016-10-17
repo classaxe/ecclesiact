@@ -1,3 +1,5 @@
+  1.0.83 (2016-07-04)
+    1) Fixed image paths for add to cart icons to respect BASE_PATH
   1.0.82 (2016-03-26)
     1) Product::_draw_listings_load_records() replaced parameter filter_category with filter_category_list
     2) Product::get_records() - now requires filter_category_list

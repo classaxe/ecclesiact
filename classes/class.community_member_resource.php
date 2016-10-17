@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.9 (2016-03-20)
-    1) Community_Member_Resource::_draw_rss() now correctly handles calendar date choices
+  1.0.10 (2016-10-16)
+    1) Fixed Community_Member_Resource::_draw_search_results() - was broken
+    2) Some work on PSR-2
 */
 
 class Community_Member_Resource extends Community_Member
 {
-    const VERSION = '1.0.9';
+    const VERSION = '1.0.10';
 
     protected $_member_name =                   '';
     protected $_member_page =                   '';
@@ -20,26 +21,26 @@ class Community_Member_Resource extends Community_Member
 
     public function draw($cp, $member_extension)
     {
-        $this->_setup($cp, $member_extension);
+        $this->setup($cp, $member_extension);
         $type =     "";
         $ID =       0;
         $request =  $this->_member_page;
         if ($request=='js' || substr($request, 0, 3)=='js/') {
-            return $this->_draw_jsonp(substr($request, 3));
+            return $this->serveJsonp(substr($request, 3));
         }
         if ($request=='rss' || substr($request, 0, 4)=='rss/') {
-            return $this->_draw_rss($request);
+            return $this->drawRss($request);
         }
         if (Portal::_parse_request_posting($request, $type, $ID)) {
-            return $this->_draw_posting($type, $ID);
+            return $this->drawPosting($type, $ID);
         }
         if (Portal::_parse_request_search_range($request, $page, $search_date_start, $search_date_end, $search_type)) {
-            return $this->_draw_search_results($search_date_start, $search_date_end, $search_type);
+            return $this->drawSearchResults($search_date_start, $search_date_end, $search_type);
         }
         throw new Exception("Unknown member resource \"".$request."\"");
     }
 
-    protected function _draw_jsonp($type)
+    protected function serveJsonp($type)
     {
         switch($type){
             case 'articles':
@@ -100,7 +101,7 @@ class Community_Member_Resource extends Community_Member
         die;
     }
 
-    protected function _draw_posting($type, $ID)
+    protected function drawPosting($type, $ID)
     {
         switch ($type){
             case 'article':
@@ -125,7 +126,7 @@ class Community_Member_Resource extends Community_Member
         return $Obj->draw_detail();
     }
 
-    protected function _draw_rss($request)
+    protected function drawRss($request)
     {
         global $page_vars;
         $path_arr =  explode('/', $request);
@@ -149,43 +150,31 @@ class Community_Member_Resource extends Community_Member
         $Obj_RSS->serve($args);
     }
 
-    protected function _draw_search_results($search_date_start, $search_date_end, $search_type)
+    protected function drawSearchResults($search_date_start, $search_date_end, $search_type)
     {
+        
         $args = array(
-             'search_date_end' =>             $search_date_end,
-             'search_date_start' =>           $search_date_start,
-             'search_memberID' =>             $this->_record['ID'],
-             'search_offset' =>               get_var('search_offset', 0),
-             'search_results_page_limit' =>   10,
-             'search_type' =>                 get_var('search_type', $search_type),
-             'systemIDs_csv' =>               SYS_ID
+            'search_date_end' =>            $search_date_end,
+            'search_date_start' =>          $search_date_start,
+            'search_memberID' =>            $this->_record['ID'],
+            'search_offset' =>              get_var('search_offset', 0),
+            'search_results_page_limit' =>  10,
+            'search_type' =>                get_var('search_type', $search_type),
+            'systemIDs_csv' =>              SYS_ID,
+            'title' =>                      "<h1>Search Results for ".$this->_record['title']."</h1>"
         );
-        $cps = array(
-            'controls' =>                     false,
-            'search_articles' =>              true,
-            'search_events' =>                true,
-            'search_jobs' =>                  false,
-            'search_news' =>                  true,
-            'search_jobs' =>                  false,
-            'search_gallery_images' =>        true,
-            'search_pages' =>                 false,
-            'search_podcasts' =>              true,
-            'search_products' =>              false
-        );
-        $Obj_Search = new Search(SYS_ID);
-        $Obj_Search->setComponentParameters($cps);
-        $search_results = $Obj_Search->getResults($args);
-        return $Obj_Search->drawResults($search_results, $args);
+        $Obj_Search = new Search();
+        return $Obj_Search->draw('', $args, true);
     }
 
-    protected function _setup($cp, $member_extension)
+    protected function setup($cp, $member_extension)
     {
         $this->_cp =    $cp;
-        $this->_setup_load_member($member_extension);
+        $this->setupLoadMember($member_extension);
         $this->_print = get_var('print')=='1';
     }
 
-    protected function _setup_load_member($member_extension)
+    protected function setupLoadMember($member_extension)
     {
         global $page_vars;
         $this->_member_extension =  $member_extension;

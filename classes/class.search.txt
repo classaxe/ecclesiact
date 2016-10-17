@@ -1,3 +1,6 @@
+  1.0.13 (2016-05-13)
+    1) Refactored controls into smaller helper functions for simplicity
+    2) Now screens searched sites against 'official' list of sites defined in component parameters
   1.0.12 (2016-02-12)
     1) Refactored for PSR-2
   1.0.11 (2015-09-14)

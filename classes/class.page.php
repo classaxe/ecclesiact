@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.128 (2016-03-24)
-    1) Removed a number of methods out into PageDraw class
+  1.0.129 (2016-10-16)
+    1) Added communityID and personID to fields list
+    2) Added support for filtering on communityID and personID to Page::get_search_results()
 */
 class Page extends Displayable_Item
 {
-    const VERSION = '1.0.128';
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, memberID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.129';
+    const FIELDS = 'ID, archive, archiveID, deleted, systemID, communityID, memberID, personID, group_assign_csv, page, path, path_extender, comments_allow, comments_count, componentID_post, componentID_pre, component_parameters, content, content_text, keywords, include_title_heading, layoutID, locked, meta_description, meta_keywords, navsuite1ID, navsuite2ID, navsuite3ID, parentID, password, permPUBLIC, permSYSLOGON, permSYSMEMBER, ratings_allow, style, subtitle, themeID, title, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public static $javascript =  array();
     public static $style = "";
@@ -449,20 +450,38 @@ class Page extends Displayable_Item
         The second gets the actual content data with start and end points modified according to the
         result of the first 'pass' to determine visibility for the current user
         */
-        $search_categories =    isset($args['search_categories']) ? $args['search_categories'] : "";
-        $search_date_end =      isset($args['search_date_end']) ? $args['search_date_end'] : "";
-        $search_date_start =    isset($args['search_date_start']) ? $args['search_date_start'] : "";
-        $search_keywordIDs =    isset($args['search_keywordIDs']) ? $args['search_keywordIDs'] : "";
-        $search_memberID =      isset($args['search_memberID']) ? $args['search_memberID'] : 0;
-        $search_name =          isset($args['search_name']) ? $args['search_name'] : "";
-        $search_offset =        isset($args['search_offset']) ? $args['search_offset'] : 0;
-        $search_sites =         isset($args['search_sites']) ? $args['search_sites'] : "";
-        $search_text =          isset($args['search_text']) ? $args['search_text'] : "";
-        $search_type =          isset($args['search_type']) ? $args['search_type'] : "*";
-        $systems_csv =          isset($args['systems_csv']) ? $args['systems_csv'] : "";
-        $systemIDs_csv =        isset($args['systemIDs_csv']) ? $args['systemIDs_csv'] : SYS_ID;
-        $limit =                isset($args['search_results_page_limit']) ? $args['search_results_page_limit'] : false;
-        $sortBy =               isset($args['search_results_sortBy']) ? $args['search_results_sortBy'] : 'relevance';
+        $search_categories =
+            (isset($args['search_categories']) ?            $args['search_categories'] : "");
+        $search_communityID =
+            (isset($args['search_communityID']) ?           $args['search_communityID'] : 0);
+        $search_date_end =
+            (isset($args['search_date_end']) ?              $args['search_date_end'] : "");
+        $search_date_start =
+            (isset($args['search_date_start']) ?            $args['search_date_start'] : "");
+        $search_keywordIDs =
+            (isset($args['search_keywordIDs']) ?            $args['search_keywordIDs'] : "");
+        $search_memberID =
+            (isset($args['search_memberID']) ?              $args['search_memberID'] : 0);
+        $search_name =
+            (isset($args['search_name']) ?                  $args['search_name'] : "");
+        $search_offset =
+            (isset($args['search_offset']) ?                $args['search_offset'] : 0);
+        $search_personID =
+            (isset($args['search_personID']) ?              $args['search_personID'] : 0);
+        $search_sites =
+            (isset($args['search_sites']) ?                 $args['search_sites'] : "");
+        $search_text =
+            (isset($args['search_text']) ?                  $args['search_text'] : "");
+        $search_type =
+            (isset($args['search_type']) ?                  $args['search_type'] : "*");
+        $systems_csv =
+            (isset($args['systems_csv']) ?                  $args['systems_csv'] : "");
+        $systemIDs_csv =
+            (isset($args['systemIDs_csv']) ?                $args['systemIDs_csv'] : SYS_ID);
+        $limit =
+            (isset($args['search_results_page_limit']) ?    $args['search_results_page_limit'] : false);
+        $sortBy =
+            (isset($args['search_results_sortBy']) ?        $args['search_results_sortBy'] : 'relevance');
         if (strlen($search_date_end)==4) {
             $search_date_end = $search_date_end."-12-31";
         }
@@ -521,8 +540,21 @@ class Page extends Displayable_Item
                 ""
             )
             ."WHERE\n"
-            ."  `p`.`systemID` IN (".$systemIDs_csv.") AND\n"
+            .($search_personID!=0 ?
+                "  `p`.`personID` IN(".$search_personID.") AND\n"
+              :
+                ""
+            )
             .($search_memberID!=0 ? "  `p`.`memberID` IN(".$search_memberID.") AND\n" : "")
+            .($search_communityID!=0 ?
+                 "  (`p`.`communityID` IN(".$search_communityID.") OR"
+                ." `p`.`memberID` IN("
+                ."SELECT `memberID` FROM `community_membership` WHERE `communityID` IN(".$search_communityID.")"
+                .")) AND\n"
+              :
+                ""
+             )
+            ."  `p`.`systemID` IN (".$systemIDs_csv.") AND\n"
             .($search_date_start!="" ? "  `p`.`history_created_date` >= '".$search_date_start."' AND\n" : "")
             .($search_date_end!="" ?
                 "  `p`.`history_created_date` < DATE_ADD('".$search_date_end."',INTERVAL 1 DAY) AND\n"
@@ -613,6 +645,20 @@ class Page extends Displayable_Item
                     ""
                 )
                 ."WHERE\n"
+                .($search_personID!=0 ?
+                    "  `p`.`personID` IN(".$search_personID.") AND\n"
+                  :
+                    ""
+                )
+                .($search_memberID!=0 ? "  `p`.`memberID` IN(".$search_memberID.") AND\n" : "")
+                .($search_communityID!=0 ?
+                     "  (`p`.`communityID` IN(".$search_communityID.") OR"
+                    ." `p`.`memberID` IN("
+                    ."SELECT `memberID` FROM `community_membership` WHERE `communityID` IN(".$search_communityID.")"
+                    .")) AND\n"
+                  :
+                    ""
+                 )
                 ."  `p`.`systemID` IN (".$systemIDs_csv.") AND\n"
                 .($search_date_start!="" ?
                     "  `p`.`history_created_date` >= '".$search_date_start."' AND\n"

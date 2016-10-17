@@ -1,10 +1,9 @@
 <?php
-define('VERSION_PAGE_EDIT', '1.0.18');
+define('VERSION_PAGE_EDIT', '1.0.19');
 /*
 Version History:
-  1.0.18 (2015-09-12)
-    1) Call to Layout::get_selector_sql() now Layout::getSelectorSql()
-    2) References to Page::push_content() now changed to Output::push()
+  1.0.19 (2016-10-16)
+    1) Added support for assigning pages to a specified community
 
 */
 class Page_Edit extends Page
@@ -16,7 +15,7 @@ class Page_Edit extends Page
         global $mode, $submode, $report_name;
         global $systemID, $page_name, $page, $path_extender, $title, $subtitle, $content, $keywords;
         global $componentID_pre, $componentID_post, $component_parameters, $style, $layoutID, $themeID;
-        global $navsuite1ID, $navsuite2ID, $navsuite3ID, $groups_assign, $memberID, $parentID, $password;
+        global $navsuite1ID, $navsuite2ID, $navsuite3ID, $groups_assign, $communityID, $memberID, $parentID, $password;
         global $permPUBLIC, $permSYSLOGON, $permSYSMEMBER, $locked, $comments_allow, $comments_count;
         global $meta_keywords, $meta_description, $include_title_heading, $ratings_allow;
         global $selected_section, $bulk_update;
@@ -42,6 +41,8 @@ class Page_Edit extends Page
         $page_allow_css =               System::has_feature('page_allow_css') || $isMASTERADMIN;
         $page_allow_password =          System::has_feature('password-protection') || $isMASTERADMIN;
         $page_allow_subtitle =          System::has_feature('page_allow_subtitle') || $isMASTERADMIN;
+        $page_allow_communityID =
+            System::has_feature('module-community') && ($isAPPROVER || $isSYSADMIN || $isMASTERADMIN);
         $page_allow_memberID =
             System::has_feature('module-community') && ($isAPPROVER || $isSYSADMIN || $isMASTERADMIN);
         $page_no_default_content =      System::has_feature('page_no_default_content');
@@ -128,6 +129,9 @@ class Page_Edit extends Page
                 if ($page_allow_memberID) {
                     $Obj_RC->bulk_update($data, $bulk_update, 'memberID', $memberID);
                 }
+                if ($page_allow_communityID) {
+                    $Obj_RC->bulk_update($data, $bulk_update, 'communityID', $communityID);
+                }
                 $ID = $this->update($data);
                 if ($ID===false) {
                     if (Record::get_last_db_error_msg_generic()=='DUPLICATE_ENTRY') {
@@ -201,6 +205,8 @@ class Page_Edit extends Page
             $subtitle =               $row['subtitle'];
             $title =                  $row['title'];
             $themeID =                $row['themeID'];
+            $communityID =            $row['communityID'];
+            $memberID =               $row['memberID'];
             $locked =                 $row['locked'];
             $content =                $row['content'];
             $keywords =               $row['keywords'];
@@ -245,17 +251,20 @@ class Page_Edit extends Page
                 ."</ul>"
             );
         }
-        $formSelectorLayoutSQL =        \Layout::getSelectorSql();
-        $formSelectorThemeSQL =         Theme::get_selector_sql();
-        $formSelectorComponentSQL =     Component::get_selector_sql();
-        $formSelectorNavSuiteSQL =      \Nav\Suite::getSelectorSql(true);
-        $formSelectorGroupSQL =         Group_Assign::get_selector_sql();
-        $formSelectorParentIDSQL =      Page::get_selector_sql_parents($ID);
+        $formSelectorLayoutSQL =            \Layout::getSelectorSql();
+        $formSelectorThemeSQL =             Theme::get_selector_sql();
+        $formSelectorComponentSQL =         Component::get_selector_sql();
+        $formSelectorNavSuiteSQL =          \Nav\Suite::getSelectorSql(true);
+        $formSelectorGroupSQL =             Group_Assign::get_selector_sql();
+        $formSelectorParentIDSQL =          Page::get_selector_sql_parents($ID);
         if ($isMASTERADMIN) {
-            $formSelectorSystemIDSQL =    System::get_selector_sql();
+            $formSelectorSystemIDSQL =      System::get_selector_sql();
+        }
+        if ($page_allow_communityID) {
+            $formSelectorCommunityIDSQL =   \Community::getSelectorSql();
         }
         if ($page_allow_memberID) {
-            $formSelectorMemberIDSQL =    Community::get_selector_sql();
+            $formSelectorMemberIDSQL =      \Community_Member::getSelectorSql();
         }
         $Obj_RC = new Report_Column;
         $column = $Obj_RC->get_column_for_report($report_name, 'content');
@@ -564,6 +573,35 @@ class Page_Edit extends Page
         )
         ."</div>\n"
         ."<table>\n"
+        .($page_allow_communityID ?
+             "  <tr>\n"
+            ."    <td><img src='".BASE_PATH."img/spacer' height='5' class='b' alt=''/></td>\n"
+            ."  </tr>\n"
+            ."  <tr>\n"
+            ."    <td><table cellpadding='1' border='0' cellspacing='0' width='100%' class='admin_containerpanel'>\n"
+            ."      <tr>\n"
+            ."        <td class='nowrap' style='width:115px;'><div class='lbl'><label for='communityID'>"
+            ."Community"
+            ."</label></div></td>"
+            ."        <td>"
+            .draw_form_field(
+                "communityID",
+                $communityID,
+                "selector",
+                "690",
+                $formSelectorCommunityIDSQL,
+                '',
+                '',
+                '',
+                $bulk_update
+            )
+            ."</td>\n"
+            ."      </tr>\n"
+            ."    </table></td>\n"
+            ."  </tr>\n"
+         :
+            ""
+        )
         .($page_allow_memberID ?
              "  <tr>\n"
             ."    <td><img src='".BASE_PATH."img/spacer' height='5' class='b' alt=''/></td>\n"
@@ -572,7 +610,7 @@ class Page_Edit extends Page
             ."    <td><table cellpadding='1' border='0' cellspacing='0' width='100%' class='admin_containerpanel'>\n"
             ."      <tr>\n"
             ."        <td class='nowrap' style='width:115px;'><div class='lbl'><label for='memberID'>"
-            ."Owner Member"
+            ."Member"
             ."</label></div></td>"
             ."        <td>"
             .draw_form_field(

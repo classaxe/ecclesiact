@@ -1,3 +1,6 @@
+  1.0.127 (2016-03-29)
+    1) Fix for Posting::get_n_per_category() to match correct categopry label to category even if category has wrong
+       capitalisation in words
   1.0.126 (2016-03-26)
     1) Internal references to filter_category normalised to filter_category_list
     2) Added filter_text_list for Posting::get_records()

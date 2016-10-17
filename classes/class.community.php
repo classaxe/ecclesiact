@@ -3,13 +3,15 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.119 (2016-03-03)
-    1) Moved Community::_setup_load_user_rights() out into Community_Display::setupListingsLoadUserRights()
+  1.0.120 (2016-10-16)
+    1) Community::get_selector_sql() renamed to Community::getSelectorSql() and now actually lists communities
+       rather than community members.
+       That selector type has moved to Community_Member which is where it more properly belongs.
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.119';
+    const VERSION = '1.0.120';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -360,7 +362,7 @@ class Community extends Displayable_Item
         return parent::sql_export($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
     }
 
-    public static function get_selector_sql()
+    public static function getSelectorSql()
     {
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
         if ($isMASTERADMIN) {
@@ -373,23 +375,17 @@ class Community extends Displayable_Item
                 ."  '404040' `color_text`\n"
                 ."UNION SELECT\n"
                 ."  1,\n"
-                ."  `community_member`.`ID`,\n"
+                ."  `community`.`ID`,\n"
                 ."  CONCAT(\n"
                 ."    `system`.`textEnglish`,': ',\n"
-                ."    `service_addr_country`,\n"
-                ."    IF(\n"
-                ."      `service_addr_sp`!='',\n"
-                ."      CONCAT(' | ',`service_addr_sp`),\n"
-                ."     ''\n"
-                ."    ),\n"
-                ."    ' | ',`service_addr_city`,' | ',`title`\n"
+                ."    `community`.`title`\n"
                 ."  ),\n"
                 ."  IF(`system`.`ID`=SYS_ID,'c0ffc0','ffe0e0'),\n"
                 ."  '000000'\n"
                 ."FROM\n"
-                ."  `community_member`\n"
+                ."  `community`\n"
                 ."INNER JOIN `system` ON\n"
-                ."  `system`.`ID` = `community_member`.`systemID`\n"
+                ."  `system`.`ID` = `community`.`systemID`\n"
                 ."ORDER BY\n"
                 ."  `seq`,`text`";
         }
@@ -402,22 +398,14 @@ class Community extends Displayable_Item
             ."  '404040' `color_text`\n"
             ."UNION SELECT\n"
             ."  1,\n"
-            ."  `community_member`.`ID`,\n"
-            ."  CONCAT(\n"
-            ."    `service_addr_country`,\n"
-            ."    IF(\n"
-            ."      `service_addr_sp`!='',\n"
-            ."      CONCAT(' | ',`service_addr_sp`),\n"
-            ."      ''\n"
-            ."    ),\n"
-            ."    ' | ',`service_addr_city`,' | ',`title`\n"
-            ."  ),\n"
+            ."  `community`.`ID`,\n"
+            ."  `community`.`title`,\n"
             ."  'c0ffc0',\n"
             ."  '000000'\n"
             ."FROM\n"
-            ."  `community_member`\n"
+            ."  `community`\n"
             ."WHERE\n"
-            ."  `community_member`.`systemID` IN(1,".SYS_ID.")\n"
+            ."  `community`.`systemID` IN(1,".SYS_ID.")\n"
             ."ORDER BY\n"
             ."  `seq`,`text`";
     }

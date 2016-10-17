@@ -1,3 +1,6 @@
+  1.0.18 (2015-09-12)
+    1) Call to Layout::get_selector_sql() now Layout::getSelectorSql()
+    2) References to Page::push_content() now changed to Output::push()
   1.0.17 (2015-08-03)
     1) References to Navsuite now \Nav\Suite
   1.0.16 (2015-01-03)

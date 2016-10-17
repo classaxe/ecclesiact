@@ -1,3 +1,5 @@
+  1.0.128 (2016-03-24)
+    1) Removed a number of methods out into PageDraw class
   1.0.127 (2016-01-16)
     1) Page::get_css_idx() - formatting tweaks for clearer HTML output
   1.0.126 (2016-01-01)

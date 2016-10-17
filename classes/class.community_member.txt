@@ -1,3 +1,5 @@
+  1.0.113 (2016-07-04)
+    1) Fixed path for dashboard tabs images to respect BASE_PATH
   1.0.112 (2016-01-08)
     1) Now gives total time for number crunching of Piwik Stats at bottom
   1.0.111 (2016-01-07)

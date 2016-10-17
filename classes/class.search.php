@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.13 (2016-05-13)
-    1) Refactored controls into smaller helper functions for simplicity
-    2) Now screens searched sites against 'official' list of sites defined in component parameters
+  1.0.14 (2016-10-16)
+    1) Search::draw() now uses communityID, memberID and personID if given
+    2) May now completely override title if arg is set for an alternative title
 */
 class Search extends Component_Base
 {
-    const VERSION = '1.0.13';
+    const VERSION = '1.0.14';
 
     protected $html;
     protected $systemIDs_csv;
@@ -78,6 +78,16 @@ class Search extends Component_Base
                 'hint' =>       'date|relevance|title'
             )
         );
+        if (System::has_feature('module-community')) {
+            $this->_parameter_spec['show_community'] = array(
+                'default' =>    0,
+                'hint' =>       '0|1'
+            );
+            $this->_parameter_spec['show_member'] = array(
+                'default' =>    0,
+                'hint' =>       '0|1'
+            );
+        }
     }
 
     public function draw($instance = '', $args = array(), $disable_params = false)
@@ -88,25 +98,29 @@ class Search extends Component_Base
         $this->setup($instance, $args, $disable_params);
         $this->drawControlPanel(true);
         $this->args = array(
-            'search_categories' =>           $search_categories,
-            'search_communityID' =>          0,
-            'search_date_end' =>             $search_date_end,
-            'search_date_start' =>           $search_date_start,
-            'search_keywords' =>             $search_keywords,
+            'search_categories' =>          $search_categories,
+            'search_communityID' =>         (isset($this->_args['search_communityID']) ? $this->_args['search_communityID'] : 0),
+            'search_date_end' =>            $search_date_end,
+            'search_date_start' =>          $search_date_start,
+            'search_keywords' =>            $search_keywords,
             'search_keywordIDs' =>
                 ($search_keywords ? Keyword::get_keywordIDs_list_by_keywords_list($search_keywords) : ""),
-            'search_memberID' =>             0,
+            'search_memberID' =>            (isset($this->_args['search_memberID']) ? $this->_args['search_memberID'] : 0),
             'search_name' =>
-                ($this->_cp['name_search'] ? addslashes($search_text) : ''),
-            'search_name_label' =>           $this->_cp['name_search_label'],
-            'search_offset' =>               $search_offset,
-            'search_results_page_limit' =>   $this->_cp['page_limit'],
-            'search_results_sites_list' =>   $this->_cp['sites_list'],
-            'search_sites' =>                $search_sites,
-            'search_results_sortBy' =>       $this->_cp['sortby'],
-            'search_text' =>                 addslashes($search_text),
-            'search_type' =>                 $search_type,
-            'systemIDs_csv' =>               $this->systemIDs_csv
+                ($this->_cp['name_search'] ?addslashes($search_text) : ''),
+            'search_name_label' =>          $this->_cp['name_search_label'],
+            'search_offset' =>              $search_offset,
+            'search_personID' =>            (isset($this->_args['search_personID']) ? $this->_args['search_personID'] : 0),
+            'search_results_page_limit' =>  $this->_cp['page_limit'],
+            'search_results_sites_list' =>  $this->_cp['sites_list'],
+            'search_sites' =>               $search_sites,
+            'search_results_sortBy' =>      $this->_cp['sortby'],
+            'search_text' =>                addslashes($search_text),
+            'search_type' =>                $search_type,
+            'show_community' =>             (isset($this->_cp['show_community']) ? $this->_cp['show_community'] : 0),
+            'show_member' =>                (isset($this->_cp['show_member']) ? $this->_cp['show_member'] : 0),
+            'systemIDs_csv' =>              $this->systemIDs_csv,
+            'title' =>                      (isset($this->_args['title']) ? $this->_args['title'] : ""),
         );
         $this->drawResults($this->getResults());
         return $this->_html;
@@ -405,6 +419,8 @@ class Search extends Component_Base
             (isset($this->args['search_results_sortBy']) ? $this->args['search_results_sortBy'] : "relevance");
         $search_text =
             (isset($this->args['search_text']) ? $this->args['search_text'] : "");
+        $title =
+            (isset($this->args['title']) ? $this->args['title'] : "");
         $category_arr =     explode(",", $search_categories);
         $category_count =   count($category_arr);
         $list_types_arr = array();
@@ -441,36 +457,38 @@ class Search extends Component_Base
         $keyword_count =    count($keyword_arr);
         $this->_html.=
              "<div id='search_results'>\n"
-            ."<h1>Search Results "
-            .($search_text ? "for text <em>".stripslashes($search_text)."</em>" : "")
-            .($search_keywords ?
-                 ($search_text!=="" ||$search_name!=="" ? ", having" : " for")
-                ." tag".($keyword_count==1 ? "" : "s")
-                ." <em>".implode(", ", $keyword_arr)."</em>"
-             :
-                ""
-            )
-            .($search_categories ?
-                 ($search_text || $search_keywords ? ", matching" : " for")
-                ." categor".($category_count==1 ? "y" : "ies")
-                ." <em>".implode(", ", $category_labels_array)."</em>"
-             :
-                ""
-            )
-            .($search_date_start || $search_date_end ?
-                 ($search_text || $search_keywords || $search_categories ? "" : " ")
-                .($search_date_start && $search_date_end && $search_date_start != $search_date_end?
-                    " between <em>".$search_date_start."</em> and <em>".$search_date_end."</em>"
+            .($title ? $title :
+                 "<h1>Search Results "
+                .($search_text ? "for text <em>".stripslashes($search_text)."</em>" : "")
+                .($search_keywords ?
+                     ($search_text!=="" ||$search_name!=="" ? ", having" : " for")
+                    ." tag".($keyword_count==1 ? "" : "s")
+                    ." <em>".implode(", ", $keyword_arr)."</em>"
                  :
                     ""
                 )
-                .($search_date_start == $search_date_end ? " for <em>".$search_date_start."</em>" : "")
-                .($search_date_start && !$search_date_end ? " from <em>".$search_date_start."</em>" : "")
-                .(!$search_date_start && $search_date_end ? " up to <em>".$search_date_end."</em>" : "")
-             :
-                ""
+                .($search_categories ?
+                     ($search_text || $search_keywords ? ", matching" : " for")
+                    ." categor".($category_count==1 ? "y" : "ies")
+                    ." <em>".implode(", ", $category_labels_array)."</em>"
+                 :
+                    ""
+                )
+                .($search_date_start || $search_date_end ?
+                     ($search_text || $search_keywords || $search_categories ? "" : " ")
+                    .($search_date_start && $search_date_end && $search_date_start != $search_date_end?
+                        " between <em>".$search_date_start."</em> and <em>".$search_date_end."</em>"
+                     :
+                        ""
+                    )
+                    .($search_date_start == $search_date_end ? " for <em>".$search_date_start."</em>" : "")
+                    .($search_date_start && !$search_date_end ? " from <em>".$search_date_start."</em>" : "")
+                    .(!$search_date_start && $search_date_end ? " up to <em>".$search_date_end."</em>" : "")
+                 :
+                    ""
+                )
+                ."</h1>\n"
             )
-            ."</h1>\n"
             .($this->_cp['controls'] ? $this->drawControls($this->_cp) : "")
             ;
         if (
