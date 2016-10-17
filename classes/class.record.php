@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.100 (2016-05-01)
-    1) Added Record::getFieldForSql and made Record::get_field_for_sql() into an alias for that
+  1.0.101 (2016-10-16)
+    1) Change to Record::get_field() to enable to work with CSV list of IDs -
+       Used in Page_Edit::draw() to get multiple group matches in bulk update mode
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.100';
+    const VERSION = '1.0.101';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -903,7 +904,7 @@ class Record extends Portal
                 ."FROM\n"
                 ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
                 ."WHERE\n"
-                ."  `ID` = ".$ID;
+                ."  `ID` IN(".$ID.")";
             return $this->get_field_for_sql($sql);
         }
         $this->load();

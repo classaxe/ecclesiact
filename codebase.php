@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.0");
+define("CODEBASE_VERSION", "4.9.1");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,68 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.0.2468 (2016-10-16)
+4.9.1.2469 (2016-10-16)
 Summary:
-  1) Pages can now belong to a community or a person (for community and member search)
-  2) Products can now belong to a community, a member or a person (for community and member search)
-  3) Fixed Community and Community Member content searches
-  4) Bug fix for Theme Banner and Accent forms -
-     All were crashing on update due to lack of a Primary Object Type setting 
+  1) Bug fix for group selector when bulk updating pages
 
 Final Checksums:
-  Classes     CS:4db935e5
+  Classes     CS:46162d04
   Database    CS:4445437e
-  Libraries   CS:8aa6aae3
+  Libraries   CS:15ee367a
   Reports     CS:74a6c733
 
 Code Changes:
-  codebase.php                                                                                   4.9.0     (2016-10-16)
+  codebase.php                                                                                   4.9.1     (2016-10-16)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.120   (2016-10-16)
-    1) Community::get_selector_sql() renamed to Community::getSelectorSql() and now actually lists communities
-       rather than community members.
-       That selector type has moved to Community_Member which is where it more properly belongs.
-  classes/class.community_member.php                                                             1.0.114   (2016-10-16)
-    1) Added Community_Member::getSelectorSql()
-  classes/class.community_member_resource.php                                                    1.0.10    (2016-10-16)
-    1) Fixed Community_Member_Resource::_draw_search_results() - was broken
-    2) Some work on PSR-2
-  classes/class.community_resource.php                                                           1.0.7     (2016-10-16)
-    1) Fixed Community_Resource::drawSearchResults() - was broken
-  classes/class.page.php                                                                         1.0.129   (2016-10-16)
-    1) Added communityID and personID to fields list
-    2) Added support for filtering on communityID and personID to Page::get_search_results()
-  classes/class.page_edit.php                                                                    1.0.19    (2016-10-16)
-    1) Added support for assigning pages to a specified community
-  classes/class.posting.php                                                                      1.0.128   (2016-10-16)
-    1) Added support for searching by Person in Posting::get_search_results()
-    2) Now displays Community and Member name if these fields are available to show
-  classes/class.product.php                                                                      1.0.84    (2016-10-16)
-    1) Added support for filtering by Community, Member and Person in Product::get_search_results()
-  classes/class.search.php                                                                       1.0.14    (2016-10-16)
-    1) Search::draw() now uses communityID, memberID and personID if given
-    2) May now completely override title if arg is set for an alternative title
+  classes/class.record.php                                                                       1.0.101   (2016-10-16)
+    1) Change to Record::get_field() to enable to work with CSV list of IDs -
+       Used in Page_Edit::draw() to get multiple group matches in bulk update mode
 
-2468.sql
-  1) New columns for pages table:   communityID, personID
-  2) New columns for product table: communityID, memberID, personID
-  3) Changes to Pages report to include Community and Member where enabled
-  4) Fixes for report forms dealing with in-place theme editing:
-     theme_banner, theme_accent_1, theme_accent_2, theme_accent_3, theme_accent_4, theme_accent_5
-  5) Set version information
+2469.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.9.0
-  classes/  (9 files changed)
-    class.community.php                               1.0.120   CS:80b3a380
-    class.community_member.php                        1.0.114   CS:68606a7a
-    class.community_member_resource.php               1.0.10    CS:d2d26694
-    class.community_resource.php                      1.0.7     CS:34404b81
-    class.page.php                                    1.0.129   CS:31863517
-    class.page_edit.php                               1.0.19    CS:9b2fd8d3
-    class.posting.php                                 1.0.128   CS:ab84dcaa
-    class.product.php                                 1.0.84    CS:388fff9e
-    class.search.php                                  1.0.14    CS:b95252f4
+  codebase.php                                        4.9.1
+  classes/  (1 file changed)
+    class.record.php                                  1.0.101   CS:11b8b390
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
