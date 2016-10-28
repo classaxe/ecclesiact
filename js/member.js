@@ -1,9 +1,9 @@
-// 1.0.148
+// 1.0.149
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.148 (2016-04-19)
-    1) Added support for 'selected_queue_again' to selected_operation()
+  1.0.149 (2016-10-28)
+    1) Added support for Profile Merge with Delete option
 */
 
 // ************************************
@@ -923,6 +923,18 @@ function merge_profiles_process(targetID){
   return false;
 }
 
+function merge_profiles_delete_process(targetID){
+  if (!confirm('Are you sure?\nAll but the target profile will be deleted')){
+	  alert('Operation Cancelled');
+	  return false;
+  }
+  var h = "<div id='popup_form' style='padding:4px;'>Loading...</div>";
+  popup_dialog('Merge Profiles with Delete',h,1000,400,'','');
+  var post_vars = "command=merge_profiles&submode=merge_with_delete&ajax=1&targetID="+targetID;
+  popup_layer_submit(base_url,post_vars);
+  return false;
+}
+
 function merge_profiles_select_destination(ID){
   $('#targetValue').val(ID);
   $('#merge_profiles_row_'+ID).siblings().prop({title:'This profile will be merged into the selected one'});
@@ -930,6 +942,7 @@ function merge_profiles_select_destination(ID){
   $('#merge_profiles_row_'+ID).prop({title:'Other profiles will be merged into this one'});
   $('#merge_profiles_row_'+ID).css({color:'#f00'});
   $('#merge_profiles_submit').prop({disabled:false});
+  $('#merge_profiles_delete_submit').prop({disabled:false});
 }
 
 function repeat_settings_dialog(targetID){

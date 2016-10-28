@@ -1,15 +1,13 @@
 <?php
-define('VERSION_PERSON_MERGE_PROFILES', '1.0.4');
 /*
 Version History:
-  1.0.4 (2015-01-11)
-    1) Changed references from System::tables to System::TABLES
-    2) Now PSR-2 Compliant
-
-  (Older version history in class.person_merge_profiles.txt)
+  1.0.5 (2016-10-28)
+    1) Added full support for deletion of source profiles if selected
 */
 class Person_merge_profiles extends Person
 {
+    const VERSION = '1.0.5';
+
     protected $_affected_records = 0;
     protected $_delete_source_profiles;
     protected $_sourceID_csv;
@@ -182,9 +180,11 @@ class Person_merge_profiles extends Person
         ."</table>\n"
         ."<p class='txt_c'>\n"
         ."<input id='merge_profiles_cancel' type='button' value='Cancel'"
-        ." style='width:100px' class='formButton' onclick=\"hidePopWin()\" />\n"
-        ."<input id='merge_profiles_submit' type='button' value='Merge Profiles' disabled='disabled'"
-        ." style='width:100px' class='formButton' onclick=\"merge_profiles_process('".$this->_targetID."')\" />\n"
+        ." style='width:140px' class='formButton' onclick=\"hidePopWin()\" />\n"
+        ."<input id='merge_profiles_submit' type='button' value='Merge Profile Data' disabled='disabled'"
+        ." style='width:140px' class='formButton' onclick=\"merge_profiles_process('".$this->_targetID."')\" />\n"
+        ."<input id='merge_profiles_delete_submit' type='button' value='Merge with Delete' disabled='disabled'"
+        ." style='width:140px' class='formButton' onclick=\"merge_profiles_delete_process('".$this->_targetID."')\" />\n"
         ."</p>"
         ."</div>"
         ;
@@ -220,7 +220,8 @@ class Person_merge_profiles extends Person
 
     protected function _draw_seup_do_merge()
     {
-        if (get_var('submode')!='merge') {
+        $submode = get_var('submode');
+        if ($submode!=='merge' && $submode!=='merge_with_delete') {
             return;
         }
         if (!$this->_targetValue = get_var('targetValue')) {
@@ -233,9 +234,15 @@ class Person_merge_profiles extends Person
             throw new Exception;
         }
         $this->_sourceID_csv =  implode(',', array_diff($source_arr, array($this->_targetValue)));
-        $deleteSourceAcct =     false;
+        $deleteSourceAcct =     ($submode==='merge_with_delete' ? true : false);
         $result =               $this->merge($this->_sourceID_csv, $this->_targetValue, $deleteSourceAcct);
-        $this->_html.=          "<p><b>Result:</b> Merged ".$result." records.</p>";
+        $this->_html.=
+             "<p><b>Result:</b> Merged ".$result." records"
+            .($submode==='merge_with_delete' ? " and deleted source profiles" : "")
+            .".</p>\n"
+            ."<p style='text-align:center'><input type='button' value='Done'"
+            ." style='width:140px' class='formButton' onclick=\"geid('form').submit();\" />"
+            ."</p>\n";
     }
 
     protected function _draw_setup_get_targetID()
@@ -591,10 +598,5 @@ class Person_merge_profiles extends Person
         $this->_Obj =                       new Record;
         $this->_Obj_s =                     new Person($this->_sourceID_csv);
         $this->_Obj_t =                     new Person($this->_targetID);
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_PERSON_MERGE_PROFILES;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.1");
+define("CODEBASE_VERSION", "4.9.2");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,30 +16,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.1.2469 (2016-10-16)
+4.9.2.2470 (2016-10-28)
 Summary:
-  1) Bug fix for group selector when bulk updating pages
+  1) Implemented Deletion After Merge support for Profile Merge tool 
 
 Final Checksums:
-  Classes     CS:46162d04
+  Classes     CS:67caeace
   Database    CS:4445437e
-  Libraries   CS:15ee367a
+  Libraries   CS:a00fa60b
   Reports     CS:74a6c733
 
 Code Changes:
-  codebase.php                                                                                   4.9.1     (2016-10-16)
+  codebase.php                                                                                   4.9.2     (2016-10-28)
     1) Updated version information
-  classes/class.record.php                                                                       1.0.101   (2016-10-16)
-    1) Change to Record::get_field() to enable to work with CSV list of IDs -
-       Used in Page_Edit::draw() to get multiple group matches in bulk update mode
+  classes/class.person_merge_profiles.php                                                        1.0.5     (2016-10-28)
+    1) Added full support for deletion of source profiles if selected
+  js/member.js                                                                                   1.0.149   (2016-10-28)
+    1) Added support for Profile Merge with Delete option
 
-2469.sql
+2470.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.9.1
+  codebase.php                                        4.9.2
   classes/  (1 file changed)
-    class.record.php                                  1.0.101   CS:11b8b390
+    class.person_merge_profiles.php                   1.0.5     CS:77d722ae
+  js/member.js                                        1.0.149   CS:d7a734fb
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
