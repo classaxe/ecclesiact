@@ -1,15 +1,13 @@
 <?php
-define("VERSION_REPORT_REPORT", "1.0.31");
-
 /*
 Version History:
-  1.0.31 (2016-11-20)
-    1) Added support for 'set_random_password'
+  1.0.32 (2016-11-20)
+    1) Bug fix fr bulk update mode with 'set_random_password'
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.31';
+    const VERSION = '1.0.32';
     public function do_commands()
     {
         if (!isset($_REQUEST['command'])) {
@@ -793,9 +791,12 @@ class Report_Report extends Report
                         );
                         break;
                     case "set_random_password":
-                        $ObjRecord =  new Record($reportPrimaryTable, $targetID);
-                        $data =       array('PPassword'=>encrypt(get_random_password()));
-                        $ObjRecord->update($data);
+                        $targetID_arr = explode(',', $targetID);
+                        foreach ($targetID_arr as $ID) {
+                            $ObjRecord =  new Record($reportPrimaryTable, $ID);
+                            $data =       array('PPassword'=>encrypt(get_random_password()));
+                            $ObjRecord->update($data);
+                        }
                         $msg = status_message(
                             0,
                             true,

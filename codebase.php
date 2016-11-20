@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.3");
+define("CODEBASE_VERSION", "4.9.4");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,44 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.3.2471 (2016-11-20)
+4.9.4.2472 (2016-11-20)
 Summary:
-  1) Added new filters in users report for 'Has password' and 'No password'
-  2) Added ability to 'with selected set random password'
+  1) Bug fix for bulk update mode when using 'with selected set random password'
 
 Final Checksums:
-  Classes     CS:4c68d6a0
+  Classes     CS:32ca6af0
   Database    CS:4445437e
-  Libraries   CS:bf59ad71
+  Libraries   CS:d540763c
   Reports     CS:b2e711be
 
 Code Changes:
-  codebase.php                                                                                   4.9.3     (2016-11-20)
+  codebase.php                                                                                   4.9.4     (2016-11-20)
     1) Updated version information
-  classes/class.report.php                                                                       1.0.91    (2016-11-20)
-    1) Added 'selected_set_random_password' to Report::REPORT_FEATURES list
-  classes/class.report_column.php                                                                1.0.139   (2016-11-20)
-    1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
-    2) Now uses CONST based version control
-  classes/class.report_report.php                                                                1.0.31    (2016-11-20)
-    1) Added support for 'set_random_password'
-  js/member.js                                                                                   1.0.150   (2016-11-20)
-    1) Added support for 'selected_set_random_password'
+  classes/class.report_report.php                                                                1.0.32    (2016-11-20)
+    1) Bug fix fr bulk update mode with 'set_random_password'
 
-2471.sql
-  1) New Column Type - 'selected_set_random_password'
-  2) New column (just as report action) for 'users' report - with selected set random password
-  3) New column and report filter for users report - 'has password'
-  4) Set version information
+2472.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.9.3
-  classes/  (3 files changed)
-    class.report.php                                  1.0.91    CS:3f3f0258
-    class.report_column.php                           1.0.139   CS:28d7603e
-    class.report_report.php                           1.0.31    CS:4668686a
-  images/icons.gif                                              CS:74761629
-  js/member.js                                        1.0.150   CS:89fc05a8
+  codebase.php                                        4.9.4
+  classes/  (1 file changed)
+    class.report_report.php                           1.0.32    CS:abb31f00
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
