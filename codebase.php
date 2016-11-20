@@ -41,7 +41,10 @@ Code Changes:
     1) Added support for 'selected_set_random_password'
 
 2471.sql
-  1) Set version information
+  1) New Column Type - 'selected_set_random_password'
+  2) New column (just as report action) for 'users' report - with selected set random password
+  3) New column and report filter for users report - 'has password'
+  4) Set version information
 
 Promote:
   codebase.php                                        4.9.3
