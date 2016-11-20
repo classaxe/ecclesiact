@@ -1,9 +1,9 @@
-// 1.0.149
+// 1.0.150
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.149 (2016-10-28)
-    1) Added support for Profile Merge with Delete option
+  1.0.150 (2016-11-20)
+    1) Added support for 'selected_set_random_password'
 */
 
 // ************************************
@@ -1429,6 +1429,15 @@ function selected_operation(form,report_name,reportID,args) {
       }
       else {alert('No items selected to update');}
     break;
+    case 'selected_set_random_password':
+        if (num>0) {
+          if (confirm('Set a random password for '+num+' user'+(num==1 ? '': 's')+' - are you sure?')) {
+            geid_set('submode','set_random_password');
+          }
+          else{alert('Updates cancelled');}
+        }
+        else {alert('No users selected to set a random password for');}
+      break;
     case 'selected_update':
       if (num>0) {
         details(report_name,targetID,args.popup_size.h,args.popup_size.w,'','',1);

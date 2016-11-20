@@ -1,3 +1,5 @@
+  1.0.138 (2016-05-13)
+    1) Made almost all methods static
   1.0.137 (2016-04-19)
     1) Report_Column::draw_selector_with_selected() now handles 'selected_queue_again'
   1.0.136 (2016-04-19)

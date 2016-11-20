@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.2");
+define("CODEBASE_VERSION", "4.9.3");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,32 +16,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.2.2470 (2016-10-28)
+4.9.3.2471 (2016-11-20)
 Summary:
-  1) Implemented Deletion After Merge support for Profile Merge tool 
+  1) Added new filters in users report for 'Has password' and 'No password'
+  2) Added ability to 'with selected set random password'
 
 Final Checksums:
-  Classes     CS:67caeace
+  Classes     CS:4c68d6a0
   Database    CS:4445437e
-  Libraries   CS:a00fa60b
-  Reports     CS:74a6c733
+  Libraries   CS:bf59ad71
+  Reports     CS:b2e711be
 
 Code Changes:
-  codebase.php                                                                                   4.9.2     (2016-10-28)
+  codebase.php                                                                                   4.9.3     (2016-11-20)
     1) Updated version information
-  classes/class.person_merge_profiles.php                                                        1.0.5     (2016-10-28)
-    1) Added full support for deletion of source profiles if selected
-  js/member.js                                                                                   1.0.149   (2016-10-28)
-    1) Added support for Profile Merge with Delete option
+  classes/class.report.php                                                                       1.0.91    (2016-11-20)
+    1) Added 'selected_set_random_password' to Report::REPORT_FEATURES list
+  classes/class.report_column.php                                                                1.0.139   (2016-11-20)
+    1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
+    2) Now uses CONST based version control
+  classes/class.report_report.php                                                                1.0.31    (2016-11-20)
+    1) Added support for 'set_random_password'
+  js/member.js                                                                                   1.0.150   (2016-11-20)
+    1) Added support for 'selected_set_random_password'
 
-2470.sql
+2471.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.9.2
-  classes/  (1 file changed)
-    class.person_merge_profiles.php                   1.0.5     CS:77d722ae
-  js/member.js                                        1.0.149   CS:d7a734fb
+  codebase.php                                        4.9.3
+  classes/  (3 files changed)
+    class.report.php                                  1.0.91    CS:3f3f0258
+    class.report_column.php                           1.0.139   CS:28d7603e
+    class.report_report.php                           1.0.31    CS:4668686a
+  images/icons.gif                                              CS:74761629
+  js/member.js                                        1.0.150   CS:89fc05a8
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

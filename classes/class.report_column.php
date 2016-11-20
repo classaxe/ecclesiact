@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.138 (2016-05-13)
-    1) Made almost all methods static
+  1.0.139 (2016-11-20)
+    1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
+    2) Now uses CONST based version control
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.138';
+    const VERSION = '1.0.139';
 
     public function __construct($ID = "")
     {
@@ -3259,6 +3260,11 @@ class Report_Column extends Record
              :
                 ""
             )
+            .($s['selected_set_random_password']!==false ?
+                "    selected_set_random_password: ".$s['selected_set_random_password'].",\n"
+             :
+                ""
+            )
             .($s['selected_show_on_map']!==false ?
                 "    selected_show_on_map: ".$s['selected_show_on_map'].",\n"
              :
@@ -3382,6 +3388,12 @@ class Report_Column extends Record
             .($s['selected_set_importance']!==false ?
                  "  <option value='selected_set_important_off' style='background-color: RGB(220,220,220);'>"
                 ."Set Importance to Normal</option>\n"
+             :
+                ""
+            )
+            .($s['selected_set_random_password']!==false ?
+                 "  <option value='selected_set_random_password' style='background-color: RGB(255,220,220);'>"
+                ."Set Random Password - no email is sent</option>\n"
              :
                 ""
             )

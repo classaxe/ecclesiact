@@ -1,15 +1,15 @@
 <?php
-define("VERSION_REPORT_REPORT", "1.0.30");
+define("VERSION_REPORT_REPORT", "1.0.31");
 
 /*
 Version History:
-  1.0.30 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.31 (2016-11-20)
+    1) Added support for 'set_random_password'
 */
 
 class Report_Report extends Report
 {
+    const VERSION = '1.0.31';
     public function do_commands()
     {
         if (!isset($_REQUEST['command'])) {
@@ -782,6 +782,34 @@ class Report_Report extends Report
                             $record_type,
                             '',
                             'been marked as of normal importance.',
+                            $targetID
+                        );
+                        $this->actions_execute(
+                            'report_update_post',
+                            $reportPrimaryTable,
+                            $reportPrimaryObjectName,
+                            $targetID,
+                            $data
+                        );
+                        break;
+                    case "set_random_password":
+                        $ObjRecord =  new Record($reportPrimaryTable, $targetID);
+                        $data =       array('PPassword'=>encrypt(get_random_password()));
+                        $ObjRecord->update($data);
+                        $msg = status_message(
+                            0,
+                            true,
+                            $record_type,
+                            '',
+                            'had a ransomised password set.',
+                            $targetID
+                        );
+                        $msg_tooltip = status_message(
+                            0,
+                            false,
+                            $record_type,
+                            '',
+                            'had a ransomised password set.',
                             $targetID
                         );
                         $this->actions_execute(
@@ -1814,10 +1842,5 @@ class Report_Report extends Report
             ""
         )
         ."</th>";
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_REPORT_REPORT;
     }
 }
