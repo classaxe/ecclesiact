@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.160 (2016-04-04)
-    1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
-       to be downloaded 
+  1.0.161 (2016-11-27)
+    1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
+       or 'ratings_allow' settings, such as Users
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.160';
+    const VERSION = '1.0.161';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -86,8 +86,7 @@ class Displayable_Item extends Block_Layout
 
     protected function _common_draw_help()
     {
-        $this->_html.=
-        Component_Base::get_help(
+        $this->_html.= Component_Base::get_help(
             $this->_ident,
             $this->_instance,
             $this->_cp_are_fixed,
@@ -134,20 +133,26 @@ class Displayable_Item extends Block_Layout
         $this->_cp =            $settings['parameters'];
     }
 
-    protected function _common_load_user_rights()
+    public function _common_load_user_rights()
     {
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isUSERADMIN =        get_person_permission("USERADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
+        $isUSERADMIN =      get_person_permission("USERADMIN");
+        $isSYSADMIN =       get_person_permission("SYSADMIN");
         $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =      get_person_permission("SYSEDITOR", $this->record['group_assign_csv']);
+        $isSYSMEMBER =      get_person_permission("SYSMEMBER");
+        $isSYSEDITOR =
+            isset($this->record['group_assign_csv']) &&
+            get_person_permission("SYSEDITOR", $this->record['group_assign_csv']);
         $isPUBLIC =         get_person_permission("PUBLIC");
+        $this->_current_user_rights['isPUBLIC'] = $isPUBLIC;
+        $this->_current_user_rights['isSYSMEMBER'] = $isSYSMEMBER;
         $this->_current_user_rights['canPublish'] =
-            $isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER;
+            ($isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER) ? 1 : 0;
         $this->_current_user_rights['canEdit'] =
             $isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER || $isSYSEDITOR;
         $this->_current_user_rights['canRate'] =
-            $this->record['ratings_allow']=='all' || ($this->record['ratings_allow']=='registered' && !$isPUBLIC);
+            isset($this->record['ratings_allow']) &&
+            ($this->record['ratings_allow']=='all' || ($this->record['ratings_allow']=='registered' && !$isPUBLIC));
         $this->_current_user_rights['isUSERADMIN'] =
             $isSYSADMIN || $isSYSAPPROVER || $isUSERADMIN || $isMASTERADMIN;
         $this->_current_user_rights['isSYSADMIN'] =
@@ -654,7 +659,7 @@ class Displayable_Item extends Block_Layout
         }
         $this->_draw_listings_draw_status();
         $this->_common_draw_help();
-        $this->_draw_listings_draw_add_icon();
+        //$this->_draw_listings_draw_add_icon();
         if (count($this->_records)==0) {
             $this->_draw_listings_draw_no_results();
             return $this->_draw_listings_render();

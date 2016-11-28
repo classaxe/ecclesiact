@@ -1,3 +1,6 @@
+  1.0.160 (2016-04-04)
+    1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
+       to be downloaded 
   1.0.159 (2016-03-26)
     1) Complete revamp of Displayable_Item::_draw_listings_load_records() which now allows for replaced parameter
        filter_category with filter_category_list

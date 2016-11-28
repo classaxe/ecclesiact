@@ -2,12 +2,12 @@
 namespace Component;
 /*
 Version History:
-  1.0.5 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.6 (2016-11-20)
+    1) Now includes extra break in component control panel to prevent it from hidding under following control if present  
 */
 class ContentGroupMemberMirror extends Base
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     protected $content;
 
@@ -27,7 +27,7 @@ class ContentGroupMemberMirror extends Base
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
         $this->setup($instance, $args, $disable_params);
-        $this->drawControlPanel();
+        $this->drawControlPanel(true);
         return $this->_html.$this->content;
     }
 

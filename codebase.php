@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.4");
+define("CODEBASE_VERSION", "4.9.5");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.4.2472 (2016-11-20)
+4.9.5.2473 (2016-11-27)
 Summary:
-  1) Bug fix for bulk update mode when using 'with selected set random password'
+  1) Bug fixes for persons listing panel having unset permission properties when dealing with
+     privacy settings of individual members listed there
 
 Final Checksums:
-  Classes     CS:32ca6af0
+  Classes     CS:26d3de4e
   Database    CS:4445437e
-  Libraries   CS:d540763c
+  Libraries   CS:4a08eaa5
   Reports     CS:b2e711be
 
 Code Changes:
-  codebase.php                                                                                   4.9.4     (2016-11-20)
+  codebase.php                                                                                   4.9.5     (2016-11-27)
     1) Updated version information
-  classes/class.report_report.php                                                                1.0.32    (2016-11-20)
-    1) Bug fix fr bulk update mode with 'set_random_password'
+  classes/class.displayable_item.php                                                             1.0.161   (2016-11-27)
+    1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
+       or 'ratings_allow' settings, such as Users
+  classes/class.person.php                                                                       1.0.129   (2016-11-27)
+    1) Added new overrideable method Person::get_records_where_modifier() used by Flame Group members control to
+       filter on just the other members of the same group the viewer was last registered to
+  classes/component/contentgroupmembermirror.php                                                 1.0.6     (2016-11-20)
+    1) Now includes extra break in component control panel to prevent it from hidding under following control if present
 
-2472.sql
+2473.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.9.4
-  classes/  (1 file changed)
-    class.report_report.php                           1.0.32    CS:abb31f00
+  codebase.php                                        4.9.5
+  classes/  (3 files changed)
+    class.displayable_item.php                        1.0.161   CS:f9506666
+    class.person.php                                  1.0.129   CS:360f71d
+    component/contentgroupmembermirror.php            1.0.6     CS:331e568d
 
 
 Bug:
