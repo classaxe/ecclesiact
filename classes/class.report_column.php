@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.139 (2016-11-20)
-    1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
-    2) Now uses CONST based version control
+  1.0.140 (2016-12-03)
+    1) Report_Column::draw_form_field() added support for text_fixed
 */
 class Report_Column extends Record
 {
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.139';
+    const VERSION = '1.0.140';
 
     public function __construct($ID = "")
     {
@@ -431,6 +430,15 @@ class Report_Column extends Record
                 case "text":
                     $out =
                          "<div id=\"div_".$field."\" class='formField'"
+                        ." style='width:".$width.";height:1.4em;background-color:".$bgColor.";"
+                        .($width>100 ? "overflow:auto;" : "")
+                        ."'>"
+                        .$value
+                        ."<input type='hidden' id=\"".$field."\" value=\"".$value."\" /></div>";
+                    break;
+                case "text_fixed":
+                    $out =
+                         "<div id=\"div_".$field."\" class='admin_formFixed'"
                         ." style='width:".$width.";height:1.4em;background-color:".$bgColor.";"
                         .($width>100 ? "overflow:auto;" : "")
                         ."'>"
@@ -2246,6 +2254,11 @@ class Report_Column extends Record
                         ."<input id=\"".$_tax_rate_field."\" type=\"text\" name=\"".$_tax_rate_field."\""
                         ." value=\"".$_tax_rate_value."\" style=\"width:40px;\" class='formField txt_r'/>%"
                         .static::attach_behaviour($_tax_rate_field, 'percent');
+                    break;
+                case "text_fixed":
+                    $out =
+                         "<input id=\"$field\" type=\"text\" name=\"$field\" value=\"$value\" class='admin_formFixed'"
+                        ." style=\"width: ".$width.";\" $jsCode/>";
                     break;
                 case "textarea":
                     $jq_field =   str_replace(array('.',':'), array('\\\\.','\\\\:'), $field);

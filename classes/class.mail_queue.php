@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.44 (2016-05-01)
-    1) Removed status checking - this is now performed exclusively via a VCRON job
+  1.0.45 (2016-12-03)
+    1) Added ability to add bccRecipients to any email broadcast 
+    2) Added 'BCC To' functionality for email broadcast form
 */
 class Mail_Queue extends Record
 {
-    const VERSION = '1.0.44';
+    const VERSION = '1.0.45';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, groupID, mailidentityID, mailtemplateID, body_html, body_text, date_aborted, date_completed, date_started, date_queued, sender_email, sender_name, status, style, subject, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -17,13 +18,15 @@ class Mail_Queue extends Record
         $this->_set_name_field('');
     }
 
-    public function create_queue($mailidentityID, $mailtemplateID, $groupID, $systemID = SYS_ID)
-    {
+    public function create_queue(
+        $mailidentityID, $mailtemplateID, $groupID, $bccRecipients = '', $systemID = SYS_ID
+    ) {
         $data = array(
             'systemID' =>       $systemID,
             'groupID' =>        $groupID,
             'mailidentityID' => $mailidentityID,
             'mailtemplateID' => $mailtemplateID,
+            'bccRecipients' =>  $bccRecipients,
             'date_queued' =>    get_timestamp()
         );
         $mailQueueID = $this->insert($data);
@@ -91,6 +94,9 @@ class Mail_Queue extends Record
             $data['PEmail'] =     $row['PEmail'];
             $data['NName'] =      $row['NName'];
             $data['subject'] =    $Obj_Mail_Template->record['subject'];
+            if ($row['bccRecipients']) {
+                $data['bcc_email'] =  $row['bccRecipients'];
+            }
             $data['html'] =
                  $Obj_Mail_Template->record['body_html']
                 ."<p><small>This email was sent to [ECL]field_person_primary_email[/ECL] by "
@@ -174,7 +180,7 @@ class Mail_Queue extends Record
 
     public function draw_broadcast_form()
     {
-        global $submode, $groupID, $mailtemplateID, $mailidentityID;
+        global $submode, $groupID, $maillBccRecipients, $mailtemplateID, $mailidentityID;
         global $selectID, $targetID, $targetReportID;
         global $offset, $limit;
         global $filterField,$filterValue,$filterExact;
@@ -205,7 +211,7 @@ class Mail_Queue extends Record
                         ." then try this operation again.";
                     break;
                 }
-                $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID);
+                $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID, $maillBccRecipients);
                 $msg = "<b>Success:</b> the Mail Job has been created but has not yet been started.";
                 break;
             case "queue_again":
@@ -254,7 +260,7 @@ class Mail_Queue extends Record
                         ." then try this operation again.";
                     break;
                 }
-                $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID);
+                $selectID = $this->create_queue($mailidentityID, $mailtemplateID, $groupID, $maillBccRecipients);
                 $this->_set_ID($selectID);
                 $msg = $this->send();
                 break;
@@ -294,6 +300,10 @@ class Mail_Queue extends Record
                 ."</select></td>\n"
                 ."      </tr>\n"
                 ."      <tr class='table_header'>\n"
+                ."        <td>&nbsp;BCC to:&nbsp;</td>\n"
+                ."        <td>".draw_form_field('maillBccRecipients', $maillBccRecipients, 'text_fixed', 495)."</td>\n"
+                ."      </tr>\n"
+                    ."      <tr class='table_header'>\n"
                 ."        <td colspan='2' align='center'>"
                 ."<input type='reset' value='Clear Form' style='formButton'/>"
                 ."<input type='button' onclick=\"if("
@@ -817,6 +827,7 @@ class Mail_Queue extends Record
                 $record['mailidentityID'],
                 $record['mailtemplateID'],
                 $record['groupID'],
+                $record['bccRecipients'],
                 $record['systemID']
             )
         );

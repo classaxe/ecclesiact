@@ -5,12 +5,13 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.47 (2016-06-08)
-    1) More work to tidy up email contact form message format
+  1.0.48 (2016-12-03)
+    1) Community_Member_Display::drawContactFormProcess() now has BCC address but not BCC name following changes
+       to mailto() function that creates name as 'BCC to: {bcc_email}'
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.47';
+    const VERSION = '1.0.48';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -501,7 +502,6 @@ class Community_Member_Display extends Community_Member
                     'NName' =>            $this->contact_recipient_name.' <'.$this->contact_recipient_email.'>',
                     'PEmail' =>           $this->contact_recipient_email,
                     'bcc_email' =>        'info@churchesinyourtown.ca',
-                    'bcc_name' =>         'Martin Francis',
                     'replyto_email' =>    $this->contact_sender_email,
                     'replyto_name' =>     $this->contact_sender_name,
                     'subject' =>          strip_tags($subject),

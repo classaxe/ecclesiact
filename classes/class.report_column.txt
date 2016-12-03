@@ -1,3 +1,6 @@
+  1.0.139 (2016-11-20)
+    1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
+    2) Now uses CONST based version control
   1.0.138 (2016-05-13)
     1) Made almost all methods static
   1.0.137 (2016-04-19)

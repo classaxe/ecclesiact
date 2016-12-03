@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.5");
+define("CODEBASE_VERSION", "4.9.6");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.5.2473 (2016-11-27)
+4.9.6.2474 (2016-12-02)
 Summary:
-  1) Bug fixes for persons listing panel having unset permission properties when dealing with
-     privacy settings of individual members listed there
-
+  1) Mail Broadcast - Added ability to copy a specific email address on all mailings sent
 Final Checksums:
-  Classes     CS:26d3de4e
-  Database    CS:4445437e
-  Libraries   CS:4a08eaa5
-  Reports     CS:b2e711be
+  Classes     CS:f8c981b1
+  Database    CS:4ac3b25f
+  Libraries   CS:30a0494f
+  Reports     CS:5a42bf81
 
 Code Changes:
-  codebase.php                                                                                   4.9.5     (2016-11-27)
+  codebase.php                                                                                   4.9.6     (2016-12-03)
     1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.161   (2016-11-27)
-    1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
-       or 'ratings_allow' settings, such as Users
-  classes/class.person.php                                                                       1.0.129   (2016-11-27)
-    1) Added new overrideable method Person::get_records_where_modifier() used by Flame Group members control to
-       filter on just the other members of the same group the viewer was last registered to
-  classes/component/contentgroupmembermirror.php                                                 1.0.6     (2016-11-20)
-    1) Now includes extra break in component control panel to prevent it from hidding under following control if present
+  classes/class.community_member_display.php                                                     1.0.48    (2016-12-03)
+    1) Community_Member_Display::drawContactFormProcess() now has BCC address but not BCC name following changes
+       to mailto() function that creates name as 'BCC to: {bcc_email}'
+  classes/class.mail_queue.php                                                                   1.0.45    (2016-12-03)
+    1) Added ability to add bccRecipients to any email broadcast 
+    2) Added 'BCC To' functionality for email broadcast form
+  classes/class.report_column.php                                                                1.0.140   (2016-12-03)
+    1) Report_Column::draw_form_field() added support for text_fixed
 
-2473.sql
-  1) Set version information
+2474.sql
+  1) New column for mailqueue table - bccRecipients
+  2) New Report Column Type 'text_fixed'
+  3) New column bccRecipients for 'mail_queue' report
+  4) Set version information
 
 Promote:
-  codebase.php                                        4.9.5
+  codebase.php                                        4.9.6
   classes/  (3 files changed)
-    class.displayable_item.php                        1.0.161   CS:f9506666
-    class.person.php                                  1.0.129   CS:360f71d
-    component/contentgroupmembermirror.php            1.0.6     CS:331e568d
+    class.community_member_display.php                1.0.48    CS:385042b2
+    class.mail_queue.php                              1.0.45    CS:48d167e5
+    class.report_column.php                           1.0.140   CS:5e9954e8
 
 
+mailto() now allows a ';' or ',' delimited list of BCC recipients
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
@@ -2244,7 +2246,10 @@ function mailto($data)
             $mail->AddCC($data['cc_email'], $data['cc_name']);
         }
         if (isset($data['bcc_email'])) {
-            $mail->AddBCC($data['bcc_email'], $data['bcc_name']);
+            $bcc_emails = explode(';');
+            foreach ($bcc_emails as $bcc_email) {
+                $mail->AddBCC($bcc_email, 'BCC to: '.$bcc_email);
+            }
         }
         $subject =         convert_safe_to_php(str_replace("<br />", "\n", $data['subject']));
         $mail->Subject =     utf8_encode(html_entity_decode($subject));

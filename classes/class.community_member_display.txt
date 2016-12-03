@@ -1,3 +1,5 @@
+  1.0.47 (2016-06-08)
+    1) More work to tidy up email contact form message format
   1.0.46 (2016-06-08)
     1) Work to tidy up message format in email contact form
   1.0.45 (2016-03-15)
