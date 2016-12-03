@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.6");
+define("CODEBASE_VERSION", "4.9.7");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,40 +16,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.6.2474 (2016-12-02)
+4.9.7.2475 (2016-12-03)
 Summary:
-  1) Mail Broadcast - Added ability to copy a specific email address on all mailings sent
+  1) Bug fix for BCC recipients in Mail Broadcast
+  2) Moved Email Broadcast form and functionality into its own class
+
 Final Checksums:
-  Classes     CS:f8c981b1
+  Classes     CS:a0292082
   Database    CS:4ac3b25f
-  Libraries   CS:30a0494f
+  Libraries   CS:afe8d5d6
   Reports     CS:5a42bf81
 
 Code Changes:
-  codebase.php                                                                                   4.9.6     (2016-12-03)
+  codebase.php                                                                                   4.9.7     (2016-12-03)
     1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.48    (2016-12-03)
-    1) Community_Member_Display::drawContactFormProcess() now has BCC address but not BCC name following changes
-       to mailto() function that creates name as 'BCC to: {bcc_email}'
-  classes/class.mail_queue.php                                                                   1.0.45    (2016-12-03)
-    1) Added ability to add bccRecipients to any email broadcast 
-    2) Added 'BCC To' functionality for email broadcast form
-  classes/class.report_column.php                                                                1.0.140   (2016-12-03)
-    1) Report_Column::draw_form_field() added support for text_fixed
+  classes/class.mail_queue.php                                                                   1.0.46    (2016-12-03)
+    1) Moved Mail_Queue:draw_broadcast_form() into its own class - MailBroadcastForm
+    2) Bug fix for Mail_Queue::deliver() to read BCC recipients from mail queue, not queued addresses
+  classes/mailbroadcastform.php                                                                  1.0.0     (2016-12-03)
+    1) Created this class from Mail_Queue:draw_broadcast_form()
+    2) Added additional help for use of multiple BCC recipients and required fields
 
-2474.sql
-  1) New column for mailqueue table - bccRecipients
-  2) New Report Column Type 'text_fixed'
-  3) New column bccRecipients for 'mail_queue' report
-  4) Set version information
+2475.sql
+  1) Changes to component 'REPORT: Mail Broadcast' to use new class for this
+  2) Set version information
 
 Promote:
-  codebase.php                                        4.9.6
-  classes/  (3 files changed)
-    class.community_member_display.php                1.0.48    CS:385042b2
-    class.mail_queue.php                              1.0.45    CS:48d167e5
-    class.report_column.php                           1.0.140   CS:5e9954e8
-
+  codebase.php                                        4.9.7
+  classes/  (2 files changed)
+    class.mail_queue.php                              1.0.46    CS:29e7f9
+    mailbroadcastform.php                             1.0.0     CS:ad4a2cf9
 
 mailto() now allows a ';' or ',' delimited list of BCC recipients
 Bug:
@@ -2216,6 +2212,7 @@ function mailto($data)
             'allow_self_signed' => true
         )
     );
+    
     try {
         $mail->IsSMTP();
         $mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
@@ -2246,9 +2243,9 @@ function mailto($data)
             $mail->AddCC($data['cc_email'], $data['cc_name']);
         }
         if (isset($data['bcc_email'])) {
-            $bcc_emails = explode(';');
+            $bcc_emails = preg_split( "/(;|,)/", $data['bcc_email'] ); 
             foreach ($bcc_emails as $bcc_email) {
-                $mail->AddBCC($bcc_email, 'BCC to: '.$bcc_email);
+                $mail->AddBCC(trim($bcc_email), 'BCC to: '.$bcc_email);
             }
         }
         $subject =         convert_safe_to_php(str_replace("<br />", "\n", $data['subject']));
