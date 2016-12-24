@@ -2,13 +2,13 @@
 namespace Component;
 /*
 Version History:
-  1.0.3 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.4 (2015-12-04)
+    1) Now no longer applies to h1-h3 or address tags, or noref class
 */
 
 class BibleLinks extends Base
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     public function __construct()
     {
@@ -54,6 +54,8 @@ class BibleLinks extends Base
             ."    bibleVersion: \"".$this->_cp['bible_version']."\",\n"
             ."    roundCorners: true,\n"
             ."    socialSharing: [\"facebook\", \"faithlife\", \"google\", \"twitter\"],\n"
+            ."    noSearchClassNames: [\"noref\"],\n"
+            ."    noSearchTagNames: [\"h1\",\"h2\",\"h3\",\"address\"],\n"
             ."    tagChapters: true\n"
             ."  }\n"
             ."};\n"

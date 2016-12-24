@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.7");
+define("CODEBASE_VERSION", "4.9.8");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,38 +16,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.7.2475 (2016-12-03)
+4.9.8.2476 (2016-12-24)
 Summary:
-  1) Bug fix for BCC recipients in Mail Broadcast
-  2) Moved Email Broadcast form and functionality into its own class
+  1) Now bible reftagger is set to avoid h1-h3 or address tags, or 'noref' classname
 
 Final Checksums:
-  Classes     CS:a0292082
+  Classes     CS:96505df1
   Database    CS:4ac3b25f
-  Libraries   CS:afe8d5d6
+  Libraries   CS:e493ffd5
   Reports     CS:5a42bf81
 
 Code Changes:
-  codebase.php                                                                                   4.9.7     (2016-12-03)
+  codebase.php                                                                                   4.9.8     (2016-12-24)
     1) Updated version information
-  classes/class.mail_queue.php                                                                   1.0.46    (2016-12-03)
-    1) Moved Mail_Queue:draw_broadcast_form() into its own class - MailBroadcastForm
-    2) Bug fix for Mail_Queue::deliver() to read BCC recipients from mail queue, not queued addresses
-  classes/mailbroadcastform.php                                                                  1.0.0     (2016-12-03)
-    1) Created this class from Mail_Queue:draw_broadcast_form()
-    2) Added additional help for use of multiple BCC recipients and required fields
+  classes/component/biblelinks.php                                                               1.0.4     (2015-12-04)
+    1) Now no longer applies to h1-h3 or address tags, or noref class
 
-2475.sql
-  1) Changes to component 'REPORT: Mail Broadcast' to use new class for this
-  2) Set version information
+2476.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.9.7
-  classes/  (2 files changed)
-    class.mail_queue.php                              1.0.46    CS:29e7f9
-    mailbroadcastform.php                             1.0.0     CS:ad4a2cf9
+  codebase.php                                        4.9.8
+  classes/  (1 file changed)
+    component/biblelinks.php                          1.0.4     CS:13dbfdc5
 
-mailto() now allows a ';' or ',' delimited list of BCC recipients
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
