@@ -5,13 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.48 (2016-12-03)
-    1) Community_Member_Display::drawContactFormProcess() now has BCC address but not BCC name following changes
-       to mailto() function that creates name as 'BCC to: {bcc_email}'
+  1.0.49 (2016-12-26)
+    1) Now sets 'show_watermark' on member's wow-slider display
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.48';
+    const VERSION = '1.0.49';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1278,6 +1277,7 @@ class Community_Member_Display extends Community_Member
             'max_height' =>               $this->_cp['profile_photo_height'],
             'max_width' =>                $this->_cp['profile_photo_width'],
             'results_limit' =>            0,
+            'show_watermark' =>           1,
             'thumbnail_height' =>         (int)($this->_cp['profile_photo_height']/4),
             'thumbnail_width' =>          (int)($this->_cp['profile_photo_width']/4),
             'title_show' =>               0
@@ -1588,7 +1588,7 @@ class Community_Member_Display extends Community_Member
                 )
                 ."</td>\n"
                 ."    </tr>\n";
-            if (substr($YYYYMM,5,2)=='01') {
+            if (substr($YYYYMM, 5, 2)=='01') {
                 $this->_html.= "<tr><td colspan='13' style='background:#808080'></td></tr>";
             }
         }

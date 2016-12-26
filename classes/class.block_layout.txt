@@ -1,3 +1,6 @@
+  1.0.70 (2016-05-05)
+    1) Changes to BL_link() when option 'links_switch_video' is set -
+       Youtube embeds now use same protocol as main site
   1.0.69 (2016-02-21)
     1) New BL tag BL_sequence_content - selects item from sequence_content_list according to displayed order
     2) New BL tag BL_link_URL - just the linked URL and nothing else

@@ -1,3 +1,5 @@
+  2.0.97 (2016-07-02)
+    1) JS code now allows for substitution of BASE_PATH when streamed
   2.0.96 (2016-06-22)
     1) Added support for superfish responsive dropdown menus
     2) Added support for many new JS libraries used with reponsive layouts

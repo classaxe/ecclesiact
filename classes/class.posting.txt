@@ -1,3 +1,6 @@
+  1.0.128 (2016-10-16)
+    1) Added support for searching by Person in Posting::get_search_results()
+    2) Now displays Community and Member name if these fields are available to show
   1.0.127 (2016-03-29)
     1) Fix for Posting::get_n_per_category() to match correct categopry label to category even if category has wrong
        capitalisation in words

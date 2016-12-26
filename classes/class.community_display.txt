@@ -1,3 +1,5 @@
+  1.0.48 (2016-03-25)
+    1) Community_Display::checkDropboxUpdateGetDelta() no longer writes debug message to error log every time
   1.0.47 (2016-03-15)
     1) Community_Display::drawSponsorsLocal() now provides filter_... prefixed parameters for all filters
   1.0.46 (2016-03-03)

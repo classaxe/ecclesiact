@@ -1,3 +1,8 @@
+  1.0.33 (2015-01-31)
+    1) Changes to internally used parameters in Gallery_Album::BL_contained_items():
+         Old: filter_limit,  paging_controls
+         New: results_limit, results_paging
+    2) Now PSR-2 Compliant
   1.0.32 (2013-06-21)
     1) Tweak to setting of default_enclosure_base_folder in constructor to handle
        instantiation where BASE_PATH is not yet defined.

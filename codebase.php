@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.8");
+define("CODEBASE_VERSION", "4.9.9");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,29 +16,65 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.8.2476 (2016-12-24)
+4.9.9.2477 (2016-12-26)
 Summary:
-  1) Now bible reftagger is set to avoid h1-h3 or address tags, or 'noref' classname
+  1) Gallery images now have a 'No watermark' setting when watermarking feature is turned on to prevent
+     default watermarking of images from applying to those images.
+     Used for member-supplied photos in ChurchesInYourTown.ca website
+  2) Fixed icons used in Community Member Profile slideshow - broken for nearly a year!
+  3) Added support for watermarking of images in Wow Slider component
+  4) Reduced opacity of watermark in watermarking feature from 80% to 60% 
 
 Final Checksums:
-  Classes     CS:96505df1
-  Database    CS:4ac3b25f
-  Libraries   CS:e493ffd5
-  Reports     CS:5a42bf81
+  Classes     CS:4381ec74
+  Database    CS:4317aaaa
+  Libraries   CS:8b4654bf
+  Reports     CS:569eea7d
 
 Code Changes:
-  codebase.php                                                                                   4.9.8     (2016-12-24)
-    1) Updated version information
-  classes/component/biblelinks.php                                                               1.0.4     (2015-12-04)
-    1) Now no longer applies to h1-h3 or address tags, or noref class
+  codebase.php                                                                                   4.9.9     (2016-12-26)
+    1) Some PSR-2 fixes
+    2) Updated version information
+  classes/class.block_layout.php                                                                 1.0.71    (2016-12-24)
+    1) Changes to BL_thumbnail_image() to repect no_watermark setting whenever this is set
+  classes/class.community_display.php                                                            1.0.49    (2016-12-25)
+    1) Fixed icons on wow slider for community members - broken since 4.3.5.2424 nearly a year ago!
+  classes/class.community_member_display.php                                                     1.0.49    (2016-12-26)
+    1) Now sets 'show_watermark' on member's wow-slider display
+  classes/class.component_gallery_album.php                                                      1.0.76    (2016-12-24)
+    1) Changes to support image watermarking in rollovers and slideshow
+    2) Changes to function names for PSR-2 compliance
+  classes/class.gallery_album.php                                                                1.0.34    (2016-12-24)
+    1) Now includes no_watermark field in Gallery_Album::get_images()
+  classes/class.posting.php                                                                      1.0.129   (2016-12-26)
+    1) Added no_watermark to fields list
+  classes/component/wowslider.php                                                                1.0.15    (2015-12-26)
+    1) Now has CP for show_watermark - default is off
+    2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once
+       and no longer encodes & in URL as an html entity
+  img.php                                                                                        2.0.98    (2016-12-26)
+    1) Reduced opacity of watermark from 80% to 60%
+  style/labels.css                                                                               1.0.50    (2016-12-26)
+    1) Added lbl_no_watermark
 
 2476.sql
-  1) Set version information
+  1) New column for postings - no_watermark - used to prevent watermarking of member-supplied images
+  2) Added support for no_watermark field in 'gallery-images' and 'gallery-images-for-gallery-album' reports
+  3) Set version information
 
 Promote:
-  codebase.php                                        4.9.8
-  classes/  (1 file changed)
-    component/biblelinks.php                          1.0.4     CS:13dbfdc5
+  codebase.php                                        4.9.9
+  classes/  (7 files changed)
+    class.block_layout.php                            1.0.71    CS:dd7d6a59
+    class.community_display.php                       1.0.49    CS:b0c256e0
+    class.community_member_display.php                1.0.49    CS:753fee7b
+    class.component_gallery_album.php                 1.0.76    CS:d5bb7c81
+    class.gallery_album.php                           1.0.34    CS:141c35e7
+    class.posting.php                                 1.0.129   CS:8acaecba
+    component/wowslider.php                           1.0.15    CS:c8531813
+  img.php                                             2.0.98    CS:e62b999d
+  images/labels.gif                                             CS:35559c76
+  style/labels.css                                    1.0.50    CS:e3f56538
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -189,7 +225,7 @@ if (!function_exists('includes_monitor')) {
     function includes_monitor($className = '', $filePath = '')
     {
         static $includes = array();
-        if ($className==''){
+        if ($className=='') {
             return $includes;
         }
         $includes[$className] = $filePath;
@@ -993,12 +1029,13 @@ function convert_ecl_tags($string)
     return $out;
 }
 
-function d($value, $filename = null) {
+function d($value, $filename = null)
+{
     $filename = (null===$filename ? SYS_LOGS."debug.log" : $filename);
     $handle = fopen($filename, 'a+');
     fwrite(
         $handle,
-        date('Y-m-d H:i:s',time()).' '
+        date('Y-m-d H:i:s', time()).' '
         .(is_string($value) ? $value : var_export($value, true))
         ."\n"
     );
@@ -1523,61 +1560,63 @@ function format_time($hhmm)
     return hhmm_format($_hh.":".$_mm, $system_vars['defaultTimeFormat']==1 || $system_vars['defaultTimeFormat']==3);
 }
 
-function format_json( $json )
+function format_json($json)
 {
     $result = '';
     $level = 0;
     $in_quotes = false;
     $in_escape = false;
-    $ends_line_level = NULL;
-    $json_length = strlen( $json );
-
-    for( $i = 0; $i < $json_length; $i++ ) {
+    $ends_line_level = null;
+    $json_length = strlen($json);
+    for ($i = 0; $i < $json_length; $i++) {
         $char = $json[$i];
-        $new_line_level = NULL;
+        $new_line_level = null;
         $post = "";
-        if( $ends_line_level !== NULL ) {
+        if ($ends_line_level !== null) {
             $new_line_level = $ends_line_level;
-            $ends_line_level = NULL;
+            $ends_line_level = null;
         }
-        if ( $in_escape ) {
+        if ($in_escape) {
             $in_escape = false;
-        } else if( $char === '"' ) {
+        } elseif ($char === '"') {
             $in_quotes = !$in_quotes;
-        } else if( ! $in_quotes ) {
-            switch( $char ) {
-                case '}': case ']':
+        } elseif (!$in_quotes) {
+            switch($char) {
+                case '}':
+                case ']':
                     $level--;
-                    $ends_line_level = NULL;
+                    $ends_line_level = null;
                     $new_line_level = $level;
                     break;
-
-                case '{': case '[':
+                case '{':
+                case '[':
                     $level++;
-                case ',': case ';':
-
                     $ends_line_level = $level;
                     break;
-
+                case ',':
+                case ';':
+                    $ends_line_level = $level;
+                    break;
                 case ':':
                     $post = " ";
                     break;
-
-                case " ": case "\t": case "\n": case "\r":
+                case " ":
+                case "\t":
+                case "\n":
+                case "\r":
                     $char = "";
                     $ends_line_level = $new_line_level;
-                    $new_line_level = NULL;
+                    $new_line_level = null;
                     break;
             }
-        } else if ( $char === '\\' ) {
+        } elseif ($char === '\\') {
             $in_escape = true;
         }
-        if( $new_line_level !== NULL ) {
-            $result .= "\n".str_repeat( "  ", $new_line_level );
+        if ($new_line_level !== null) {
+            $result .= "\n".str_repeat("  ", $new_line_level);
         }
         $result .= $char.$post;
     }
-
     return $result;
 }
 
@@ -1806,7 +1845,8 @@ function get_max_upload_size()
     return min($max_upload, $max_post, $memory_limit);
 }
 
-function convertPHPSizeToBytes($size) {
+function convertPHPSizeToBytes($size)
+{
     if ($size==="-1") {
         return PHP_INT_MAX;
     }
@@ -1879,7 +1919,7 @@ function get_random_password()
 function get_js_safe_ID($value)
 {
     $value =  get_web_safe_ID($value);
-    return str_replace(array('-','>'), array('_','_'),$value);
+    return str_replace(array('-','>'), array('_','_'), $value);
 }
 
 function get_path_safe_filename($filename)
@@ -2235,7 +2275,7 @@ function mailto($data)
             $mail->AddCC($data['cc_email'], $data['cc_name']);
         }
         if (isset($data['bcc_email'])) {
-            $bcc_emails = preg_split( "/(;|,)/", $data['bcc_email'] ); 
+            $bcc_emails = preg_split("/(;|,)/", $data['bcc_email']);
             foreach ($bcc_emails as $bcc_email) {
                 $mail->AddBCC(trim($bcc_email), 'BCC to: '.$bcc_email);
             }
@@ -2266,7 +2306,7 @@ function mailto($data)
             $mail->AltBody =    convert_safe_to_php(str_replace("<br />", "\n", $data['text']));
         }
         $mail->Send();
-        return "Message-ID: ".str_replace(array('<','>'), array('',''),$mail->getLastMessageID());
+        return "Message-ID: ".str_replace(array('<','>'), array('',''), $mail->getLastMessageID());
     } catch (phpmailerException $e) {
         return $e->getMessage();
     }
@@ -2504,7 +2544,8 @@ function safe_glob($pattern, $flags = 0)
     }
 }
 
-function scan_Dir($dir, $pattern) {
+function scan_Dir($dir, $pattern)
+{
     $current_dir = getcwd();
     $dir = trim($dir, '/');
     $split=explode('/', str_replace('\\', '/', $pattern));

@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.70 (2016-05-05)
-    1) Changes to BL_link() when option 'links_switch_video' is set -
-       Youtube embeds now use same protocol as main site
+  1.0.71 (2016-12-24)
+    1) Changes to BL_thumbnail_image() to repect no_watermark setting whenever this is set
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.70';
+    const VERSION = '1.0.71';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -865,7 +864,10 @@ class Block_Layout extends Record
                 break;
             }
         }
-        $wm =   isset($this->_cp['show_watermark']) && $this->_cp['show_watermark']==1;
+        $wm =
+            isset($this->_cp['show_watermark']) &&
+            $this->_cp['show_watermark']==1 &&
+            !$this->record['no_watermark'];
         $img =  $this->BL_thumbnail_image_filepath();
         $cs =   (isset($this->record['thumbnail_cs_'.$image_name]) ? $this->record['thumbnail_cs_'.$image_name] : '');
         $thumbnail_file =

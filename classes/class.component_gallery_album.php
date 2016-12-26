@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.75 (2016-07-04)
-    1) Fixed paths for gallery album folder images to respect BASE_PATH
+  1.0.76 (2016-12-24)
+    1) Changes to support image watermarking in rollovers and slideshow
+    2) Changes to function names for PSR-2 compliance
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.75';
+    const VERSION = '1.0.76';
+
     private $_Obj_JL =                false;
     private $_albums =                false;
     private $_album_ID =              false;
@@ -157,7 +159,7 @@ class Component_Gallery_Album extends Component_Base
             'show_watermark' =>           array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
-                'hint' =>       'Whether or not to watermark large images'
+                'hint' =>       'Whether or not to watermark large images - ignored if image has \'no watermark\' set'
             ),
             'skin_album_image' =>         array(
                 'match' =>      '',
@@ -259,23 +261,23 @@ class Component_Gallery_Album extends Component_Base
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        $this->_setup($instance, $args, $disable_params);
+        $this->setup($instance, $args, $disable_params);
         $this->_html.=      "<div class=\"gallery_album\" id=\"".$this->_safe_ID."\">\n";
-        $this->_draw_control_panel(true);
-        $this->_draw_status_message();
+        $this->drawControlPanel(true);
+        $this->drawStatus();
         switch($this->_mode){
             case 'image':
-                $this->_draw_image();
+                $this->drawImage();
                 break;
             default:
-                $this->_draw_gallery();
+                $this->drawGallery();
                 break;
         }
         $this->_html.=      "</div><div class='clear'>&nbsp;</div>\n";
         return $this->_html;
     }
 
-    protected function _do_add_image()
+    protected function doAddImage()
     {
         if ($this->_isAdmin) {
             $path = $this->_album_default_folder;
@@ -290,7 +292,7 @@ class Component_Gallery_Album extends Component_Base
               // In progress - do nothing
                 break;
             case '200':
-                $this->_do_gallery_image_add($result);
+                $this->doGalleryImageAdd($result);
                 header('Content-type: application/json');
                 print '{"status":"success", "message": "'.$result['message'].'"}';
                 die;
@@ -303,7 +305,7 @@ class Component_Gallery_Album extends Component_Base
         }
     }
 
-    protected function _do_add_sub_album()
+    protected function doAddSubAlbum()
     {
         $Obj_Gallery_Album = new Gallery_Album;
         $parentID =     get_var('targetID');
@@ -332,7 +334,7 @@ class Component_Gallery_Album extends Component_Base
 
     }
 
-    protected function _do_gallery_image_add($result)
+    protected function doGalleryImageAdd($result)
     {
         $Obj_Gallery_Album = new Gallery_Album($this->_album_ID);
         $Obj_Gallery_Album->load();
@@ -382,7 +384,7 @@ class Component_Gallery_Album extends Component_Base
         return $ID;
     }
 
-    protected function _do_slideshow()
+    protected function doSlideshow()
     {
         $out = array();
         $out['js'] =
@@ -405,13 +407,14 @@ class Component_Gallery_Album extends Component_Base
         ."obj_".$this->_safe_ID."_slideshow_viewer.do_setup();\n"
         ;
         $src =
-             BASE_PATH."img/resize"
+             BASE_PATH."img/"
+            .($this->_cp['show_watermark'] && !$this->_images[0]['no_watermark'] ? 'wm' : 'resize')
             .$this->_images[0]['thumbnail_small']
             ."?width=".$this->_cp['slideshow_width']
             ."&amp;height=".$this->_cp['slideshow_height']
             .($this->_images[0]['thumbnail_cs_small'] ? "&amp;cs=".$this->_images[0]['thumbnail_cs_small'] : '');
-            $_ident = $this->_safe_ID."_slideshow_viewer";
-            $out['html'] =
+        $_ident = $this->_safe_ID."_slideshow_viewer";
+        $out['html'] =
              "<div id=\"".$_ident."\">\n"
             ."  <div id=\"".$_ident."_controls\" style=\"opacity:0;filter:alpha(opacity=0);\"></div>\n"
             ."  <div title=\"Slideshow\" id=\"".$this->_safe_ID."_slideshow_viewer_mask\">\n"
@@ -435,11 +438,11 @@ class Component_Gallery_Album extends Component_Base
         die;
     }
 
-    protected function _do_submode()
+    protected function doSubmode()
     {
         switch (get_var('submode')) {
             case "gallery_slideshow":
-                $this->_do_slideshow();
+                $this->doSlideshow();
                 return;
             break;
         }
@@ -449,7 +452,7 @@ class Component_Gallery_Album extends Component_Base
         $this->_Obj_JL = new Jumploader;
         $this->_Obj_JL->init($this->_safe_ID);
         if ($this->_Obj_JL->isUploading()) {
-            $this->_do_add_image();
+            $this->doAddImage();
             die();
         }
         $count =                $this->_Obj_JL->get_uploaded_count();
@@ -466,12 +469,12 @@ class Component_Gallery_Album extends Component_Base
                 break;
             case "gallery_album_sub_album":
                 $title =            get_var('targetValue');
-                $this->_do_add_sub_album();
+                $this->doAddSubAlbum();
                 $this->_msg.=       "<b>Success:</b> New Gallery Album '".$title."' was added.";
                 set_var('submode', '');
                 break;
             case "gallery_image_cover":
-                if ($this->_cover_parents('Gallery_Image', get_var('targetID'), true)) {
+                if ($this->coverAncestors('Gallery_Image', get_var('targetID'), true)) {
                     $this->_msg.=
                         "<b>Success:</b>"
                        ." the image is now featured on its parent album, and on all unadorned ancestors.";
@@ -482,12 +485,12 @@ class Component_Gallery_Album extends Component_Base
         $Obj_Gallery_Image =    new Gallery_Image;
         $this->_msg.=           $Obj_Gallery_Image->do_submode();
         if ($this->_msg) {
-            $this->_setup_load_structure();
-            $this->_setup_load_album_details();
+            $this->setupLoadStructure();
+            $this->setupLoadAlbumDetails();
         }
     }
 
-    protected function _cover_parents($object_type, $ID, $force)
+    protected function coverAncestors($object_type, $ID, $force)
     {
         $Obj = new $object_type($ID);
         if (!$Obj->load() || $Obj->record['systemID']!=SYS_ID) {
@@ -501,30 +504,30 @@ class Component_Gallery_Album extends Component_Base
             $Obj_P->set_field('thumbnail_small', $image);
             $Obj_P->set_field('childID_featured', $ID);
             if ($parentID) {
-                $this->_cover_parents($parent_type, $parentID, false);
+                $this->coverAncestors($parent_type, $parentID, false);
             }
         }
         return true;
     }
 
-    protected function _draw_gallery()
+    protected function drawGallery()
     {
         global $page_vars;
-        $this->_draw_gallery_js();
-        $this->_draw_gallery_css();
+        $this->drawJs();
+        $this->drawCss();
         $this->_html.=
             "<div id=\"".$this->_safe_ID."_outer\">\n";
         if ($this->_cp['show_folder_tree']==1) {
             $this->_html.=    "<div class=\"gallery_album_tree\" id=\"".$this->_safe_ID."_tree\">\n";
-            $this->_draw_gallery_uploader();
-            $this->_draw_gallery_folders();
+            $this->drawUploader();
+            $this->drawFolders();
             $this->_html.=    "</div>";
         }
         $this->_html.=      "<div class=\"gallery_album_main\" id=\"".$this->_safe_ID."_main\">\n";
         if (!$this->_cp['show_folder_tree']==1) {
-            $this->_draw_gallery_uploader();
+            $this->drawUploader();
         }
-        $this->_draw_gallery_album_title_and_counts();
+        $this->drawAlbumTitleWithCounts();
         if (trim($this->_current_album['password'])!=='') {
             Password::do_commands(get_var('challenge_password'), $this->_current_album['password']);
             if (!$this->_isAdmin) {
@@ -539,31 +542,31 @@ class Component_Gallery_Album extends Component_Base
                     Output::push('javascript_onload_bottom', $out['javascript_onload_bottom']);
                 } else {
                     History::track();
-                    $this->_draw_gallery_contents();
+                    $this->drawContents();
                 }
             } else {
                 History::track();
-                $this->_draw_gallery_contents();
+                $this->drawContents();
             }
         } else {
             History::track();
-            $this->_draw_gallery_contents();
+            $this->drawContents();
         }
         $this->_html.=
          "</div>\n"
         ."</div>\n";
     }
 
-    protected function _draw_gallery_contents()
+    protected function drawContents()
     {
-        $this->_draw_gallery_controls();
-        $this->_draw_gallery_album_thumbs();
+        $this->drawGalleryControls();
+        $this->drawThumbnails();
         $this->_html.=      "<div id=\"".$this->_safe_ID."_images\">\n";
-        $this->_draw_gallery_image_thumbs();
+        $this->drawImageThumbs();
         $this->_html.=      "</div>\n";
     }
 
-    protected function _draw_gallery_css()
+    protected function drawCss()
     {
         $t_size = (20+$this->_cp['thumb_size'])."px";
         $css =
@@ -602,7 +605,7 @@ class Component_Gallery_Album extends Component_Base
         Output::push('style', $css);
     }
 
-    protected function _draw_gallery_album_cover($album)
+    protected function drawAlbumCover($album)
     {
         global $page_vars;
         $type =         (count($album['albums'])==0 ? 'album' : 'folder');
@@ -638,7 +641,7 @@ class Component_Gallery_Album extends Component_Base
          "<div class='gallery_album_album_date'>"
          .($this->_cp['show_album_date']==1 ? format_date($album['date']) : "")
          ."</div>"
-         .($this->_get_is_new($album['date'])   ?
+         .($this->checkIfNew($album['date'])   ?
              " <div class='new' title='Published within the last ".$this->_cp['show_new_for_x_days']." days'>New</div>"
           :
              ""
@@ -673,7 +676,7 @@ class Component_Gallery_Album extends Component_Base
         ."</div>";
     }
 
-    protected function _draw_gallery_album_thumbs()
+    protected function drawThumbnails()
     {
         if (!$this->_albums) {
             return;
@@ -683,12 +686,12 @@ class Component_Gallery_Album extends Component_Base
         .($this->_images ? "border-bottom: 1px solid #c0c0c0" : "")
         ."'>\n";
         for ($i=0; $i<count($this->_albums); $i++) {
-            $this->_html.= $this->_draw_gallery_album_cover($this->_albums[$i]);
+            $this->_html.= $this->drawAlbumCover($this->_albums[$i]);
         }
         $this->_html.= "</div><br /><br />";
     }
 
-    protected function _draw_gallery_album_title_and_counts()
+    protected function drawAlbumTitleWithCounts()
     {
         if ($this->_cp['filter_root_path'] && !$this->_structure) {
             $this->_html.= $this->_cp['text_no_such_root_album'];
@@ -745,7 +748,7 @@ class Component_Gallery_Album extends Component_Base
         ."</div>";
     }
 
-    protected function _draw_gallery_controls()
+    protected function drawGalleryControls()
     {
         global $page_vars;
         if (!$this->_images) {
@@ -779,7 +782,7 @@ class Component_Gallery_Album extends Component_Base
         ."</div>";
     }
 
-    protected function _draw_gallery_folders()
+    protected function drawFolders()
     {
         global $page_vars;
         if ($this->_cp['show_folder_tree']!=1) {
@@ -796,12 +799,12 @@ class Component_Gallery_Album extends Component_Base
         $this->_html.=
          "<div id='".$this->_safe_ID."_folders'>"
         ."<ul id='".$this->_safe_ID."_expander' class='list_folder_expander'>\n"
-        .$this->_draw_gallery_folders_branch($this->_structure, $path)
+        .$this->drawFoldersBranch($this->_structure, $path)
         ."</ul>\n"
         ."</div>";
     }
 
-    protected function _draw_gallery_folders_branch($branch, $parent_path)
+    protected function drawFoldersBranch($branch, $parent_path)
     {
         global $page_vars;
         if (!isset($branch['albums'])) {
@@ -809,7 +812,7 @@ class Component_Gallery_Album extends Component_Base
         }
         $out = "";
         foreach ($branch['albums'] as $album) {
-            $images_available = $this->_get_images_available_in_album($album);
+            $images_available = $this->getAlbumImagesCount($album);
             $path = $parent_path.($album['name'] ? '/'.$album['name'] : '');
             $selected_album = substr($page_vars['path'], 1, strlen($path))==$path;
             $out.=
@@ -836,14 +839,14 @@ class Component_Gallery_Album extends Component_Base
             .($selected_album ? "</b>" : "")
             ."</a>";
             if (count($album['albums'])) {
-                $out .= "<ul>".$this->_draw_gallery_folders_branch($album, $path)."</ul>\n";
+                $out .= "<ul>".$this->drawFoldersBranch($album, $path)."</ul>\n";
             }
             $out.= "</li>\n";
         }
         return $out;
     }
 
-    protected function _draw_gallery_image_thumbs()
+    protected function drawImageThumbs()
     {
         global $page_vars;
         if (!$this->_images) {
@@ -884,7 +887,7 @@ class Component_Gallery_Album extends Component_Base
         }
     }
 
-    protected function _draw_gallery_js()
+    protected function drawJs()
     {
         global $page_vars;
         if (!$this->_images) {
@@ -907,11 +910,13 @@ class Component_Gallery_Album extends Component_Base
             )
             ."\","
             ." enabled:".$image['enabled'].","
-            ." image:\"".BASE_PATH."img/resize".$image['thumbnail_small']
+            ." image:\"".BASE_PATH."img/"
+            .($this->_cp['show_watermark'] && !$image['no_watermark'] ? 'wm' : 'resize')
+            .$image['thumbnail_small']
             ."?width=".$this->_cp['slideshow_width']."&height=".$this->_cp['slideshow_height']
             .($image['thumbnail_cs_small'] ? "&cs=".$image['thumbnail_cs_small'] : '')."\","
             ." image3:\"".BASE_PATH."img/"
-            .($this->_cp['show_watermark'] ? 'wm' : 'resize')
+            .($this->_cp['show_watermark'] && !$image['no_watermark'] ? 'wm' : 'resize')
             .$image['thumbnail_small']
             ."?max=".$this->_cp['hover_size']
             .($image['thumbnail_cs_small'] ? "&cs=".$image['thumbnail_cs_small'] : '')."\","
@@ -955,7 +960,7 @@ class Component_Gallery_Album extends Component_Base
         }
     }
 
-    protected function _draw_gallery_uploader()
+    protected function drawUploader()
     {
         global $page_vars;
         if (!$this->_isAdmin || $this->_cp['show_uploader']!=1 || $this->_album_ID==false) {
@@ -966,7 +971,7 @@ class Component_Gallery_Album extends Component_Base
         $this->_html.=  $this->_Obj_JL->get_html();
     }
 
-    protected function _draw_image()
+    protected function drawImage()
     {
         $Obj_CGA_GI =           new Component_Gallery_Album_Gallery_Image($this->_ID);
         $parentID =             $Obj_CGA_GI->get_field('parentID');
@@ -975,12 +980,7 @@ class Component_Gallery_Album extends Component_Base
         $this->_html.=          $Obj_CGA_GI->draw_detail();
     }
 
-    protected function _draw_status_message()
-    {
-        $this->_html.=      HTML::draw_status($this->_safe_ID, $this->_msg);
-    }
-
-    protected function _get_images_available_in_album($album)
+    protected function getAlbumImagesCount($album)
     {
         $images_available = 0;
         if (count($album['images'])) {
@@ -993,7 +993,7 @@ class Component_Gallery_Album extends Component_Base
         return $images_available;
     }
 
-    protected function _get_is_new($YYYYMMDD)
+    protected function checkIfNew($YYYYMMDD)
     {
         if ($this->_cp['show_new_for_x_days']==0) {
             return false;
@@ -1003,22 +1003,22 @@ class Component_Gallery_Album extends Component_Base
         return ($_date > time()-60*60*24*$this->_cp['show_new_for_x_days']);
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
-        parent::_setup($instance, $args, $disable_params);
-        $this->_setup_load_permissions();
-        $this->_setup_load_mode();
+        parent::setup($instance, $args, $disable_params);
+        $this->setupCheckIfAdmin();
+        $this->setupLoadMode();
         if ($this->_mode=='image') {
             return;
         }
-        $this->_setup_load_structure();
-        $this->_setup_load_album_details();
-        $this->_do_submode();
-        $this->_setup_load_cart_quantities();
-        $this->_setup_remember_shop_page();
+        $this->setupLoadStructure();
+        $this->setupLoadAlbumDetails();
+        $this->doSubmode();
+        $this->setupLoadCartQuantities();
+        $this->setupRememberShopPage();
     }
 
-    private function _setup_load_album_details()
+    private function setupLoadAlbumDetails()
     {
         global $page_vars;
         if ($page_vars['path']==$page_vars['path_real']) {
@@ -1059,12 +1059,12 @@ class Component_Gallery_Album extends Component_Base
                 return;
             }
             if (count($node['albums'])) {
-                $this->_setup_load_album_details_branch($node, $ID);
+                $this->setupLoadAlbumDetailsBranch($node, $ID);
             }
         }
     }
 
-    private function _setup_load_album_details_branch($node, $ID)
+    private function setupLoadAlbumDetailsBranch($node, $ID)
     {
         foreach ($node['albums'] as $album) {
             if ($album['ID']==$ID) {
@@ -1077,12 +1077,12 @@ class Component_Gallery_Album extends Component_Base
                 return;
             }
             if (count($album['albums'])) {
-                $this->_setup_load_album_details_branch($album, $ID);
+                $this->setupLoadAlbumDetailsBranch($album, $ID);
             }
         }
     }
 
-    private function _setup_load_cart_quantities()
+    private function setupLoadCartQuantities()
     {
         if (!$this->_images) {
             return;
@@ -1107,7 +1107,7 @@ class Component_Gallery_Album extends Component_Base
         }
     }
 
-    private function _setup_load_mode()
+    private function setupLoadMode()
     {
         global $page_vars;
         $subpath =
@@ -1132,15 +1132,16 @@ class Component_Gallery_Album extends Component_Base
         $this->_mode =      'gallery';
     }
 
-    private function _setup_load_permissions()
+    private function setupCheckIfAdmin()
     {
-        $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
-        $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $this->_isAdmin =   ($isMASTERADMIN || $isSYSADMIN || $isSYSAPPROVER);
+        $this->_isAdmin = (
+            get_person_permission("MASTERADMIN") ||
+            get_person_permission("SYSADMIN") ||
+            get_person_permission("SYSAPPROVER")
+        );
     }
 
-    private function _setup_load_structure()
+    private function setupLoadStructure()
     {
         switch($this->_cp['sort_by']){
             case 'date':
@@ -1172,25 +1173,25 @@ class Component_Gallery_Album extends Component_Base
         $r = $Obj_Gallery_Album->load();
         $this->_structure['images'] = $Obj_Gallery_Album->get_images(0);
         $this->_structure['albums'][] = array(
-        'ID' =>               $albumID,
-        'enclosure_url' =>    $r['enclosure_url'],
-        'password' =>         $r['password'],
-        'parentID' =>         0,
-        'content' =>          '',
-        'title' =>            get_title_for_path(trim($this->_cp['indicated_root_folder'], '/')),
-        'name' =>             '',
-        'date' =>             '0000-00-00',
-        'group_assign_csv' => '',
-        'permPUBLIC' =>       1,
-        'permSYSLOGON' =>     1,
-        'permSYSMEMBER' =>    1,
-        'thumbnail_small' =>  '',
-        'albums' =>           $Obj_Gallery_Album->get_albums($albumID, $sortBy),
-        'images' =>           $Obj_Gallery_Album->get_images($albumID)
+            'ID' =>               $albumID,
+            'enclosure_url' =>    $r['enclosure_url'],
+            'password' =>         $r['password'],
+            'parentID' =>         0,
+            'content' =>          '',
+            'title' =>            get_title_for_path(trim($this->_cp['indicated_root_folder'], '/')),
+            'name' =>             '',
+            'date' =>             '0000-00-00',
+            'group_assign_csv' => '',
+            'permPUBLIC' =>       1,
+            'permSYSLOGON' =>     1,
+            'permSYSMEMBER' =>    1,
+            'thumbnail_small' =>  '',
+            'albums' =>           $Obj_Gallery_Album->get_albums($albumID, $sortBy),
+            'images' =>           $Obj_Gallery_Album->get_images($albumID)
         );
     }
 
-    private function _setup_remember_shop_page()
+    private function setupRememberShopPage()
     {
         global $page_vars;
         History::set('shop', BASE_PATH.trim($page_vars['path'], '/'));

@@ -1,3 +1,5 @@
+  1.0.75 (2016-07-04)
+    1) Fixed paths for gallery album folder images to respect BASE_PATH
   1.0.74 (2015-11-29)
     1) Now checks context of uploader before opening uploader form
   1.0.73 (2015-11-23)

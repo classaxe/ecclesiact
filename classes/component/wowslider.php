@@ -1,15 +1,16 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.14 (2015-10-21)
-    1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
-    2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
-
+  1.0.15 (2015-12-26)
+    1) Now has CP for show_watermark - default is off
+    2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once
+       and no longer encodes & in URL as an html entity
 */
 class WOWSlider extends Base
 {
-    const VERSION = '1.0.14';
+    const VERSION = '1.0.15';
 
     protected $_first_image =   array();
     protected $_first_idx =     0;
@@ -174,6 +175,11 @@ class WOWSlider extends Base
                 'default'=>'4',
                 'hint' =>       'Decimal time in seconds for show'
             ),
+            'show_watermark' =>           array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       'Whether or not to watermark large images - ignored if image has \'no watermark\' set'
+            ),
             'title' =>                      array(
                 'match' =>      '',
                 'default' =>    '',
@@ -245,13 +251,15 @@ class WOWSlider extends Base
 
     protected function drawCssInclude()
     {
+        static $shown = false;
         global $page_vars;
-        $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&amp;targetValue='.$this->_safe_ID;
+        $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&targetValue='.$this->_safe_ID;
         \Output::push(
             'head_top',
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_PATH."css/ws\" />\n"
+            ($shown ? "" : "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_PATH."css/ws\" />\n")
             ."<link rel=\"stylesheet\" type=\"text/css\" href=\"".$url."\" />\n"
         );
+        $shown = true;
     }
 
     protected function drawCss()
@@ -286,16 +294,16 @@ class WOWSlider extends Base
               ."  background-image:url(".BASE_PATH."img/sysimg/arrows.png);\n"
               ."}\n"
               ."#".$this->_safe_ID." .ws_pause { background-image: url(".BASE_PATH."img/sysimg/pause.png);}\n"
-              ."#".$this->_safe_ID." .ws_play { background-image: url(".BASE_PATH."img/sysimg/play.png);}\n"
+              ."#".$this->_safe_ID." .ws_play  { background-image: url(".BASE_PATH."img/sysimg/play.png);}\n"
               ."#".$this->_safe_ID." .ws_bullets  a img{ left:-".($this->_cp['thumbnail_width']/2)."px;}\n"
               ."#".$this->_safe_ID." .ws_bulframe div div{ height:".$this->_cp['thumbnail_height']."px;}\n"
               ."#".$this->_safe_ID." .ws_bulframe div{width:".$this->_cp['thumbnail_width']."px;}\n"
               ."#".$this->_safe_ID." .ws_bulframe span{\n"
-              ."  left:".($this->_cp['thumbnail_width']/2)."px;background:url(".BASE_PATH."img/sysimg/triangle.png);\n"
+              ."  left:".($this->_cp['thumbnail_width']/2)."px; background:url(".BASE_PATH."img/sysimg/triangle.png);\n"
               ."}\n"
               ."#".$this->_safe_ID." .ws_images ul {\n"
-              ."  animation: wsBasic ".$dur."s infinite;\n"
-              ."  -moz-animation: wsBasic ".$dur."s infinite;\n"
+              ."  animation:         wsBasic ".$dur."s infinite;\n"
+              ."  -moz-animation:    wsBasic ".$dur."s infinite;\n"
               ."  -webkit-animation: wsBasic ".$dur."s infinite;\n"
               ."}\n"
               ."@keyframes         wsBasic{".$sequence." }\n"
@@ -487,9 +495,9 @@ class WOWSlider extends Base
             $_enabled =   $record['enabled'];
             $_image =
                  trim($record['systemURL'], '/')
-                ."/img/sysimg"
-                ."?resize=1"
-                ."&maintain=0"
+                ."/img/"
+                .($this->_cp['show_watermark'] && !$record['no_watermark'] ? 'wm' : 'resize')
+                ."?maintain=0"
                 ."&height=".$this->_cp['max_height']
                 ."&width=".$this->_cp['max_width']
                 ."&img=".$record['thumbnail_small']

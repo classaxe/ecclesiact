@@ -1,9 +1,9 @@
-/* 1.0.49
+/* 1.0.50
 // Don't forget to clear the cached file from style/cache!
 
 Version History:
-  1.0.49 (2016-06-05)
-    1) Added lbl_CYAN-privacy-image
+  1.0.50 (2016-12-26)
+    1) Added lbl_no_watermark
 */
 .lbl_actions{
   background-position:-22px 0; width:11px; height:46px;
@@ -658,6 +658,9 @@ Version History:
 }
 .lbl_today{
   background-position:-3157px 0; width:22px; height:80px;
+}
+.lbl_no_watermark {
+  background-position:-3179px 0; width:11px; height:93px;
 }
 .lbl_when-applied{
   background-position:-3190px 0; width:22px; height:69px;

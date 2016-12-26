@@ -1,3 +1,6 @@
+  1.0.14 (2015-10-21)
+    1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
+    2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method
   1.0.13 (2015-09-19)
     1) WOWSlider::drawImageBullets() now includes alt attribute for image preview bullets
   1.0.12 (2015-09-14)

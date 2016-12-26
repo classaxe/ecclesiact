@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.97");
+define("VERSION", "2.0.98");
 /*
 Version History:
-  2.0.97 (2016-07-02)
-    1) JS code now allows for substitution of BASE_PATH when streamed
+  2.0.98 (2016-12-26)
+    1) Reduced opacity of watermark from 80% to 60%
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -1320,6 +1320,7 @@ function sysimg()
         $font =         SYS_FONTS."arialbd.ttf";
         $color =        "ffffff";
         $bgcolor =      "404040";
+        $opacity =      60;
         $size =         (int)$img_width/(strlen($text));
         $arr_bbox =    imagettfbbox($size, 0, $font, $text.' ');
         $width =    $arr_bbox[2]-$arr_bbox[6];         // Added 2 for movement on mouseover
@@ -1353,7 +1354,7 @@ function sysimg()
                     0,
                     imagesx($img2),
                     imagesy($img2),
-                    80
+                    $opacity
                 );
                 break;
             case "png":
@@ -1368,7 +1369,7 @@ function sysimg()
                     0,
                     imagesx($img2),
                     imagesy($img2),
-                    80
+                    $opacity
                 );
                 break;
         }

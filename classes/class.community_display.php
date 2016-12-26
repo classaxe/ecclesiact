@@ -7,13 +7,13 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.48 (2016-03-25)
-    1) Community_Display::checkDropboxUpdateGetDelta() no longer writes debug message to error log every time
+  1.0.49 (2016-12-25)
+    1) Fixed icons on wow slider for community members - broken since 4.3.5.2424 nearly a year ago!
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.48';
+    const VERSION = '1.0.49';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -878,9 +878,6 @@ class Community_Display extends Community
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        if (get_var('submode')=='css') {
-            return;
-        }
         try {
             $this->setup($instance, $args, $disable_params);
             if ($this->_path_extension) {
@@ -966,7 +963,7 @@ class Community_Display extends Community
     {
         global $page_vars;
         if ($this->_cp['members_show_map']) {
-             Output::push(
+            Output::push(
                 "javascript",
                 "function map_highlight(id){\n"
                 ."  show_section_tab(spans_".$this->_safe_ID.",'map');\n"
@@ -975,7 +972,7 @@ class Community_Display extends Community
             );
         }
         if ($this->_current_user_rights['canEdit']) {
-             Output::push(
+            Output::push(
                 "javascript_onload",
                 "community_dropbox_check('".BASE_PATH.$page_vars['relative_URL']."');"
             );
@@ -985,7 +982,7 @@ class Community_Display extends Community
          :
             $this->_section_tabs_arr[0]['ID']
         );
-         Output::push(
+        Output::push(
             'javascript_onload',
             "  show_section_onhashchange_setup(spans_".$this->_safe_ID.");\n"
             ."  window.setTimeout(\"var tab='".$selected_section."';"
@@ -2030,7 +2027,7 @@ class Community_Display extends Community
 
     protected function drawSectionContainerOpen()
     {
-         Output::push(
+        Output::push(
             'javascript_onload',
             "  show_section_tab('spans_".$this->_safe_ID."','".$this->_selected_section."');"
         );

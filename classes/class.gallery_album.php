@@ -1,18 +1,13 @@
 <?php
-define('VERSION_GALLERY_ALBUM', '1.0.33');
 /*
 Version History:
-  1.0.33 (2015-01-31)
-    1) Changes to internally used parameters in Gallery_Album::BL_contained_items():
-         Old: filter_limit,  paging_controls
-         New: results_limit, results_paging
-    2) Now PSR-2 Compliant
-
-  (Older version history in class.gallery_album.txt)
-
+  1.0.34 (2016-12-24)
+    1) Now includes no_watermark field in Gallery_Album::get_images()
 */
 class Gallery_Album extends Posting_Container
 {
+    const VERSION = '1.0.34';
+
     public function __construct($ID = "", $systemID = SYS_ID)
     {
         parent::__construct($ID, $systemID);
@@ -404,6 +399,7 @@ class Gallery_Album extends Posting_Container
             ."  `thumbnail_cs_small`,\n"
             ."  `thumbnail_small`,\n"
             ."  `group_assign_csv`,\n"
+            ."  `no_watermark`,\n"
             ."  `password`,\n"
             ."  `permPUBLIC`,\n"
             ."  `permSYSLOGON`,\n"
@@ -483,10 +479,5 @@ class Gallery_Album extends Posting_Container
              :
                 "<p style='margin:0.25em'>No contents - this ".$this->_get_object_name()." has not been saved yet.</p>"
              );
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_GALLERY_ALBUM;
     }
 }
