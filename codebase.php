@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.9");
+define("CODEBASE_VERSION", "4.9.10");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,65 +16,28 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.9.2477 (2016-12-26)
+4.9.10.2478 (2016-12-26)
 Summary:
-  1) Gallery images now have a 'No watermark' setting when watermarking feature is turned on to prevent
-     default watermarking of images from applying to those images.
-     Used for member-supplied photos in ChurchesInYourTown.ca website
-  2) Fixed icons used in Community Member Profile slideshow - broken for nearly a year!
-  3) Added support for watermarking of images in Wow Slider component
-  4) Reduced opacity of watermark in watermarking feature from 80% to 60% 
+  1) Removed border from community member slideshow 
 
 Final Checksums:
   Classes     CS:4381ec74
   Database    CS:4317aaaa
-  Libraries   CS:8b4654bf
+  Libraries   CS:f5c344b
   Reports     CS:569eea7d
 
 Code Changes:
-  codebase.php                                                                                   4.9.9     (2016-12-26)
-    1) Some PSR-2 fixes
-    2) Updated version information
-  classes/class.block_layout.php                                                                 1.0.71    (2016-12-24)
-    1) Changes to BL_thumbnail_image() to repect no_watermark setting whenever this is set
-  classes/class.community_display.php                                                            1.0.49    (2016-12-25)
-    1) Fixed icons on wow slider for community members - broken since 4.3.5.2424 nearly a year ago!
-  classes/class.community_member_display.php                                                     1.0.49    (2016-12-26)
-    1) Now sets 'show_watermark' on member's wow-slider display
-  classes/class.component_gallery_album.php                                                      1.0.76    (2016-12-24)
-    1) Changes to support image watermarking in rollovers and slideshow
-    2) Changes to function names for PSR-2 compliance
-  classes/class.gallery_album.php                                                                1.0.34    (2016-12-24)
-    1) Now includes no_watermark field in Gallery_Album::get_images()
-  classes/class.posting.php                                                                      1.0.129   (2016-12-26)
-    1) Added no_watermark to fields list
-  classes/component/wowslider.php                                                                1.0.15    (2015-12-26)
-    1) Now has CP for show_watermark - default is off
-    2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once
-       and no longer encodes & in URL as an html entity
-  img.php                                                                                        2.0.98    (2016-12-26)
-    1) Reduced opacity of watermark from 80% to 60%
-  style/labels.css                                                                               1.0.50    (2016-12-26)
-    1) Added lbl_no_watermark
+  codebase.php                                                                                   4.9.10    (2016-12-26)
+    1) Updated version information
+  style/community.css                                                                            1.0.4     (2016-12-26)
+    1) Removed border for member slideshow
 
-2476.sql
-  1) New column for postings - no_watermark - used to prevent watermarking of member-supplied images
-  2) Added support for no_watermark field in 'gallery-images' and 'gallery-images-for-gallery-album' reports
-  3) Set version information
+2477.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        4.9.9
-  classes/  (7 files changed)
-    class.block_layout.php                            1.0.71    CS:dd7d6a59
-    class.community_display.php                       1.0.49    CS:b0c256e0
-    class.community_member_display.php                1.0.49    CS:753fee7b
-    class.component_gallery_album.php                 1.0.76    CS:d5bb7c81
-    class.gallery_album.php                           1.0.34    CS:141c35e7
-    class.posting.php                                 1.0.129   CS:8acaecba
-    component/wowslider.php                           1.0.15    CS:c8531813
-  img.php                                             2.0.98    CS:e62b999d
-  images/labels.gif                                             CS:35559c76
-  style/labels.css                                    1.0.50    CS:e3f56538
+  codebase.php                                        4.9.10
+  style/community.css                                 1.0.4     CS:39e911c2
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
