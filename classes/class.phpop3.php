@@ -1,7 +1,9 @@
 <?php
-define("VERSION_PHPOP3", "1.0.3");
+define("VERSION_PHPOP3", "1.0.4");
 /*
 Version History:
+  1.0.4 (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
   1.0.3 (2016-05-01)
     1) Made more PSR-2 compliant and constructor now returns true for success, false for fail
     2) Now uses an stdClass as a message container
@@ -24,7 +26,7 @@ class phPOP3
     public $status;
     public $connect_error = false;
 
-    public function phPOP3($server = '', $port = '', $username = '', $password = '')
+    public function __construct($server = '', $port = '', $username = '', $password = '')
     {
         
         if ($server) {

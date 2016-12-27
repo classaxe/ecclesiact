@@ -1,3 +1,5 @@
+  1.0.4 (2016-12-26)
+    1) Removed border for member slideshow
   1.0.3 (2015-02-02)
     1) Now with unix-style line endings
   1.0.2 (2014-02-05)

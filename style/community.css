@@ -1,8 +1,8 @@
-/* 1.0.4
+/* 1.0.5
 
 Version History:
-  1.0.4 (2016-12-26)
-    1) Removed border for member slideshow
+  1.0.5 (2016-12-26)
+    1) Tweaks to put icons in correct position for both slideshow and static profile images
 */
 /* [ Community and Community Member CSS code ] */
 /* [ Community Display ] */
@@ -244,8 +244,14 @@ Version History:
 .profile_frame .photo_frame .member_photo_frame {
   float:left; margin:0 1em 0 0; padding:10px;background:#fff; border:1px solid #888;
 }
+/* WOW Slider */
 .profile_frame .photo_frame .member_icons {
-  background: #ccf; padding: 4px; position: absolute; top:10px; left:11px; z-index:10;
+  background: #ccf; padding: 4px; position: absolute; top:20px; left:11px; z-index:10;
+  border-right: 1px solid #bbe; border-bottom: 1px solid #778;
+}
+/* Static image */
+.profile_frame .photo_frame_single .member_icons {
+  background: #ccf; padding: 4px; position: absolute; top:13px; left:13px; z-index:10;
   border-right: 1px solid #bbe; border-bottom: 1px solid #778;
 }
 .profile_frame .details {

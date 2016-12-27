@@ -1,7 +1,9 @@
 <?php
-define('VERSION_HTTP_RAW_SOCKET','1.0.0');
+define('VERSION_HTTP_RAW_SOCKET','1.0.1');
 /*
 Version History:
+  1.0.1 (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
   1.0.0 (2009-07-02)
     Initial release
 */
@@ -10,7 +12,7 @@ Version History:
 // ####################################
 class HTTP_Raw_Socket {
   var $http_port, $http_site, $http_cookies, $http_debug;
-  function http_raw_socket($http_port=false, $http_site=false, $http_cookies=false, $http_debug=false) {
+  function __construct($http_port=false, $http_site=false, $http_cookies=false, $http_debug=false) {
     $this->http_port = $http_port;
     $this->http_site = $http_site;
     $this->http_cookies = $http_cookies;

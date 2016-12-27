@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.10");
+define("CODEBASE_VERSION", "4.9.11");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,28 +16,70 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.10.2478 (2016-12-26)
+4.9.11.2479 (2016-12-26)
 Summary:
-  1) Removed border from community member slideshow 
+  1) Begun adding support for PHP7:
+       Added relaxed custom error handler for differences in method declaration
+       Renamed all class constructors to __construct()
+  2) Wow slider thumbnails now respect 'show_watermark' setting
+  3) Better placement of icons on member profile slideshow or single image display
 
 Final Checksums:
-  Classes     CS:4381ec74
-  Database    CS:4317aaaa
-  Libraries   CS:f5c344b
+  Classes     CS:440ceba2
+  Database    CS:453ad079
+  Libraries   CS:8948f66
   Reports     CS:569eea7d
 
 Code Changes:
-  codebase.php                                                                                   4.9.10    (2016-12-26)
-    1) Updated version information
-  style/community.css                                                                            1.0.4     (2016-12-26)
-    1) Removed border for member slideshow
+  codebase.php                                                                                   4.9.11    (2016-12-26)
+    1) Added relaxed custom error handler for differences in method declaration
+    2) Updated version information
+  classes/class.cezpdf.php                                                                       1.0.2     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.community_display.php                                                            1.0.50    (2016-12-26)
+    1) Tweaked image size for profile slideshow to be closer to that wow-slider scales it as
+  classes/class.community_member.php                                                             1.0.115   (2016-10-16)
+    1) Community_Member::get_member_profile_images() now uses lazy loading
+  classes/class.community_member_display.php                                                     1.0.50    (2016-12-26)
+    1) Community_Member_Display::drawProfile() now makes distinction between slideshow and single image
+       for better CSS placement of icons
+    2) Community_Member_Display::drawStats() now better handles when a member profile page URL has changed
+       without giving errors (e.g. Gormley Church)
+  classes/class.cpdf.php                                                                         1.0.1     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.handler.php                                                                      1.0.1     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.http_raw_socket.php                                                              1.0.1     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.pdf.php                                                                          1.0.2     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.phpop3.php                                                                       1.0.4     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/class.services_json.php                                                                1.0.2     (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
+  classes/component/wowslider.php                                                                1.0.16    (2016-12-26)
+    12) Now respects watermark setting for thumbnail images also
+  style/community.css                                                                            1.0.5     (2016-12-26)
+    1) Tweaks to put icons in correct position for both slideshow and static profile images
 
-2477.sql
+2479.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        4.9.10
-  style/community.css                                 1.0.4     CS:39e911c2
+  codebase.php                                        4.9.11
+  classes/  (11 files changed)
+    class.cezpdf.php                                  1.0.2     CS:ef0be272
+    class.community_display.php                       1.0.50    CS:a2257962
+    class.community_member.php                        1.0.115   CS:f4ad8df0
+    class.community_member_display.php                1.0.50    CS:f5ce377
+    class.cpdf.php                                    1.0.1     CS:aa38440f
+    class.handler.php                                 1.0.1     CS:78583859
+    class.http_raw_socket.php                         1.0.1     CS:bc5c864d
+    class.pdf.php                                     1.0.2     CS:b03ab3a1
+    class.phpop3.php                                  1.0.4     CS:608ee4c2
+    class.services_json.php                           1.0.2     CS:234ba448
+    component/wowslider.php                           1.0.16    CS:4520096c
+  style/community.css                                 1.0.5     CS:847f835b
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -166,6 +208,12 @@ Filter Icons:
 [ICON]19 19 7655 Is an Administrator - No[/ICON]
 
 */
+if (PHP_MAJOR_VERSION >= 7) {
+  set_error_handler(function ($errno, $errstr) {
+      return strpos($errstr, 'Declaration of') === 0;
+  }, E_WARNING);
+}
+
 // For when codebase is included without functions.php - e.g. ajax or cron
 if (!function_exists('mem')) {
     function mem($label = '')

@@ -5,12 +5,15 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.49 (2016-12-26)
-    1) Now sets 'show_watermark' on member's wow-slider display
+  1.0.50 (2016-12-26)
+    1) Community_Member_Display::drawProfile() now makes distinction between slideshow and single image
+       for better CSS placement of icons
+    2) Community_Member_Display::drawStats() now better handles when a member profile page URL has changed
+       without giving errors (e.g. Gormley Church)
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.49';
+    const VERSION = '1.0.50';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1082,7 +1085,9 @@ class Community_Member_Display extends Community_Member
             ."Profile for ".$r['title']
             .($this->_current_user_rights['isEditor'] ? "</a>" : "")
             ."</h2>"
-            ."<div class='photo_frame'>"
+            ."<div class='photo_frame"
+            .($this->get_member_profile_images() ? "" : " photo_frame_single")
+            ."'>"
             .$this->drawProfileImage()
             .($r['full_member'] || $verified || $ministerial ?
                 "<div class='member_icons'>"
@@ -1529,7 +1534,12 @@ class Community_Member_Display extends Community_Member
         for ($i=count($this->_stats_dates)-1; $i>=0; $i--) {
             $YYYYMM = $this->_stats_dates[$i];
             $comm =   $this->_stats[$YYYYMM]['visits'][$community_url];
-            $prof =   $this->_stats[$YYYYMM]['visits'][$member_url];
+            $prof =
+                (isset($this->_stats[$YYYYMM]['visits'][$member_url]) ?
+                    $this->_stats[$YYYYMM]['visits'][$member_url]
+                 :
+                    array('hits' => null, 'visits' => null, 'time_a' => null, 'time_t' => null)
+                );
             $link =   $this->_stats[$YYYYMM]['links'];
             $bord_b = ($i==0 ? " st_bord_b" : "");
             $this->_html.=

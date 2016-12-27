@@ -7,13 +7,13 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.49 (2016-12-25)
-    1) Fixed icons on wow slider for community members - broken since 4.3.5.2424 nearly a year ago!
+  1.0.50 (2016-12-26)
+    1) Tweaked image size for profile slideshow to be closer to that wow-slider scales it as
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.49';
+    const VERSION = '1.0.50';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -360,7 +360,7 @@ class Community_Display extends Community
                 'hint' =>       '1..x'
             ),
             'listing_thumbnail_width' =>          array(
-                'default' =>    200,
+                'default' =>    225,
                 'hint' =>       '1..x'
             ),
             'members_spacing' =>                  array(
@@ -444,7 +444,7 @@ class Community_Display extends Community
                 'hint' =>       '1..x'
             ),
             'profile_photo_height' =>             array(
-                'default' =>    318,
+                'default' =>    282,
                 'hint' =>       '1..x'
             ),
             'profile_photo_width' =>              array(

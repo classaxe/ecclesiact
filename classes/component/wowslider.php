@@ -3,14 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.15 (2015-12-26)
-    1) Now has CP for show_watermark - default is off
-    2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once
-       and no longer encodes & in URL as an html entity
+  1.0.16 (2016-12-26)
+    12) Now respects watermark setting for thumbnail images also
 */
 class WOWSlider extends Base
 {
-    const VERSION = '1.0.15';
+    const VERSION = '1.0.16';
 
     protected $_first_image =   array();
     protected $_first_idx =     0;
@@ -508,9 +506,9 @@ class WOWSlider extends Base
                  );
             $_thumbnail =
                  trim($record['systemURL'], '/')
-                ."/img/sysimg"
-                ."?resize=1"
-                ."&maintain=".$this->_cp['thumbnail_maintain_aspect']
+                ."/img/"
+                .($this->_cp['show_watermark'] && !$record['no_watermark'] ? 'wm' : 'resize')
+                ."?maintain=".$this->_cp['thumbnail_maintain_aspect']
                 ."&height=".$this->_cp['thumbnail_height']
                 ."&width=".$this->_cp['thumbnail_width']
                 ."&img=".$record['thumbnail_small']

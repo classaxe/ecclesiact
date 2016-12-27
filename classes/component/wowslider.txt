@@ -1,3 +1,7 @@
+  1.0.15 (2016-12-26)
+    1) Now has CP for show_watermark - default is off
+    2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once
+       and no longer encodes & in URL as an html entity
   1.0.14 (2015-10-21)
     1) WOWSlider::drawImages() no longer forces size of images, so responsive sites resize properly
     2) Provides a VERSION class constant instead of a global define, and uses inherrited getVersion() method

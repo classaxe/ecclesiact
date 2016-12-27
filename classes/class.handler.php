@@ -1,13 +1,15 @@
 <?php
-define('VERSION_HANDLER','1.0.0');
+define('VERSION_HANDLER','1.0.1');
 /*
 Version History:
+  1.0.1 (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
   1.0.0 (2009-07-02)
     Initial release
 */
 class Handler {
   private $context;
-  function Handler($context=''){
+  function __construct($context=''){
     $this->context = $context;
   }
   function handle($args) {

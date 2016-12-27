@@ -1,7 +1,9 @@
 <?php
-define('VERSION_CEZPDF','1.0.1');
+define('VERSION_CEZPDF','1.0.2');
 /*
 Version History:
+  1.0.2 (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
   1.0.1 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
 
@@ -30,7 +32,7 @@ var $ezPageCount=0;
 
 // ------------------------------------------------------------------------------
 
-function Cezpdf($paper='a4',$orientation='portrait'){
+function __construct($paper='a4',$orientation='portrait'){
 	// Assuming that people don't want to specify the paper size using the absolute coordinates
 	// allow a couple of options:
 	// orientation can be 'portrait' or 'landscape'

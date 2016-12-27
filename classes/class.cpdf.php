@@ -1,7 +1,9 @@
 <?php
-define('VERSION_CPDF','1.0.0');
+define('VERSION_CPDF','1.0.1');
 /*
 Version History:
+  1.0.1 (2016-12-26)
+    1) Constructor renamed to __construct for PHP 7.0
   1.0.0 (2009-07-11)
     Initial release
 */
@@ -201,7 +203,7 @@ var $checkpoint = '';
 * this will start a new document
 * @var array array of 4 numbers, defining the bottom left and upper right corner of the page. first two are normally zero.
 */
-function Cpdf ($pageSize=array(0,0,612,792)){
+function __construct ($pageSize=array(0,0,612,792)){
   $this->newDocument($pageSize);
   
   // also initialize the font families that are known about already

@@ -1,3 +1,5 @@
+  1.0.114 (2016-10-16)
+    1) Added Community_Member::getSelectorSql()
   1.0.113 (2016-07-04)
     1) Fixed path for dashboard tabs images to respect BASE_PATH
   1.0.112 (2016-01-08)
