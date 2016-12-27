@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.76 (2016-12-24)
-    1) Changes to support image watermarking in rollovers and slideshow
-    2) Changes to function names for PSR-2 compliance
+  1.0.77 (2016-12-27)
+    1) Implemented image watermarking for thumbnail images where enabled
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.76';
+    const VERSION = '1.0.77';
 
     private $_Obj_JL =                false;
     private $_albums =                false;
@@ -857,32 +856,35 @@ class Component_Gallery_Album extends Component_Base
             if ($img['available'] || $this->_isAdmin) {
                 $URL = BASE_PATH.trim($page_vars['path'], '/').'/'.$img['name'];
                 $src =
-                 BASE_PATH."img/max/".$this->_cp['thumb_size']."/".trim($img['thumbnail_small'], '/')
-                .($img['thumbnail_cs_small'] ? "?cs=".$img['thumbnail_cs_small'] : '');
+                     BASE_PATH."img/"
+                    .($this->_cp['show_watermark'] && !$img['no_watermark'] ? 'wm' : 'resize')
+                    ."/".trim($img['thumbnail_small'], '/')
+                    ."?max=".$this->_cp['thumb_size']
+                    .($img['thumbnail_cs_small'] ? "&cs=".$img['thumbnail_cs_small'] : '');
                 $this->_html.=
-                 "  <div id=\"".$this->_safe_ID."_".$img['ID']."\""
-                ." class=\"img".($img['available'] ? '' : ' img_hidden')."\""
-                .($img['available'] ? "" : " title=\"This image would normally be hidden to you\"")
-                ."><a href='".$URL."'"
-                .($this->_cp['show_hover_image'] ?
-                " onmouseover=\"return gallery_album_image_mouseover(this,".$this->_cp['hover_size'].");\""
-                 ." onmouseout=\"return gallery_album_image_mouseout();\""
-                :
-                 ""
-                )
-                .">"
-                ."<img"
-                ." src=\"".$src."\""
-                ." style='margin:5px;"
-                .($img['cart'] ?
-                "border:2px dashed ".$this->_cp['thumb_border_in_cart']
-                :
-                "border:2px solid ".$this->_cp['thumb_border']
-                )
-                ."'"
-                ." alt='' title='Preview Image".($img['cart'] ? ' (in your cart)' : '')."' />"
-                ."</a>\n"
-                ."  </div>\n";
+                     "  <div id=\"".$this->_safe_ID."_".$img['ID']."\""
+                    ." class=\"img".($img['available'] ? '' : ' img_hidden')."\""
+                    .($img['available'] ? "" : " title=\"This image would normally be hidden to you\"")
+                    ."><a href='".$URL."'"
+                    .($this->_cp['show_hover_image'] ?
+                        " onmouseover=\"return gallery_album_image_mouseover(this,".$this->_cp['hover_size'].");\""
+                       ." onmouseout=\"return gallery_album_image_mouseout();\""
+                     :
+                        ""
+                    )
+                    .">"
+                    ."<img"
+                    ." src=\"".$src."\""
+                    ." style='margin:5px;"
+                    .($img['cart'] ?
+                        "border:2px dashed ".$this->_cp['thumb_border_in_cart']
+                     :
+                        "border:2px solid ".$this->_cp['thumb_border']
+                    )
+                    ."'"
+                    ." alt='' title='Preview Image".($img['cart'] ? ' (in your cart)' : '')."' />"
+                    ."</a>\n"
+                    ."  </div>\n";
             }
         }
     }

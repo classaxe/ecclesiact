@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.34 (2016-12-24)
-    1) Now includes no_watermark field in Gallery_Album::get_images()
+  1.0.35 (2016-12-27)
+    1) Added cp for 'contents_show_watermark' -
+       See example here:
+         https://www.churchesinyourtown.ca/gallery-album/communities/richmond-hill/members/gormley-church/profile
 */
 class Gallery_Album extends Posting_Container
 {
-    const VERSION = '1.0.34';
+    const VERSION = '1.0.35';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -62,6 +64,11 @@ class Gallery_Album extends Posting_Container
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       'Whether or not to list contents of album'
+            ),
+            'contents_show_watermark' =>    array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1'
             ),
             'contents_thumbnail_at_top'=>   array(
                 'match' =>      'enum|0,1',
@@ -324,6 +331,7 @@ class Gallery_Album extends Posting_Container
             'filter_container_path'=>     $this->record['path'],
             'results_paging'=>            $this->_cp['contents_results_paging'],
             'results_limit'=>             $this->_cp['contents_results_limit'],
+            'show_watermark'=>            $this->_cp['contents_show_watermark'],
             'thumbnail_at_top'=>          $this->_cp['contents_thumbnail_at_top'],
             'thumbnail_height'=>          $this->_cp['contents_thumbnail_height'],
             'thumbnail_width'=>           $this->_cp['contents_thumbnail_width']

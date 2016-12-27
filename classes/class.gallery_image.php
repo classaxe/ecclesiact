@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.23 (2016-02-21)
-    1) New CP for listing mode - sequence_insert_list
-    2) Now more PSR-2
+  1.0.25 (2016-12-27)
+    1) Added cp for 'show_watermark'
 */
 class Gallery_Image extends Posting_Contained
 {
-    const VERSION = '1.0.24';
+    const VERSION = '1.0.25';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -299,6 +298,11 @@ class Gallery_Image extends Posting_Contained
                 'default' =>    '',
                 'hint' =>       'Pipe (|) delimited list of content to place within sequence_content BL tags. '
                                 .'If there are more items shown than in the list, the sequence repeats.'
+            ),
+            'show_watermark' =>           array(
+                'match' =>      'enum|0,1',
+                'default' =>    '0',
+                'hint' =>       '0|1'
             ),
             'thumbnail_at_top' =>         array(
                 'match' =>      'enum|0,1',

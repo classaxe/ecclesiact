@@ -1,3 +1,6 @@
+  1.0.24 (2016-02-21)
+    1) New CP for listing mode - sequence_insert_list
+    2) Now more PSR-2
   1.0.23 (2013-06-07)
     1) Changed the following CPs for listings mode:
          Old: 'grouping_tabs',    'filter_limit',  'filter_order_by', 'paging_controls'

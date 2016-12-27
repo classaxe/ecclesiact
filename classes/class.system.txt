@@ -1,3 +1,5 @@
+  1.0.174 (2016-05-13)
+    1) System::get_global_date_range() now safely handles case where no valid system IDs are passed
   1.0.173 (2016-01-16)
     1) System::get_selector_sql() now declared statically
   1.0.172 (2016-01-01)

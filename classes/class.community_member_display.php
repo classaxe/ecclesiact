@@ -5,15 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.50 (2016-12-26)
-    1) Community_Member_Display::drawProfile() now makes distinction between slideshow and single image
-       for better CSS placement of icons
-    2) Community_Member_Display::drawStats() now better handles when a member profile page URL has changed
-       without giving errors (e.g. Gormley Church)
+  1.0.51 (2016-12-27)
+    1) Community_Member_Display::drawProfile() now provides link to view enlarged photos
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.50';
+    const VERSION = '1.0.51';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1085,6 +1082,13 @@ class Community_Member_Display extends Community_Member
             ."Profile for ".$r['title']
             .($this->_current_user_rights['isEditor'] ? "</a>" : "")
             ."</h2>"
+            .($this->get_member_profile_images() ?
+                 "<a href=\""
+                .BASE_PATH."communities/".$this->_community_record['name'].'/'.$this->_record['name'].'/photos'."\">"
+                ."<b>Click here</b></a> to see these images enlarged</a>"
+             :
+                ""
+            )
             ."<div class='photo_frame"
             .($this->get_member_profile_images() ? "" : " photo_frame_single")
             ."'>"

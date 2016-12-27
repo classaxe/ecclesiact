@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.10 (2016-10-16)
-    1) Fixed Community_Member_Resource::_draw_search_results() - was broken
-    2) Some work on PSR-2
+  1.0.11 (2016-12-27)
+    1) Added Community_Member_Resource::drawPhotos() and /photos mode to show profile photos enlarged
 */
 
 class Community_Member_Resource extends Community_Member
 {
-    const VERSION = '1.0.10';
+    const VERSION = '1.0.11';
 
     protected $_member_name =                   '';
     protected $_member_page =                   '';
@@ -30,6 +29,9 @@ class Community_Member_Resource extends Community_Member
         }
         if ($request=='rss' || substr($request, 0, 4)=='rss/') {
             return $this->drawRss($request);
+        }
+        if ($request=='photos') {
+            return $this->drawPhotos();
         }
         if (Portal::_parse_request_posting($request, $type, $ID)) {
             return $this->drawPosting($type, $ID);
@@ -99,6 +101,31 @@ class Community_Member_Resource extends Community_Member
         header('Content-Type: application/javascript;charset=utf-8');
         print get_var('callback')."(".json_encode($out).");\n";
         die;
+    }
+
+    protected function drawPhotos()
+    {
+        $Obj = new Gallery_Image();
+        $Obj->communityID =     $this->_record['communityID'];
+        $Obj->memberID =        $this->_record['ID'];
+        $Obj->partner_csv =     $this->_record['partner_csv'];
+        $args = array(
+            'category_show' =>          0,
+            'filter_container_path' =>
+                "/communities/".$this->_cp['community_name']."/members/".$this->_record['name']."/profile",
+            'results_limit' =>          1,
+            'results_paging' =>         2,
+            'show_watermark' =>         1,
+            'thumbnail_height' =>       1000,
+            'thumbnail_show' =>         1,
+            'thumbnail_width' =>        1000,
+            'title_linked' =>           0
+        );
+        return
+             "<div class='inner'>"
+            ."<h2>Photos for ".htmlentities($this->_record['title'])."</h2>\n"
+            .$Obj->draw_listings('member_photos', $args, false)
+            ."</div>\n";
     }
 
     protected function drawPosting($type, $ID)

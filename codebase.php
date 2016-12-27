@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "4.9.11");
+define("CODEBASE_VERSION", "4.9.12");
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
@@ -16,70 +16,48 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-4.9.11.2479 (2016-12-26)
+4.9.12.2480 (2016-12-27)
 Summary:
-  1) Begun adding support for PHP7:
-       Added relaxed custom error handler for differences in method declaration
-       Renamed all class constructors to __construct()
-  2) Wow slider thumbnails now respect 'show_watermark' setting
-  3) Better placement of icons on member profile slideshow or single image display
+  1) Implemented /photos mode for community members to show enlargements of profile images
+  2) Implemented watermarking support for Gallery Album listings view
 
 Final Checksums:
-  Classes     CS:440ceba2
+  Classes     CS:5b8297d2
   Database    CS:453ad079
-  Libraries   CS:8948f66
-  Reports     CS:569eea7d
+  Libraries   CS:723c2c8c
+  Reports     CS:6da4a7d9
 
 Code Changes:
-  codebase.php                                                                                   4.9.11    (2016-12-26)
-    1) Added relaxed custom error handler for differences in method declaration
-    2) Updated version information
-  classes/class.cezpdf.php                                                                       1.0.2     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.community_display.php                                                            1.0.50    (2016-12-26)
-    1) Tweaked image size for profile slideshow to be closer to that wow-slider scales it as
-  classes/class.community_member.php                                                             1.0.115   (2016-10-16)
-    1) Community_Member::get_member_profile_images() now uses lazy loading
-  classes/class.community_member_display.php                                                     1.0.50    (2016-12-26)
-    1) Community_Member_Display::drawProfile() now makes distinction between slideshow and single image
-       for better CSS placement of icons
-    2) Community_Member_Display::drawStats() now better handles when a member profile page URL has changed
-       without giving errors (e.g. Gormley Church)
-  classes/class.cpdf.php                                                                         1.0.1     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.handler.php                                                                      1.0.1     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.http_raw_socket.php                                                              1.0.1     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.pdf.php                                                                          1.0.2     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.phpop3.php                                                                       1.0.4     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/class.services_json.php                                                                1.0.2     (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  classes/component/wowslider.php                                                                1.0.16    (2016-12-26)
-    12) Now respects watermark setting for thumbnail images also
-  style/community.css                                                                            1.0.5     (2016-12-26)
-    1) Tweaks to put icons in correct position for both slideshow and static profile images
+  codebase.php                                                                                   4.9.12    (2016-12-27)
+    1) Updated version information
+  classes/class.community_member_display.php                                                     1.0.51    (2016-12-27)
+    1) Community_Member_Display::drawProfile() now provides link to view enlarged photos
+  classes/class.community_member_resource.php                                                    1.0.11    (2016-12-27)
+    1) Added Community_Member_Resource::drawPhotos() and /photos mode to show profile photos enlarged
+  classes/class.component_gallery_album.php                                                      1.0.77    (2016-12-27)
+    1) Implemented image watermarking for thumbnail images where enabled
+  classes/class.gallery_album.php                                                                1.0.35    (2016-12-27)
+    1) Added cp for 'contents_show_watermark' -
+       See example here:
+         https://www.churchesinyourtown.ca/gallery-album/communities/richmond-hill/members/gormley-church/profile
+  classes/class.gallery_image.php                                                                1.0.25    (2016-12-27)
+    1) Added cp for 'show_watermark'
+  classes/class.system.php                                                                       1.0.175   (2016-12-27)
+    1) System::get_global_date_range() now properly declared as static
 
-2479.sql
-  1) Set version information
+2480.sql
+  1) Bug fix for theme selector for masteradmin in gallery-images report / form
+  2) Set version information
 
 Promote:
-  codebase.php                                        4.9.11
-  classes/  (11 files changed)
-    class.cezpdf.php                                  1.0.2     CS:ef0be272
-    class.community_display.php                       1.0.50    CS:a2257962
-    class.community_member.php                        1.0.115   CS:f4ad8df0
-    class.community_member_display.php                1.0.50    CS:f5ce377
-    class.cpdf.php                                    1.0.1     CS:aa38440f
-    class.handler.php                                 1.0.1     CS:78583859
-    class.http_raw_socket.php                         1.0.1     CS:bc5c864d
-    class.pdf.php                                     1.0.2     CS:b03ab3a1
-    class.phpop3.php                                  1.0.4     CS:608ee4c2
-    class.services_json.php                           1.0.2     CS:234ba448
-    component/wowslider.php                           1.0.16    CS:4520096c
-  style/community.css                                 1.0.5     CS:847f835b
+  codebase.php                                        4.9.12
+  classes/  (6 files changed)
+    class.community_member_display.php                1.0.51    CS:40b771f4
+    class.community_member_resource.php               1.0.11    CS:3e02bcbb
+    class.component_gallery_album.php                 1.0.77    CS:1aad5162
+    class.gallery_album.php                           1.0.35    CS:e8c76a9b
+    class.gallery_image.php                           1.0.25    CS:23024c0c
+    class.system.php                                  1.0.175   CS:a50de0a3
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
