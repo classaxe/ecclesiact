@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.13 (2016-03-26)
-    1) Local calls to obj::get_records() changeged arg filter_category to filter_category_list
+  1.0.14 (2016-12-31)
+    1) Remote::get_items() now uses obj::getFilteredSortedAndPagedRecords() to get local records
 */
 class Remote extends Base
 {
-    const VERSION = '1.0.13';
+    const VERSION = '1.0.14';
 
     public $URL;
     public $isLocal;
@@ -74,7 +74,7 @@ class Remote extends Base
                     return array();
                 }
                 $Obj =      new $Object_type(0,$systemID);
-                $results =  $Obj->get_records(
+                $results =  $Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $category,

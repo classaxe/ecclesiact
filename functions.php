@@ -1,9 +1,9 @@
 <?php
-define("FUNCTIONS_VERSION", "1.0.20");
+define("FUNCTIONS_VERSION", "1.0.21");
 /*
 Version History:
-  1.0.20 (2016-05-09)
-    1) Bug fix in errorHandler() for when $_SERVER[REMOTE_ADDR] isn't set
+  1.0.21 (2017-01-02)
+    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
 */
 function errorHandler($errno, $errstr, $errfile, $errline)
 {
@@ -18,12 +18,11 @@ function errorHandler($errno, $errstr, $errfile, $errline)
     return false;
 }
 
-if ((
-    isset($_SERVER["REMOTE_ADDR"]) && (
+if (isset($_SERVER["REMOTE_ADDR"]) && (
         $_SERVER["REMOTE_ADDR"]==='192.168.0.1' ||
         $_SERVER["REMOTE_ADDR"]==='127.0.0.1'
     )
-)) {
+) {
     $old_error_handler = set_error_handler("errorHandler");
     ini_set('display_errors', 1);
     error_reporting(E_ALL);

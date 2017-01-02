@@ -1,3 +1,5 @@
+  1.0.25 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.24 (2012-10-02)
     1) Tweak to call to Forum::do_submode() for case 'save_your_settings' -
        Call to Person::get_field() implied that this function takes two parameters,

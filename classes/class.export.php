@@ -1,13 +1,15 @@
 <?php
-define('VERSION_EXPORT', '1.0.26');
 /*
 Version History:
-  1.0.26 (2015-10-06)
-    1) Added specific support for link_view_tickets
+  1.0.27 (2016-12-31)
+    1) Export::excel() now calls Report::getReportRecords() to get data
+    2) PSR-2 fixes
 
 */
 class Export extends Record
 {
+    const VERSION = '1.0.27';
+
     public static function draw()
     {
         global $submode, $show_fields, $report_name, $system_vars, $targetID;
@@ -22,7 +24,7 @@ class Export extends Record
                 die;
             break;
             default:
-                switch($report_name){
+                switch ($report_name) {
                     case 'report_filters':
                       // There IS no such report so just fake it:
                         $Obj = new Report_Filter;
@@ -78,7 +80,7 @@ class Export extends Record
         $columnList =       $Obj_Report->get_columns();
         Report::get_and_set_sortOrder($report_record, $columnList, $sortBy);
         $all_records =
-        $Obj_Report->get_records(
+        $Obj_Report->getReportRecords(
             $report_record,
             $columnList,
             $filterField_sql,
@@ -129,7 +131,7 @@ class Export extends Record
             .".".$system_vars['db_version'];
         $subtitle =     "Created ".date('M j Y \a\t H:i', time())." for ".$author;
         $title =        $system_vars['textEnglish'].' > '.$report_record['reportTitle'];
-        switch($report_record['name']){
+        switch ($report_record['name']) {
             case "email_job":
                 $title.= " > Email Job #".get_var('selectID');
                 break;
@@ -211,7 +213,7 @@ class Export extends Record
                 $value = str_replace("<br />", " ", $value);
                 $value = str_replace("&#8211;", "-", $value);
                 $isHyperlink =  false;
-                switch($columns[$col]['fieldType']){
+                switch ($columns[$col]['fieldType']) {
                     case 'bool':
                         $value=($value != '' ? $value : 0);
                         $width = 3;
@@ -263,7 +265,10 @@ class Export extends Record
                             $ObjWorksheet->getCell($cell)->getHyperlink()->setURL($url);
                             $ObjWorksheet->getCell($cell)->getHyperlink()->setTooltip('View Tickets');
                         }
-                        $ObjWorksheet->getStyle($cell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);;
+                        $ObjWorksheet
+                            ->getStyle($cell)
+                            ->getAlignment()
+                            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
                         break;
                     case 'view_order_details':
                         $isHyperlink =  true;
@@ -305,10 +310,5 @@ class Export extends Record
         $objWriter = PHPExcel_IOFactory::createWriter($ObjPHPExcel, 'Excel2007');
         $objWriter->save('php://output');
         die();
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_EXPORT;
     }
 }

@@ -1,3 +1,5 @@
+  1.0.115 (2016-10-16)
+    1) Community_Member::get_member_profile_images() now uses lazy loading
   1.0.114 (2016-10-16)
     1) Added Community_Member::getSelectorSql()
   1.0.113 (2016-07-04)

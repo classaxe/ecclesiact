@@ -1,3 +1,6 @@
+  1.0.2 (2016-03-26)
+    1) SearchCategoryList::setupLoadCategories() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
   1.0.1 (2016-03-15)
     1) SearchCategoryList::setupLoadCategories() now provides filter_... prefixed parameters for all filters
   1.0.0 (2016-03-14)

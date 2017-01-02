@@ -1,13 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.2 (2016-03-26)
-    1) LatestYoutube::setupLoadLatestYoutube replaced parameter filter_category with filter_category_list
+  1.0.3 (2016-12-31)
+    1) LatestYoutube::setupLoadLatestYoutube() now uses newly named getFilteredSortedAndPagedRecords() method
 */
 class LatestYoutube extends Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     protected $youtubeURL;
 
@@ -75,7 +76,7 @@ class LatestYoutube extends Base
     protected function setupLoadLatestYoutube()
     {
         $this->Article = new \Article();
-        $results = $this->Article->get_records(
+        $results = $this->Article->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],

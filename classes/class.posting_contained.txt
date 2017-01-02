@@ -1,3 +1,5 @@
+  1.0.245 (2016-03-26)
+    1) Posting_Contained::get_records_matching() replaced parameter filter_category with filter_category_list
   1.0.244 (2016-03-15)
     1) Posting_Contained::get_records_matching() now provides filter_... prefixed parameters for all filters
   1.0.243 (2016-01-18)

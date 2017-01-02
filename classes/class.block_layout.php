@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.71 (2016-12-24)
-    1) Changes to BL_thumbnail_image() to repect no_watermark setting whenever this is set
+  1.0.72 (2017-01-02)
+    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.71';
+    const VERSION = '1.0.72';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -123,11 +123,10 @@ class Block_Layout extends Record
         if (!isset($this->_cp['content_show']) || $this->_cp['content_show']!='1') {
             return;
         }
-        if ((
-            isset($this->_cp['content_use_summary']) &&
+        if (isset($this->_cp['content_use_summary']) &&
             $this->_cp['content_use_summary']=='1' &&
             trim($this->record['content_summary'])
-        )) {
+        ) {
             return
              $this->record['content_summary']
             ." <span title=\"Continues&hellip;\">&hellip;</span> "
@@ -574,12 +573,11 @@ class Block_Layout extends Record
 
     protected function BL_link()
     {
-        if ((
-            isset($this->_cp['links_point_to_URL']) &&
+        if (isset($this->_cp['links_point_to_URL']) &&
             $this->_cp['links_point_to_URL']==1 &&
             isset($this->record['URL']) &&
             $this->record['URL']!=''
-        )) {
+        ) {
             $URL =        $this->record['URL'];
             $URL_popup =  ($this->record['popup']==1 ? true : false);
             $URL_title =  " title=\"Linked content".($URL_popup ? " (opens in a new window)" : "")."\"";
@@ -589,12 +587,11 @@ class Block_Layout extends Record
                 .($URL_popup ? " rel='external'" : "")
                 .">";
         }
-        if ((
-            isset($this->_cp['links_switch_video']) &&
+        if (isset($this->_cp['links_switch_video']) &&
             $this->_cp['links_switch_video']==1 &&
             isset($this->record['video']) &&
             $this->record['video']!=''
-        )) {
+        ) {
             $URL =
                  (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? "https:" : "http:")
                 .substr($this->record['video'], strpos($this->record['video'], '/'));
@@ -621,20 +618,18 @@ class Block_Layout extends Record
 
     protected function BL_link_URL()
     {
-        if ((
-            isset($this->_cp['links_point_to_URL']) &&
+        if (isset($this->_cp['links_point_to_URL']) &&
             $this->_cp['links_point_to_URL']==1 &&
             isset($this->record['URL']) &&
             $this->record['URL']!=''
-        )) {
+        ) {
             return BASE_PATH.trim($this->record['URL'], '/');
         }
-        if ((
-            isset($this->_cp['links_switch_video']) &&
+        if (isset($this->_cp['links_switch_video']) &&
             $this->_cp['links_switch_video']==1 &&
             isset($this->record['video']) &&
             $this->record['video']!=''
-        )) {
+        ) {
             return $this->record['video'];
         }
         return BASE_PATH.trim($this->get_URL($this->record), '/');
@@ -665,12 +660,11 @@ class Block_Layout extends Record
                 );
             }
         }
-        if ((
-            isset($this->record['URL']) &&
+        if (isset($this->record['URL']) &&
             $this->record['URL']!='' &&
             !(isset($this->_cp['links_point_to_URL']) &&
             $this->_cp['links_point_to_URL']==1)
-        )) {
+        ) {
             $link_arr[] = $this->draw_link('link');
         }
         if (count($link_arr)) {

@@ -1,3 +1,5 @@
+  1.0.20 (2016-05-09)
+    1) Bug fix in errorHandler() for when $_SERVER[REMOTE_ADDR] isn't set
   1.0.19 (2016-01-02)
     1) Comments fix within errorHandler()
   1.0.18 (2016-01-01)

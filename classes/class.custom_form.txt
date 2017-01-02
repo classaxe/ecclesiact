@@ -1,3 +1,5 @@
+  1.0.42 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.41 (2014-02-07)
     1) JS callback functions for ajax fedex rate lookups now contained within sajax
        object to reduce namespace clutter

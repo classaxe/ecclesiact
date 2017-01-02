@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.129 (2016-12-26)
-    1) Added no_watermark to fields list
+  1.0.130 (2016-12-31)
+    1) Posting::get_records() now renamed Posting::getFilteredSortedAndPagedRecords()
+    2) PSR-2 fixes
 */
 
 class Posting extends Displayable_Item
 {
-    const VERSION = '1.0.129';
+    const VERSION = '1.0.130';
     const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, no_watermark, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $subtype;
@@ -134,7 +135,7 @@ class Posting extends Displayable_Item
                 $YYYY = $path_arr[0];
                 $MM =   $path_arr[1];
                 $DD =   $path_arr[2];
-                switch($DD) {
+                switch ($DD) {
                   // Pay special attention to February:
                     case "02":
                         $_leap = (($YYYY%4==0) && ($YYYY%100!=0)) || ($YYYY%400==0);
@@ -150,8 +151,7 @@ class Posting extends Displayable_Item
                         $_DD = 31;
                         break;
                 }
-                if (
-                    !sanitize('range', $YYYY, 1990, 2200, false) ||
+                if (!sanitize('range', $YYYY, 1990, 2200, false) ||
                     !sanitize('range', $MM, 1, 12, false) ||
                     !sanitize('range', $DD, 1, $_DD, false)
                 ) {
@@ -589,7 +589,7 @@ class Posting extends Displayable_Item
             .($_SESSION['person']['permSYSMEMBER']==1 ? " OR\n    `permSYSMEMBER` = 1" : "");
         $group_IDs = array();
         foreach ($_SESSION['person']['permissions'] as $level => $groups) {
-            switch($level){
+            switch ($level) {
                 case "VIEWER":
                 case "EDITOR":
                 case "APPROVER":
@@ -630,9 +630,9 @@ class Posting extends Displayable_Item
         return $this->get_record_for_sql($sql);
     }
 
-    public function get_record()
+    public function get_record($Caching = true)
     {
-        $record = parent::get_record();
+        $record = parent::get_record($Caching);
         if (!is_subclass_of($this, 'Posting')) {
             return $record;
         }
@@ -642,7 +642,7 @@ class Posting extends Displayable_Item
         return false;
     }
 
-    public function get_records()
+    public function getFilteredSortedAndPagedRecords()
     {
         $args = func_get_args();
         $vars = array(
@@ -754,7 +754,7 @@ class Posting extends Displayable_Item
                 $isLocal =      (substr($url, 0, 1)=='(');
                 $url =          str_replace(array('(',')'), array('',''), $url);
                 $Obj_Remote =   new Remote(trim($url), $isLocal);
-                switch($this->_get_type()) {
+                switch ($this->_get_type()) {
                     case 'article':
                         $results = $Obj_Remote->get_items(
                             'articles',
@@ -981,7 +981,7 @@ class Posting extends Displayable_Item
         if (!$this->_get_records_args['filter_range_distance']) {
             return "";
         }
-        switch ($this->_get_records_args['filter_range_units']){
+        switch ($this->_get_records_args['filter_range_units']) {
             case 'mile':
                 $dx =   (float)$this->_get_records_args['filter_range_distance'];
                 break;
@@ -1058,9 +1058,9 @@ class Posting extends Displayable_Item
 
     protected function _get_records_sort_records_using_results_order()
     {
-        switch($this->_get_records_args['results_order']){
+        switch ($this->_get_records_args['results_order']) {
             case "date":
-                switch($this->_get_records_args['filter_what']) {
+                switch ($this->_get_records_args['filter_what']) {
                     case "year":
                     case "future":
                     case "month":
@@ -1438,10 +1438,9 @@ class Posting extends Displayable_Item
                     $visible = $row['permPUBLIC'];
                 }
                 if ($visible) {
-                    switch($row['type']) {
+                    switch ($row['type']) {
                         case 'article':
-                            if (
-                                $out['article']['count']>=$search_offset &&
+                            if ($out['article']['count']>=$search_offset &&
                                 ($limit==0 || count($out['article']['results'])<$limit)
                             ) {
                                 $out['article']['results'][] = $row;
@@ -1449,8 +1448,7 @@ class Posting extends Displayable_Item
                             $out['article']['count']++;
                             break;
                         case 'event':
-                            if (
-                                $out['event']['count']>=$search_offset &&
+                            if ($out['event']['count']>=$search_offset &&
                                 ($limit==0 || count($out['event']['results'])<$limit)
                             ) {
                                 $out['event']['results'][] = $row;
@@ -1458,8 +1456,7 @@ class Posting extends Displayable_Item
                             $out['event']['count']++;
                             break;
                         case 'gallery-image':
-                            if (
-                                $out['gallery-image']['count']>=$search_offset &&
+                            if ($out['gallery-image']['count']>=$search_offset &&
                                 ($limit==0 || count($out['gallery-image']['results'])<$limit)
                             ) {
                                 $out['gallery-image']['results'][] = $row;
@@ -1467,8 +1464,7 @@ class Posting extends Displayable_Item
                             $out['gallery-image']['count']++;
                             break;
                         case 'job-posting':
-                            if (
-                                $out['job-posting']['count']>=$search_offset &&
+                            if ($out['job-posting']['count']>=$search_offset &&
                                 ($limit==0 || count($out['job-posting']['results'])<$limit)
                             ) {
                                 $out['job-posting']['results'][] = $row;
@@ -1476,8 +1472,7 @@ class Posting extends Displayable_Item
                             $out['job-posting']['count']++;
                             break;
                         case 'news-item':
-                            if (
-                                $out['news-item']['count']>=$search_offset &&
+                            if ($out['news-item']['count']>=$search_offset &&
                                 ($limit==0 || count($out['news-item']['results'])<$limit)
                             ) {
                                 $out['news-item']['results'][] = $row;
@@ -1485,8 +1480,7 @@ class Posting extends Displayable_Item
                             $out['news-item']['count']++;
                             break;
                         case 'podcast':
-                            if (
-                                $out['podcast']['count']>=$search_offset &&
+                            if ($out['podcast']['count']>=$search_offset &&
                                 ($limit==0 || count($out['podcast']['results'])<$limit)
                             ) {
                                 $out['podcast']['results'][] = $row;
@@ -1668,8 +1662,7 @@ class Posting extends Displayable_Item
             $this->load();
           // Don't use $this->load() as Posting::get_record() is type specific!
             $r = parent::get_coords($this->record['map_location']);
-            if (
-                $r['code']==='OVER_DAILY_LIMIT' ||
+            if ($r['code']==='OVER_DAILY_LIMIT' ||
                 $r['code']==='OVER_QUERY_LIMIT' ||
                 $r['code']==='Connection Error'
             ) {

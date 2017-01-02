@@ -1,3 +1,6 @@
+  1.0.10 (2016-03-04)
+    1) Added CPs for filter_active, show_communities_url and show_member_count
+    2) Implemented code to operate with the new CPs
   1.0.9 (2016-03-03)
     1) Changes to work with renamed Extended_Community - now CommunityListing
     2) Better handling of no-records condition

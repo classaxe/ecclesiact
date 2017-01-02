@@ -4,13 +4,14 @@ Custom Fields used:
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.115 (2016-10-16)
-    1) Community_Member::get_member_profile_images() now uses lazy loading
+  1.0.116 (2016-12-31)
+    1) Community_Member::get_coords() now has same method declaration as its parent
+    2) Some PSR-2 fixes
 */
 
 class Community_Member extends Displayable_Item
 {
-    const VERSION = '1.0.115';
+    const VERSION = '1.0.116';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, gallery_albumID, podcast_albumID, primary_communityID, primary_ministerialID, admin_notes, attention_required, contact_history, date_photo_taken, date_survey_returned, date_welcome_letter, date_went_live, languages, link_facebook, link_twitter, link_video, link_website, mailing_addr_line1, mailing_addr_line2, mailing_addr_city, mailing_addr_country, mailing_addr_postal, mailing_addr_sp, office_addr_line1, office_addr_line2, office_addr_city, office_addr_country, office_addr_postal, office_addr_sp, office_fax, office_map_desc, office_map_geocodeID, office_map_geocode_address, office_map_geocode_area, office_map_geocode_quality, office_map_geocode_type, office_map_loc, office_map_lat, office_map_lon, office_notes, office_phone1_lbl, office_phone1_num, office_phone2_lbl, office_phone2_num, office_times_sun, office_times_mon, office_times_tue, office_times_wed, office_times_thu, office_times_fri, office_times_sat, service_addr_line1, service_addr_line2, service_addr_city, service_addr_country, service_addr_postal, service_addr_sp, service_map_desc, service_map_geocodeID, service_map_geocode_address, service_map_geocode_area, service_map_geocode_quality, service_map_geocode_type, service_map_loc, service_map_lat, service_map_lon, service_notes, service_times_sun, service_times_mon, service_times_tue, service_times_wed, service_times_thu, service_times_fri, service_times_sat, stats_cache, name, title, category, contactID, contact_NFirst, contact_NGreeting, contact_NLast, contact_NMiddle, contact_NTitle, contact_PEmail, contact_Telephone, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_verified, dropbox_folder, dropbox_last_checked, dropbox_last_filelist, dropbox_last_status, featured_image, full_member, partner_csv, PEmail, shortform_name, signatories, summary, type, URL, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const DASHBOARD_HEIGHT = 500;
     const DASHBOARD_WIDTH =  860;
@@ -144,7 +145,7 @@ class Community_Member extends Displayable_Item
             );
         }
         $submode = (isset($_REQUEST['submode']) ? $_REQUEST['submode'] : "");
-        switch ($submode){
+        switch ($submode) {
             case "module_community_save":
                 $fields = explode(
                     ',',
@@ -933,14 +934,14 @@ class Community_Member extends Displayable_Item
         return $out;
     }
 
-    public function get_coords($service_addr = false)
+    public function get_coords($address = false)
     {
-        if (!$service_addr) {
-            $service_address = $this->get_field('service_map_loc');
-            $office_address =  $this->get_field('office_map_loc');
+        if (!$address) {
+            $address = $this->get_field('service_map_loc');
+            $office =  $this->get_field('office_map_loc');
         }
-        $s =    parent::get_coords($service_address);
-        $o =    parent::get_coords($office_address);
+        $s =    parent::get_coords($address);
+        $o =    parent::get_coords($office);
         return
         array(
         'office_map_geocodeID' =>          $o['ID'],
@@ -1236,8 +1237,7 @@ class Community_Member extends Displayable_Item
                 }
             }
             $data = array();
-            if (
-                $r['contact_NTitle']=='' &&
+            if ($r['contact_NTitle']=='' &&
                 $r['contact_NFirst']=='' &&
                 $r['contact_NMiddle']=='' &&
                 $r['contact_NLast']=='' &&
@@ -1284,8 +1284,7 @@ class Community_Member extends Displayable_Item
             );
             $ID = $Obj_Contact->insert($data);
             $this->set_field('contactID', $ID, true, false);
-        } elseif (
-        $r['contact_NTitle']=='' &&
+        } elseif ($r['contact_NTitle']=='' &&
         $r['contact_NFirst']=='' &&
         $r['contact_NMiddle']=='' &&
         $r['contact_NLast']=='' &&
@@ -1430,8 +1429,7 @@ class Community_Member extends Displayable_Item
             $Obj_Country = new Country;
             $countries[$r[$prefix.'addr_country']] = $Obj_Country->get_text_for_value($r[$prefix.'addr_country']);
         }
-        if (
-            $r[$prefix.'map_desc']=='' &&
+        if ($r[$prefix.'map_desc']=='' &&
             ($r[$prefix.'addr_line1']||$r[$prefix.'addr_line2']||$r[$prefix.'addr_city']||$r[$prefix.'addr_postal'])
         ) {
             $data[$prefix.'map_desc'] =
@@ -1451,8 +1449,7 @@ class Community_Member extends Displayable_Item
                 " \n"
             );
         }
-        if (
-            $r[$prefix.'map_loc']=='' &&
+        if ($r[$prefix.'map_loc']=='' &&
             ($r[$prefix.'addr_line1']||$r[$prefix.'addr_line2']||$r[$prefix.'addr_city']||$r[$prefix.'addr_postal'])
         ) {
             $data[$prefix.'map_loc'] =
@@ -1607,7 +1604,7 @@ class Community_Member extends Displayable_Item
         $this->_community_record = $this->_Obj_Community->load();
         $this->get_stats();
         $end = microtime(true);
-        $result = 
+        $result =
              "| "
             .pad(two_dp($end-$start), 5)
             ." | "
@@ -1628,21 +1625,21 @@ class Community_Member extends Displayable_Item
         $members = $this->get_records(SYS_ID, 'community, title');
         $header =
              "<pre>"
-            .str_repeat("-",80)
-            ."\n| TIME  | COMMUNITY      | MEMBER\n".str_repeat("-",80);
+            .str_repeat("-", 80)
+            ."\n| TIME  | COMMUNITY      | MEMBER\n".str_repeat("-", 80);
         $result = array($header);
         if ($debug) {
             d($header);
         }
-        foreach($members as $member) {
+        foreach ($members as $member) {
             $this->_set_ID($member['ID']);
             $result[] = $this->updateStats($debug);
         }
         $end = microtime(true);
         $result[] =
-             str_repeat("-",80)."\n"
-            ."Total time taken: ".seconds_to_hhmmss($end-$start).".".substr(($end-$start)-(floor($end-$start)),2,3)
-            ."</pre>";        
+             str_repeat("-", 80)."\n"
+            ."Total time taken: ".seconds_to_hhmmss($end-$start).".".substr(($end-$start)-(floor($end-$start)), 2, 3)
+            ."</pre>";
         return implode("\n", $result);
     }
 }

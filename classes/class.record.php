@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.101 (2016-10-16)
-    1) Change to Record::get_field() to enable to work with CSV list of IDs -
-       Used in Page_Edit::draw() to get multiple group matches in bulk update mode
+  1.0.102 (2017-01-02)
+    1) Renamed Record::manage_actions() to Record::manageActionsForNamedReport()
+    2) Record::copy_actions() now handles assignment of newly copied actions to the new parent entity itself
+    3) PSR-2 fixes
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.101';
+    const VERSION = '1.0.102';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -331,7 +332,7 @@ class Record extends Portal
         $fields = static::getRecordForSql($sql);
         $sql_arr = array();
         foreach ($fields as $key => $value) {
-            switch($key) {
+            switch ($key) {
                 case "ID":
                     $value = $newID;
                     break;
@@ -408,7 +409,13 @@ class Record extends Portal
         $records = $this->get_actions();
         foreach ($records as $data) {
             $Obj = new Action($data['ID']);
-            $Obj->copy($newID, $this->_get_table_name());
+            $ID = $Obj->copy();
+            $Obj->_set_ID($ID);
+            $data = array(
+                'sourceID' => $newID,
+                'sourceType' => $this->_get_table_name()
+            );
+            $Obj->update($data, false, false);
         }
         return;
     }
@@ -801,8 +808,11 @@ class Record extends Portal
         return static::getRecordsForSql($sql);
     }
 
-    public function get_coords($address)
+    public function get_coords($address = false)
     {
+        if ($address===false) {
+            return false;
+        }
         $Obj_Map = new \map\GoogleMap(0, SYS_ID);
         return $Obj_Map->getGeocode($address);
     }
@@ -1044,7 +1054,7 @@ class Record extends Portal
     public static function get_last_db_error_msg_generic()
     {
         $error_number = Record::get_last_db_error_num();
-        switch ($error_number){
+        switch ($error_number) {
             case 1062:
                 return 'DUPLICATE_ENTRY';
             break;
@@ -1243,11 +1253,11 @@ class Record extends Portal
                 if ($s->error) {
     // failed to connect with host
                     $buffer = $this->get_remote_xml_file_error($s->error);
-                } elseif (preg_match("/404/", (isset($h['status']) ? $h['status'] : "404"))) // page not found
-                $buffer = $this->get_remote_xml_file_error("Page Not Found");
-                elseif (preg_match("/xml/i", $h['content-type'])) // got XML back
-                $buffer = $s->page;
-                else {
+                } elseif (preg_match("/404/", (isset($h['status']) ? $h['status'] : "404"))) { // page not found
+                    $buffer = $this->get_remote_xml_file_error("Page Not Found");
+                } elseif (preg_match("/xml/i", $h['content-type'])) { // got XML back
+                    $buffer = $s->page;
+                } else {
     // got a page, but wrong content type
                     $buffer = $this->get_remote_xml_file_error(
                         "The server did not return XML. The content type returned was ".$h['content-type']
@@ -1466,7 +1476,7 @@ class Record extends Portal
             substr($YYYYMMDD, 8, 2),
             substr($YYYYMMDD, 0, 4)
         );
-        switch($format) {
+        switch ($format) {
             case "MM DD YYYY":
                 return date("M j Y", $date);
             break;
@@ -1737,7 +1747,7 @@ class Record extends Portal
         return $this->record;
     }
 
-    public function manage_actions($report_name)
+    public function manageActionsForNamedReport($report_name)
     {
         if (get_var('command')=='report') {
             return draw_auto_report($report_name, 1);
@@ -1809,8 +1819,7 @@ class Record extends Portal
         foreach ($ID_arr as $ID) {
             $this->_set_ID($ID);
             $r = $this->get_record();
-            if (
-            !(isset($r['permPUBLIC']) && $r['permPUBLIC']) &&
+            if (!(isset($r['permPUBLIC']) && $r['permPUBLIC']) &&
             !(isset($r['permSYSLOGON']) && $r['permSYSLOGON']) &&
             !(isset($r['permSYSMEMBER']) && $r['permSYSMEMBER']) &&
             !(isset($r['group_assign_csv']) && $r['group_assign_csv']!='')
@@ -2232,7 +2241,7 @@ class Record extends Portal
         );
         $singular = $this->plural(1);
         if ($name==="") {
-            switch($this->_get_name_field()){
+            switch ($this->_get_name_field()) {
                 case "subject":
                     $this->get_status_text("subject_required", $args, $msg, $msg_tooltip);
                     break;
@@ -2360,8 +2369,7 @@ class Record extends Portal
                 $data['history_modified_IP'] = $_SERVER['REMOTE_ADDR'];
             }
         } else {
-            if (
-                !array_key_exists('history_modified_IP', $data) &&
+            if (!array_key_exists('history_modified_IP', $data) &&
                 isset($_SERVER['REMOTE_ADDR']) && $reveal_modification
             ) {
                 $data['history_modified_IP'] = $_SERVER['REMOTE_ADDR'];

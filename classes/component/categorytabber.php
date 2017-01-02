@@ -1,13 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.7 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.8 (2017-01-02)
+    1) CategoryTabber::setupLoadBlockLayout() now looks like its parent
 */
 class CategoryTabber extends Base
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     protected $records = array();
     protected $Obj;
@@ -252,7 +253,7 @@ class CategoryTabber extends Base
     protected function setup($instance, $args, $disable_params)
     {
         parent::setup($instance, $args, $disable_params);
-        $this->setupLoadBlockLayout();
+        $this->setupLoadBlockLayout($this->_cp['block_layout']);
         $this->setupLoadUserRights();
         $this->setupLoadPopupSpecs();
         $this->setupInitializeObject();
@@ -262,9 +263,9 @@ class CategoryTabber extends Base
         $this->setupLoadTabs();
     }
 
-    protected function setupLoadBlockLayout()
+    protected function setupLoadBlockLayout($blockLayoutName)
     {
-        if ($this->ObjBlockLayout = parent::setupLoadBlockLayout($this->_cp['block_layout'])) {
+        if ($this->ObjBlockLayout = parent::setupLoadBlockLayout($blockLayoutName)) {
             $this->ObjBlockLayout->draw_css_include('listings');
         }
     }
@@ -299,7 +300,7 @@ class CategoryTabber extends Base
         if (!$this->_current_user_rights['canEdit']) {
             return;
         }
-        switch ($this->_cp['filter_type']){
+        switch ($this->_cp['filter_type']) {
             case 'Article':
                 $this->popupForm =  'articles';
                 break;

@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.11 (2016-03-26)
-    1) ArticlesRotator::setupLoadRecords replaced parameter filter_category with filter_category_list
+  1.0.12 (2016-12-31)
+    1) ArticlesRotator::setupLoadRecords() now uses newly named getFilteredSortedAndPagedRecords() method
 */
 class ArticlesRotator extends Base
 {
-    const VERSION = '1.0.11';
+    const VERSION = '1.0.12';
 
     protected $_ObjArticle;
     protected $_records;
@@ -350,7 +350,7 @@ class ArticlesRotator extends Base
     {
         $this->_ObjArticle = new \Article;
         // Get last n articles
-        $results = $this->_ObjArticle->get_records(
+        $results = $this->_ObjArticle->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],

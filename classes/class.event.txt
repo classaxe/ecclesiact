@@ -1,3 +1,5 @@
+  1.0.109 (2016-05-08)
+    1) Bug fix - copy without name wasn't working so I implemented rename on the clone action instead
   1.0.108 (2016-03-26)
     1) Event::get_calendar_dates() now replaces parameter filter_category with filter_category_list
   1.0.107 (2016-03-15)

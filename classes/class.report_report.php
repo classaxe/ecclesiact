@@ -1,20 +1,21 @@
 <?php
 /*
 Version History:
-  1.0.32 (2016-11-20)
-    1) Bug fix fr bulk update mode with 'set_random_password'
+  1.0.33 (2017-01-02)
+    1) Report_Report::draw() now calls getReportRecords() to get records for display
+    2) PSR-2 fixes
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.32';
+    const VERSION = '1.0.33';
     public function do_commands()
     {
         if (!isset($_REQUEST['command'])) {
             print "?";
             die;
         }
-        switch ($_REQUEST['command']){
+        switch ($_REQUEST['command']) {
             case 'report':
                 $ID = $this->get_ID_by_name($_REQUEST['report_name']);
                 $this->_set_ID($ID);
@@ -178,8 +179,7 @@ class Report_Report extends Report
             }
             return "";
         }
-        if (
-            !$isMASTERADMIN &&
+        if (!$isMASTERADMIN &&
             $report_row['required_feature'] &&
             !SYSTEM::has_feature($report_row['required_feature'])
         ) {
@@ -209,7 +209,7 @@ class Report_Report extends Report
         $record_type =                  $ObjPrimary->_get_object_name();
         mem(__FUNCTION__."()-5");
         if ($isMASTERADMIN) {
-            switch ($submode){
+            switch ($submode) {
                 case "column_delete":
                     $Obj = new Report_Column($targetID);
                     if ($thisReportID==$Obj->get_field('reportID')) {
@@ -290,8 +290,7 @@ class Report_Report extends Report
                     $canDo = false;
                     if ($isMASTERADMIN && $filter['destinationType']=='global') {
                         $canDo = true;
-                    } elseif (
-                        ($isMASTERADMIN || $isSYSADMIN) &&
+                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
                         $filter['destinationType']=='system' &&
                         $filter['destinationID']==SYS_ID
                     ) {
@@ -311,8 +310,7 @@ class Report_Report extends Report
                     $canDo = false;
                     if ($isMASTERADMIN && $filter['destinationType']=='global') {
                         $canDo = true;
-                    } elseif (
-                        ($isMASTERADMIN || $isSYSADMIN) &&
+                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
                         $filter['destinationType']=='system' &&
                         $filter['destinationID']==SYS_ID
                     ) {
@@ -332,8 +330,7 @@ class Report_Report extends Report
                     $canDo = false;
                     if ($isMASTERADMIN && $filter['destinationType']=='global') {
                         $canDo = true;
-                    } elseif (
-                        ($isMASTERADMIN || $isSYSADMIN) &&
+                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
                         $filter['destinationType']=='system' &&
                         $filter['destinationID']==SYS_ID
                     ) {
@@ -357,8 +354,7 @@ class Report_Report extends Report
                 if ($column['ID']==$targetFieldID) {
           //        y($column);die;
                     $targetField = $column['formField'];
-                    if (
-                    ($column['access']==1) &&
+                    if (($column['access']==1) &&
                     (
                     ($isPUBLIC &&         $column['permPUBLIC'] =='2') ||
                     ($isGROUPVIEWER &&    $column['permGROUPVIEWER'] =='2') ||
@@ -958,7 +954,7 @@ class Report_Report extends Report
             $offset = 0;
         }
         $records =
-        $this->get_records(
+        $this->getReportRecords(
             $report_row,
             $columnList,
             $filterField_sql,
@@ -1177,8 +1173,7 @@ class Report_Report extends Report
         } else {
             $cols = 0;
             foreach ($columnList as $column) {
-                if (
-                    ($column['reportLabel']!="" || $column['fieldType']=='checkbox') &&
+                if (($column['reportLabel']!="" || $column['fieldType']=='checkbox') &&
                     $ObjReportColumn->is_visible($column)
                 ) {
                     $cols++;
@@ -1728,8 +1723,7 @@ class Report_Report extends Report
         $out = '';
         $Obj_Report = new Report();
         foreach ($columns as $column) {
-            if (
-                $column['access']==1 &&
+            if ($column['access']==1 &&
                 $column['visible']==1 &&
                 ($column['reportLabel']!="" || $column['fieldType']=='checkbox' || $column['fieldType']=='delete')
             ) {
@@ -1750,7 +1744,7 @@ class Report_Report extends Report
                          :
                              ""
                         );
-                        switch (strToLower($column['fieldType'])){
+                        switch (strToLower($column['fieldType'])) {
                             case 'checkbox':
                                 $out.=
                                  ($ajax? "\"" : "")

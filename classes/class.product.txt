@@ -1,3 +1,5 @@
+  1.0.84 (2016-10-16)
+    1) Added support for filtering by Community, Member and Person in Product::get_search_results()
   1.0.83 (2016-07-04)
     1) Fixed image paths for add to cart icons to respect BASE_PATH
   1.0.82 (2016-03-26)

@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.6 (2016-01-20)
-    1) Bug fix - get_selector_sql() is no longer statically defined
+  1.0.7 (2016-12-31)
+    1) Posting_Container::set_path() method declaration now looks like its parent
 */
 
 class Posting_Container extends Posting_Contained
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     public function __construct($ID = '', $systemID = SYS_ID)
     {
@@ -147,9 +147,9 @@ class Posting_Container extends Posting_Contained
         $this->set_field('enclosure_url', $folder, true);
     }
 
-    public function set_path()
+    public function set_path($reveal_modification = false)
     {
         $path = "//".trim($this->get_path($this->_get_ID()), '/');
-        $this->set_field('path', $path);
+        $this->set_field('path', $path, true, $reveal_modification);
     }
 }

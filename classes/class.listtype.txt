@@ -1,3 +1,5 @@
+  1.0.7 (2014-02-18)
+    1) Refreshed fields list - now declared as a class constant
   1.0.6 (2012-09-03)
     1) Listtype::get_record_by_name() now uses Record::get_record_for_sql() to access
        count result

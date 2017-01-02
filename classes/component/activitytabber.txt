@@ -1,3 +1,5 @@
+  1.0.7 (2016-02-27)
+    1) Now uses VERSION class constant for version control
   1.0.6 (2015-03-04)
     1) Moved from Component_Activity_Tabber and reworked to use namespaces
     2) Now Fully PSR-2 compliant

@@ -1,3 +1,6 @@
+  1.0.4 (2016-03-26)
+    1) SearchWordCloud::setupLoadText() replaced parameter filter_category with filter_category_list
+    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
   1.0.3 (2016-03-15)
     1) SearchWordCloud::setupLoadText() now provides filter_... prefixed parameters for all filters
   1.0.2 (2016-03-14)

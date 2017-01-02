@@ -3,13 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.2 (2016-03-26)
-    1) SearchCategoryList::setupLoadCategories() replaced parameter filter_category with filter_category_list
-    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
+  1.0.3 (2016-12-31)
+    1) SearchCategoryList::setupLoadCategories() now uses newly named getFilteredSortedAndPagedRecords() method
 */
 class SearchCategoryList extends Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     protected $categories =      array();
 
@@ -130,7 +129,7 @@ class SearchCategoryList extends Base
                 break;
         }
         $Obj = new $type;
-        $records = $Obj->get_records(
+        $records = $Obj->getFilteredSortedAndPagedRecords(
             array(
                 'byRemote' =>                   false,
                 'filter_category_list' =>       $this->_cp['filter_category_list'],

@@ -1,3 +1,6 @@
+  1.0.129 (2016-11-27)
+    1) Added new overrideable method Person::get_records_where_modifier() used by Flame Group members control to
+       filter on just the other members of the same group the viewer was last registered to
   1.0.128 (2016-06-05)
     1) New parameters show_image, image_height and image_width now available for person listings
     2) New block layout tag for Person - BL_image()

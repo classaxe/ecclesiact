@@ -1,3 +1,6 @@
+  1.0.161 (2016-11-27)
+    1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
+       or 'ratings_allow' settings, such as Users
   1.0.160 (2016-04-04)
     1) Displayable_Item::draw_link() for type 'media_download' now furins an empty string if there is no linked asset
        to be downloaded 

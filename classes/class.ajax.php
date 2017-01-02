@@ -1,8 +1,8 @@
 <?php
 /*
 Version History:
-  1.0.26 (2016-01-19)
-    1) All methods now static, and more PSR-2 compliant
+  1.0.27 (2016-12-31)
+    1) Ajax::_serve_lookup_report() now calls renamed Report::getReportRecords()
 */
 /*
 http://laptop.cicbv.ca/ajax/?rs=serve_lookup_report&rst=&rsrnd=12342c424&rsargs[]=1933367189&rsargs[]=%60PUsername%60&rsargs[]=3&rsargs[]=an
@@ -13,7 +13,7 @@ http://testportal.auroraonline.com/cicbv/ajax/?rs=serve_lookup_report&rst=&rsrnd
 
 class Ajax extends Base
 {
-    const VERSION = '1.0.26';
+    const VERSION = '1.0.27';
 
     public static $control_num = 1;
 
@@ -304,7 +304,7 @@ class Ajax extends Base
     public static function serve()
     {
         $submode = (isset($_REQUEST['submode']) ? $_REQUEST['submode'] : "");
-        switch ($submode){
+        switch ($submode) {
             case "events":
                 $YYYYMMDD =     get_var('YYYYMMDD');
                 $Obj_Event =    new Event;
@@ -341,15 +341,15 @@ class Ajax extends Base
                 }
                 switch ($rs) {
                     case 'serve_config':
-                        print json_encode(Ajax::_serve_config($args[0]));
+                        print json_encode(static::serve_config($args[0]));
                         die;
                     break;
                     case 'serve_shipping':
-                        print json_encode(Ajax::_serve_shipping($args[0], $args[1], $args[2]));
+                        print json_encode(static::serve_shipping($args[0], $args[1], $args[2]));
                         die;
                     break;
                     case 'serve_lookup_report':
-                        print json_encode(Ajax::_serve_lookup_report($args[0], $args[1], $args[2], $args[3]));
+                        print json_encode(static::serve_lookup_report($args[0], $args[1], $args[2], $args[3]));
                         die;
                     break;
                 }
@@ -357,7 +357,7 @@ class Ajax extends Base
         }
     }
 
-    protected static function _serve_config($url)
+    protected static function serve_config($url)
     {
         $Obj= new Remote($url);
         $config_rows = $Obj->get_items('config');
@@ -404,7 +404,7 @@ class Ajax extends Base
         return $out;
     }
 
-    protected static function _serve_lookup_report($reportID, $filterField = '', $filterExact = '', $filterValue = '')
+    protected static function serve_lookup_report($reportID, $filterField = '', $filterExact = '', $filterValue = '')
     {
         $out =              array();
         $Obj_Report =       new Report($reportID);
@@ -421,7 +421,13 @@ class Ajax extends Base
             return array(-1,$count);
         }
         $out[0] =           (int)$count;
-        $records =          $Obj_Report->get_records($report_record, false, $filterField, $filterExact, $filterValue);
+        $records =          $Obj_Report->getReportRecords(
+            $report_record,
+            false,
+            $filterField,
+            $filterExact,
+            $filterValue
+        );
         sort($records);
         foreach ($records as $record) {
             $out[] = $record;
@@ -429,7 +435,7 @@ class Ajax extends Base
         return $out;
     }
 
-    protected static function _serve_shipping($method, $data, $cp)
+    protected static function serve_shipping($method, $data, $cp)
     {
         $Obj = new Shipping;
         return $Obj->get_shipping($method, $data, unserialize($cp));

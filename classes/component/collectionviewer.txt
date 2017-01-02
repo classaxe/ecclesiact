@@ -1,3 +1,5 @@
+  1.0.57 (2016-03-26)
+    1) In CollectionViewer::setupLoadPodcastAlbums() replaced parameter filter_category with filter_category_list
   1.0.56 (2016-03-15)
     1) CollectionViewer::setupLoadPodcastAlbums() and CollectionViewer::setupLoadPodcasts()
        now provide filter_... prefixed parameters for all filters

@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.31 (2016-03-26)
-    1) Multiple changes to handle replacement of parameter filter_category with filter_category_list
+  1.0.32 (2016-12-31)
+    1) Multiple changes in RSS::_serve_getFilteredSortedAndPagedRecords() to use each delegate's
+       getFilteredSortedAndPagedRecords() method to get records
+    2) PSR-2 fixes
 */
 class RSS extends Record
 {
-    const VERSION = '1.0.31';
+    const VERSION = '1.0.32';
 
     public $url;
 
@@ -99,22 +101,22 @@ class RSS extends Record
 
     public function serve($args = false)
     {
-        $this->_serve_setup($args);
-        $this->_serve_get_records();
-        $this->_serve_set_title();
-        $this->_serve_set_namespace();
-        $this->_serve_open_channel();
-        $this->_serve_data();
-        $this->_serve_close_channel();
-        $this->_serve_render();
+        $this->serveSetup($args);
+        $this->serveGetFilteredSortedAndPagedRecords();
+        $this->serveSetTitle();
+        $this->serveSetNamespace();
+        $this->serveChannelOpen();
+        $this->serveData();
+        $this->serveChannelClose();
+        $this->serveRender();
     }
 
-    private function _serve_get_records()
+    private function serveGetFilteredSortedAndPagedRecords()
     {
 //        y($this->args, true);
         switch ($this->args['submode']) {
             case "articles":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
@@ -127,7 +129,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_articles":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -143,7 +145,7 @@ class RSS extends Record
                 $this->records = $this->Obj->get_config();
                 break;
             case "events":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               $this->args['byRemote'],
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -161,7 +163,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_events":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -180,7 +182,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "gallery_images":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
@@ -197,7 +199,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_gallery_images":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -214,7 +216,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "jobs":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
@@ -227,7 +229,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_jobs":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -240,7 +242,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "news":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
@@ -253,7 +255,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_news":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>       true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -266,7 +268,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "podcasts":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'filter_category_list' =>   $this->args['filter_category_list'],
                         'filter_communityID' =>     $this->args['filter_communityID'],
@@ -283,7 +285,7 @@ class RSS extends Record
                 $this->records = $results['data'];
                 break;
             case "shared_podcasts":
-                $results = $this->Obj->get_records(
+                $results = $this->Obj->getFilteredSortedAndPagedRecords(
                     array(
                         'byRemote' =>               true,
                         'filter_category_list' =>   $this->args['filter_category_list'],
@@ -351,7 +353,7 @@ class RSS extends Record
         }
     }
 
-    private function _serve_data()
+    private function serveData()
     {
         global $system_vars;
         foreach ($this->records as $r) {
@@ -574,7 +576,7 @@ class RSS extends Record
         }
     }
 
-    private function _serve_open_channel()
+    private function serveChannelOpen()
     {
         global $system_vars;
         switch (strToLower(System::get_item_version('system_family'))) {
@@ -629,14 +631,14 @@ class RSS extends Record
             ."  </cf:listinfo>\r\n";
     }
 
-    private function _serve_close_channel()
+    private function serveChannelClose()
     {
         $this->_xml.=
              "</channel>\r\n"
             ."</rss>\r\n";
     }
 
-    private function _serve_render()
+    private function serveRender()
     {
         global $system_vars;
         $site_url = trim($system_vars['URL'], '/').'/';
@@ -649,7 +651,7 @@ class RSS extends Record
         die;
     }
 
-    private function _serve_set_namespace()
+    private function serveSetNamespace()
     {
         $this->_namespace =
              "xmlns:atom=\"http://www.w3.org/2005/Atom\" "
@@ -662,9 +664,9 @@ class RSS extends Record
             ."xmlns:ecc_detail=\"http://www.ecclesiact.com/help_rss_ns\"";
     }
 
-    private function _serve_set_object()
+    private function serveSetObject()
     {
-        switch ($this->args['submode']){
+        switch ($this->args['submode']) {
             case "":
                 $this->Obj =    new RSS_Help;
                 break;
@@ -707,7 +709,7 @@ class RSS extends Record
         }
     }
 
-    private function _serve_set_title()
+    private function serveSetTitle()
     {
         if ($this->args['title']) {
             $this->title = $this->args['title'];
@@ -715,7 +717,7 @@ class RSS extends Record
         }
         global $system_vars;
         $title =   $system_vars['textEnglish']." > RSS";
-        switch ($this->args['submode']){
+        switch ($this->args['submode']) {
             case "config":
                 $ok =
                 System::get_item_version('classes_cs_status')=='Pass' &&
@@ -751,7 +753,7 @@ class RSS extends Record
         $this->title = $title;
     }
 
-    private function _serve_setup($args)
+    private function serveSetup($args)
     {
         global $communityID, $container_path, $container_subs, $submode, $DD, $memberID, $MM, $offset;
         global $page_vars, $personID, $system_vars, $what, $YYYY;
@@ -763,7 +765,7 @@ class RSS extends Record
             $submode=array_shift($path_arr);
             for ($i=0; $i<count($path_arr); $i+=2) {
                 if (isset($path_arr[$i]) && isset($path_arr[$i+1])) {
-                    switch ($path_arr[$i]){
+                    switch ($path_arr[$i]) {
                         case 'category':
                             $category = $path_arr[$i+1];
                             break;
@@ -816,6 +818,6 @@ class RSS extends Record
                 (isset($args['title']) ?          $args['title'] : false)
         );
   //    y($this->args);die;
-        $this->_serve_set_object();
+        $this->serveSetObject();
     }
 }

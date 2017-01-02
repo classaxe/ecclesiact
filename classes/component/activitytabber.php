@@ -1,13 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.7 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.8 (2017-01-02)
+    1) ActivityTabber::setupLoadBlockLayout() now looks like its parent
 */
 class ActivityTabber extends Base
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     protected $_activities =    array();
     protected $_records =       false;
@@ -219,15 +220,15 @@ class ActivityTabber extends Base
     {
         parent::setup($instance, $args, $disable_params);
         $this->_ObjDisplayableItem = new \Displayable_Item;
-        $this->setupLoadBlockLayout();
+        $this->setupLoadBlockLayout($this->_cp['block_layout']);
         $this->setupLoadUserRights();
         $this->setupLoadRecords();
         $this->setupLoadTabs();
     }
 
-    protected function setupLoadBlockLayout()
+    protected function setupLoadBlockLayout($blockLayoutName)
     {
-        if ($this->_ObjBlockLayout = parent::setupLoadBlockLayout($this->_cp['block_layout'])) {
+        if ($this->_ObjBlockLayout = parent::setupLoadBlockLayout($blockLayoutName)) {
             $this->_ObjBlockLayout->draw_css_include('listings');
         }
     }

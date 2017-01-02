@@ -1,12 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.109 (2016-05-08)
-    1) Bug fix - copy without name wasn't working so I implemented rename on the clone action instead
+  1.0.110 (2016-12-31)
+    1) Event::get_calendar_dates() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) Event::get_events_for_date() now uses newly named getFilteredSortedAndPagedRecords() method
+    3) Event::get_yearly_dates() now uses newly named getFilteredSortedAndPagedRecords() method
+    4) PSR-2 fixes
 */
 class Event extends Posting
 {
-    const VERSION = '1.0.109';
+    const VERSION = '1.0.110';
 
     public static $cache_event_registrant_count =      array();
 
@@ -490,8 +493,7 @@ class Event extends Posting
             $this->record['effective_time_end'],
             $timeFormatCode
         );
-        if (
-            $result=='(All day)' &&
+        if ($result=='(All day)' &&
             $this->record['effective_date_start']!=$this->record['effective_date_end']
         ) {
             return '';
@@ -501,14 +503,13 @@ class Event extends Posting
 
     protected function BL_filter_date_range($format = false)
     {
-        if (
-            isset($this->_cp['filter_date_duration']) && $this->_cp['filter_date_duration']!=='' &&
+        if (isset($this->_cp['filter_date_duration']) && $this->_cp['filter_date_duration']!=='' &&
             isset($this->_cp['filter_date_units']) && $this->_cp['filter_date_units']!==''
         ) {
             $now =    get_timestamp();
             $units =  $this->_cp['filter_date_units'];
             $dur =    $this->_cp['filter_date_duration'];
-            switch ($this->_cp['filter_what']){
+            switch ($this->_cp['filter_what']) {
                 case 'future':
                     if ($units==='quarter') {
                         return 'next '.($dur>1 ? $dur.' quarters' : 'quarter');
@@ -567,8 +568,7 @@ class Event extends Posting
                 );
             }
         }
-        if (
-            isset($this->record['URL']) &&
+        if (isset($this->record['URL']) &&
             $this->record['URL']!='' &&
             !(isset($this->_cp['links_point_to_URL']) && $this->_cp['links_point_to_URL']==1)
         ) {
@@ -1049,7 +1049,7 @@ class Event extends Posting
 
     public function get_calendar_dates($MM, $YYYY, $memberID = '', $category = '*')
     {
-        $results =          $this->get_records(
+        $results =          $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>   $category,
                 'filter_date_MM' =>         $MM,
@@ -1100,23 +1100,20 @@ class Event extends Posting
                 $show = false;
                 if ($record['effective_date_start']==$slot) {
                     $show = true;
-                    if (
-                        $record['effective_date_end']!='0000-00-00' &&
+                    if ($record['effective_date_end']!='0000-00-00' &&
                         $slot_date < $end_date
                     ) {
                         $record['effective_time_end']='';
                     }
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date == $end_date
                 ) {
                     $show = true;
                     $record['effective_time_start']='';
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date < $end_date
                 ) {
@@ -1124,8 +1121,7 @@ class Event extends Posting
                     $record['effective_time_start']='';
                     $record['effective_time_end']='';
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date == $end_date
                 ) {
@@ -1224,7 +1220,7 @@ class Event extends Posting
     public function get_events_for_date($YYYYMMDD, $memberID = '')
     {
         sscanf($YYYYMMDD, "%4s-%2s-%2s", $YYYY, $MM, $DD);
-        $result = $this->get_records(
+        $result = $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_date_DD' =>     $DD,
                 'filter_date_MM' =>     $MM,
@@ -1286,7 +1282,7 @@ class Event extends Posting
             $now_mm,
             $now_ss
         );
-        switch($this->_get_records_args['filter_what']){
+        switch ($this->_get_records_args['filter_what']) {
             case 'all':
                 return '';
             break;
@@ -1373,9 +1369,13 @@ class Event extends Posting
                 return
                      "  (\n"
                     ."    `postings`.`effective_date_start` >= '"
-                    .$this->_get_records_args['filter_date_YYYY']."-".$this->_get_records_args['filter_date_MM']."-01' AND\n"
+                    .$this->_get_records_args['filter_date_YYYY']
+                    ."-".$this->_get_records_args['filter_date_MM']
+                    ."-01' AND\n"
                     ."    `postings`.`effective_date_start` <= DATE_ADD('"
-                    .$this->_get_records_args['filter_date_YYYY']."-".$this->_get_records_args['filter_date_MM']."-01',INTERVAL 1 MONTH)\n"
+                    .$this->_get_records_args['filter_date_YYYY']
+                    ."-".$this->_get_records_args['filter_date_MM']
+                    ."-01',INTERVAL 1 MONTH)\n"
                     ."  ) AND\n";
             break;
             case 'past':
@@ -1401,8 +1401,10 @@ class Event extends Posting
             case 'year':
                 return
                      "  (\n"
-                    ."    `postings`.`effective_date_start` >= '".$this->_get_records_args['filter_date_YYYY']."-01-01' AND\n"
-                    ."    `postings`.`effective_date_start` <  '".$this->_get_records_args['filter_date_YYYY']."-12-01'\n"
+                    ."    `postings`.`effective_date_start` >= '"
+                    .$this->_get_records_args['filter_date_YYYY']."-01-01' AND\n"
+                    ."    `postings`.`effective_date_start` <  '"
+                    .$this->_get_records_args['filter_date_YYYY']."-12-01'\n"
                     ."  ) AND\n";
             break;
         }
@@ -1444,7 +1446,7 @@ class Event extends Posting
 
     public function get_yearly_dates($YYYY, $memberID = 0)
     {
-        $records = $this->get_records(
+        $records = $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_date_YYYY' =>   $YYYY,
                 'filter_memberID' =>    $memberID,
@@ -1471,16 +1473,14 @@ class Event extends Posting
                         $record['effective_time_end']='';
                     }
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date == $end_date
                 ) {
                     $show = true;
                     $record['effective_time_start']='';
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date < $end_date
                 ) {
@@ -1488,8 +1488,7 @@ class Event extends Posting
                     $record['effective_time_start']='';
                     $record['effective_time_end']='';
                 }
-                if (
-                    $record['effective_date_end']!='0000-00-00' &&
+                if ($record['effective_date_end']!='0000-00-00' &&
                     $slot_date > $start_date &&
                     $slot_date == $end_date
                 ) {
@@ -1718,7 +1717,7 @@ class Event extends Posting
             return false;
         }
         if ($child_count = $this->count_children()) {
-            switch (get_var('submode')){
+            switch (get_var('submode')) {
                 case '':
                     $this->_try_delete_item_dialog_has_children($child_count, get_var('targetID'));
                     return false;

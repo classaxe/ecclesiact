@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.91 (2016-11-20)
-    1) Added 'selected_set_random_password' to Report::REPORT_FEATURES list
+  1.0.92 (2017-01-02)
+    1) Renamed Report::get_records() to Report::getReportRecords()
+    2) Report::manage_actions() now uses renamed Record::manageActionsForNamedReport()
+    3) PSR-2 fixes
 */
 
 class Report extends Displayable_Item
 {
-    const VERSION = '1.0.91';
+    const VERSION = '1.0.92';
     const COLUMN_FULL_ACCESS =    1;
     const COLUMN_DEFAULT_VALUE =  -1;
     const COLUMN_NO_ACCESS =      0;
@@ -59,19 +61,17 @@ class Report extends Displayable_Item
                 $triggerObject =    $primaryObject;
                 $personID =         '';
                 $ObjAction =        new Action;
-
-                return
-            $ObjAction->execute(
-                $sourceType,
-                $sourceID,
-                $sourceTrigger,
-                $personID,
-                $triggerType,
-                $triggerObject,
-                $triggerID,
-                $data
-            );
-            break;
+                return $ObjAction->execute(
+                    $sourceType,
+                    $sourceID,
+                    $sourceTrigger,
+                    $personID,
+                    $triggerType,
+                    $triggerObject,
+                    $triggerID,
+                    $data
+                );
+                break;
         }
         return false;
     }
@@ -149,7 +149,7 @@ class Report extends Displayable_Item
         $match_num = 0;
         $field = preg_replace_callback(
             "/(xml:[^ =\b]+)/",
-            function($m) use($replacement_sql, $match_num) {
+            function ($m) use ($replacement_sql, $match_num) {
                 return $replacement_sql[$match_num++];
             },
             $field
@@ -188,7 +188,7 @@ class Report extends Displayable_Item
         $match_num = 0;
         $field = preg_replace_callback(
             "/(xml:[^ =\b]+)/",
-            function($m) use($replacement_sql, $match_num) {
+            function ($m) use ($replacement_sql, $match_num) {
                 return $replacement_sql[$match_num++];
             },
             $field
@@ -312,7 +312,7 @@ class Report extends Displayable_Item
         $out =    "";
         foreach ($records as $row) {
             $this->xmlfields_decode($row);
-            switch ($language){
+            switch ($language) {
                 case 'en':
                     $lbl_att = 'Attribute';
                     $lbl_val = 'Value';
@@ -358,12 +358,12 @@ class Report extends Displayable_Item
                             }
                             $old_section_tab = $tab;
                         }
-                        switch ($field){
+                        switch ($field) {
                             case "icon":
                                 $value = convert_html_to_safe_view($value, false);
                                 break;
                         }
-                        switch($type) {
+                        switch ($type) {
                             case "categories_assign":
                             case "checkbox_listdata_csv":
                             case "combo_listdata":
@@ -721,19 +721,19 @@ class Report extends Displayable_Item
         if (!$this->_get_ID()) {
             return false;
         }
-        $this->_get_columns_fetch_all();
-        $this->_get_columns_fix_tabs();
-        $this->_get_columns_mark_visiblity();
-        $this->_get_columns_check_features();
-        $this->_get_columns_mark_readonly();
-        $this->_get_columns_remove_overridden();
-        $this->_get_columns_custom_code_report_column_rules();
-        $this->_get_columns_sort();
+        $this->getColumnsFetchAll();
+        $this->getColumnsFixTabs();
+        $this->getColumnsMarkVisiblity();
+        $this->getColumnsCheckFeatures();
+        $this->getColumnsMarkReadonly();
+        $this->getColumnsRemoveOverridden();
+        $this->getColumnsCustomCodeReportColumnRules();
+        $this->getColumnsSort();
         return $this->_report_columns;
     }
 
 
-    private function _get_columns_check_features()
+    private function getColumnsCheckFeatures()
     {
       //  const COLUMN_FULL_ACCESS=1;
       //  const COLUMN_DEFAULT_VALUE=-1;
@@ -797,7 +797,7 @@ class Report extends Displayable_Item
         }
     }
 
-    private function _get_columns_fetch_all()
+    private function getColumnsFetchAll()
     {
       // Places global columns last to allow them to be ignored if overridden
         $sql =
@@ -820,7 +820,7 @@ class Report extends Displayable_Item
     }
 
 
-    private function _get_columns_fix_tabs()
+    private function getColumnsFixTabs()
     {
         foreach ($this->_report_columns as &$record) {
             if ($record['tab']=='') {
@@ -830,7 +830,7 @@ class Report extends Displayable_Item
     }
 
 
-    private function _get_columns_custom_code_report_column_rules()
+    private function getColumnsCustomCodeReportColumnRules()
     {
       // Used by GRPA
         if (!function_exists('custom_code_report_column_rules')) {
@@ -842,35 +842,34 @@ class Report extends Displayable_Item
     }
 
 
-    private function _get_columns_mark_readonly()
+    private function getColumnsMarkReadonly()
     {
         $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-        $isUSERADMIN =        get_person_permission("USERADMIN");
-        $isCOMMUNITYADMIN =    get_person_permission("COMMUNITYADMIN");
-        $isSYSADMIN =        get_person_permission("SYSADMIN");
+        $isUSERADMIN =      get_person_permission("USERADMIN");
+        $isCOMMUNITYADMIN = get_person_permission("COMMUNITYADMIN");
+        $isSYSADMIN =       get_person_permission("SYSADMIN");
         $isSYSAPPROVER =    get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =        get_person_permission("SYSEDITOR");
-        $isSYSMEMBER =        get_person_permission("SYSMEMBER");
-        $isSYSLOGON =        get_person_permission("SYSLOGON");
+        $isSYSEDITOR =      get_person_permission("SYSEDITOR");
+        $isSYSMEMBER =      get_person_permission("SYSMEMBER");
+        $isSYSLOGON =       get_person_permission("SYSLOGON");
         $isGROUPEDITOR =    get_person_permission("GROUPEDITOR");
         $isGROUPVIEWER =    get_person_permission("GROUPVIEWER");
-        $isPUBLIC =            get_person_permission("PUBLIC") || get_person_permission("SYSLOGON");
+        $isPUBLIC =         get_person_permission("PUBLIC") || get_person_permission("SYSLOGON");
         foreach ($this->_report_columns as &$record) {
             $record['readOnly'] = 1;
             $isVIEWER = get_person_permission("VIEWER", $record['group_assign_csv']);
-            if (
-            ($record['permMASTERADMIN'] ==      '2' && $isMASTERADMIN) ||
-            ($record['permUSERADMIN'] ==        '2' && $isUSERADMIN) ||
-            ($record['permCOMMUNITYADMIN'] ==   '2' && $isCOMMUNITYADMIN) ||
-            ($record['permSYSADMIN'] ==         '2' && $isSYSADMIN) ||
-            ($record['permSYSAPPROVER'] ==      '2' && $isSYSAPPROVER) ||
-            ($record['permSYSEDITOR'] ==        '2' && $isSYSEDITOR) ||
-            ($record['permSYSMEMBER'] ==        '2' && $isSYSMEMBER) ||
-            ($record['permSYSLOGON'] ==         '2' && $isSYSLOGON) ||
-            ($record['permGROUPEDITOR'] ==      '2' && $isGROUPEDITOR) ||
-            ($record['permGROUPVIEWER'] ==      '2' && $isGROUPVIEWER) ||
-            ($record['permPUBLIC'] ==           '2' && $isPUBLIC) ||
-            ($isVIEWER)               // Assume read / write if specific group member
+            if (($record['permMASTERADMIN'] ==      '2' && $isMASTERADMIN) ||
+                ($record['permUSERADMIN'] ==        '2' && $isUSERADMIN) ||
+                ($record['permCOMMUNITYADMIN'] ==   '2' && $isCOMMUNITYADMIN) ||
+                ($record['permSYSADMIN'] ==         '2' && $isSYSADMIN) ||
+                ($record['permSYSAPPROVER'] ==      '2' && $isSYSAPPROVER) ||
+                ($record['permSYSEDITOR'] ==        '2' && $isSYSEDITOR) ||
+                ($record['permSYSMEMBER'] ==        '2' && $isSYSMEMBER) ||
+                ($record['permSYSLOGON'] ==         '2' && $isSYSLOGON) ||
+                ($record['permGROUPEDITOR'] ==      '2' && $isGROUPEDITOR) ||
+                ($record['permGROUPVIEWER'] ==      '2' && $isGROUPVIEWER) ||
+                ($record['permPUBLIC'] ==           '2' && $isPUBLIC) ||
+                ($isVIEWER)               // Assume read / write if specific group member
             ) {
                 $record['readOnly'] = 0;
             }
@@ -878,7 +877,7 @@ class Report extends Displayable_Item
     }
 
 
-    private function _get_columns_mark_visiblity()
+    private function getColumnsMarkVisiblity()
     {
         foreach ($this->_report_columns as &$record) {
             $record['visible'] = $this->is_visible($record);
@@ -886,7 +885,7 @@ class Report extends Displayable_Item
     }
 
 
-    private function _get_columns_remove_overridden()
+    private function getColumnsRemoveOverridden()
     {
         $reduced =        array();
         $overridden =   array();
@@ -907,12 +906,12 @@ class Report extends Displayable_Item
         $this->_report_columns = $reduced;
     }
 
-    private function _get_columns_sort()
+    private function getColumnsSort()
     {
-        usort($this->_report_columns, array($this,'_get_columns_sort_function'));
+        usort($this->_report_columns, array($this,'getColumnsSort_function'));
     }
 
-    public function _get_columns_sort_function($a, $b)
+    public function getColumnsSort_function($a, $b)
     {
         $sort_tabs = strcmp(strtolower($a['tab']), strtolower($b['tab']));
         if ($sort_tabs != 0) {
@@ -1173,7 +1172,7 @@ class Report extends Displayable_Item
         return $result;
     }
 
-    public function get_records(
+    public function getReportRecords(
         $report_record,
         $columnList = false,
         $filterField = false,
@@ -1192,18 +1191,15 @@ class Report extends Displayable_Item
         if (isset($_SESSION['person'])) {
             if ($_SESSION['person']['permMASTERADMIN'] && $report_record['permMASTERADMIN']) {
                 $query = $report_record['reportSQL_MASTERADMIN'];
-            } elseif (
-            $_SESSION['person']['permSYSADMIN']    && $report_record['permSYSADMIN'] ||
+            } elseif ($_SESSION['person']['permSYSADMIN']    && $report_record['permSYSADMIN'] ||
             $_SESSION['person']['permSYSAPPROVER'] && $report_record['permSYSAPPROVER'] ||
             $_SESSION['person']['permSYSEDITOR']   && $report_record['permSYSEDITOR']
             ) {
                 $query = $report_record['reportSQL_SYSADMIN'];
-            } elseif (
-            $_SESSION['person']['permGROUPEDITOR'] && $report_record['permGROUPEDITOR']
+            } elseif ($_SESSION['person']['permGROUPEDITOR'] && $report_record['permGROUPEDITOR']
             ) {
                 $query = $report_record['reportSQL_GROUPADMIN'];
-            } elseif (
-            $_SESSION['person']['permCOMMUNITYADMIN'] && $report_record['permCOMMUNITYADMIN']
+            } elseif ($_SESSION['person']['permCOMMUNITYADMIN'] && $report_record['permCOMMUNITYADMIN']
             ) {
                 $query = $report_record['reportSQL_COMMUNITYADMIN'];
             }
@@ -1246,18 +1242,15 @@ class Report extends Displayable_Item
         if (isset($_SESSION['person'])) {
             if ($_SESSION['person']['permMASTERADMIN'] && $report_record['permMASTERADMIN']) {
                 $query = $report_record['reportSQL_MASTERADMIN'];
-            } elseif (
-                $_SESSION['person']['permSYSADMIN']    && $report_record['permSYSADMIN'] ||
+            } elseif ($_SESSION['person']['permSYSADMIN']    && $report_record['permSYSADMIN'] ||
                 $_SESSION['person']['permSYSAPPROVER'] && $report_record['permSYSAPPROVER'] ||
                 $_SESSION['person']['permSYSEDITOR']   && $report_record['permSYSEDITOR']
             ) {
                 $query = $report_record['reportSQL_SYSADMIN'];
-            } elseif (
-                $_SESSION['person']['permGROUPEDITOR']   && $report_record['permGROUPEDITOR']
+            } elseif ($_SESSION['person']['permGROUPEDITOR']   && $report_record['permGROUPEDITOR']
             ) {
                 $query = $report_record['reportSQL_GROUPADMIN'];
-            } elseif (
-                $_SESSION['person']['permCOMMUNITYADMIN'] && $report_record['permCOMMUNITYADMIN']
+            } elseif ($_SESSION['person']['permCOMMUNITYADMIN'] && $report_record['permCOMMUNITYADMIN']
             ) {
                 $query = $report_record['reportSQL_COMMUNITYADMIN'];
             }
@@ -1300,8 +1293,7 @@ class Report extends Displayable_Item
         $sortBy_columns = "";
         for ($i=0; $i<count($columnList); $i++) {
             $label = $columnList[$i]['reportLabel'];
-            if (
-                $label!="" &&
+            if ($label!="" &&
                 strpos($label, "Export")==null &&
                 strpos($label, "Del")==null &&
                 $sortBy == $columnList[$i]['reportField']
@@ -1309,8 +1301,7 @@ class Report extends Displayable_Item
                 $sortBy_columns = $columnList[$i]['reportSortBy_a'];
                 break;
             }
-            if (
-                $label!="" &&
+            if ($label!="" &&
                 strpos($label, "Export")==null &&
                 strpos($label, "Del")==null &&
                 $sortBy == $columnList[$i]['reportField']."_d"
@@ -1478,7 +1469,7 @@ class Report extends Displayable_Item
 
     public function manage_actions()
     {
-        return parent::manage_actions('actions_for_report');
+        return parent::manageActionsForNamedReport('actions_for_report');
     }
 
     public function manage_columns()

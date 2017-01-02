@@ -1,9 +1,7 @@
-  1.0.30 (2015-09-13)
-    1) Many changes following move of output streaming from Page into Output class:
-         Page::push_content()           ->      Output::push()
-         Page::pop_content()            ->      Output::pull()
-         Page::$content = array()       ->      Output::reset()
-         isset(Page::$content[$part])   ->      Output::present($part)
+  1.0.3 (2016-01-18)
+    1) Now Community_Member_Posting::getSharedSourceLink() calls renamed
+       Community_Member_Posting::BLMiniSharedSourceLinkWithDelegate()
+    2) Now uses class constant for version control
   1.0.2 (2015-03-13)
     1) Now extends \Component\CalendarLarge and modified to suit that object
   1.0.1 (2013-09-20)

@@ -1,3 +1,6 @@
+  1.0.101 (2016-10-16)
+    1) Change to Record::get_field() to enable to work with CSV list of IDs -
+       Used in Page_Edit::draw() to get multiple group matches in bulk update mode
   1.0.100 (2016-05-01)
     1) Added Record::getFieldForSql and made Record::get_field_for_sql() into an alias for that
   1.0.99 (2016-04-30)

@@ -1,12 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.84 (2016-10-16)
-    1) Added support for filtering by Community, Member and Person in Product::get_search_results()
+  1.0.85 (2016-12-31)
+    1) Renamed Product::get_records to Product::getFilteredSortedAndPagedRecords()
+    2) Product::get_records_matching() now uses newly named getFilteredSortedAndPagedRecords() method
+    3) Product::manage_actions() now uses renamed Record::manageActionsForNamedReport()
+    4) PSR-2 fixes
 */
 class Product extends Displayable_Item
 {
-    const VERSION = '1.0.84';
+    const VERSION = '1.0.85';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $type;
@@ -384,8 +387,7 @@ class Product extends Displayable_Item
     public function _draw_detail_include_js()
     {
         global $page_vars;
-        if (
-        isset($_REQUEST['command']) &&
+        if (isset($_REQUEST['command']) &&
         $_REQUEST['command']==$this->_ident."_detail_load"
         ) {
             return;
@@ -419,8 +421,7 @@ class Product extends Displayable_Item
     protected function _draw_listings_include_js()
     {
         global $page_vars;
-        if (
-        isset($_REQUEST['command']) &&
+        if (isset($_REQUEST['command']) &&
         $_REQUEST['command']==$this->_ident."_".$this->_instance."_load"
         ) {
             return;
@@ -566,7 +567,7 @@ class Product extends Displayable_Item
 
     protected function _draw_listings_load_records()
     {
-        $results = $this->get_records(
+        $results = $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>   $this->_cp['filter_category_list'],
                 'filter_category_master' => $this->_cp['filter_category_master'],
@@ -990,7 +991,6 @@ class Product extends Displayable_Item
             ."  `content`";
   //    z($sql);die;
         return $this->get_records_for_sql($sql);
-
     }
 
     public function get_permission_sql_for_viewer()
@@ -1005,7 +1005,7 @@ class Product extends Displayable_Item
             .($_SESSION['person']['permSYSAPPROVER']==1 ? " OR\n    `permSYSAPPROVER` = 1" : "");
         $group_IDs = array();
         foreach ($_SESSION['person']['permissions'] as $level => $groups) {
-            switch($level){
+            switch ($level) {
                 case "VIEWER":
                 case "EDITOR":
                 case "APPROVER":
@@ -1141,7 +1141,7 @@ class Product extends Displayable_Item
         return $out;
     }
 
-    public function get_records()
+    public function getFilteredSortedAndPagedRecords()
     {
         global $system_vars, $page;
         $args = func_get_args();
@@ -1186,12 +1186,16 @@ class Product extends Displayable_Item
             ."WHERE\n"
             ."  `product`.`systemID` = ".$this->_get_systemID()." AND\n"
             .($vars['filter_category_list']!="*" ?
-                "  `product`.`category` REGEXP \"".implode("|", explode(',', $vars['filter_category_list']))."\" AND\n"
+                 "  `product`.`category` REGEXP \""
+                .implode("|", explode(',', $vars['filter_category_list']))
+                ."\" AND\n"
               :
                 ""
              )
             .($vars['filter_category_master'] ?
-                "  `product`.`category` REGEXP \"".implode("|", explode(',', $vars['filter_category_master']))."\" AND\n"
+                 "  `product`.`category` REGEXP \""
+                .implode("|", explode(',', $vars['filter_category_master']))
+                ."\" AND\n"
               :
                 ""
              )
@@ -1220,7 +1224,7 @@ class Product extends Displayable_Item
                 $out[] = $row;
             }
         }
-        switch($vars['results_order']){
+        switch ($vars['results_order']) {
             case "date":
                 $order_arr =
                 array(
@@ -1532,7 +1536,7 @@ class Product extends Displayable_Item
 
     public function manage_actions()
     {
-        return parent::manage_actions('actions_for_product');
+        return parent::manageActionsForNamedReport('actions_for_product');
     }
 
     public function manage_relationships()

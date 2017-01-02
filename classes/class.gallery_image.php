@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.25 (2016-12-27)
-    1) Added cp for 'show_watermark'
+  1.0.26 (2016-12-31)
+    1) Gallery_Image::set_path() method declaration now looks like its parent
 */
 class Gallery_Image extends Posting_Contained
 {
-    const VERSION = '1.0.25';
+    const VERSION = '1.0.26';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -357,7 +357,7 @@ class Gallery_Image extends Posting_Contained
         return parent::try_copy($newID, $msg, $msg_tooltip, $name);
     }
 
-    public function set_path()
+    public function set_path($reveal_modification = false)
     {
         $parent_path =  '';
         $this->load();
@@ -368,6 +368,6 @@ class Gallery_Image extends Posting_Contained
             $parent_path.= trim($Obj->get_field('path'), '/').'/';
         }
         $path =             "//".$parent_path.$name;
-        $this->set_field('path', $path);
+        $this->set_field('path', $path, true, $reveal_modification);
     }
 }

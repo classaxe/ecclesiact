@@ -1,14 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.129 (2016-11-27)
-    1) Added new overrideable method Person::get_records_where_modifier() used by Flame Group members control to
-       filter on just the other members of the same group the viewer was last registered to
+  1.0.130 (2016-12-31)
+    1) Person::get_records() now renamed Person::getFilteredSortedAndPagedRecords()
+    2) Person::get_coords() now has same method declaration as parent although address if given is completely ignored.
+    3) PSR-2 fixes
 */
 class Person extends Displayable_Item
 {
     const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_address, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_image, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_address, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.129';
+    const VERSION = '1.0.130';
 
     public function __construct($ID = "")
     {
@@ -207,7 +208,7 @@ class Person extends Displayable_Item
 
     protected function _check_view_permissions($r, $type)
     {
-        switch ($r[$type]){
+        switch ($r[$type]) {
             case '':
                 return false;
             break;
@@ -730,7 +731,7 @@ class Person extends Displayable_Item
                     .($has_range_ring ? '\nGREEN area shows searched region' : '')
                     .($has_start_ring ? '\nRED area shows possible range of start location' : '');
                 foreach ($rings as $ring) {
-                    switch($ring){
+                    switch ($ring) {
                         case 'range':
                             $circle_id =
                             $this->_Obj_Map->add_circle(
@@ -972,7 +973,7 @@ class Person extends Displayable_Item
     protected function _draw_listings_load_records()
     {
         global $YYYY, $MM;
-        $results = $this->get_records(
+        $results = $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>
                     $this->_cp['filter_category_list'],
@@ -1070,7 +1071,7 @@ class Person extends Displayable_Item
                 ($this->record['NFirst'] ? $this->record['NFirst'].' ' : '')
                 .($this->record['NLast'] ? $this->record['NLast'].' ' : '')
             );
-            switch (substr($lat_field, 0, 4)){
+            switch (substr($lat_field, 0, 4)) {
                 case 'AMap':
                     $map_icon = ($this->_show_work ? 'h' : '');
                     $map_name =
@@ -1090,8 +1091,7 @@ class Person extends Displayable_Item
                     );
                     break;
             }
-            if (
-            isset($this->record[$lat_field]) &&
+            if (isset($this->record[$lat_field]) &&
             isset($this->record[$lon_field]) &&
             isset($this->record[$loc_field]) &&
             ($this->record[$lat_field] || $this->record[$lon_field])
@@ -1533,9 +1533,9 @@ class Person extends Displayable_Item
         return parent::sql_export($targetID, $show_fields, $header, '', $extra_delete, $extra_select);
     }
 
-    public function get_coords()
+    public function get_coords($address = false)
     {
-      // overrides Record::get_coords() since we may have two locations
+        // overrides Record::get_coords() since we may have two locations. $address is completely ignored.
         $prefixes = array('AMap_','WMap_');
         $result =   array();
         foreach ($prefixes as $p) {
@@ -1907,8 +1907,7 @@ class Person extends Displayable_Item
         if ($result['status']['code']!=200) {
             return false;
         }
-        if (
-            preg_match('/^Mozilla\/4\.0 \(compatible; MSIE 6/', $_SERVER['HTTP_USER_AGENT']) &&
+        if (preg_match('/^Mozilla\/4\.0 \(compatible; MSIE 6/', $_SERVER['HTTP_USER_AGENT']) &&
             !preg_match('/\bopera/i', $_SERVER['HTTP_USER_AGENT'])
         ) {
             session_regenerate_id(); // For security against session fixation attacks
@@ -1917,7 +1916,7 @@ class Person extends Displayable_Item
         return true;
     }
 
-    public function get_records()
+    public function getFilteredSortedAndPagedRecords()
     {
         global $system_vars, $page;
         $args = func_get_args();
@@ -1992,7 +1991,7 @@ class Person extends Displayable_Item
         foreach ($records as $row) {
             $out[] = $row;
         }
-        switch($order_by){
+        switch ($order_by) {
             case "NFirst":
                 $order_arr = array(
                     array('NFirst', 'a'),
@@ -2020,7 +2019,8 @@ class Person extends Displayable_Item
         return $out;
     }
 
-    protected function get_records_where_modifier() {
+    protected function get_records_where_modifier()
+    {
         return '';
     }
 
@@ -2490,8 +2490,7 @@ class Person extends Displayable_Item
             $prefixes = array('AMap_','WMap_');
             foreach ($prefixes as $p) {
                 $r = parent::get_coords($this->get_field($p.'location'));
-                if (
-                    $r['code']==='OVER_DAILY_LIMIT' ||
+                if ($r['code']==='OVER_DAILY_LIMIT' ||
                     $r['code']==='OVER_QUERY_LIMIT' ||
                     $r['code']==='Connection Error'
                 ) {
@@ -2511,7 +2510,7 @@ class Person extends Displayable_Item
 
     public function privacy_check_viewer_access($r, $type)
     {
-        switch ($r[$type]){
+        switch ($r[$type]) {
             case '':
                 return false;
             break;
@@ -2527,11 +2526,10 @@ class Person extends Displayable_Item
           // Recognised approved Site Users
             return true;
         }
-        if ((
-            !isset($this->_current_user_groups_access_csv) ||
+        if (!isset($this->_current_user_groups_access_csv) ||
             $this->_current_user_groups_access_csv=='' ||
             $r['groups']==''
-        )) {
+        ) {
             return false;
         }
         $visitor_groups = explode(',', $this->_current_user_groups_access_csv);

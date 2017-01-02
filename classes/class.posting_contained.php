@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.245 (2016-03-26)
-    1) Posting_Contained::get_records_matching() replaced parameter filter_category with filter_category_list
+  1.0.246 (2016-12-31)
+    1) Posting_Contained::get_records_matching() now uses newly named getFilteredSortedAndPagedRecords() method
 */
 
 class Posting_Contained extends Posting
 {
-    const VERSION = '1.0.245';
+    const VERSION = '1.0.246';
 
     private $_container_object_type;
 
@@ -190,7 +190,7 @@ class Posting_Contained extends Posting
     {
         global $YYYY, $MM;
         $Obj_Parent_type =  $this->_get_container_object_type();
-        $results = $this->get_records(
+        $results = $this->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>       $args['filter_category_list'],
                 'filter_category_master' =>     $args['filter_category_master'],

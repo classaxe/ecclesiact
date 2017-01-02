@@ -1,13 +1,16 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.57 (2016-03-26)
-    1) In CollectionViewer::setupLoadPodcastAlbums replaced parameter filter_category with filter_category_list
+  1.0.58 (2016-12-31)
+    1) CollectionViewer::setupLoadPodcastAlbums() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) CollectionViewer::setupLoadPodcasts() now uses newly named getFilteredSortedAndPagedRecords() method
+    3) PSR-2 changes
 */
 class CollectionViewer extends Base
 {
-    const VERSION = '1.0.57';
+    const VERSION = '1.0.58';
 
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
@@ -421,7 +424,7 @@ class CollectionViewer extends Base
         } else {
             $result = array('status'=>'403', 'message'=>'Unauthorised');
         }
-        switch ($result['status']){
+        switch ($result['status']) {
             case '100':
               // In progress - do nothing
                 break;
@@ -451,7 +454,8 @@ class CollectionViewer extends Base
         if (get_var('source')==$this->_safe_ID) {
             switch (get_var('submode')) {
                 case "popup":
-                    print $this->_Obj_JL->popup($this->_safe_ID); die;
+                    print $this->_Obj_JL->popup($this->_safe_ID);
+                    die();
                     break;
             }
         }
@@ -477,8 +481,7 @@ class CollectionViewer extends Base
 
     protected function drawAdminUploader()
     {
-        if (
-            !$this->_current_user_rights['canEdit'] ||
+        if (!$this->_current_user_rights['canEdit'] ||
             $this->_cp['show_uploader']!=1 ||
             $this->_selected_album_ID==false
         ) {
@@ -721,7 +724,7 @@ class CollectionViewer extends Base
             ''
         );
         if (isset($_REQUEST['command'])) {
-            switch($_REQUEST['command']){
+            switch ($_REQUEST['command']) {
                 case $this->_safe_ID."_cart":
                 case $this->_safe_ID."_empty":
                 case $this->_safe_ID."_load":
@@ -854,7 +857,7 @@ class CollectionViewer extends Base
     protected function setupLoadPodcastAlbums()
     {
         $Obj = new \Podcast_Album;
-        $result = $Obj->get_records(
+        $result = $Obj->getFilteredSortedAndPagedRecords(
             array(
                 'filter_category_list' =>
                     ($this->_cp['filter_category_list']!='' ?       $this->_cp['filter_category_list'] : ''),
@@ -888,7 +891,7 @@ class CollectionViewer extends Base
                 break;
             }
         }
-        switch ($this->_cp['filter_album_order_by']){
+        switch ($this->_cp['filter_album_order_by']) {
             case 'date':
                 usort($this->_podcast_albums, array("\Component\CollectionViewer", "sortPodcastAlbumsByDate"));
                 break;
@@ -985,8 +988,7 @@ class CollectionViewer extends Base
         $matched = false;
         if ($this->_selected_album_ID) {
             foreach ($this->_podcasts as $record) {
-                if (
-                    $this->_selected_album_ID==$record['parentID'] &&
+                if ($this->_selected_album_ID==$record['parentID'] &&
                     trim(strToLower($record['name']))==trim(strToLower($this->_selected_podcast))
                 ) {
                     $this->_podcast_selected = $record;
@@ -1008,7 +1010,6 @@ class CollectionViewer extends Base
         if (!$matched) {
             $this->_podcast_selected = false;
         }
-
     }
 
     protected function setupLoadPodcasts()
@@ -1016,7 +1017,7 @@ class CollectionViewer extends Base
         $this->_filter_offset = (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0);
         $Obj = new \Podcast;
         $container_path = $this->record['path'];
-        $result = $Obj->get_records(
+        $result = $Obj->getFilteredSortedAndPagedRecords(
             array(
                 'filter_container_path' =>  $container_path,
                 'results_order' =>          ($this->_cp['filter_podcast_order']=='asc' ? 'date_a' : 'date')
@@ -1053,8 +1054,7 @@ class CollectionViewer extends Base
             return;
         }
         foreach ($this->_podcasts as $p) {
-            if (
-                $this->_selected_author=='' ||
+            if ($this->_selected_author=='' ||
                 $this->_selected_author=='*' ||
                 get_web_safe_ID($p['author'])==$this->_selected_author ||
                 ($p['author']=='' && $this->_selected_author=='not-specified')
@@ -1128,7 +1128,7 @@ class CollectionViewer extends Base
                 ."}"
             );
         }
-        switch($results_paging){
+        switch ($results_paging) {
             case 1:
                 $this->_paging_controls_html=
                     "<div class=\"".$this->_ident."_nav\">"
@@ -1291,7 +1291,7 @@ class CollectionViewer extends Base
 
     protected function setupGetComputedSequenceNumbers()
     {
-        switch($this->_cp['filter_podcast_order']){
+        switch ($this->_cp['filter_podcast_order']) {
             case 'asc':
                 $i=1;
                 foreach ($this->_podcasts_selected as &$p) {
@@ -1317,15 +1317,13 @@ class CollectionViewer extends Base
         $this->_path_ext =  trim(substr($this->_path, strlen($this->_path_real)), '/');
         $this->_selected_album = '';
         $this->_selected_author = '';
-        if (
-            substr($this->_path_ext, 0, strlen($this->_cp['controls_albums_url']))==$this->_cp['controls_albums_url']
+        if (substr($this->_path_ext, 0, strlen($this->_cp['controls_albums_url']))==$this->_cp['controls_albums_url']
         ) {
             $bits = explode('/', substr($this->_path_ext, strlen($this->_cp['controls_albums_url'])+1));
             $this->_selected_album =
             (!isset($bits[0]) || $bits[0]=='' ? '' : $this->_cp['filter_container_path'].$bits[0]);
         }
-        if (
-            substr($this->_path_ext, 0, strlen($this->_cp['controls_authors_url']))==$this->_cp['controls_authors_url']
+        if (substr($this->_path_ext, 0, strlen($this->_cp['controls_authors_url']))==$this->_cp['controls_authors_url']
         ) {
             $bits = explode('/', substr($this->_path_ext, strlen($this->_cp['controls_authors_url'])+1));
             $this->_selected_author =

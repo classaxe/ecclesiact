@@ -1,3 +1,5 @@
+  1.0.5 (2016-03-26)
+    1) Component_Events_Map::_setup_load_event_IDs() replaced parameter filter_category with filter_category_list
   1.0.4 (2016-03-15)
     1) Component_Events_Map::_setup_load_event_IDs() now provides filter_... prefixed parameters for all filters
   1.0.3 (2015-09-13)

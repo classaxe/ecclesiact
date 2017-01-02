@@ -1,3 +1,5 @@
+  1.0.25 (2016-12-27)
+    1) Added cp for 'show_watermark'
   1.0.24 (2016-02-21)
     1) New CP for listing mode - sequence_insert_list
     2) Now more PSR-2

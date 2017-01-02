@@ -1,15 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.7 (2016-10-16)
-    1) Fixed Community_Resource::drawSearchResults() - was broken
+  1.0.8 (2017-01-02)
+    1) Renamed Community_Resource::draw() to Community_Resource::drawResource() to prevent confusion with
+       parent's draw() method which has a different method declaration
 */
 
 class Community_Resource extends Community_Display
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
-    public function draw($cp, $path_extension, $community_record)
+    public function drawResource($cp, $path_extension, $community_record)
     {
         $this->setup($cp, $path_extension, $community_record);
         if ($this->_path_extension=='js' || substr($this->_path_extension, 0, 3)=='js/') {

@@ -1,15 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.5 (2016-03-26)
-    1) Component_Events_Map::_setup_load_event_IDs() replaced parameter filter_category with filter_category_list
+  1.0.6 (2016-12-31)
+    1) Component_Events_Map::_setup_load_event_IDs() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) PSR-2 fixes
 */
 class Component_Events_Map extends Component_Base
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
-    protected $_event_IDs;
-    protected $_Obj_Event;
+    protected $eventIDs;
+    protected $ObjEvent;
 
     public function __construct()
     {
@@ -122,14 +123,14 @@ class Component_Events_Map extends Component_Base
 
     public function draw($instance = '', $args = array(), $disable_params = false)
     {
-        $this->_setup($instance, $args, $disable_params);
-        $this->_draw_control_panel(true);
-        $this->_draw_css();
-        $this->_draw_map();
+        $this->setup($instance, $args, $disable_params);
+        $this->drawControlPanel(true);
+        $this->drawCss();
+        $this->drawMap();
         return $this->_html;
     }
 
-    protected function _draw_css()
+    protected function drawCss()
     {
         if (!$this->_cp['list_fixed_height']) {
             return;
@@ -144,25 +145,25 @@ class Component_Events_Map extends Component_Base
         Output::push('style', $css);
     }
 
-    protected function _draw_map()
+    protected function drawMap()
     {
-        $this->_html.=          $this->_Obj_Event->draw_object_map_html($this->_safe_ID);
+        $this->_html.=          $this->ObjEvent->drawObjectMapHtml($this->_safe_ID);
     }
 
-    protected function _setup($instance, $args, $disable_params)
+    protected function setup($instance, $args, $disable_params)
     {
-        parent::_setup($instance, $args, $disable_params);
-        $this->_Obj_Event =   new Event;
+        parent::setup($instance, $args, $disable_params);
+        $this->ObjEvent =   new Event;
         $this->_filter_offset =     (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0);
-        $this->_setup_load_event_IDs();
-        $this->_setup_person_map_post_variables();
+        $this->setupLoadEventIDs();
+        $this->setupPersonMapPostVariables();
     }
 
-    protected function _setup_load_event_IDs()
+    protected function setupLoadEventIDs()
     {
         global $YYYY, $MM;
-        $this->_Obj_Event->set_group_concat_max_len(1000000);
-        $results = $this->_Obj_Event->get_records(
+        $this->ObjEvent->set_group_concat_max_len(1000000);
+        $results = $this->ObjEvent->getFilteredSortedAndPagedRecords(
             array(
                 'byRemote' =>
                     false,
@@ -216,12 +217,12 @@ class Component_Events_Map extends Component_Base
         foreach ($this->_records as $r) {
             $IDs[] = $r['ID'];
         }
-        $this->_event_IDs =        implode(',', $IDs);
+        $this->eventIDs =        implode(',', $IDs);
     }
 
-    protected function _setup_person_map_post_variables()
+    protected function setupPersonMapPostVariables()
     {
-        $_POST['ID'] =              $this->_event_IDs;
+        $_POST['ID'] =              $this->eventIDs;
         $_POST['height'] =          $this->_cp['height'];
         $_POST['width'] =           $this->_cp['width'];
         $_POST['map_title'] =       $this->_cp['map_title'];

@@ -1,10 +1,9 @@
 <?php
-define ("VERSION_PHPMAILER","2.0.1");
+define("VERSION_PHPMAILER", "2.0.2");
 /*
 Version History:
-  2.0.1 (2016-01-02)
-    1) New release based on PHPMailer 5.2.14
-    2) phpmailerException moved to its own class file
+  2.0.2 (2017-01-02)
+    1) PSR-2 fixes
 */
 
 /**
@@ -712,12 +711,12 @@ class PHPMailer
             case 'html':
                 //Cleans up output a bit for a better looking, HTML-safe output
                 echo htmlentities(
-                preg_replace('/[\r\n]+/', '', $str),
-                ENT_QUOTES,
-                'UTF-8'
-                    )
+                    preg_replace('/[\r\n]+/', '', $str),
+                    ENT_QUOTES,
+                    'UTF-8'
+                )
                     . "<br>\n";
-                    break;
+                break;
             case 'echo':
             default:
                 //Normalize line breaks
@@ -726,7 +725,7 @@ class PHPMailer
                     "\n",
                     "\n                   \t                  ",
                     trim($str)
-                    ) . "\n";
+                ) . "\n";
         }
     }
 
@@ -1005,18 +1004,18 @@ class PHPMailer
                 $error_message = $this->lang('invalid_address') . " (setFrom) $address";
                 $this->setError($error_message);
                 $this->edebug($error_message);
-                if ($this->exceptions) {
-                    throw new phpmailerException($error_message);
-                }
-                return false;
+            if ($this->exceptions) {
+                throw new phpmailerException($error_message);
             }
+                return false;
+        }
             $this->From = $address;
             $this->FromName = $name;
-            if ($auto) {
-                if (empty($this->Sender)) {
-                    $this->Sender = $address;
-                }
+        if ($auto) {
+            if (empty($this->Sender)) {
+                $this->Sender = $address;
             }
+        }
             return true;
     }
 
@@ -1083,31 +1082,31 @@ class PHPMailer
                  * Feel free to use and redistribute this code. But please keep this copyright notice.
                  */
                 return (boolean)preg_match(
-                '/^(?!(?>(?1)"?(?>\\\[ -~]|[^"])"?(?1)){255,})(?!(?>(?1)"?(?>\\\[ -~]|[^"])"?(?1)){65,}@)' .
-                '((?>(?>(?>((?>(?>(?>\x0D\x0A)?[\t ])+|(?>[\t ]*\x0D\x0A)?[\t ]+)?)(\((?>(?2)' .
-                '(?>[\x01-\x08\x0B\x0C\x0E-\'*-\[\]-\x7F]|\\\[\x00-\x7F]|(?3)))*(?2)\)))+(?2))|(?2))?)' .
-                '([!#-\'*+\/-9=?^-~-]+|"(?>(?2)(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\x7F]))*' .
-                '(?2)")(?>(?1)\.(?1)(?4))*(?1)@(?!(?1)[a-z0-9-]{64,})(?1)(?>([a-z0-9](?>[a-z0-9-]*[a-z0-9])?)' .
-                '(?>(?1)\.(?!(?1)[a-z0-9-]{64,})(?1)(?5)){0,126}|\[(?:(?>IPv6:(?>([a-f0-9]{1,4})(?>:(?6)){7}' .
-                '|(?!(?:.*[a-f0-9][:\]]){8,})((?6)(?>:(?6)){0,6})?::(?7)?))|(?>(?>IPv6:(?>(?6)(?>:(?6)){5}:' .
-                '|(?!(?:.*[a-f0-9]:){6,})(?8)?::(?>((?6)(?>:(?6)){0,4}):)?))?(25[0-5]|2[0-4][0-9]|1[0-9]{2}' .
-                '|[1-9]?[0-9])(?>\.(?9)){3}))\])(?1)$/isD',
-                $address
+                    '/^(?!(?>(?1)"?(?>\\\[ -~]|[^"])"?(?1)){255,})(?!(?>(?1)"?(?>\\\[ -~]|[^"])"?(?1)){65,}@)' .
+                    '((?>(?>(?>((?>(?>(?>\x0D\x0A)?[\t ])+|(?>[\t ]*\x0D\x0A)?[\t ]+)?)(\((?>(?2)' .
+                    '(?>[\x01-\x08\x0B\x0C\x0E-\'*-\[\]-\x7F]|\\\[\x00-\x7F]|(?3)))*(?2)\)))+(?2))|(?2))?)' .
+                    '([!#-\'*+\/-9=?^-~-]+|"(?>(?2)(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\x7F]))*' .
+                    '(?2)")(?>(?1)\.(?1)(?4))*(?1)@(?!(?1)[a-z0-9-]{64,})(?1)(?>([a-z0-9](?>[a-z0-9-]*[a-z0-9])?)' .
+                    '(?>(?1)\.(?!(?1)[a-z0-9-]{64,})(?1)(?5)){0,126}|\[(?:(?>IPv6:(?>([a-f0-9]{1,4})(?>:(?6)){7}' .
+                    '|(?!(?:.*[a-f0-9][:\]]){8,})((?6)(?>:(?6)){0,6})?::(?7)?))|(?>(?>IPv6:(?>(?6)(?>:(?6)){5}:' .
+                    '|(?!(?:.*[a-f0-9]:){6,})(?8)?::(?>((?6)(?>:(?6)){0,4}):)?))?(25[0-5]|2[0-4][0-9]|1[0-9]{2}' .
+                    '|[1-9]?[0-9])(?>\.(?9)){3}))\])(?1)$/isD',
+                    $address
                 );
             case 'pcre':
                 //An older regex that doesn't need a recent PCRE
                 return (boolean)preg_match(
-                '/^(?!(?>"?(?>\\\[ -~]|[^"])"?){255,})(?!(?>"?(?>\\\[ -~]|[^"])"?){65,}@)(?>' .
-                '[!#-\'*+\/-9=?^-~-]+|"(?>(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\xFF]))*")' .
-                '(?>\.(?>[!#-\'*+\/-9=?^-~-]+|"(?>(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\xFF]))*"))*' .
-                '@(?>(?![a-z0-9-]{64,})(?>[a-z0-9](?>[a-z0-9-]*[a-z0-9])?)(?>\.(?![a-z0-9-]{64,})' .
-                '(?>[a-z0-9](?>[a-z0-9-]*[a-z0-9])?)){0,126}|\[(?:(?>IPv6:(?>(?>[a-f0-9]{1,4})(?>:' .
-                '[a-f0-9]{1,4}){7}|(?!(?:.*[a-f0-9][:\]]){8,})(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,6})?' .
-                '::(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,6})?))|(?>(?>IPv6:(?>[a-f0-9]{1,4}(?>:' .
-                '[a-f0-9]{1,4}){5}:|(?!(?:.*[a-f0-9]:){6,})(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,4})?' .
-                '::(?>(?:[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,4}):)?))?(?>25[0-5]|2[0-4][0-9]|1[0-9]{2}' .
-                '|[1-9]?[0-9])(?>\.(?>25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}))\])$/isD',
-                $address
+                    '/^(?!(?>"?(?>\\\[ -~]|[^"])"?){255,})(?!(?>"?(?>\\\[ -~]|[^"])"?){65,}@)(?>' .
+                    '[!#-\'*+\/-9=?^-~-]+|"(?>(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\xFF]))*")' .
+                    '(?>\.(?>[!#-\'*+\/-9=?^-~-]+|"(?>(?>[\x01-\x08\x0B\x0C\x0E-!#-\[\]-\x7F]|\\\[\x00-\xFF]))*"))*' .
+                    '@(?>(?![a-z0-9-]{64,})(?>[a-z0-9](?>[a-z0-9-]*[a-z0-9])?)(?>\.(?![a-z0-9-]{64,})' .
+                    '(?>[a-z0-9](?>[a-z0-9-]*[a-z0-9])?)){0,126}|\[(?:(?>IPv6:(?>(?>[a-f0-9]{1,4})(?>:' .
+                    '[a-f0-9]{1,4}){7}|(?!(?:.*[a-f0-9][:\]]){8,})(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,6})?' .
+                    '::(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,6})?))|(?>(?>IPv6:(?>[a-f0-9]{1,4}(?>:' .
+                    '[a-f0-9]{1,4}){5}:|(?!(?:.*[a-f0-9]:){6,})(?>[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,4})?' .
+                    '::(?>(?:[a-f0-9]{1,4}(?>:[a-f0-9]{1,4}){0,4}):)?))?(?>25[0-5]|2[0-4][0-9]|1[0-9]{2}' .
+                    '|[1-9]?[0-9])(?>\.(?>25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}))\])$/isD',
+                    $address
                 );
             case 'html5':
                 /**
@@ -1115,9 +1114,9 @@ class PHPMailer
                  * @link http://www.whatwg.org/specs/web-apps/current-work/#e-mail-state-(type=email)
                  */
                 return (boolean)preg_match(
-                '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}' .
-                '[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/sD',
-                $address
+                    '/^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}' .
+                    '[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/sD',
+                    $address
                 );
             case 'noregex':
                 //No PCRE! Do something _very_ approximate!
@@ -1161,15 +1160,15 @@ class PHPMailer
             ($pos = strrpos($address, '@')) !== false) {
                 $domain = substr($address, ++$pos);
                 // Verify CharSet string is a valid one, and domain properly encoded in this CharSet.
-                if ($this->has8bitChars($domain) and @mb_check_encoding($domain, $this->CharSet)) {
-                    $domain = mb_convert_encoding($domain, 'UTF-8', $this->CharSet);
-                    if (($punycode = defined('INTL_IDNA_VARIANT_UTS46') ?
-                        idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46) :
-                        idn_to_ascii($domain)) !== false) {
-                            return substr($address, 0, $pos) . $punycode;
-                        }
+            if ($this->has8bitChars($domain) and @mb_check_encoding($domain, $this->CharSet)) {
+                $domain = mb_convert_encoding($domain, 'UTF-8', $this->CharSet);
+                if (($punycode = defined('INTL_IDNA_VARIANT_UTS46') ?
+                idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46) :
+                idn_to_ascii($domain)) !== false) {
+                        return substr($address, 0, $pos) . $punycode;
                 }
             }
+        }
             return $address;
     }
 
@@ -1264,7 +1263,7 @@ class PHPMailer
                 $this->mailHeader .= $this->headerLine(
                     'Subject',
                     $this->encodeHeader($this->secureHeader(trim($this->Subject)))
-                    );
+                );
             }
 
             // Sign with DKIM if enabled
@@ -1276,10 +1275,10 @@ class PHPMailer
                         $this->MIMEHeader . $this->mailHeader,
                         $this->encodeHeader($this->secureHeader($this->Subject)),
                         $this->MIMEBody
-                        );
+                    );
                     $this->MIMEHeader = rtrim($this->MIMEHeader, "\r\n ") . self::CRLF .
                     str_replace("\r\n", "\n", $header_dkim) . self::CRLF;
-                }
+            }
                 return true;
         } catch (phpmailerException $exc) {
             $this->setError($exc->getMessage());
@@ -1367,7 +1366,7 @@ class PHPMailer
                     $this->Subject,
                     $body,
                     $this->From
-                    );
+                );
                 if ($result != 0) {
                     throw new phpmailerException($this->lang('execute') . $this->Sendmail, self::STOP_CRITICAL);
                 }
@@ -1387,7 +1386,7 @@ class PHPMailer
                 $this->Subject,
                 $body,
                 $this->From
-                );
+            );
             if ($result != 0) {
                 throw new phpmailerException($this->lang('execute') . $this->Sendmail, self::STOP_CRITICAL);
             }
@@ -1514,7 +1513,7 @@ class PHPMailer
             throw new phpmailerException(
                 $this->lang('recipients_failed') . $errstr,
                 self::STOP_CONTINUE
-                );
+            );
         }
         return true;
     }
@@ -1613,10 +1612,10 @@ class PHPMailer
                             $this->AuthType,
                             $this->Realm,
                             $this->Workstation
-                            )
+                        )
                             ) {
                                 throw new phpmailerException($this->lang('authenticate'));
-                            }
+                        }
                     }
                     return true;
                 } catch (phpmailerException $exc) {
@@ -1746,7 +1745,7 @@ class PHPMailer
         } else {
             return $this->encodeHeader($this->secureHeader($addr[1]), 'phrase') . ' <' . $this->secureHeader(
                 $addr[0]
-                ) . '>';
+            ) . '>';
         }
     }
 
@@ -1963,61 +1962,59 @@ class PHPMailer
         }
 
         // sendmail and mail() extract Bcc from the header before sending
-        if ((
-            $this->Mailer == 'sendmail' or $this->Mailer == 'qmail' or $this->Mailer == 'mail'
-            )
-            and count($this->bcc) > 0
-            ) {
-                $result .= $this->addrAppend('Bcc', $this->bcc);
-            }
+        if (($this->Mailer == 'sendmail' || $this->Mailer == 'qmail' || $this->Mailer == 'mail')
+            && count($this->bcc) > 0
+        ) {
+            $result .= $this->addrAppend('Bcc', $this->bcc);
+        }
 
-            if (count($this->ReplyTo) > 0) {
-                $result .= $this->addrAppend('Reply-To', $this->ReplyTo);
-            }
+        if (count($this->ReplyTo) > 0) {
+            $result .= $this->addrAppend('Reply-To', $this->ReplyTo);
+        }
 
-            // mail() sets the subject itself
-            if ($this->Mailer != 'mail') {
-                $result .= $this->headerLine('Subject', $this->encodeHeader($this->secureHeader($this->Subject)));
-            }
+        // mail() sets the subject itself
+        if ($this->Mailer != 'mail') {
+            $result .= $this->headerLine('Subject', $this->encodeHeader($this->secureHeader($this->Subject)));
+        }
 
-            if ($this->MessageID != '') {
-                $this->lastMessageID = $this->MessageID;
-            } else {
-                $this->lastMessageID = sprintf('<%s@%s>', $this->uniqueid, $this->serverHostname());
+        if ($this->MessageID != '') {
+            $this->lastMessageID = $this->MessageID;
+        } else {
+            $this->lastMessageID = sprintf('<%s@%s>', $this->uniqueid, $this->serverHostname());
+        }
+        $result .= $this->headerLine('Message-ID', $this->lastMessageID);
+        if (!is_null($this->Priority)) {
+            $result .= $this->headerLine('X-Priority', $this->Priority);
+        }
+        if ($this->XMailer == '') {
+            $result .= $this->headerLine(
+                'X-Mailer',
+                'PHPMailer ' . $this->Version . ' (https://github.com/PHPMailer/PHPMailer)'
+            );
+        } else {
+            $myXmailer = trim($this->XMailer);
+            if ($myXmailer) {
+                $result .= $this->headerLine('X-Mailer', $myXmailer);
             }
-            $result .= $this->headerLine('Message-ID', $this->lastMessageID);
-            if (!is_null($this->Priority)) {
-                $result .= $this->headerLine('X-Priority', $this->Priority);
-            }
-            if ($this->XMailer == '') {
-                $result .= $this->headerLine(
-                    'X-Mailer',
-                    'PHPMailer ' . $this->Version . ' (https://github.com/PHPMailer/PHPMailer)'
-                    );
-            } else {
-                $myXmailer = trim($this->XMailer);
-                if ($myXmailer) {
-                    $result .= $this->headerLine('X-Mailer', $myXmailer);
-                }
-            }
+        }
 
-            if ($this->ConfirmReadingTo != '') {
-                $result .= $this->headerLine('Disposition-Notification-To', '<' . $this->ConfirmReadingTo . '>');
-            }
+        if ($this->ConfirmReadingTo != '') {
+            $result .= $this->headerLine('Disposition-Notification-To', '<' . $this->ConfirmReadingTo . '>');
+        }
 
-            // Add custom headers
-            foreach ($this->CustomHeader as $header) {
-                $result .= $this->headerLine(
-                    trim($header[0]),
-                    $this->encodeHeader(trim($header[1]))
-                    );
-            }
-            if (!$this->sign_key_file) {
-                $result .= $this->headerLine('MIME-Version', '1.0');
-                $result .= $this->getMailMIME();
-            }
+        // Add custom headers
+        foreach ($this->CustomHeader as $header) {
+            $result .= $this->headerLine(
+                trim($header[0]),
+                $this->encodeHeader(trim($header[1]))
+            );
+        }
+        if (!$this->sign_key_file) {
+            $result .= $this->headerLine('MIME-Version', '1.0');
+            $result .= $this->getMailMIME();
+        }
 
-            return $result;
+        return $result;
     }
 
     /**
@@ -2259,7 +2256,7 @@ class PHPMailer
                         'file://' . realpath($this->sign_cert_file),
                         array('file://' . realpath($this->sign_key_file), $this->sign_key_pass),
                         null
-                        );
+                    );
                 } else {
                     $sign = @openssl_pkcs7_sign(
                         $file,
@@ -2269,7 +2266,7 @@ class PHPMailer
                         null,
                         PKCS7_DETACHED,
                         $this->sign_extracerts_file
-                        );
+                    );
                 }
                 if ($sign) {
                     @unlink($file);
@@ -2497,13 +2494,13 @@ class PHPMailer
                         $type,
                         $this->encodeHeader($this->secureHeader($name)),
                         $this->LE
-                        );
+                    );
                 } else {
                     $mime[] = sprintf(
                         'Content-Type: %s%s',
                         $type,
                         $this->LE
-                        );
+                    );
                 }
                 // RFC1341 part 5 says 7bit is assumed if not specified
                 if ($encoding != '7bit') {
@@ -2526,7 +2523,7 @@ class PHPMailer
                             $disposition,
                             $encoded_name,
                             $this->LE . $this->LE
-                            );
+                        );
                     } else {
                         if (!empty($encoded_name)) {
                             $mime[] = sprintf(
@@ -2534,13 +2531,13 @@ class PHPMailer
                                 $disposition,
                                 $encoded_name,
                                 $this->LE . $this->LE
-                                );
+                            );
                         } else {
                             $mime[] = sprintf(
                                 'Content-Disposition: %s%s',
                                 $disposition,
                                 $this->LE . $this->LE
-                                );
+                            );
                         }
                     }
                 } else {
@@ -2801,7 +2798,7 @@ class PHPMailer
             array('%20', '%0D%0A.', '%0D%0A', '%'),
             array(' ', "\r\n=2E", "\r\n", '='),
             rawurlencode($string)
-            );
+        );
         return preg_replace('/[^\r\n]{' . ($line_max - 3) . '}[^=\r\n]{2}/', "$0=\r\n", $string);
     }
 
@@ -2819,7 +2816,7 @@ class PHPMailer
         $string,
         $line_max = 76,
         /** @noinspection PhpUnusedParameterInspection */ $space_conv = false
-        ) {
+    ) {
             return $this->encodeQP($string, $line_max);
     }
 
@@ -2888,11 +2885,11 @@ class PHPMailer
         $encoding = 'base64',
         $type = '',
         $disposition = 'attachment'
-        ) {
+    ) {
             // If a MIME type is not specified, try to work it out from the file name
-            if ($type == '') {
-                $type = self::filenameToType($filename);
-            }
+        if ($type == '') {
+            $type = self::filenameToType($filename);
+        }
             // Append to $attachment array
             $this->attachment[] = array(
                 0 => $string,
@@ -2974,11 +2971,11 @@ class PHPMailer
         $encoding = 'base64',
         $type = '',
         $disposition = 'inline'
-        ) {
+    ) {
             // If a MIME type is not specified, try to work it out from the name
-            if ($type == '' and !empty($name)) {
-                $type = self::filenameToType($name);
-            }
+        if ($type == '' and !empty($name)) {
+            $type = self::filenameToType($name);
+        }
 
             // Append to $attachment array
             $this->attachment[] = array(
@@ -3303,7 +3300,7 @@ class PHPMailer
                             $images[0][$imgindex],
                             $images[1][$imgindex] . '="cid:' . $cid . '"',
                             $message
-                            );
+                        );
                     }
                 } elseif (substr($url, 0, 4) !== 'cid:' && !preg_match('#^[A-z]+://#', $url)) {
                     // Do not change urls for absolute images (thanks to corvuscorax)
@@ -3326,14 +3323,14 @@ class PHPMailer
                         $filename,
                         'base64',
                         self::_mime_types((string)self::mb_pathinfo($filename, PATHINFO_EXTENSION))
-                        )
+                    )
                         ) {
                             $message = preg_replace(
                                 '/' . $images[1][$imgindex] . '=["\']' . preg_quote($url, '/') . '["\']/Ui',
                                 $images[1][$imgindex] . '="cid:' . $cid . '"',
                                 $message
-                                );
-                        }
+                            );
+                    }
                 }
             }
         }
@@ -3377,7 +3374,7 @@ class PHPMailer
             trim(strip_tags(preg_replace('/<(head|title|style|script)[^>]*>.*?<\/\\1>/si', '', $html))),
             ENT_QUOTES,
             $this->CharSet
-            );
+        );
     }
 
     /**
@@ -3755,15 +3752,15 @@ class PHPMailer
             '|',
             '=7C',
             $this->DKIM_QP($subject_header)
-            ); // Copied header fields (dkim-quoted-printable)
+        ); // Copied header fields (dkim-quoted-printable)
             $body = $this->DKIM_BodyC($body);
             $DKIMlen = strlen($body); // Length of body
             $DKIMb64 = base64_encode(pack('H*', sha1($body))); // Base64 of packed binary SHA-1 hash of body
-            if ('' == $this->DKIM_identity) {
-                $ident = '';
-            } else {
-                $ident = ' i=' . $this->DKIM_identity . ';';
-            }
+        if ('' == $this->DKIM_identity) {
+            $ident = '';
+        } else {
+            $ident = ' i=' . $this->DKIM_identity . ';';
+        }
             $dkimhdrs = 'DKIM-Signature: v=1; a=' .
                 $DKIMsignatureType . '; q=' .
                 $DKIMquery . '; l=' .
@@ -3783,7 +3780,7 @@ class PHPMailer
                     $to_header . "\r\n" .
                     $subject_header . "\r\n" .
                     $dkimhdrs
-                    );
+                );
                 $signed = $this->DKIM_Sign($toSign);
                 return $dkimhdrs . $signed . "\r\n";
     }
@@ -3873,7 +3870,8 @@ class PHPMailer
         }
     }
 
-    public static function getVersion(){
+    public static function getVersion()
+    {
         return VERSION_PHPMAILER;
     }
 }

@@ -1,15 +1,15 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.3 (2016-01-18)
-    1) Now getSharedSourceLink() calls renamed Community_Posting::BLMiniSharedSourceLinkWithDelegate()
-    2) Now uses class constant for version control
+  1.0.4 (2017-01-02)
+    1) CommunityCalendar::getSharedSourceLink() modified to look like its parent
 */
 
 class CommunityCalendar extends \Component\CalendarLarge
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     protected $_event_category_name =       'Community Posting Category';
     protected $_event_report_name =         'community_member.events';
@@ -22,8 +22,9 @@ class CommunityCalendar extends \Component\CalendarLarge
         $this->_arr_cal =   $this->_ObjEvent->get_calendar_dates($this->_MM, $this->_YYYY, $this->_memberID);
     }
 
-    protected function getSharedSourceLink()
+    protected function getSharedSourceLink($event)
     {
+        // $event here is thrown away - it is just for method compatability with parent
         return \Community_Posting::BLMiniSharedSourceLinkWithDelegate($this, '#calendar');
     }
 }

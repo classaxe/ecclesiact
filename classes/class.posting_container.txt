@@ -1,3 +1,5 @@
+  1.0.6 (2016-01-20)
+    1) Bug fix - get_selector_sql() is no longer statically defined
   1.0.5 (2016-01-18)
     1) Now uses VERSION class constant for version control
   1.0.4 (2012-11-21)

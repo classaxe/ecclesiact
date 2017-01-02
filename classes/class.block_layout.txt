@@ -1,3 +1,5 @@
+  1.0.71 (2016-12-24)
+    1) Changes to BL_thumbnail_image() to repect no_watermark setting whenever this is set
   1.0.70 (2016-05-05)
     1) Changes to BL_link() when option 'links_switch_video' is set -
        Youtube embeds now use same protocol as main site

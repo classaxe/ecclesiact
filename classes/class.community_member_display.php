@@ -5,12 +5,14 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.51 (2016-12-27)
-    1) Community_Member_Display::drawProfile() now provides link to view enlarged photos
+  1.0.52 (2016-12-31)
+    1) Community_Member_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) Multi-clause 'if' statements no longer enclosed using double brackets trick
+    3) Some PSR-2 fixes
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.51';
+    const VERSION = '1.0.52';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -196,8 +198,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawCalendar()
     {
-        if (
-            !$this->_cp['show_calendar'] ||
+        if (!$this->_cp['show_calendar'] ||
             !($this->_record['full_member'] ||
             $this->_record['primary_ministerialID'])
         ) {
@@ -445,7 +446,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawContactFormProcess()
     {
-        switch ($this->submode){
+        switch ($this->submode) {
             case "community_member_contact":
                 $Obj_Captcha = new Captcha;
                 if (!$Obj_Captcha->isKeyRight(isset($_POST['captcha_key']) ? $_POST['captcha_key'] : "NOWAY")) {
@@ -605,8 +606,7 @@ class Community_Member_Display extends Community_Member
     protected function drawAddress($prefix)
     {
         $r = $this->_record;
-        if (
-            $r[$prefix.'line1']=='' &&
+        if ($r[$prefix.'line1']=='' &&
             $r[$prefix.'line2']=='' &&
             $r[$prefix.'city']=='' &&
             $r[$prefix.'sp']=='' &&
@@ -799,8 +799,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawEvents()
     {
-        if (
-            !$this->_cp['show_events'] ||
+        if (!$this->_cp['show_events'] ||
             !($this->_record['full_member'] || $this->_record['primary_ministerialID'])
         ) {
             return;
@@ -943,8 +942,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawNews()
     {
-        if (
-            !$this->_cp['show_news'] ||
+        if (!$this->_cp['show_news'] ||
             !($this->_record['full_member'] || $this->_record['primary_ministerialID'])
         ) {
             return;
@@ -1040,7 +1038,7 @@ class Community_Member_Display extends Community_Member
         if ($r['link_video']) {
             $url_bits = explode('/', $r['link_video']);
             if (count($url_bits)>2) {
-                switch ($url_bits[2]){
+                switch ($url_bits[2]) {
                     case 'livestream.com':
                     case 'www.livestream.com':
                     case 'new.livestream.com':
@@ -1326,8 +1324,7 @@ class Community_Member_Display extends Community_Member
         $out =  '';
         $servicetimes_known = false;
         foreach ($days as $day) {
-            if (
-                isset($this->_record['service_times_'.strToLower(substr($day, 0, 3))]) &&
+            if (isset($this->_record['service_times_'.strToLower(substr($day, 0, 3))]) &&
                 trim($this->_record['service_times_'.strToLower(substr($day, 0, 3))])
             ) {
                 $entries = explode("\n", $this->_record['service_times_'.strToLower(substr($day, 0, 3))]);
@@ -1424,7 +1421,7 @@ class Community_Member_Display extends Community_Member
         $Obj_GA->_set_ID($this->_community_record['sponsorship_gallery_albumID']);
         $path = $Obj_GA->get_field('path');
         $Obj_SP = new Sponsorship_Plan;
-        $result = $Obj_SP->get_records(
+        $result = $Obj_SP->getFilteredSortedAndPagedRecords(
             array(
                 'filter_container_path' =>  $path
             )
@@ -1482,8 +1479,7 @@ class Community_Member_Display extends Community_Member
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        if (
-            !PIWIK_DEV &&
+        if (!PIWIK_DEV &&
             (substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' || substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.')
         ) {
             return;
@@ -1757,9 +1753,8 @@ class Community_Member_Display extends Community_Member
     protected function setupLoadStats()
     {
         global $system_vars;
-        if (
-            !PIWIK_DEV &&
-            (substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' || substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.')
+        if (!PIWIK_DEV &&
+            (substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.')
         ) {
             return;
         }
@@ -1789,34 +1784,35 @@ class Community_Member_Display extends Community_Member
         if ($this->_record['type'] == 'ministerium') {
             $this->_section_tabs_arr[] =    array('ID'=>'members', 'label'=>$this->_cp['tab_members']);
         }
-        if ($this->_cp['show_events_special']==1 && $this->_events_christmas) {
+        if ($this->_cp['show_events_special']==1 &&
+            $this->_events_christmas
+        ) {
             $this->_section_tabs_arr[] =    array('ID'=>'christmas', 'label'=>$this->_cp['tab_events_christmas']);
         }
-        if ($this->_cp['show_events_special']==1 && $this->_events_easter) {
+        if ($this->_cp['show_events_special']==1 &&
+            $this->_events_easter
+        ) {
             $this->_section_tabs_arr[] =    array('ID'=>'easter', 'label'=>$this->_cp['tab_events_easter']);
         }
-        if ($this->_cp['show_events_special']==1 && $this->_events_special) {
+        if ($this->_cp['show_events_special']==1 &&
+            $this->_events_special
+        ) {
             $this->_section_tabs_arr[] =    array('ID'=>'special', 'label'=>$this->_cp['tab_events_special']);
         }
-        if (
-            $this->_cp['show_map']==1 &&
+        if ($this->_cp['show_map']==1 &&
             ($this->_record['service_map_lat']!=0 || $this->_record['service_map_lon']!=0)
         ) {
             $this->_section_tabs_arr[] =    array('ID'=>'map','label'=>'Map');
         }
-        if (
-            $this->_cp['show_contact']==1
-        ) {
+        if ($this->_cp['show_contact']==1) {
             $this->_section_tabs_arr[] =     array('ID'=>'contact', 'label'=>$this->_cp['tab_contact']);
         }
-        if (
-            $this->_cp['show_articles']==1 &&
-            ($this->_record['full_member'])
+        if ($this->_cp['show_articles']==1 &&
+            $this->_record['full_member']
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'articles', 'label'=>$this->_cp['tab_articles']);
         }
-        if (
-            $this->_cp['show_events']==1 &&
+        if ($this->_cp['show_events']==1 &&
             ($this->_record['full_member'] || $this->_record['primary_ministerialID'])
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'events', 'label'=>$this->_cp['tab_events']);
@@ -1827,14 +1823,12 @@ class Community_Member_Display extends Community_Member
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'calendar', 'label'=>$this->_cp['tab_calendar']);
         }
-        if (
-            $this->_cp['show_news']==1 &&
+        if ($this->_cp['show_news']==1 &&
             ($this->_record['full_member'] || $this->_record['primary_ministerialID'])
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'news', 'label'=>$this->_cp['tab_news']);
         }
-        if (
-            $this->_cp['show_podcasts']==1 &&
+        if ($this->_cp['show_podcasts']==1 &&
             ($this->_record['full_member'])
         ) {
             $this->_section_tabs_arr[] =   array(
@@ -1846,8 +1840,7 @@ class Community_Member_Display extends Community_Member
                 )
             );
         }
-        if (
-            $this->_cp['show_stats']==1 &&
+        if ($this->_cp['show_stats']==1 &&
             $this->_current_user_rights['canViewStats'] && (
                 PIWIK_DEV || (
                     substr($_SERVER["SERVER_NAME"], 0, 8)!=='desktop.' &&
@@ -1857,9 +1850,7 @@ class Community_Member_Display extends Community_Member
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'stats', 'label'=>$this->_cp['tab_stats']);
         }
-        if (
-            $this->_cp['show_about']==1
-        ) {
+        if ($this->_cp['show_about']==1) {
             $this->_section_tabs_arr[] =   array('ID'=>'about', 'label'=>$this->_cp['tab_about']);
         }
         $extra_space = 11;

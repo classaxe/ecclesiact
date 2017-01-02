@@ -7,13 +7,14 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.50 (2016-12-26)
-    1) Tweaked image size for profile slideshow to be closer to that wow-slider scales it as
+  1.0.51 (2016-12-31)
+    1) Community_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) Community_Display::draw() now uses newly renamed Community_Resource::drawResource() method
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.50';
+    const VERSION = '1.0.51';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -661,7 +662,7 @@ class Community_Display extends Community
                             $files[] =  $folder.': '.$filename.' ('.$item['size'].')';
                         }
                     }
-                    switch ($num_files){
+                    switch ($num_files) {
                         case 0:
                             $status =   1;
                             $tooltip =
@@ -882,7 +883,7 @@ class Community_Display extends Community
             $this->setup($instance, $args, $disable_params);
             if ($this->_path_extension) {
                 $Obj = new Community_Resource();
-                return $Obj->draw($this->_cp, $this->_path_extension, $this->_community_record);
+                return $Obj->drawResource($this->_cp, $this->_path_extension, $this->_community_record);
             }
             $this->setupListings();
             $this->drawCss();
@@ -2083,7 +2084,7 @@ class Community_Display extends Community
         $Obj_GA->_set_ID($this->_community_record['sponsorship_gallery_albumID']);
         $path = $Obj_GA->get_field('path');
         $Obj_SP = new Sponsorship_Plan;
-        $result = $Obj_SP->get_records(
+        $result = $Obj_SP->getFilteredSortedAndPagedRecords(
             array(
                 'filter_container_path' =>  $path
             )
@@ -2152,8 +2153,7 @@ class Community_Display extends Community
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        if (
-            !PIWIK_DEV &&
+        if (!PIWIK_DEV &&
             (
                 substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
                 substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.'
@@ -2408,8 +2408,7 @@ class Community_Display extends Community
     protected function setupListingsLoadPiwikStats()
     {
         global $system_vars;
-        if (
-            !PIWIK_DEV &&
+        if (!PIWIK_DEV &&
             (
                 substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
                 substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.'
@@ -2547,8 +2546,7 @@ class Community_Display extends Community
         if ($this->_cp['show_gallery']==1) {
             $this->_section_tabs_arr[] =   array('ID'=>'gallery','label'=>$this->_cp['tab_gallery']);
         }
-        if (
-            $this->_cp['show_stats']==1 &&
+        if ($this->_cp['show_stats']==1 &&
             $this->_current_user_rights['canViewStats'] &&
             (
                 PIWIK_DEV ||

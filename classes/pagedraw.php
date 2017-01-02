@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.1 (2015-03-25)
-    1) PSR-2 Cleanup
+  1.0.2 (2016-12-31)
+    1) Renamed PageDraw::draw_detail() to PageDraw::drawDetailForPage()
 */
 class PageDraw extends Page
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     private static function isLanguageCode($page)
     {
@@ -147,7 +147,7 @@ class PageDraw extends Page
         }
     }
 
-    public function draw_detail($page)
+    public function drawDetailForPage($page)
     {
         global $page_vars, $submode, $system_vars, $print, $new_page, $new_title, $new_systemID, $content, $msg;
         $this->_set_ID($page_vars['ID']);
@@ -478,7 +478,7 @@ class PageDraw extends Page
              :
                 ""
              )
-            .($ratings_allow ? Rating::draw_block() : "")
+            .($ratings_allow ? $this->draw_ratings_block() : "")
             .$this->draw_related_block()
             .$this->draw_comments_block($page_vars['comments_allow'])
             ;
@@ -522,7 +522,7 @@ class PageDraw extends Page
             $Obj = new static();
 
             return static::render(
-                $Obj->draw_detail($page)
+                $Obj->drawDetailForPage($page)
             );
         }
         if (isset($page_vars['content_zones'][$zone-1])) {

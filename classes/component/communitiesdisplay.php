@@ -1,14 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.10 (2016-03-04)
-    1) Added CPs for filter_active, show_communities_url and show_member_count
-    2) Implemented code to operate with the new CPs
+  1.0.11 (2017-01-02)
+    1) PSR-2 changes
 */
 class CommunitiesDisplay extends Base
 {
-    const VERSION = '1.0.10';
+    const VERSION = '1.0.11';
 
     protected $CommunityListing =   false;
     protected $CommunityMemberListing =   false;
@@ -112,9 +112,9 @@ class CommunitiesDisplay extends Base
             $inner_content = "";
             if ($this->_cp['show_members']) {
                 $inner_content = "<ul>\n";
-                foreach($r['membersList'] as $m) {
+                foreach ($r['membersList'] as $m) {
                     $this->CommunityMemberListing->load($m);
-                    $inner_content.= $this->CommunityMemberListing->draw();                    
+                    $inner_content.= $this->CommunityMemberListing->draw();
                 }
                 $inner_content .= "</ul>\n";
             }
@@ -216,8 +216,8 @@ class CommunitiesDisplay extends Base
     protected function setupLoadRecords()
     {
         $communities = $this->CommunityListing->get_communities();
-        foreach($communities as $c) {
-            if (($this->_cp['filter_active']==='') ||
+        foreach ($communities as $c) {
+            if ($this->_cp['filter_active']==='' ||
                 ($this->_cp['filter_active']==='0' && $c['enabled']==='0') ||
                 ($this->_cp['filter_active']==='1' && $c['enabled']==='1')
             ) {
@@ -225,7 +225,7 @@ class CommunitiesDisplay extends Base
             }
         }
         if ($this->_cp['show_members']) {
-            foreach($this->records as &$record) {
+            foreach ($this->records as &$record) {
                 $this->CommunityListing->_set_ID($record['ID']);
                 $record['membersList'] = $this->CommunityListing->get_members();
             }

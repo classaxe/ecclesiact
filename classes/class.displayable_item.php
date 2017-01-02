@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.161 (2016-11-27)
-    1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
-       or 'ratings_allow' settings, such as Users
+  1.0.162 (2016-12-31)
+    1) Displayable_Item::_draw_listings_load_records() now uses getFilteredSortedAndPagedRecords() to get records
+    2) Moved ratings system into here instead of in its own 'magic this' operating class
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.161';
+    const VERSION = '1.0.162';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -280,7 +280,7 @@ class Displayable_Item extends Block_Layout
 
     protected function _draw_detail_draw_error($type)
     {
-        switch($type) {
+        switch ($type) {
             case "403":
                 $this->do_tracking($type);
                 $this->_html.= "<h1>".$this->_get_object_name()." is unavailable</h1>\n";
@@ -304,7 +304,7 @@ class Displayable_Item extends Block_Layout
         }
         sscanf($this->record['date'], "%04d-%02d-%02d", $_YYYY, $_MM, $_DD);
         $_YYYY =  ($_YYYY == "0000" ? $YYYY : $_YYYY);
-        switch ($results_grouping){
+        switch ($results_grouping) {
             case "month":
                 $idx =          $this->_ident."_".$_YYYY."_".$_MM;
                 if ($idx != $this->_grouping_tab_current) {
@@ -377,7 +377,7 @@ class Displayable_Item extends Block_Layout
     {
         if ($this->_get_has_publish_date()) {
             $status = $this->test_publish_date();
-            switch ($status){
+            switch ($status) {
                 case "good":
                     return;
                 break;
@@ -432,8 +432,7 @@ class Displayable_Item extends Block_Layout
             $this->_html.= $this->_draw_detail_draw_error('403');
             return false;
         }
-        if (
-            isset($this->record['enabled']) &&
+        if (isset($this->record['enabled']) &&
             $this->record['enabled']==0 &&
             !$this->_current_user_rights['canPublish']
         ) {
@@ -825,7 +824,7 @@ class Displayable_Item extends Block_Layout
         }
         global $YYYY;
         $tab_items = false;
-        switch ($results_grouping){
+        switch ($results_grouping) {
             case "month":
                 $old_MM = false;
                 $old_YYYY = false;
@@ -969,7 +968,7 @@ class Displayable_Item extends Block_Layout
                 ."}"
             );
         }
-        switch($results_paging){
+        switch ($results_paging) {
             case 1:
                 $this->_paging_controls_html=
                     "<div class=\"".$this->_safe_ID."_nav\">"
@@ -1038,7 +1037,7 @@ class Displayable_Item extends Block_Layout
 
     protected function _draw_listings_load_records()
     {
-        $results =                  $this->get_records($this->_args);
+        $results =                  $this->getFilteredSortedAndPagedRecords($this->_args);
         $this->_records =           $results['data'];
         $this->_records_total =     $results['total'];
     }
@@ -1070,7 +1069,7 @@ class Displayable_Item extends Block_Layout
     {
         global $print;
         if (isset($_REQUEST['command'])) {
-            switch($_REQUEST['command']){
+            switch ($_REQUEST['command']) {
                 case $this->_safe_ID."_cart":
                 case $this->_safe_ID."_empty":
                 case $this->_safe_ID."_load":
@@ -1188,7 +1187,7 @@ class Displayable_Item extends Block_Layout
         $isSYSEDITOR =      get_person_permission("SYSEDITOR");
         $isSYSMEMBER =      get_person_permission("SYSMEMBER");
         $canEdit =          ($isMASTERADMIN || $isSYSADMIN || $isSYSEDITOR);
-        switch(get_class($this)){
+        switch (get_class($this)) {
             case "Product":
                 $category_type =    "Product Category";
                 $cm_type =          "product";
@@ -1287,14 +1286,18 @@ class Displayable_Item extends Block_Layout
             }
             $img = false;
             if ($args['thumbnail_show']) {
-                switch ($args['thumbnail_image']){
-                    case "s":   $img = $record['thumbnail_small'];
+                switch ($args['thumbnail_image']) {
+                    case "s":
+                        $img = $record['thumbnail_small'];
                         break;
-                    case "m":   $img = $record['thumbnail_medium'];
+                    case "m":
+                        $img = $record['thumbnail_medium'];
                         break;
-                    case "l":   $img = $record['thumbnail_large'];
+                    case "l":
+                        $img = $record['thumbnail_large'];
                         break;
-                    default:    $img = false;
+                    default:
+                        $img = false;
                         break;
                 }
             }
@@ -1453,7 +1456,8 @@ class Displayable_Item extends Block_Layout
         return $out;
     }
 
-    public function draw_object_map_html($ident = false){
+    public function draw_object_map_html($ident = false)
+    {
         return $this->drawObjectMapHtml($ident);
     }
 
@@ -1465,8 +1469,7 @@ class Displayable_Item extends Block_Layout
             $this->_set_ID($ID);
             if (method_exists($this, 'drawObjectMapHtmlGetData')) {
                 $this->drawObjectMapHtmlGetData();
-            }
-            elseif (method_exists($this, '_draw_object_map_html_get_data')) {
+            } elseif (method_exists($this, '_draw_object_map_html_get_data')) {
                 $this->_draw_object_map_html_get_data();
             }
         }
@@ -1532,7 +1535,6 @@ class Displayable_Item extends Block_Layout
             'map_height' =>   $this->_map_height
         );
         $this->_html.= $this->_Obj_Map->draw($args);
-
     }
 
     protected function _draw_object_map_html_draw_map_listing()
@@ -1679,7 +1681,7 @@ class Displayable_Item extends Block_Layout
         global $system_vars;
         $edit_params =    $this->get_edit_params();
         $add_form = $edit_params['report'];
-        switch ($this->_get_type()){
+        switch ($this->_get_type()) {
             case "news":
                 $rss_url =  $this->_get_type();
                 break;
@@ -1763,9 +1765,133 @@ class Displayable_Item extends Block_Layout
 
     public function draw_ratings_block($submode = false, $value = false)
     {
-        return Rating::draw_block($submode, $value);
+        $id = $this->_get_assign_type()."_".$this->_get_ID();
+        switch ($submode) {
+            case 'rate':
+                return $this->draw_ratings_block_submit($this->_get_assign_type(), $this->_get_ID(), $value);
+                break;
+            default:
+                return "\n<div class='rating' id='rating_block_".$id."'>\n".$this->draw_ratings_block_draw()."</div>\n";
+                break;
+        }
     }
 
+    private function draw_ratings_block_draw($submode = false, $value = false)
+    {
+        static $img =         "icon_ratings_13x13.gif";
+        static $size =        13;
+        static $max =         5;
+        static $shown_css =   false;
+        
+        $check_IP = false;
+        $id = $this->_get_assign_type()."_".$this->_get_ID();
+        $Obj = new Activity;
+        $rating = $Obj->get_rating($this->_get_assign_type(), $this->_get_ID());
+//        y($rating);die;
+        $value = ($rating['percent']*$max)/100;
+        $votes = count($rating['votes']);
+        $voted =    false;
+        $v_score =  false;
+        $v_date =   false;
+        if ($votes) {
+            $cookie_name =   "ECC_V_".SYS_ID;
+            $cookie_value =  (isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '');
+            $ip = $_SERVER["REMOTE_ADDR"];
+            $personID = get_userID();
+            foreach ($rating['votes'] as $vote) {
+                if (($personID && $personID == $vote['u']) ||
+                    ($cookie_value == $vote['c']) ||
+                    isset($_SESSION['rated_'.$id]) ||
+                    ($ip == $vote['i'] && $check_IP)
+                ) {
+                    $_SESSION['rated_'.$id] = true;
+                    $voted =    true;
+                    $v_score =  $vote['s'];
+                    $v_date =   $vote['d'];
+                    break;
+                }
+            }
+        }
+        if (!$shown_css) {
+            $width = $size*$max;
+            Output::push(
+                "style",
+                "div.rating div.bg { position:relative;width:".$width."px; }\n"
+                ."div.rating ul { left: -".($width)."px;}\n"
+                ."div.rating div.current  { left: -".(2*$width)."px;}\n"
+            );
+            Output::push("javascript_onload", "  rating_blocks_init();\n");
+            $shown_css = true;
+        }
+        if (!$voted) {
+            Output::push('javascript', "rating_blocks.push('".$id."');\n");
+        }
+        $out =
+            ($voted ?
+                 "<div title='A rating of ".$v_score
+                ." was awarded on ".$v_date."\nfrom your computer address'>\n"
+            :
+                ""
+            )
+            ."  <h2>"
+            .($voted ? $this->_get_object_name()." rating" : "Rate this ".$this->_get_object_name())
+            ."</h2>\n"
+            ."  <div class='bg img'></div>"
+            ."  <ul id='rating_".$id."'>\n";
+        for ($i=1; $i<=$max; $i++) {
+            $out.= "    <li class='img'><a href='#' onclick='return false' rel='nofollow'></a></li>\n";
+        }
+            $out.=
+                 "  </ul>\n"
+                .($value ? "  <div class='current img' style='width:".(int)($size*$value)."px;'></div>\n" : "")
+                ."<br />\n"
+                ."  <div class='score'>".round($value, 2)." (".$votes." vote".($votes==1 ? "" : "s").")</div>\n"
+                .($voted ? "</div>\n" : "");
+            return $out;
+    }
+
+    private function draw_ratings_block_submit($id, $type, $value)
+    {
+        static $max = 5;
+        static $size = 13;
+        $personID =     get_userID();
+        $ratings_allow = $this->get_field('ratings_allow');
+        if ($ratings_allow==false || $ratings_allow=='none' || ($ratings_allow=='registered' && !$personID)) {
+            die('You cannot rate this item');
+        }
+        $id = $this->_get_assign_type()."_".$this->_get_ID();
+        $cookie_name =  "ECC_V_".SYS_ID;
+        $cookie_value = (isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : '');
+        $ip =           $_SERVER["REMOTE_ADDR"];
+        $Obj =      new Activity;
+        $rating =   $Obj->get_rating($this->_get_assign_type(), $this->_get_ID());
+        $rating['votes'][] =
+        array(
+            'i' =>  $ip,
+            's' =>  $value,
+            'c' =>  $cookie_value,
+            'd' =>  get_timestamp(),
+            'u' =>  $personID
+        );
+        $score = 0;
+        foreach ($rating['votes'] as $vote) {
+            $score+=(int)$vote['s'];
+        }
+        $score = two_dp($score*100)/(count($rating['votes'])*$max);
+        $Obj->_set_ID($rating['ID']);
+        $data = array(
+            'count_total_ratings' =>    (int)$rating['count_total_ratings']+1,
+            'count_weighted_ratings' => (int)$rating['count_weighted_ratings']+1,
+            'rating_percent' =>         $score,
+            'rating_submissions' =>     addslashes(serialize($rating['votes'])),
+            'sourceType' =>             $this->_get_assign_type(),
+            'sourceID' =>               $this->_get_ID()
+        );
+        $Obj->update($data);
+        $_SESSION['rated_'.$id] = true;
+        return $this->draw_ratings_block();
+        die;
+    }
     public function draw_related_block()
     {
         if (!System::has_feature('Keywords')) {
@@ -1957,7 +2083,7 @@ class Displayable_Item extends Block_Layout
                 if (isset($record['path']) && $record['path']) {
                     $prefix = "";
                     if (isset($record['type'])) {
-                        switch($record['type']){
+                        switch ($record['type']) {
                             case 'gallery-album':
                             case 'gallery-image':
                             case 'podcast-album':
@@ -1988,7 +2114,7 @@ class Displayable_Item extends Block_Layout
                     $MM =   substr($date, 5, 2);
                     $DD =   substr($date, 8, 2);
                     $posting_prefix = (isset($record['posting_prefix']) ? $record['posting_prefix'] : POSTING_PREFIX);
-                    switch ($posting_prefix){
+                    switch ($posting_prefix) {
                         case "YYYY":
                             $path = $YYYY."/";
                             break;

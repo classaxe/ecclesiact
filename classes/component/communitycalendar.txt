@@ -1,3 +1,6 @@
+  1.0.3 (2016-01-18)
+    1) Now getSharedSourceLink() calls renamed Community_Posting::BLMiniSharedSourceLinkWithDelegate()
+    2) Now uses class constant for version control
   1.0.2 (2015-03-13)
     1) Now uses namespaces and is fully PSR-2 Compliant
     2) Now extends \Component\CalendarLarge and modified to suit that object

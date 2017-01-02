@@ -3,13 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.4 (2016-03-26)
-    1) SearchWordCloud::setupLoadText() replaced parameter filter_category with filter_category_list
-    2) New CP link_friendly that produces URL extender type links suitable for filtering listings
+  1.0.5 (2016-12-31)
+    1) SearchWordCloud::setupLoadText() now uses newly named getFilteredSortedAndPagedRecords() method
 */
 class SearchWordCloud extends Base
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     protected $filtered =   array();
     protected $maxMatches = 0;
@@ -166,7 +165,7 @@ class SearchWordCloud extends Base
                 break;
         }
         $Obj = new $type;
-        $records = $Obj->get_records(
+        $records = $Obj->getFilteredSortedAndPagedRecords(
             array(
                 'byRemote' =>               false,
                 'filter_category_list' =>   $this->_cp['filter_category_list'],
@@ -214,8 +213,7 @@ class SearchWordCloud extends Base
     {
         $filtered = array();
         foreach ($this->words as $word => $count) {
-            if (
-                !is_numeric(substr($word, 0, 1)) &&
+            if (!is_numeric(substr($word, 0, 1)) &&
                 strlen($word)>=$this->_cp['min_characters'] &&
                 $count>=$this->_cp['min_matches'] &&
                 $count<=$this->_cp['max_matches']
