@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.0");
+define("CODEBASE_VERSION", "5.0.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,193 +17,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.0.2481 (2017-01-02)
+5.0.1.2482 (2017-01-14)
 Summary:
-  Major changes to properly support PHP 7.0
-
-  On windows Dev server, PHP 7.0.10 shows a 40% reduction in memory footprint size compared to 5.6.25:
-
-    SITE                  | Prod 5.6.20 | Win 5.6.25 | Win 7.0.10 | DROP
-    --------------------------------------------------------------------
-    ecclesiact.com        |  9,470,024  | 18,698,400 | 11,173,360 | 40%
-    churchesinyourtown.ca |  8,341,992  | 17,941,176 | 10,351,552 | 42%
-    --------------------------------------------------------------------
-    
-  1) Fixed issues with method declarations being incompatible with those of their parents:
-       Posting::get_records() ->    Posting::getFilteredSortedAndPagedRecords()
-       Report::get_records()  ->    Report::getReportRecords()
-       PageDraw::draw_detail()->    PageDraw::drawDetailForPage()
-
-  2) Moved Rating class into Displayable_Item::show_rating() - was actually using 'Magic This' passing!
+  Bug fix for missing 'Add...' icon in listings for administrators.
+  Thanks Alf D for the bug report
 
 Final Checksums:
-  Classes     CS:b836a08a
+  Classes     CS:cdf8f777
   Database    CS:453ad079
-  Libraries   CS:9b7ba437
+  Libraries   CS:43338ae
   Reports     CS:6da4a7d9
 
 Code Changes:
-  codebase.php                                                                                   5.0.0     (2017-01-02)
+  codebase.php                                                                                   5.0.1     (2017-01-14)
     1) Updated version information
-  classes/class.action.php                                                                       1.0.24    (2017-01-02)
-    1) PSR-2 changes
-    2) Removed locally different version of copy() -
-       Now Record::copy_actions() handles necessary mappings for newly cloned reports
-  classes/class.ajax.php                                                                         1.0.27    (2016-12-31)
-    1) Ajax::_serve_lookup_report() now calls renamed Report::getReportRecords()
-  classes/class.block_layout.php                                                                 1.0.72    (2017-01-02)
-    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
-  classes/class.community_display.php                                                            1.0.51    (2016-12-31)
-    1) Community_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) Community_Display::draw() now uses newly renamed Community_Resource::drawResource() method
-  classes/class.community_member.php                                                             1.0.116   (2016-12-31)
-    1) Community_Member::get_coords() now has same method declaration as its parent
-    2) Some PSR-2 fixes
-  classes/class.community_member_display.php                                                     1.0.52    (2016-12-31)
-    1) Community_Member_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) Multi-clause 'if' statements no longer enclosed using double brackets trick
-    3) Some PSR-2 fixes
-  classes/class.community_resource.php                                                           1.0.8     (2017-01-02)
-    1) Renamed Community_Resource::draw() to Community_Resource::drawResource() to prevent confusion with
-       parent's draw() method which has a different method declaration
-  classes/class.component_events_map.php                                                         1.0.6     (2016-12-31)
-    1) Component_Events_Map::_setup_load_event_IDs() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) PSR-2 fixes
-  classes/class.crm_case.php                                                                     1.0.13    (2017-01-02)
-    1) Removed debug version of CRM_Case::update() that looked different tha its parent
-    2) PSR-2 changes
-  classes/class.custom_form.php                                                                  1.0.43    (2017-01-02)
-    1) Custom_Form::manage_actions() now uses renamed Record::manageActionsForNamedReport()
-    2) PSR-2 fixes
-  classes/class.displayable_item.php                                                             1.0.162   (2016-12-31)
-    1) Displayable_Item::_draw_listings_load_records() now uses getFilteredSortedAndPagedRecords() to get records
-    2) Moved ratings system into here instead of in its own 'magic this' operating class
-  classes/class.event.php                                                                        1.0.110   (2016-12-31)
-    1) Event::get_calendar_dates() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) Event::get_events_for_date() now uses newly named getFilteredSortedAndPagedRecords() method
-    3) Event::get_yearly_dates() now uses newly named getFilteredSortedAndPagedRecords() method
-    4) PSR-2 fixes
-  classes/class.export.php                                                                       1.0.27    (2016-12-31)
-    1) Export::excel() now calls Report::getReportRecords() to get data
-    2) PSR-2 fixes
-  classes/class.gallery_image.php                                                                1.0.26    (2016-12-31)
-    1) Gallery_Image::set_path() method declaration now looks like its parent
-  classes/class.listtype.php                                                                     1.0.8     (2017-01-02)
-    1) Listtype::copy() now looks and behaves like its parent
-    2) many PSR-2 fixes
-  classes/class.person.php                                                                       1.0.130   (2016-12-31)
-    1) Person::get_records() now renamed Person::getFilteredSortedAndPagedRecords()
-    2) Person::get_coords() now has same method declaration as parent although address if given is completely ignored.
-    3) PSR-2 fixes
-  classes/class.phpmailer.php                                                                    2.0.2     (2017-01-02)
-    1) PSR-2 fixes
-  classes/class.posting.php                                                                      1.0.130   (2016-12-31)
-    1) Posting::get_records() now renamed Posting::getFilteredSortedAndPagedRecords()
-    2) PSR-2 fixes
-  classes/class.posting_contained.php                                                            1.0.246   (2016-12-31)
-    1) Posting_Contained::get_records_matching() now uses newly named getFilteredSortedAndPagedRecords() method
-  classes/class.posting_container.php                                                            1.0.7     (2016-12-31)
-    1) Posting_Container::set_path() method declaration now looks like its parent
-  classes/class.product.php                                                                      1.0.85    (2016-12-31)
-    1) Renamed Product::get_records to Product::getFilteredSortedAndPagedRecords()
-    2) Product::get_records_matching() now uses newly named getFilteredSortedAndPagedRecords() method
-    3) Product::manage_actions() now uses renamed Record::manageActionsForNamedReport()
-    4) PSR-2 fixes
-  classes/class.record.php                                                                       1.0.102   (2017-01-02)
-    1) Renamed Record::manage_actions() to Record::manageActionsForNamedReport()
-    2) Record::copy_actions() now handles assignment of newly copied actions to the new parent entity itself
-    3) PSR-2 fixes
-  classes/class.remote.php                                                                       1.0.14    (2016-12-31)
-    1) Remote::get_items() now uses obj::getFilteredSortedAndPagedRecords() to get local records
-  classes/class.report.php                                                                       1.0.92    (2017-01-02)
-    1) Renamed Report::get_records() to Report::getReportRecords()
-    2) Report::manage_actions() now uses renamed Record::manageActionsForNamedReport()
-    3) PSR-2 fixes
-  classes/class.report_report.php                                                                1.0.33    (2017-01-02)
-    1) Report_Report::draw() now calls getReportRecords() to get records for display
-    2) PSR-2 fixes
-  classes/class.rss.php                                                                          1.0.32    (2016-12-31)
-    1) Multiple changes in RSS::_serve_getFilteredSortedAndPagedRecords() to use each delegate's
-       getFilteredSortedAndPagedRecords() method to get records
-    2) PSR-2 fixes
-  classes/class.system_copy.php                                                                  1.0.10    (2017-01-02)
-    1) System_Copy::copy() now looks like its parent
-    2) PSR-2 fixes
-  classes/component/activitytabber.php                                                           1.0.8     (2017-01-02)
-    1) ActivityTabber::setupLoadBlockLayout() now looks like its parent
-  classes/component/articlesrotator.php                                                          1.0.12    (2016-12-31)
-    1) ArticlesRotator::setupLoadRecords() now uses newly named getFilteredSortedAndPagedRecords() method
-  classes/component/categorytabber.php                                                           1.0.8     (2017-01-02)
-    1) CategoryTabber::setupLoadBlockLayout() now looks like its parent
-  classes/component/collectionviewer.php                                                         1.0.58    (2016-12-31)
-    1) CollectionViewer::setupLoadPodcastAlbums() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) CollectionViewer::setupLoadPodcasts() now uses newly named getFilteredSortedAndPagedRecords() method
-    3) PSR-2 changes
-  classes/component/communitiesdisplay.php                                                       1.0.11    (2017-01-02)
-    1) PSR-2 changes
-  classes/component/communitycalendar.php                                                        1.0.4     (2017-01-02)
-    1) CommunityCalendar::getSharedSourceLink() modified to look like its parent
-  classes/component/communitymembercalendar.php                                                  1.0.4     (2017-01-02)
-    1) CommunityCalendar::getSharedSourceLink() modified to look like its parent
-  classes/component/latestyoutube.php                                                            1.0.3     (2016-12-31)
-    1) LatestYoutube::setupLoadLatestYoutube() now uses newly named getFilteredSortedAndPagedRecords() method
-  classes/component/searchcategorylist.php                                                       1.0.3     (2016-12-31)
-    1) SearchCategoryList::setupLoadCategories() now uses newly named getFilteredSortedAndPagedRecords() method
-  classes/component/searchwordcloud.php                                                          1.0.5     (2016-12-31)
-    1) SearchWordCloud::setupLoadText() now uses newly named getFilteredSortedAndPagedRecords() method
-  classes/pagedraw.php                                                                           1.0.2     (2016-12-31)
-    1) Renamed PageDraw::draw_detail() to PageDraw::drawDetailForPage()
-  functions.php                                                                                  1.0.21    (2017-01-02)
-    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
+  classes/class.displayable_item.php                                                             1.0.163   (2017-01-14)
+    1) Displayable_Item::draw_listings() fixed bug with broken 'Add...' icon in listings panels
+       Bug was introduced in 4.9.5.2473 (November 27th 2016)
 
-2481.sql
+2482.sql
   1) Set version information
 
-Delete:
-    class.rating.php                                  1.0.6
-
 Promote:
-  codebase.php                                        5.0.0
-  classes/  (38 files changed)
-    class.action.php                                  1.0.24    CS:a6f08fd6
-    class.ajax.php                                    1.0.27    CS:7494877b
-    class.block_layout.php                            1.0.72    CS:6f2a110b
-    class.community_display.php                       1.0.51    CS:9bdbc642
-    class.community_member.php                        1.0.116   CS:f19aa867
-    class.community_member_display.php                1.0.52    CS:47fcdea4
-    class.community_resource.php                      1.0.8     CS:117765d4
-    class.component_events_map.php                    1.0.6     CS:417266f
-    class.crm_case.php                                1.0.13    CS:134c7eff
-    class.custom_form.php                             1.0.43    CS:bc48d4da
-    class.displayable_item.php                        1.0.162   CS:b2f61370
-    class.event.php                                   1.0.110   CS:da75f6de
-    class.export.php                                  1.0.27    CS:8c526ddb
-    class.gallery_image.php                           1.0.26    CS:883caad2
-    class.listtype.php                                1.0.8     CS:f67cbe61
-    class.person.php                                  1.0.130   CS:4f2c9f50
-    class.phpmailer.php                               2.0.2     CS:2ec999d2
-    class.posting.php                                 1.0.130   CS:e5529c59
-    class.posting_contained.php                       1.0.246   CS:92a23530
-    class.posting_container.php                       1.0.7     CS:5525dc30
-    class.product.php                                 1.0.85    CS:be3e9001
-    class.record.php                                  1.0.102   CS:2576f657
-    class.remote.php                                  1.0.14    CS:16557366
-    class.report.php                                  1.0.92    CS:f8be1e99
-    class.report_report.php                           1.0.33    CS:657201e8
-    class.rss.php                                     1.0.32    CS:914ea1a6
-    class.system_copy.php                             1.0.10    CS:6983c21f
-    component/activitytabber.php                      1.0.8     CS:529ed080
-    component/articlesrotator.php                     1.0.12    CS:4135453d
-    component/categorytabber.php                      1.0.8     CS:5c4c24d9
-    component/collectionviewer.php                    1.0.58    CS:23708fa1
-    component/communitiesdisplay.php                  1.0.11    CS:e1f653e5
-    component/communitycalendar.php                   1.0.4     CS:c60783a5
-    component/communitymembercalendar.php             1.0.4     CS:4eb5b20e
-    component/latestyoutube.php                       1.0.3     CS:5e34265a
-    component/searchcategorylist.php                  1.0.3     CS:e1cd3e81
-    component/searchwordcloud.php                     1.0.5     CS:e13d9b74
-    pagedraw.php                                      1.0.2     CS:73c350e3
-  functions.php                                       1.0.21    CS:6bd5d391
+  codebase.php                                        5.0.1
+  classes/  (1 file changed)
+    class.displayable_item.php                        1.0.163   CS:33f56b7d
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

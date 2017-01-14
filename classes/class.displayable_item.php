@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.162 (2016-12-31)
-    1) Displayable_Item::_draw_listings_load_records() now uses getFilteredSortedAndPagedRecords() to get records
-    2) Moved ratings system into here instead of in its own 'magic this' operating class
+  1.0.163 (2017-01-14)
+    1) Displayable_Item::draw_listings() fixed bug with broken 'Add...' icon in listings panels
+       Bug was introduced in 4.9.5.2473 (November 27th 2016)
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.162';
+    const VERSION = '1.0.163';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -658,7 +658,7 @@ class Displayable_Item extends Block_Layout
         }
         $this->_draw_listings_draw_status();
         $this->_common_draw_help();
-        //$this->_draw_listings_draw_add_icon();
+        $this->_draw_listings_draw_add_icon();
         if (count($this->_records)==0) {
             $this->_draw_listings_draw_no_results();
             return $this->_draw_listings_render();

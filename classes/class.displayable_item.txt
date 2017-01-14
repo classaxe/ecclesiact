@@ -1,3 +1,6 @@
+  1.0.162 (2016-12-31)
+    1) Displayable_Item::_draw_listings_load_records() now uses getFilteredSortedAndPagedRecords() to get records
+    2) Moved ratings system into here instead of in its own 'magic this' operating class
   1.0.161 (2016-11-27)
     1) Displayable_Item::_common_load_user_rights() fixes for working with items that don't have 'group_assign_csv'
        or 'ratings_allow' settings, such as Users
