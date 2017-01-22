@@ -1,3 +1,5 @@
+  1.0.14 (2017-01-22)
+    1) \Nav\Style::sample() now has 'Sample' as default text value
   1.0.13 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.12 (2015-08-29)

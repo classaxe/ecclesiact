@@ -1,3 +1,5 @@
+  1.0.141 (2017-01-22)
+    1) Report_Column::drawNavSample() now uses loops and includes text for button state
   1.0.140 (2016-12-03)
     1) Report_Column::draw_form_field() added support for text_fixed
   1.0.139 (2016-11-20)

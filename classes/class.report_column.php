@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.141 (2017-01-22)
-    1) Report_Column::drawNavSample() now uses loops and includes text for button state
+  1.0.142 (2017-01-22)
+    1) Report_Column::drawNavSample() further changes:
+       Now that nav Style Samples now correctly show their state on the button text, removed the text labels added
+       in last version.  Simplified code also.
 */
 class Report_Column extends Record
 {
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.141';
+    const VERSION = '1.0.142';
 
     public function __construct($ID = "")
     {
@@ -3023,36 +3025,15 @@ class Report_Column extends Record
              "url(".BASE_PATH."img/sample/".$submode."/".$value."/"
             .(isset($row['img_checksum']) ? $row['img_checksum'] : '')
             .")";
-        if ($orientation == '|') {
-            $out = "<div>\n";
-            for ($i=0; $i<=3; $i++) {
-                $state = $states[$i];
-                $out.=
-                     "  <div style='float:left; font-size: small; width: 50px; line-height: ".$height."px'>"
-                    .$state
-                    ."</div>"
-                    ."  <img class ='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                    .$url." no-repeat 100% -".($i*$height)."px'   width='".$width."' height='".$height."'"
-                    ." alt='$state' title='$state'/><br class='clr_b' />\n";
-            }
-            $out.=
-                "</div>\n";
-            return $out;
-        }
         $out = "<div>\n";
         for ($i=0; $i<=3; $i++) {
             $state = $states[$i];
             $out.=
-                 "  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                .$url." no-repeat 100% -".($i*$height)."px'   width='".$width."' height='".$height."'"
-                ." alt='$state' title='$state'/>\n";
-        }
-        $out.=
-             "<br class='clr_b' />\n";
-        for ($i=0; $i<=3; $i++) {
-            $state = $states[$i];
-            $out.=
-                "  <div class='fl' style='font-size: small; text-align: center; width:".$width."px'>$state</div>\n";
+                 "  <img class ='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% -".($i*$height)."px' width='".$width."' height='".$height."'"
+                ." alt='Button as seen in &apos;$state&apos; state'"
+                ." title='Button as seen in &apos;$state&apos; state'/>"
+                .($orientation == '|' ? "<br class='clr_b' />\n" : "");
         }
         $out.=
             "</div>\n";

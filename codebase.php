@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.1");
+define("CODEBASE_VERSION", "5.0.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,31 +17,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.1.2482 (2017-01-14)
+5.0.3.2484 (2017-01-22)
 Summary:
-  Bug fix for missing 'Add...' icon in listings for administrators.
-  Thanks Alf D for the bug report
+  Button Style Samples changed again to show states on each button style sample image as they had a while ago before
+  this got broken
 
 Final Checksums:
-  Classes     CS:cdf8f777
+  Classes     CS:586bcd11
   Database    CS:453ad079
-  Libraries   CS:43338ae
+  Libraries   CS:e1d307dd
   Reports     CS:6da4a7d9
 
 Code Changes:
-  codebase.php                                                                                   5.0.1     (2017-01-14)
+  codebase.php                                                                                   5.0.3     (2017-01-22)
     1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.163   (2017-01-14)
-    1) Displayable_Item::draw_listings() fixed bug with broken 'Add...' icon in listings panels
-       Bug was introduced in 4.9.5.2473 (November 27th 2016)
+  classes/class.report_column.php                                                                1.0.142   (2017-01-22)
+    1) Report_Column::drawNavSample() further changes:
+       Now that nav Style Samples now correctly show their state on the button text, removed the text labels added
+       in last version.  Simplified code also.
+  classes/nav/style.php                                                                          1.0.15    (2017-01-22)
+    1) Bug fix for \Nav\Style::sample() to have it once again show actual button states on each button
 
-2482.sql
+2484.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.1
-  classes/  (1 file changed)
-    class.displayable_item.php                        1.0.163   CS:33f56b7d
+  codebase.php                                        5.0.3
+  classes/  (2 files changed)
+    class.report_column.php                           1.0.142   CS:1f1dbcd7
+    nav/style.php                                     1.0.15    CS:2e02fbc4
 
 
 Bug:
