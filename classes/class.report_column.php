@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.140 (2016-12-03)
-    1) Report_Column::draw_form_field() added support for text_fixed
+  1.0.141 (2017-01-22)
+    1) Report_Column::drawNavSample() now uses loops and includes text for button state
 */
 class Report_Column extends Record
 {
-    const FIELDS = 'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.140';
+    const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.141';
 
     public function __construct($ID = "")
     {
@@ -91,8 +91,8 @@ class Report_Column extends Record
     ) {
         global $page, $report_name, $system_vars;
         if ($bulk_update) {
-          // These types cannot be bulk updated so don't even show them
-            switch ($type){
+            // These types cannot be bulk updated so don't even show them
+            switch ($type) {
                 case "file_upload":
                 case "file_upload_to_userfile_folder":
                 case "groups_assign_person":
@@ -111,15 +111,14 @@ class Report_Column extends Record
         if ($bulk_update) {
             $width = $width-20;
         }
-        if (
-            !strpos($width, 'px') &&
+        if (!strpos($width, 'px') &&
             !strpos($width, '%') &&
             !strpos($width, 'em') &&
             !strpos($width, 'en')
         ) {
             $width.="px";
         }
-        switch($type) {
+        switch ($type) {
             case "categories_assign":
             case "checkbox_listdata_csv":
             case "combo_listdata":
@@ -554,7 +553,7 @@ class Report_Column extends Record
                     break;
                 case "button_state_effect_levels":
                 case "button_state_effect_types":
-                    switch ($type){
+                    switch ($type) {
                         case "button_state_effect_levels":
                             $listtype =   "lst_text_effect_levels";
                             break;
@@ -1009,7 +1008,7 @@ class Report_Column extends Record
                         false
                     );
                     return
-                         $_div_open
+                        $_div_open
                         .draw_form_field(
                             $field_loc,
                             $value_loc,
@@ -1657,7 +1656,7 @@ class Report_Column extends Record
                     $field_size =         $field."_size";
                     $value_size =         (isset($row[$field_size]) ?  format_bytes($row[$field_size]) : "");
                     return
-                         "<div class='fl'>"
+                        "<div class='fl'>"
                         .draw_form_field(
                             $field_size,
                             $value_size,
@@ -1809,7 +1808,7 @@ class Report_Column extends Record
                     $yyyy = substr($yyyymmdd, 0, 4);
                     $mm = substr($yyyymmdd, 5, 2);
                     $dd = substr($yyyymmdd, 8, 2);
-                    switch (POSTING_PREFIX){
+                    switch (POSTING_PREFIX) {
                         case "YYYY":
                             $prefix = $yyyy."/";
                             $width = ((int)$width-35);
@@ -1951,7 +1950,13 @@ class Report_Column extends Record
                                  .convert_icons("[ICON]14 14 715 Add new ListType[/ICON]")."</a>"
                             );
                     } else {
-                        $out = static::draw_selector_csv($field, $value, $selectorSQL, $width, ($height ? $height : 35));
+                        $out = static::draw_selector_csv(
+                            $field,
+                            $value,
+                            $selectorSQL,
+                            $width,
+                            ($height ? $height : 35)
+                        );
                     }
                     break;
                 case "selector_csvlist":
@@ -2014,10 +2019,10 @@ class Report_Column extends Record
                 case "selector_link":
                 case "selector_podcast_album":
                     $isMASTERADMIN =    get_person_permission("MASTERADMIN");
-                    $isSYSADMIN =        get_person_permission("SYSADMIN");
-                    $can_add =        ($isMASTERADMIN || $isSYSADMIN);
+                    $isSYSADMIN =       get_person_permission("SYSADMIN");
+                    $can_add =          ($isMASTERADMIN || $isSYSADMIN);
                     if ($can_add) {
-                        switch($type){
+                        switch ($type) {
                             case "selector_contact":
                                 $_report_name = "contact";
                                 $_tooltip =     "Edit Contact";
@@ -2095,8 +2100,7 @@ class Report_Column extends Record
 
                     break;
                 case "selector_url":
-                    if (
-                        $field=='systemID' &&
+                    if ($field=='systemID' &&
                         $value=='' &&
                         ($report_name!='report' && $report_name!='report_columns')
                     ) {
@@ -2325,7 +2329,7 @@ class Report_Column extends Record
                     $field_v_offset =     $field."_v_offset";
                     $value_v_offset =     (isset($row[$field_v_offset]) ? $row[$field_v_offset] : "");
                     return
-                         "<div class='fl'>"
+                        "<div class='fl'>"
                         .draw_form_field(
                             $field_h_align,
                             $value_h_align,
@@ -2404,7 +2408,7 @@ class Report_Column extends Record
                         ."ORDER BY\n"
                         ."  `seq`,`text`";
                     return
-                         "<div class='fl'>"
+                        "<div class='fl'>"
                         .draw_form_field(
                             $field_font_face,
                             $value_font_face,
@@ -2666,7 +2670,7 @@ class Report_Column extends Record
                 break;
         }
       // Place wrapper and label if label not shown inline:
-        switch ($type){
+        switch ($type) {
             case "groups_assign":
             case "groups_assign_person":
             case "html":
@@ -2770,11 +2774,13 @@ class Report_Column extends Record
         if ($selectorSQL!="") {
             $records = static::get_records_for_sql($selectorSQL);
             foreach ($records as $record) {
+                $bgcol =    (isset($record['color_background']) ? $record['color_background'] : 'ffffff');
+                $textcol =  (isset($record['color_text']) ? $record['color_text'] : '000000');
                 $options[] = array(
                     'value' =>              $record['value'],
                     'text' =>               get_image_alt($record['text']),
-                    'color_background' =>   (isset($record['color_background']) ? $record['color_background'] : 'ffffff'),
-                    'color_text' =>         (isset($record['color_text']) ? $record['color_text'] : '000000'),
+                    'color_background' =>   $bgcol,
+                    'color_text' =>         $textcol,
                     'available' =>          true
                 );
             }
@@ -2885,8 +2891,15 @@ class Report_Column extends Record
         return $out;
     }
 
-    public static function draw_radio_selector($field, $value, $entries_arr, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
-    {
+    public static function draw_radio_selector(
+        $field,
+        $value,
+        $entries_arr,
+        $width,
+        $jsCode,
+        $ajax_mode = 0,
+        $stacked = 0
+    ) {
         $out = '';
         if ((int)$width && !$stacked) {
             $out.="<div style='width:".((int)$width)."px'>";
@@ -2928,8 +2941,15 @@ class Report_Column extends Record
         return $out;
     }
 
-    public static function draw_radio_selector_for_sql($field, $value, $sql, $width, $jsCode, $ajax_mode = 0, $stacked = 0)
-    {
+    public static function draw_radio_selector_for_sql(
+        $field,
+        $value,
+        $sql,
+        $width,
+        $jsCode,
+        $ajax_mode = 0,
+        $stacked = 0
+    ) {
         $out =    array();
         $sql =    get_sql_constants($sql);
         $records = static::get_records_for_sql($sql);
@@ -2990,6 +3010,7 @@ class Report_Column extends Record
         $height =       $row['img_height'];
         $width =        $row['img_width'];
         $type =         $row['type'];
+        $states =       array('Active', 'Down', 'Normal', 'Over');
         switch ($type) {
             case "SD Menu":
                 return "SD Menu - no images generated";
@@ -3003,37 +3024,39 @@ class Report_Column extends Record
             .(isset($row['img_checksum']) ? $row['img_checksum'] : '')
             .")";
         if ($orientation == '|') {
-            return
-                 "<div>\n"
-                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
-                ." alt='Active'/>\n"
-                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
-                ." alt='Down'/>\n"
-                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
-                ." alt='Normal'/>\n"
-                ."  <img class='b' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-                .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
-                ." alt='Over'/>\n"
-                ."</div>";
+            $out = "<div>\n";
+            for ($i=0; $i<=3; $i++) {
+                $state = $states[$i];
+                $out.=
+                     "  <div style='float:left; font-size: small; width: 50px; line-height: ".$height."px'>"
+                    .$state
+                    ."</div>"
+                    ."  <img class ='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                    .$url." no-repeat 100% -".($i*$height)."px'   width='".$width."' height='".$height."'"
+                    ." alt='$state' title='$state'/><br class='clr_b' />\n";
+            }
+            $out.=
+                "</div>\n";
+            return $out;
         }
-        return
-             "<div>\n"
-            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-            .$url." no-repeat 100% 0px'   width='".$width."' height='".$height."'"
-            ." alt='Active'/>\n"
-            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-            .$url." no-repeat 100% -".$height."px' width='".$width."' height='".$height."'"
-            ." alt='Down'/>\n"
-            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-            .$url." no-repeat 100% -".(2*$height)."px' width='".$width."' height='".$height."'"
-            ." alt='Normal'/>\n"
-            ."  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
-            .$url." no-repeat 100% -".(3*$height)."px' width='".$width."' height='".$height."'"
-            ." alt='Over'/>\n"
-            ."</div>";
+        $out = "<div>\n";
+        for ($i=0; $i<=3; $i++) {
+            $state = $states[$i];
+            $out.=
+                 "  <img class='fl' src='".BASE_PATH."img/spacer' style='margin:1px;background: "
+                .$url." no-repeat 100% -".($i*$height)."px'   width='".$width."' height='".$height."'"
+                ." alt='$state' title='$state'/>\n";
+        }
+        $out.=
+             "<br class='clr_b' />\n";
+        for ($i=0; $i<=3; $i++) {
+            $state = $states[$i];
+            $out.=
+                "  <div class='fl' style='font-size: small; text-align: center; width:".$width."px'>$state</div>\n";
+        }
+        $out.=
+            "</div>\n";
+        return $out;
     }
 
     public static function draw_select_options($value, $sql)

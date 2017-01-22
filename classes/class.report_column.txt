@@ -1,3 +1,5 @@
+  1.0.140 (2016-12-03)
+    1) Report_Column::draw_form_field() added support for text_fixed
   1.0.139 (2016-11-20)
     1) Added support for 'selected_set_random_password' in Report_Column::draw_selector_with_selected()
     2) Now uses CONST based version control
