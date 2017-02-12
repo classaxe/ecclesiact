@@ -1,3 +1,10 @@
+  1.0.39 (2016-05-06)
+    1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
+       to be Dev sites, so therefore redirects can force them to https as with other sites
+    2) Portal::isDev() DOES now consider accesses to 'well-known' to be treated as Dev sites, bypassing manditory
+       redirects to HTTPs to allow Letsencrypt to function properly
+    3) Any request that involves a path with .well-known now checks document root to see if path exists there.
+       If the path segment can be matched at the document root, the file is returned without any redirect to HTTPS
   1.0.38 (2016-01-01)
     1) Portal::isDev() is now declared statically
   1.0.37 (2015-10-16)

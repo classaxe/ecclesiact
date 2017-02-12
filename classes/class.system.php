@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.175 (2016-12-27)
-    1) System::get_global_date_range() now properly declared as static
+  1.0.176 (2017-02-12)
+    1) Call to System_Health::_getConfigClasses() now changed to System_Health::getConfigClasses()
+    2) Call to System_Health::_getConfigTables()  now changed to Call to System_Health::getConfigTables()
 */
 class System extends Record
 {
-    const VERSION = '1.0.175';
+    const VERSION = '1.0.176';
     const FIELDS = 'ID, archive, textEnglish, debug, debug_no_internet, classes_cs_target, classes_detail, db_cs_target, db_detail, libraries_cs_target, libraries_detail, reports_cs_target, reports_detail, db_custom_tables, db_upgrade_flag, db_version, adminEmail, archiveID, deleted, adminName, akismet_api_key, bounce_email, bugs_password, bugs_username, bugs_url, cal_border, cal_current, cal_current_we, cal_days, cal_event, cal_head, cal_then, cal_then_we, cal_today, colour1, colour2, colour3, colour4, component_parameters, cron_job_heartbeat_last_run, custom_1, custom_2, defaultBgColor, defaultCurrencySuffix, defaultCurrencySymbol, defaultDateFormat, defaultLanguage, defaultLayoutID, defaultTaxZoneID, defaultThemeID, defaultTimeFormat, favicon, features, gatewayID, google_analytics_key, installed_modules, languages, last_user_access, membership_expiry_type, membership_rules, notes, notify_email, notify_triggers, piwik_id, piwik_md5_password, piwik_token, piwik_user, posting_prefix, provider_list, qbwc_AssetAccountRef, qbwc_COGSAccountRef, qbwc_IncomeAccountRef, qbwc_export_orders, qbwc_export_orders_billing_addr, qbwc_export_orders_product_desc, qbwc_export_orders_taxcodes, qbwc_export_people, qbwc_export_products, qbwc_invoice_type, qbwc_user, qbwc_pass, smtp_authenticate, smtp_host, smtp_password, smtp_port, smtp_username, style, system_cancellation_days, system_signup, table_border, table_data, table_header, tax_benefit_1_name, tax_benefit_2_name, tax_benefit_3_name, tax_benefit_4_name, text_heading, timezone, URL, URL_aliases, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const TABLES = 'action, activity, address_substitution, block_layout, case_tasks, cases, category_assign, colour_scheme, comment, community, community_member, community_membership, component, content_block, custom_form, ecl_tags, field_templates, gateway_settings, gateway_type, geocode_cache, group_assign, group_members, groups, keyword_assign, keywords, language_assign, layout, listdata, listtype, mailidentity, mailqueue, mailqueue_item, mailtemplate, membership_rule, module_credits, navbuttons, navstyle, navsuite, order_items, orders, pages, payment_method, person, poll, poll_choice, postings, product, product_grouping, product_relationship, push_product_assign, qb_config, qb_connection, qb_ident, qb_import, qb_log, qb_notify, qb_queue, qb_recur, qb_ticket, qb_user, registerevent, report, report_columns, report_defaults, report_filter, report_filter_criteria, report_settings, scheduled_task, system, tax_code, tax_regime, tax_rule, tax_zone, theme, widget';
 
@@ -471,7 +472,7 @@ class System extends Record
         $args =         explode("/", $request);
 
         $mode =     $args[1];
-        switch($mode){
+        switch ($mode) {
             case "community_member_dashboard":
                 $Obj = new Community_Member;
                 $tab = (isset($args[4]) ? $args[4]: false);
@@ -807,8 +808,7 @@ class System extends Record
                 System::$cache_version[$what] = $status;
                 break;
             case "bugtracker_status":
-                if (
-                    $system_vars['bugs_url']=='' ||
+                if ($system_vars['bugs_url']=='' ||
                     $system_vars['bugs_username']=='' ||
                     $system_vars['bugs_password']==''
                 ) {
@@ -867,7 +867,7 @@ class System extends Record
             case "classes_cs_actual":
                 $_cs_arr = array();
                 $Obj = new System_Health($system_vars['ID']);
-                $Obj->_getConfigClasses($_cs_arr);
+                $Obj->getConfigClasses($_cs_arr);
                 foreach ($_cs_arr as $_cs) {
                     if ($_cs['title'] == 'classes_cs_actual') {
                         System::$cache_version[$what] = ($_cs['content']);

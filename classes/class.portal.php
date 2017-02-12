@@ -1,17 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.39 (2016-05-06)
-    1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
-       to be Dev sites, so therefore redirects can force them to https as with other sites
-    2) Portal::isDev() DOES now consider accesses to 'well-known' to be treated as Dev sites, bypassing manditory
-       redirects to HTTPs to allow Letsencrypt to function properly
-    3) Any request that involves a path with .well-known now checks document root to see if path exists there.
-       If the path segment can be matched at the document root, the file is returned without any redirect to HTTPS
+  1.0.40 (2017-02-12)
+    1) Changes to class names invoked for sitemap.xml and robots.txt generation
+    2) Made protected methods private to keep them clean
+    3) Static calls to internal methods now use static:: rather than Portal::
+    4) Renamed Portal::_parse_request_search_range() to Portal::checkSearchRange()
+    5) Various PSR-2 fixes
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.39';
+    const VERSION = '1.0.40';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -19,7 +18,7 @@ class Portal extends Base
 
     // Objects viewable in single-item mode by entering custom path prefix, e.g. '/2009/06/29/posting-name'
     // To append, add this to custom.php:
-    //   Portal::portal_param_push('path_date_prefixed_types','Team');
+    //   static::portal_param_push('path_date_prefixed_types','Team');
 
     private static $_path_type_prefixed_types = array(
       'Article',
@@ -36,8 +35,90 @@ class Portal extends Base
     );
     // Objects viewable in single-item mode by entering type path prefix, e.g. '/event/123456'
     // To append, add this to custom.php:
-    //   Portal::portal_param_push('path_type_prefixed_types','Team');
+    //   static::portal_param_push('path_type_prefixed_types','Team');
 
+    protected static function checkSearchRange(
+        $request,
+        &$page,
+        &$search_date_start,
+        &$search_date_end,
+        &$search_type
+    ) {
+        if ($request=='') {
+            return false;
+        }
+        $request_arr =  explode("/", $request);
+        if (strlen($request_arr[0])!=4) {
+            return false;
+        }
+        if (!is_numeric($request_arr[0])) {
+            return false; // excludes non numbers
+        }
+        if ((string)$request_arr[0] !== (string)(int)$request_arr[0]) {
+            return false; // excludes 20e2 which otherwise equates to 2000 triggering a search
+        }
+        $path_YYYY =    (int)(float)$request_arr[0];
+        $path_MM =      (isset($request_arr[1]) ? (int)(float)$request_arr[1] : false);
+        $path_DD =      (isset($request_arr[2]) ? (int)(float)$request_arr[2] : false);
+        if (!sanitize('range', $path_YYYY, 1990, 2200, false)) {
+            return false;
+        }
+        $search_date_start =      $path_YYYY;
+        $search_date_end =        $path_YYYY;
+        if (sanitize('range', $path_MM, 1, 12, false)) {
+            $search_date_start.=    "-".lead_zero($path_MM, 2);
+            $search_date_end.=      "-".lead_zero($path_MM, 2);
+        }
+        if (sanitize('range', $path_DD, 1, 31, false)) {
+            $search_date_start.=    "-".lead_zero($path_DD, 2);
+            $search_date_end.=      "-".lead_zero($path_DD, 2);
+        }
+        // Fix start date if it's too short:
+        $search_date_start = substr($search_date_start."-01-01", 0, 10);
+        // Fix end date if it's too short
+        if (strlen($search_date_end)==4) {
+            $search_date_end.="-12-31";
+        } elseif (strlen($search_date_end)==7) {
+            switch (substr($search_date_end, 5, 2)) {
+                // Pay special attention to February:
+                case "02":
+                    $_yyyy = (int)substr($search_date_end, 0, 4);
+                    $_leap = (($_yyyy%4==0) && ($_yyyy%100!=0)) || ($_yyyy%400==0);
+                    $search_date_end .= ($_leap ? "-29" : "-28");
+                    break;
+                case "04":
+                case "06":
+                case "09":
+                case "11":
+                    $search_date_end .= "-30";
+                    break;
+                default:
+                    $search_date_end .= "-31";
+                    break;
+            }
+        }
+        $page =           "search_results";
+        $search_type =    '*';
+        return true;
+    }
+
+    public static function get_request_path($request = false)
+    {
+        if ($request===false) {
+            $request = $_SERVER["REQUEST_URI"];
+        }
+        $request =      urldecode($request);
+        if (strpos($request, '"')!==false) {
+            return "";
+        }
+        $request =      explode("?", $request);
+        $request =      trim($request[0], "/");
+        $request =      substr($request, strlen(BASE_PATH)-1);
+        if ($request != strip_tags($request)) {
+            return "";
+        }
+        return $request;
+    }
 
     public static function isDev()
     {
@@ -64,25 +145,7 @@ class Portal extends Base
             substr($serverhost, 0, 4) === 'old.';
     }
 
-    protected static function get_request_path($request = false)
-    {
-        if ($request===false) {
-            $request = $_SERVER["REQUEST_URI"];
-        }
-        $request =      urldecode($request);
-        if (strpos($request, '"')!==false) {
-            return "";
-        }
-        $request =      explode("?", $request);
-        $request =      trim($request[0], "/");
-        $request =      substr($request, strlen(BASE_PATH)-1);
-        if ($request != strip_tags($request)) {
-            return "";
-        }
-        return $request;
-    }
-
-    public static function parse_request()
+    public static function parseRequest()
     {
         global $goto, $ID, $mode, $submode, $page, $report_name, $targetID;
         global $search_categories, $search_date_start, $search_date_end, $search_keywords;
@@ -99,7 +162,7 @@ class Portal extends Base
             $mode =   "";
             return true;
         }
-        $request = Portal::get_request_path();
+        $request = static::get_request_path();
         if (strpos($request, '.well-known/')!==false) {
             $wellknown = substr($request, strpos($request, '.well-known/'));
             if (file_exists($wellknown)) {
@@ -107,11 +170,11 @@ class Portal extends Base
                 die;
             }
         }
-        Portal::_parse_request_special($request);
-        if (Portal::_parse_request_type_prefix($request, $mode, $ID, $page, $search_type)) {
+        static::parseRequestSpecial($request);
+        if (static::parseRequestTypePrefix($request, $mode, $ID, $page, $search_type)) {
             return true;
         }
-        if (Portal::_parse_request_mode_prefix(
+        if (static::parseRequestModePrefix(
             $request,
             $mode,
             $submode,
@@ -127,22 +190,22 @@ class Portal extends Base
         )) {
             return true;
         }
-        if (Portal::_parse_request_product($request, $mode, $ID)) {
+        if (static::parseRequestProduct($request, $mode, $ID)) {
             return true;
         }
-        if (Portal::_parse_request_posting($request, $mode, $ID)) {
+        if (static::parseRequestPosting($request, $mode, $ID)) {
             return true;
         }
-        if (Portal::_parse_request_search_range($request, $page, $search_date_start, $search_date_end, $search_type)) {
+        if (static::checkSearchRange($request, $page, $search_date_start, $search_date_end, $search_type)) {
             return true;
         }
-        if (Portal::_parse_request_page($page, $mode)) {
+        if (static::parseRequestPage($page, $mode)) {
             return true;
         }
         return false;
     }
 
-    protected static function _parse_request_mode_prefix(
+    private static function parseRequestModePrefix(
         $request,
         &$mode,
         &$submode,
@@ -271,10 +334,10 @@ class Portal extends Base
         }
     }
 
-    protected static function _parse_request_page(&$page, $mode)
+    private static function parseRequestPage(&$page, $mode)
     {
         if ($page=="" && $mode=="") {
-            $page = Portal::get_request_path();
+            $page = static::get_request_path();
             if ($page=='') {
                 $page="home";
             }
@@ -283,7 +346,7 @@ class Portal extends Base
         return false;
     }
 
-    protected static function _parse_request_posting($request, &$mode, &$ID)
+    private static function parseRequestPosting($request, &$mode, &$ID)
     {
         if ($request=='') {
             return false;
@@ -291,7 +354,7 @@ class Portal extends Base
         return Posting::get_match_for_name($request, $mode, $ID);
     }
 
-    protected static function _parse_request_product($request, &$mode, &$ID)
+    private static function parseRequestProduct($request, &$mode, &$ID)
     {
         if ($request=='') {
             return false;
@@ -301,75 +364,10 @@ class Portal extends Base
         }
     }
 
-    protected static function _parse_request_search_range(
-        $request,
-        &$page,
-        &$search_date_start,
-        &$search_date_end,
-        &$search_type
-    ) {
-        if ($request=='') {
-            return false;
-        }
-        $request_arr =  explode("/", $request);
-        if (strlen($request_arr[0])!=4) {
-            return false;
-        }
-        if (!is_numeric($request_arr[0])) {
-            return false; // excludes non numbers
-        }
-        if ((string)$request_arr[0] !== (string)(int)$request_arr[0]) {
-            return false; // excludes 20e2 which otherwise equates to 2000 triggering a search
-        }
-        $path_YYYY =    (int)(float)$request_arr[0];
-        $path_MM =      (isset($request_arr[1]) ? (int)(float)$request_arr[1] : false);
-        $path_DD =      (isset($request_arr[2]) ? (int)(float)$request_arr[2] : false);
-        if (!sanitize('range', $path_YYYY, 1990, 2200, false)) {
-            return false;
-        }
-        $search_date_start =      $path_YYYY;
-        $search_date_end =        $path_YYYY;
-        if (sanitize('range', $path_MM, 1, 12, false)) {
-            $search_date_start.=    "-".lead_zero($path_MM, 2);
-            $search_date_end.=      "-".lead_zero($path_MM, 2);
-        }
-        if (sanitize('range', $path_DD, 1, 31, false)) {
-            $search_date_start.=    "-".lead_zero($path_DD, 2);
-            $search_date_end.=      "-".lead_zero($path_DD, 2);
-        }
-      // Fix start date if it's too short:
-        $search_date_start = substr($search_date_start."-01-01", 0, 10);
-      // Fix end date if it's too short
-        if (strlen($search_date_end)==4) {
-            $search_date_end.="-12-31";
-        } elseif (strlen($search_date_end)==7) {
-            switch(substr($search_date_end, 5, 2)) {
-              // Pay special attention to February:
-                case "02":
-                    $_yyyy = (int)substr($search_date_end, 0, 4);
-                    $_leap = (($_yyyy%4==0) && ($_yyyy%100!=0)) || ($_yyyy%400==0);
-                    $search_date_end .= ($_leap ? "-29" : "-28");
-                    break;
-                case "04":
-                case "06":
-                case "09":
-                case "11":
-                    $search_date_end .= "-30";
-                    break;
-                default:
-                    $search_date_end .= "-31";
-                    break;
-            }
-        }
-        $page =           "search_results";
-        $search_type =    '*';
-        return true;
-    }
-
-    protected static function _parse_request_special($request)
+    private static function parseRequestSpecial($request)
     {
         $request_arr =  explode('/', $request);
-        switch($request_arr[0]){
+        switch ($request_arr[0]) {
             case 'piwik':
                 header("Status: 404 Not Found", true, 404);
                 die('// Piwik not installed');
@@ -380,13 +378,13 @@ class Portal extends Base
                 die;
             break;
             case 'robots.txt':
-                $Obj = new XML_Sitemap;
-                $Obj->draw_robots_txt();
+                $Obj = new RobotsTxt;
+                print $Obj->draw();
                 die;
             break;
             case 'sitemap.xml':
                 $Obj = new XML_Sitemap;
-                $Obj->draw();
+                print $Obj->draw();
                 die;
             break;
             case 'xhtml1-strict-with-iframe.dtd':
@@ -395,10 +393,9 @@ class Portal extends Base
                 die;
             break;
         }
-
     }
 
-    protected static function _parse_request_type_prefix(
+    private static function parseRequestTypePrefix(
         $request,
         &$mode,
         &$ID,
@@ -414,7 +411,7 @@ class Portal extends Base
             return true;
         }
         $path =     implode('/', $request_arr);
-        $posting_prefix_types = Portal::portal_param_get('path_type_prefixed_types');
+        $posting_prefix_types = static::portal_param_get('path_type_prefixed_types');
         foreach ($posting_prefix_types as $_type) {
             $Obj = new $_type;
             if ($path_prefix==$Obj->_get_path_prefix()) {
@@ -443,12 +440,12 @@ class Portal extends Base
 
     public static function portal_param_get($param)
     {
-        switch ($param){
+        switch ($param) {
             case "path_date_prefixed_types":
-                return Portal::$_path_date_prefixed_types;
+                return static::$_path_date_prefixed_types;
             break;
             case "path_type_prefixed_types":
-                return Portal::$_path_type_prefixed_types;
+                return static::$_path_type_prefixed_types;
             break;
         }
         die(__CLASS__."::".__FUNCTION__."() - Parameter '".$param."' is not recognised.");
@@ -456,13 +453,13 @@ class Portal extends Base
 
     public static function portal_param_push($param, $value)
     {
-        switch ($param){
+        switch ($param) {
             case "path_date_prefixed_types":
-                array_push(Portal::$_path_date_prefixed_types, $value);
+                array_push(static::$_path_date_prefixed_types, $value);
                 return true;
             break;
             case "path_type_prefixed_types":
-                array_push(Portal::$_path_type_prefixed_types, $value);
+                array_push(static::$_path_type_prefixed_types, $value);
                 return true;
             break;
         }
@@ -486,7 +483,7 @@ class Portal extends Base
                     }
                     $output = unserialize($r['output_json']);
                     $match_type = $output['geometry']['location_type'];
-                    switch($match_type){
+                    switch ($match_type) {
                         case 'ROOFTOP':
                             $data = array(
                             'match_area' => 0,
@@ -527,7 +524,7 @@ class Portal extends Base
             break;
         }
         die(
-             "<h1>Error - upgrade required</h1>\n"
+            "<h1>Error - upgrade required</h1>\n"
             ."<p>The system must complete an important database upgrade to version ".$row['db_version'].".<br />\n"
             ."This site is running"
             ." <b>".System::get_item_version('system_family')." version ".System::get_item_version('codebase')."</b>"

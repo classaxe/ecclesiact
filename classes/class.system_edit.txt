@@ -1,3 +1,5 @@
+  1.0.37 (2016-01-16)
+    1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
   1.0.36 (2015-12-29)
     1) Added support for new field piwik_md5_password
   1.0.35 (2015-10-10)

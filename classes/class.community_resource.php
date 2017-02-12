@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.8 (2017-01-02)
-    1) Renamed Community_Resource::draw() to Community_Resource::drawResource() to prevent confusion with
-       parent's draw() method which has a different method declaration
+  1.0.9 (2017-02-12)
+    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange()
+    2) Various PSR-2 fixes
 */
 
 class Community_Resource extends Community_Display
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     public function drawResource($cp, $path_extension, $community_record)
     {
@@ -28,14 +28,13 @@ class Community_Resource extends Community_Display
         if (Posting::get_match_for_name($this->_path_extension, $type, $ID)) {
             return $this->drawPosting($type, $ID);
         }
-        if (
-            Portal::_parse_request_search_range(
-                $this->_path_extension,
-                $page,
-                $search_date_start,
-                $search_date_end,
-                $search_type
-            )
+        if (static::checkSearchRange(
+            $this->_path_extension,
+            $page,
+            $search_date_start,
+            $search_date_end,
+            $search_type
+        )
         ) {
             return $this->drawSearchResults($search_date_start, $search_date_end, $search_type);
         }
@@ -62,7 +61,7 @@ class Community_Resource extends Community_Display
     protected function drawPosting($type, $ID)
     {
         global $page_vars;
-        switch ($type){
+        switch ($type) {
             case 'article':
                 $Obj = new Article($ID);
                 break;
@@ -125,7 +124,8 @@ class Community_Resource extends Community_Display
             'search_type' =>                get_var('search_type', $search_type),
             'systemIDs_csv' =>              SYS_ID,
             'show_member' =>                1,
-            'title' =>                      "<h1>Search Results for Community of ".$this->_community_record['title']."</h1>"
+            'title' =>
+                "<h1>Search Results for Community of ".$this->_community_record['title']."</h1>"
         );
         
         $Obj_Search = new Search(SYS_ID);
@@ -157,7 +157,7 @@ class Community_Resource extends Community_Display
     protected function serveJsonp()
     {
         $type = substr($this->_path_extension, 3);
-        switch($type){
+        switch ($type) {
             case 'articles':
                 $Obj = new Community_Article;
                 break;
@@ -178,7 +178,7 @@ class Community_Resource extends Community_Display
             break;
         }
         $Obj->community_record = $this->_community_record;
-        switch($type){
+        switch ($type) {
             case 'calendar':
                 $args = array(
                     'show_controls' =>    0,

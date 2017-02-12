@@ -1,3 +1,5 @@
+  1.0.175 (2016-12-27)
+    1) System::get_global_date_range() now properly declared as static
   1.0.174 (2016-05-13)
     1) System::get_global_date_range() now safely handles case where no valid system IDs are passed
   1.0.173 (2016-01-16)

@@ -1,3 +1,5 @@
+  1.0.11 (2016-12-27)
+    1) Added Community_Member_Resource::drawPhotos() and /photos mode to show profile photos enlarged
   1.0.10 (2016-10-16)
     1) Fixed Community_Member_Resource::_draw_search_results() - was broken
     2) Some work on PSR-2

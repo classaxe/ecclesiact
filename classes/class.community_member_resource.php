@@ -1,22 +1,24 @@
 <?php
 /*
 Version History:
-  1.0.11 (2016-12-27)
-    1) Added Community_Member_Resource::drawPhotos() and /photos mode to show profile photos enlarged
+  1.0.12 (2017-02-12)
+    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange
+    2) Call to Portal::_parse_request_posting() now goes directly to Posting::get_match_for_name()
+    3) Various PSR-2 fixes
 */
 
 class Community_Member_Resource extends Community_Member
 {
-    const VERSION = '1.0.11';
+    const VERSION = '1.0.12';
 
-    protected $_member_name =                   '';
-    protected $_member_page =                   '';
-    protected $_record =                        false;
-    protected $_nav_prev =                false;
-    protected $_nav_next =                false;
+    protected $_member_name =       '';
+    protected $_member_page =       '';
+    protected $_record =            false;
+    protected $_nav_prev =          false;
+    protected $_nav_next =          false;
     protected $_Obj_Community;
-    protected $_selected_section =              '';
-    protected $_section_tabs_arr =              array();
+    protected $_selected_section =  '';
+    protected $_section_tabs_arr =  array();
 
     public function draw($cp, $member_extension)
     {
@@ -33,10 +35,10 @@ class Community_Member_Resource extends Community_Member
         if ($request=='photos') {
             return $this->drawPhotos();
         }
-        if (Portal::_parse_request_posting($request, $type, $ID)) {
+        if (Posting::get_match_for_name($request, $type, $ID)) {
             return $this->drawPosting($type, $ID);
         }
-        if (Portal::_parse_request_search_range($request, $page, $search_date_start, $search_date_end, $search_type)) {
+        if (static::checkSearchRange($request, $page, $search_date_start, $search_date_end, $search_type)) {
             return $this->drawSearchResults($search_date_start, $search_date_end, $search_type);
         }
         throw new Exception("Unknown member resource \"".$request."\"");
@@ -44,7 +46,7 @@ class Community_Member_Resource extends Community_Member
 
     protected function serveJsonp($type)
     {
-        switch($type){
+        switch ($type) {
             case 'articles':
                 $Obj = new Community_Member_Article;
                 break;
@@ -69,7 +71,7 @@ class Community_Member_Resource extends Community_Member
         $Obj->communityID =         $this->_record['communityID'];
         $Obj->memberID =            $this->_record['ID'];
         $Obj->partner_csv =         $this->_record['partner_csv'];
-        switch($type){
+        switch ($type) {
             case 'calendar':
                 $args = array(
                     'show_controls' =>    0,
@@ -130,7 +132,7 @@ class Community_Member_Resource extends Community_Member
 
     protected function drawPosting($type, $ID)
     {
-        switch ($type){
+        switch ($type) {
             case 'article':
                 $Obj = new Article($ID);
                 break;

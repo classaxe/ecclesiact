@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.37 (2016-01-16)
-    1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
+  1.0.38 (2017-02-11)
+    1) Implemented Archive mode under 'Advanced' that prevents search engines
+    2) Multiple PSR-2 fixes
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.37';
+    const VERSION = '1.0.38';
 
     private $_colour_schemeID;
     private $_html;
@@ -18,39 +19,90 @@ class System_Edit extends System
     private $_selected_section;
     private $_submode;
 
-    private function _doInitialActions()
+    public function draw()
+    {
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
+        $this->_submode =           get_var('submode');
+        $this->_colour_schemeID =   get_var('colour_schemeID');
+        $this->_selected_section =  get_var('selected_section', 'general');
+        $this->_isMASTERADMIN =     get_person_permission("MASTERADMIN");
+        $this->_msg =               "";
+        $this->_height =            475;
+        $this->_width =             800;
+        $this->doInitialActions();
+        $this->drawJs();
+        if ($this->_submode=='save_and_close' && $this->_msg=='') {
+            return $this->_html;
+        }
+        $this->setupColourSchemeID();
+        $this->setupSectionTabs();
+        $this->load();
+        $this->drawCss();
+        $this->_html.=
+         draw_form_header("Site Settings", "_help_admin_sites", 0)
+        ."<div style='background:#f0f0ff;width:".$this->_width."px;height:".$this->_height."px;'>\n"
+        .draw_form_field('ID', $this->_get_ID(), 'hidden')."\n"
+        .HTML::draw_section_tabs($this->_section_tabs_arr, 'system', $this->_selected_section);
+        $this->drawSectionGeneral();
+        $this->drawSectionColours();
+        $this->drawSectionCss();
+        $this->drawSectionParameters();
+        $this->drawSectionMembershipRules();
+        $this->drawSectionAdvanced();
+        $this->drawSectionNotes();
+        $this->drawSectionLogs();
+        $this->drawSectionFeatures();
+        $this->drawSectionStatus();
+        $this->_html.=
+             "<div style='clear:both;text-align:center;margin:0.25em 0 0 0;'>"
+            ."<input type='button' id='close_btn' value='Close' onclick=\"window.close()\""
+            ." class='formbutton' style='width: 60px;'/>\n"
+            ."<input type='button' id='save_btn' value='Save' onclick=\""
+            ."geid('close_btn').disabled=1;geid('save_and_close_btn').disabled=1;this.disabled=1;"
+            ."show_popup_please_wait();geid('submode').value='save';geid('form').submit();"
+            ."\" class='formbutton' style='width: 60px;'/>\n"
+            ."<input type='button' id='save_and_close_btn' value='Save and Close'"
+            ." onclick=\"geid('close_btn').disabled=1;geid('save_btn').disabled=1;this.disabled=1;"
+            ."show_popup_please_wait();geid('submode').value='save_and_close';geid('form').submit();"
+            ."\" class='formbutton' style='width: 120px;'/>\n"
+            ."</div>\n"
+            ."</div>\n";
+        return $this->_html;
+    }
+
+    private function doInitialActions()
     {
         switch ($this->_submode) {
             case "delete_file":
-                $this->_doDeleteFiles();
+                $this->doDeleteFiles();
                 break;
             case "delete_scheme":
-                $this->_doDeleteColourscheme();
+                $this->doDeleteColourscheme();
                 break;
             case "load_scheme":
-                $this->_doLoadColourscheme();
+                $this->doLoadColourscheme();
                 break;
             case "save_scheme":
-                $this->_doSaveColourscheme();
+                $this->doSaveColourscheme();
                 break;
         }
       // Check again in case submode changed
         switch ($this->_submode) {
             case 'save':
             case 'save_and_close':
-                $this->_doSave();
+                $this->doSave();
                 break;
         }
     }
 
-    private function _doDeleteColourscheme()
+    private function doDeleteColourscheme()
     {
         $Obj_CS = new Colour_Scheme($this->_colour_schemeID);
         $Obj_CS->delete();
         do_log(0, __CLASS__.'::'.__FUNCTION__.'()', 'delete_scheme', 'Deleted colour scheme '.$this->_colour_schemeID);
     }
 
-    private function _doDeleteFiles()
+    private function doDeleteFiles()
     {
         $Obj_FS = new FileSystem;
         foreach ($_REQUEST as $key => $value) {
@@ -58,7 +110,7 @@ class System_Edit extends System
         }
     }
 
-    private function _doLoadColourscheme()
+    private function doLoadColourscheme()
     {
         if ($this->_colour_schemeID!="") {
             $Obj_CS = new Colour_Scheme($this->_colour_schemeID);
@@ -73,7 +125,7 @@ class System_Edit extends System
         do_log(0, __CLASS__.'::'.__FUNCTION__.'()', 'load_scheme', 'Loaded colour scheme '.$this->_colour_schemeID);
     }
 
-    private function _doSave()
+    private function doSave()
     {
         global $system_vars;
         $this->_posting_prefix_old =    $this->get_field('posting_prefix');
@@ -142,6 +194,7 @@ class System_Edit extends System
         $this->_set_ID($this->update($data));
         if ($this->_isMASTERADMIN) {
             $data = array(
+                'archive'=>                         addslashes(get_var('archive')),
                 'db_custom_tables'=>                addslashes(get_var('db_custom_tables')),
                 'debug'=>                           addslashes(get_var('debug')),
                 'debug_no_internet'=>               addslashes(get_var('debug_no_internet')),
@@ -198,8 +251,7 @@ class System_Edit extends System
                 }
             }
         }
-        if (
-            $this->_isMASTERADMIN &&
+        if ($this->_isMASTERADMIN &&
             get_var('posting_prefix') &&
             get_var('posting_prefix')!=$this->_posting_prefix_old
         ) {
@@ -207,7 +259,7 @@ class System_Edit extends System
         }
     }
 
-    private function _doSaveColourscheme()
+    private function doSaveColourscheme()
     {
         if (!$targetValue=get_var('targetValue')) {
             return;
@@ -240,58 +292,7 @@ class System_Edit extends System
         do_log(0, __CLASS__.'::'.__FUNCTION__.'()', 'save_scheme', 'Saved colour scheme '.$this->_colour_schemeID);
     }
 
-    public function draw()
-    {
-        set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $this->_submode =           get_var('submode');
-        $this->_colour_schemeID =   get_var('colour_schemeID');
-        $this->_selected_section =  get_var('selected_section', 'general');
-        $this->_isMASTERADMIN =     get_person_permission("MASTERADMIN");
-        $this->_msg =               "";
-        $this->_height =            475;
-        $this->_width =             800;
-        $this->_doInitialActions();
-        $this->_drawJs();
-        if ($this->_submode=='save_and_close' && $this->_msg=='') {
-            return $this->_html;
-        }
-        $this->_setupColourSchemeID();
-        $this->_setupSectionTabs();
-        $this->load();
-        $this->_drawCss();
-        $this->_html.=
-         draw_form_header("Site Settings", "_help_admin_sites", 0)
-        ."<div style='background:#f0f0ff;width:".$this->_width."px;height:".$this->_height."px;'>\n"
-        .draw_form_field('ID', $this->_get_ID(), 'hidden')."\n"
-        .HTML::draw_section_tabs($this->_section_tabs_arr, 'system', $this->_selected_section);
-        $this->_drawSectionGeneral();
-        $this->_drawSectionColours();
-        $this->_drawSectionCss();
-        $this->_drawSectionParameters();
-        $this->_drawSectionMembershipRules();
-        $this->_drawSectionAdvanced();
-        $this->_drawSectionNotes();
-        $this->_drawSectionLogs();
-        $this->_drawSectionFeatures();
-        $this->_drawSectionStatus();
-        $this->_html.=
-             "<div style='clear:both;text-align:center;margin:0.25em 0 0 0;'>"
-            ."<input type='button' id='close_btn' value='Close' onclick=\"window.close()\""
-            ." class='formbutton' style='width: 60px;'/>\n"
-            ."<input type='button' id='save_btn' value='Save' onclick=\""
-            ."geid('close_btn').disabled=1;geid('save_and_close_btn').disabled=1;this.disabled=1;"
-            ."show_popup_please_wait();geid('submode').value='save';geid('form').submit();"
-            ."\" class='formbutton' style='width: 60px;'/>\n"
-            ."<input type='button' id='save_and_close_btn' value='Save and Close'"
-            ." onclick=\"geid('close_btn').disabled=1;geid('save_btn').disabled=1;this.disabled=1;"
-            ."show_popup_please_wait();geid('submode').value='save_and_close';geid('form').submit();"
-            ."\" class='formbutton' style='width: 120px;'/>\n"
-            ."</div>\n"
-            ."</div>\n";
-        return $this->_html;
-    }
-
-    private function _drawCss()
+    private function drawCss()
     {
         $base_path = ($this->record['ID']==SYS_ID ? "/" : trim($this->record['URL'], '/')."/");
         Output::push(
@@ -316,7 +317,7 @@ class System_Edit extends System
         );
     }
 
-    private function _drawJs()
+    private function drawJs()
     {
         switch ($this->_submode) {
             case '':
@@ -348,7 +349,7 @@ class System_Edit extends System
         }
     }
 
-    private function _drawSectionAdvanced()
+    private function drawSectionAdvanced()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -359,13 +360,17 @@ class System_Edit extends System
             ."    <div class='val'>"
             .draw_form_field("debug", $this->record['debug'], "bool")
             ."</div>\n"
-            ."    <label style='width:360px' for='debug'><b>SQL Debug File</b> "
-            ."(Affects performance)</label>"
+            ."    <label style='width:120px' for='debug'><b>SQL Debug File</b></label>"
             ."    <div class='val'>"
             .draw_form_field("debug_no_internet", $this->record['debug_no_internet'], "bool")
             ."</div>\n"
-            ."    <label style='width:360px' for='debug'><b>No Internet Mode</b> "
+            ."    <label style='width:280px' for='debug_no_internet'><b>No Internet Mode</b> "
             ."(Disables external services)</label>"
+            ."    <div class='val'>"
+            .draw_form_field("archive", $this->record['archive'], "bool")
+            ."</div>\n"
+            ."    <label style='width:260px' for='archive'><b>Archive Mode</b> "
+            ."(Disallows search engines)</label>"
             ."    <div class='clr_b'></div>\n"
             ."  </div>\n"
             ."  <div class='settings_group'>\n"
@@ -708,7 +713,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _drawSectionCss()
+    private function drawSectionCss()
     {
         $this->_html.=
              draw_section_tab_div('style', $this->_selected_section)
@@ -733,7 +738,7 @@ class System_Edit extends System
             ."</div>\n";
     }
 
-    private function _drawSectionColours()
+    private function drawSectionColours()
     {
         $ObjCalendar = new \Component\CalendarSmall;
         $this->_html.=
@@ -877,7 +882,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _drawSectionFeatures()
+    private function drawSectionFeatures()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -922,10 +927,9 @@ class System_Edit extends System
             ."</td>\n"
             ."                  </tr>\n"
             ."                </table></div>";
-
     }
 
-    private function _drawSectionGeneral()
+    private function drawSectionGeneral()
     {
         $this->_html.=
              draw_section_tab_div('general', $this->_selected_section)
@@ -1136,7 +1140,8 @@ class System_Edit extends System
                 "100px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:155px'>&nbsp; &nbsp; <b>Status:</b> ".$this->_getAkismetKeyStatus()."</div>\n"
+            ."    <div class='val' style='width:155px'>&nbsp; &nbsp; <b>Status:</b> "
+            .$this->getAkismetKeyStatus()."</div>\n"
             ."    <div class='lbl' style='width:190px'><b>Google Analytics Key "
             ."<a href='http://www.google.com/analytics' rel='external'>Get ID</a></b></div>\n"
             ."    <div class='val'>"
@@ -1182,7 +1187,7 @@ class System_Edit extends System
                 "45px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->_getBugtrackerStatus()."</div>\n"
+            ."    <div class='val' style='width:102px'><b>Status:</b> ".$this->getBugtrackerStatus()."</div>\n"
             ."    <div class='clr_b'></div>\n"
 
             ."    <div class='lbl' style='width:170px'><b>Piwik ID</b></div>\n"
@@ -1278,7 +1283,7 @@ class System_Edit extends System
             ."</div>\n";
     }
 
-    private function _drawSectionLogs()
+    private function drawSectionLogs()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -1309,7 +1314,7 @@ class System_Edit extends System
     }
 
 
-    private function _drawSectionMembershipRules()
+    private function drawSectionMembershipRules()
     {
         if (!$this->_isMASTERADMIN || System::has_feature('Membership-Renewal')) {
             return;
@@ -1346,7 +1351,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _drawSectionNotes()
+    private function drawSectionNotes()
     {
         if (!$this->_isMASTERADMIN) {
             return;
@@ -1372,7 +1377,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _drawSectionParameters()
+    private function drawSectionParameters()
     {
         $this->_html.=
              draw_section_tab_div('parameters', $this->_selected_section)
@@ -1397,7 +1402,7 @@ class System_Edit extends System
             ."</div>";
     }
 
-    private function _drawSectionStatus()
+    private function drawSectionStatus()
     {
         $remote_url = get_var('remote_url', 'http://');
         $Obj_System_Health = new System_Health($this->_get_ID());
@@ -1441,7 +1446,7 @@ class System_Edit extends System
         ."</div>\n";
     }
 
-    private function _getAkismetKeyStatus()
+    private function getAkismetKeyStatus()
     {
         $status = System::get_item_version('akismet_key_status');
         return
@@ -1452,7 +1457,7 @@ class System_Edit extends System
         );
     }
 
-    private function _getBugtrackerStatus()
+    private function getBugtrackerStatus()
     {
         $status = System::get_item_version('bugtracker_status');
         return
@@ -1463,12 +1468,12 @@ class System_Edit extends System
         );
     }
 
-    private function _setupColourSchemeID()
+    private function setupColourSchemeID()
     {
         $this->_colour_schemeID =       Colour_Scheme::get_match($this->_get_ID());
     }
 
-    private function _setupSectionTabs()
+    private function setupSectionTabs()
     {
         if ($this->_isMASTERADMIN) {
             $this->_section_tabs_arr = array(
@@ -1495,10 +1500,5 @@ class System_Edit extends System
             }
             $this->_section_tabs_arr[] = array('ID'=>'status','label'=>'Status');
         }
-    }
-
-    public static function getVersion()
-    {
-        return System_Edit::VERSION;
     }
 }

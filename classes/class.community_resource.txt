@@ -1,3 +1,6 @@
+  1.0.8 (2017-01-02)
+    1) Renamed Community_Resource::draw() to Community_Resource::drawResource() to prevent confusion with
+       parent's draw() method which has a different method declaration
   1.0.7 (2016-10-16)
     1) Fixed Community_Resource::drawSearchResults() - was broken
   1.0.6 (2016-03-20)
