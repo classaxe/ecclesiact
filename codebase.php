@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.4");
+define("CODEBASE_VERSION", "5.0.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,30 +17,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.4.2485 (2017-04-09)
+5.0.5.2486 (2017-04-09)
 Summary:
-  Switched off reftagger in communities listing for contact, summary and members panels
-  (Members panel is used for ministerial listings only)
+  Community seasonal events shared links anchor same category in member. Member seasonal events tabs now highlighted
 
 Final Checksums:
-  Classes     CS:4ce240f8
+  Classes     CS:c15019bb
   Database    CS:4317aaaa
-  Libraries   CS:8bcadc90
+  Libraries   CS:14824009
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.4     (2017-04-09)
+  codebase.php                                                                                   5.0.5     (2017-04-09)
     1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.53    (2017-04-09)
-    1) Switched off reftagger in communities listing for contact, summary and members panels
+  classes/class.community_event.php                                                              1.0.5     (2017-04-09)
+    1) Anchors for shared source links in community events now anchor to Christmas or Easter if either category
+       has been applies to the event in question.
+  classes/class.community_member_display.php                                                     1.0.54    (2017-04-09)
+    1) Highlighted tabs for Christmas and Easter
 
-2484.sql
+2486.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.4
-  classes/  (1 file changed)
-    class.community_member_display.php                1.0.53    CS:47743485
+  codebase.php                                        5.0.5
+  classes/  (2 files changed)
+    class.community_event.php                         1.0.5     CS:5efacaeb
+    class.community_member_display.php                1.0.54    CS:e534de78
 
 
 Bug:

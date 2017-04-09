@@ -1,3 +1,5 @@
+  1.0.53 (2017-04-09)
+    1) Switched off reftagger in communities listing for contact, summary and members panels
   1.0.52 (2016-12-31)
     1) Community_Member_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
     2) Multi-clause 'if' statements no longer enclosed using double brackets trick

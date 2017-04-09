@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.4 (2016-01-18)
-    1) Fixes for PHP 5.6 - no more 'magic this' passing, now uses delegate pattern throughout
+  1.0.5 (2017-04-09)
+    1) Anchors for shared source links in community events now anchor to Christmas or Easter if either category
+       has been applies to the event in question.
 */
 
 class Community_Event extends Event
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     public function __construct()
     {
@@ -24,7 +25,15 @@ class Community_Event extends Event
 
     protected function BL_shared_source_link()
     {
-        return Community_Posting::BLsharedSourceLinkWithDelegate($this, '#calendar');
+        $categories =   explode(', ', strtolower($this->record['category']));
+        if (in_array('christmas', $categories)) {
+            $anchor =   '#christmas';
+        } elseif (in_array('easter', $categories)) {
+            $anchor =   '#easter';
+        } else {
+            $anchor =       '';
+        }
+        return Community_Posting::BLsharedSourceLinkWithDelegate($this, $anchor);
     }
 
     protected function BL_category()

@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.53 (2017-04-09)
-    1) Switched off reftagger in communities listing for contact, summary and members panels
+  1.0.54 (2017-04-09)
+    1) Highlighted tabs for Christmas and Easter
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.53';
+    const VERSION = '1.0.54';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -87,7 +87,17 @@ class Community_Member_Display extends Community_Member
             .".profile_frame .photo_frame .member_photo_frame { width: "
             .(($this->_cp['profile_photo_width']))."px; height:".(($this->_cp['profile_photo_height']))."px; }\n"
             ."#section_special_heading { background-color: #ffd0d0; }\n"
-            ."#section_special_heading.tab_selected { background-color: #ffa0a0; }\n";
+            ."#section_special_heading.tab_selected { background-color: #ffa0a0; }\n"
+            ."#section_christmas_heading,\n"
+            ."#section_easter_heading,\n"
+            ."#section_special_heading {\n"
+            ."  background-color: #ffd0d0;\n"
+            ."}\n"
+            ."#section_christmas_heading.tab_selected\n"
+            ."#section_easter_heading.tab_selected,\n"
+            ."#section_special_heading.tab_selected {\n"
+            ."  background-color: #ffa0a0;\n"
+            ."}\n";
         Output::push('style', $css);
     }
 
