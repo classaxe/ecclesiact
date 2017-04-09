@@ -1,3 +1,7 @@
+  1.0.52 (2016-12-31)
+    1) Community_Member_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) Multi-clause 'if' statements no longer enclosed using double brackets trick
+    3) Some PSR-2 fixes
   1.0.51 (2016-12-27)
     1) Community_Member_Display::drawProfile() now provides link to view enlarged photos
   1.0.50 (2016-12-26)

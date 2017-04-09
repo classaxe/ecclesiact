@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.3");
+define("CODEBASE_VERSION", "5.0.4");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,59 +17,31 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.3.2484 (2017-02-12)
+5.0.4.2485 (2017-04-09)
 Summary:
-  Created archive mode for sites which disables sitemap.xml and sets robots.txt to disallow all search engine indexing
+  Switched off reftagger in communities listing for contact, summary and members panels
+  (Members panel is used for ministerial listings only)
 
 Final Checksums:
-  Classes     CS:6178cf61
+  Classes     CS:4ce240f8
   Database    CS:4317aaaa
-  Libraries   CS:e1d307dd
+  Libraries   CS:8bcadc90
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.3     (2017-02-12)
+  codebase.php                                                                                   5.0.4     (2017-04-09)
     1) Updated version information
-  classes/class.community_member_resource.php                                                    1.0.12    (2017-02-12)
-    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange
-    2) Call to Portal::_parse_request_posting() now goes directly to Posting::get_match_for_name()
-    3) Various PSR-2 fixes
-  classes/class.community_resource.php                                                           1.0.9     (2017-02-12)
-    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange()
-    2) Various PSR-2 fixes
-  classes/class.portal.php                                                                       1.0.40    (2017-02-12)
-    1) Changes to class names invoked for sitemap.xml and robots.txt generation
-    2) Made protected methods private to keep them clean
-    3) Static calls to internal methods now use static:: rather than Portal::
-    4) Renamed Portal::_parse_request_search_range() to Portal::checkSearchRange()
-    5) Various PSR-2 fixes
-  classes/class.system.php                                                                       1.0.176   (2017-02-12)
-    1) Call to System_Health::_getConfigClasses() now changed to System_Health::getConfigClasses()
-    2) Call to System_Health::_getConfigTables()  now changed to Call to System_Health::getConfigTables()
-  classes/class.system_edit.php                                                                  1.0.38    (2017-02-11)
-    1) Implemented Archive mode under 'Advanced' that prevents search engines
-    2) Multiple PSR-2 fixes
-  classes/class.system_health.php                                                                1.0.49    (2017-02-12)
-    1) Eliminated warnings that may be seen when a class is a new addition for the build
-  classes/class.xml_sitemap.php                                                                  1.0.5     (2017-02-11)
-    1) Implemented Archive mode for sites that disables robots.txt and sitemap.xml
-    2) Moved code dealing with robots.txt generation into its own class
-    3) Multiple PSR-2 fixes
+  classes/class.community_member_display.php                                                     1.0.53    (2017-04-09)
+    1) Switched off reftagger in communities listing for contact, summary and members panels
 
 2484.sql
-  1) Added archive column and filter to 'system' report
-  2) Set version information
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.0.3
-  classes/  (7 files changed)
-    class.community_member_resource.php               1.0.12    CS:e6c3c36a
-    class.community_resource.php                      1.0.9     CS:fd59e8d
-    class.portal.php                                  1.0.40    CS:c4844f92
-    class.system.php                                  1.0.176   CS:1946eeaf
-    class.system_edit.php                             1.0.38    CS:6d620c7e
-    class.system_health.php                           1.0.49    CS:7cbf206f
-    class.xml_sitemap.php                             1.0.5     CS:c254e3c7
+  codebase.php                                        5.0.4
+  classes/  (1 file changed)
+    class.community_member_display.php                1.0.53    CS:47743485
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

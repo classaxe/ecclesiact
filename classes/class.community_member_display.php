@@ -5,14 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.52 (2016-12-31)
-    1) Community_Member_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) Multi-clause 'if' statements no longer enclosed using double brackets trick
-    3) Some PSR-2 fixes
+  1.0.53 (2017-04-09)
+    1) Switched off reftagger in communities listing for contact, summary and members panels
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.52';
+    const VERSION = '1.0.53';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -262,7 +260,7 @@ class Community_Member_Display extends Community_Member
              HTML::drawSectionTabDiv('contact', $this->_selected_section)
             ."<div class='inner'>"
             ."<h2>Contact ".htmlentities($this->_record['title'])."</h2><br />\n"
-            ."<div class='addresses'>\n"
+            ."<div class='addresses noref'>\n"
             .($phone || $notes || $hours ? "<div>" : "")
             .($phone ? "<h3>Telephone</h3>".$phone."\n" : "")
             .($notes ? "<h3>Notes</h3>".$notes."\n" : "")
@@ -687,7 +685,7 @@ class Community_Member_Display extends Community_Member
         }
         $this->_html.=
              HTML::drawSectionTabDiv('map', $this->_selected_section)
-            ."<div class='inner'>"
+            ."<div class='inner noref'>"
             ."<h2>Map for ".htmlentities($this->_record['title'])."</h2>\n";
         $Obj_Map =      new Google_Map('community_member', SYS_ID);
         $Obj_Map->map_centre(
@@ -758,7 +756,7 @@ class Community_Member_Display extends Community_Member
         }
         $this->_html.=
              HTML::drawSectionTabDiv('members', $this->_selected_section)
-            ."<div class='inner'>"
+            ."<div class='inner noref'>"
             ."<h2>Members of ".$this->_record['title']."</h2>"
             ."<ul class=\"cross churches_spaced\">\n";
         foreach ($entries as $r) {
@@ -1119,7 +1117,7 @@ class Community_Member_Display extends Community_Member
                ""
             )
             ."</div>"
-            ."<div class='details'>\n"
+            ."<div class='details noref'>\n"
             ."<div class='details_c1'>\n"
             .($r['date_survey_returned']!='0000-00-00' ?
                  "<h3>Information Verified by Member:</h3>"
