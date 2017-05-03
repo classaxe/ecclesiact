@@ -1,3 +1,6 @@
+  1.0.131 (2017-05-03)
+    1) Posting::_get_records_get_sql() now accepts a csv list for filter_container_path argument -
+       Used in APB to show sponsors in gold, silver or platinum folder trees
   1.0.130 (2016-12-31)
     1) Posting::get_records() now renamed Posting::getFilteredSortedAndPagedRecords()
     2) PSR-2 fixes
