@@ -1,3 +1,6 @@
+  1.0.130 (2016-12-31)
+    1) Posting::get_records() now renamed Posting::getFilteredSortedAndPagedRecords()
+    2) PSR-2 fixes
   1.0.129 (2016-12-26)
     1) Added no_watermark to fields list
   1.0.128 (2016-10-16)

@@ -1,9 +1,9 @@
 <?php
-define("VERSION", "2.0.98");
+define("VERSION", "2.0.99");
 /*
 Version History:
-  2.0.98 (2016-12-26)
-    1) Reduced opacity of watermark from 80% to 60%
+  2.0.99 (2017-05-03)
+    1) Modes img/wm and /img/resize no longer enforce maintaining of aspect ratio - was messing up image faders
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -174,7 +174,6 @@ switch ($request_arr[0]) {
                 break;
             case "resize":
                 $_REQUEST['resize'] = 1;
-                $_REQUEST['maintain'] = 1;
                 if (isset($request_arr[2])) {
                     array_splice($request_arr, 0, 2);
                     $_REQUEST['img']=BASE_PATH.trim(implode('/', $request_arr), '/');
@@ -268,7 +267,6 @@ switch ($request_arr[0]) {
                 break;
             case "wm":
                 $_REQUEST['resize'] = 1;
-                $_REQUEST['maintain'] = 1;
                 $_REQUEST['wm'] = 1;
                 if (isset($request_arr[2])) {
                     array_splice($request_arr, 0, 2);

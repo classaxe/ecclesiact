@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.5");
+define("CODEBASE_VERSION", "5.0.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,33 +17,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.5.2486 (2017-04-09)
+5.0.6.2487 (2017-05-03)
 Summary:
-  Community seasonal events shared links anchor same category in member. Member seasonal events tabs now highlighted
+  Components that accept filtering of entities according to filter_container_path now accept csv list of choices
+  Used with APB Wowslider for sponsors in three specific folders
+  Image streamer no longer enforces mantain=1 for modes resize and wm - was causing issues where used by Wowslider
 
 Final Checksums:
-  Classes     CS:c15019bb
+  Classes     CS:31788a85
   Database    CS:4317aaaa
-  Libraries   CS:14824009
+  Libraries   CS:f99ddbe6
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.5     (2017-04-09)
+  codebase.php                                                                                   5.0.6     (2017-05-03)
     1) Updated version information
-  classes/class.community_event.php                                                              1.0.5     (2017-04-09)
-    1) Anchors for shared source links in community events now anchor to Christmas or Easter if either category
-       has been applies to the event in question.
-  classes/class.community_member_display.php                                                     1.0.54    (2017-04-09)
-    1) Highlighted tabs for Christmas and Easter
+  classes/class.posting.php                                                                      1.0.131   (2017-05-03)
+    1) Posting::_get_records_get_sql() now accepts a csv list for filter_container_path argument -
+       Used in APB to show sponsors in gold, silver or platinum folder trees
+  img.php                                                                                        2.0.99    (2017-05-03)
+    1) Modes img/wm and /img/resize no longer enforce maintaining of aspect ratio - was messing up image faders
 
-2486.sql
+2487.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.5
-  classes/  (2 files changed)
-    class.community_event.php                         1.0.5     CS:5efacaeb
-    class.community_member_display.php                1.0.54    CS:e534de78
+  codebase.php                                        5.0.6
+  classes/  (1 file changed)
+    class.posting.php                                 1.0.131   CS:a633ac5e
+  img.php                                             2.0.99    CS:5d0962d0
 
 
 Bug:
