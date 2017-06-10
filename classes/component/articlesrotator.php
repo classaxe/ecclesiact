@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.12 (2016-12-31)
-    1) ArticlesRotator::setupLoadRecords() now uses newly named getFilteredSortedAndPagedRecords() method
+  1.0.13 (2017-06-10)
+    1) New cp for 'thumbnail_maintain_aspect' and fixed broken propagation of thumbnail_height
 */
 class ArticlesRotator extends Base
 {
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
 
     protected $_ObjArticle;
     protected $_records;
@@ -19,167 +19,177 @@ class ArticlesRotator extends Base
     {
         $this->_ident =             "articles_rotator";
         $this->_parameter_spec =    array(
-            'author_show' =>            array(
+            'author_show' =>                array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'block_layout' =>           array(
+            'block_layout' =>               array(
                 'match' =>      '',
                 'default' =>    'Articles',
                 'hint' =>       'Name of Block Layout to use'
             ),
-            'category_show' =>          array(
+            'category_show' =>              array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'content_char_limit' =>     array(
+            'content_char_limit' =>         array(
                 'match' =>      'range|0,n',
                 'default' =>    '0',
                 'hint' =>       '0..n'
             ),
-            'content_plaintext' =>      array(
+            'content_plaintext' =>          array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'content_show' =>           array(
+            'content_show' =>               array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'content_use_summary' =>    array(
+            'content_use_summary' =>        array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'date_show' =>              array(
+            'date_show' =>                  array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
             ),
-            'extra_fields_list' =>      array(
+            'extra_fields_list' =>          array(
                 'match' =>      '',
                 'default' =>    '',
                 'hint' =>       'CSV list format: field|label|group,field|label|group...'
             ),
-            'filter_category_list' =>   array(
+            'filter_category_list' =>       array(
                 'match' =>      '',
                 'default' =>    '*',
                 'hint' =>       '*|CSV value list'
             ),
-            'filter_category_master' => array(
+            'filter_category_master' =>     array(
                 'match' =>      '',
                 'default' =>    '',
                 'hint' =>       'Optionally INSIST on this category'
             ),
-            'filter_memberID' =>        array(
+            'filter_memberID' =>            array(
                 'match' =>      'range|0,n',
                 'default' =>    '',
                 'hint' =>       'ID of Community Member to restrict by that criteria'
             ),
-            'filter_personID' =>        array(
+            'filter_personID' =>            array(
                 'match' =>      'range|0,n',
                 'default' =>    '',
                 'hint' =>       'ID of Person to restrict by that criteria'
             ),
-            'headers_show' =>           array(
+            'headers_show' =>               array(
                 'match' =>      'enum|0,1,2',
                 'default' =>    '0',
                 'hint' =>       '0|1|2'
             ),
-            'item_footer_component' =>  array(
+            'item_footer_component' =>      array(
                 'match' =>      '',
                 'default' =>    '',
                 'hint' =>       'Name of component rendered below each displayed Article'
             ),
-            'keywords_show' =>          array(
+            'keywords_show' =>              array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
             ),
-            'links_point_to_URL' =>     array(
+            'links_point_to_URL' =>         array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1 - If there is a URL, both title and thumbnails links go to it'
             ),
-            'limit_featured' =>         array(
+            'limit_featured' =>             array(
                 'match' =>      'range|0,n',
                 'default' =>    '1',
                 'hint' =>       '0..n'
             ),
-            'limit_rotated' =>          array(
+            'limit_rotated' =>              array(
                 'match' =>      'range|0,n',
                 'default' =>    '1',
                 'hint' =>       '0..n'
             ),
-            'limit_other' =>            array(
+            'limit_other' =>                array(
                 'match' =>      'range|0,n',
                 'default' =>    '1',
                 'hint' =>       '0..n'
             ),
-            'more_link_text' =>         array(
+            'more_link_text' =>             array(
                 'match' =>      '',
                 'default' =>    '(More)',
                 'hint' =>       'text for \'Read More\' link'
             ),
-            'related_show' =>           array(
+            'related_show' =>               array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'results_order' =>          array(
+            'results_order' =>              array(
                 'match' =>      'enum|date,title',
                 'default' =>    'date',
                 'hint' =>       'date|title'
             ),
-            'results_limit' =>          array(
+            'results_limit' =>              array(
                 'match' =>      'range|0,n',
                 'default' =>    '3',
                 'hint' =>       '0..n'
             ),
-            'subtitle_show' =>          array(
+            'subtitle_show' =>              array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'thumbnail_at_top' =>       array(
+            'thumbnail_at_top' =>           array(
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
             ),
-            'thumbnail_image' =>        array(
+            'thumbnail_height' =>           array(
+                'match' =>      'range|1,n',
+                'default' =>    '300',
+                'hint' =>       '|1..n or blank - height in px to resize'
+            ),
+            'thumbnail_image' =>            array(
                 'match' =>      'enum|s,m,l',
                 'default' =>    's',
                 'hint' =>       's|m|l - Choose only \'s\' unless Multiple-Thumbnails option is enabled'
             ),
-            'thumbnail_link' =>         array(
+            'thumbnail_link' =>             array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
             ),
-            'thumbnail_show' =>         array(
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
+            ),
+            'thumbnail_show' =>             array(
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
             ),
-            'thumbnail_width' =>        array(
+            'thumbnail_width' =>            array(
                 'match' =>      '',
                 'default' =>    '',
                 'hint' =>       '|0..n - give width in px to resize'
             ),
-            'title_featured' =>         array(
+            'title_featured' =>             array(
                 'match' =>      '',
                 'default' =>    'Featured Article',
                 'hint' =>       'title (not plural)'
             ),
-            'title_rotated' =>          array(
+            'title_rotated' =>              array(
                 'match' =>      '',
                 'default' =>    'Other Article',
                 'hint' =>       'title (not plural)'
             ),
-            'title_other' =>            array(
+            'title_other' =>                array(
                 'match' =>      '',
                 'default' =>    'Additional Article',
                 'hint' =>       'title (not plural)'
@@ -316,25 +326,27 @@ class ArticlesRotator extends Base
     protected function drawFromRecordSet($items)
     {
         $args = array(
-            'author_show' =>            $this->_cp['author_show'],
-            'block_layout' =>           $this->_cp['block_layout'],
-            'category_show' =>          $this->_cp['category_show'],
-            'content_char_limit' =>     $this->_cp['content_char_limit'],
-            'content_plaintext' =>      $this->_cp['content_plaintext'],
-            'content_show' =>           $this->_cp['content_show'],
-            'content_use_summary' =>    $this->_cp['content_use_summary'],
-            'extra_fields_list' =>      $this->_cp['extra_fields_list'],
-            'date_show' =>              $this->_cp['date_show'],
-            'item_footer_component' =>  $this->_cp['item_footer_component'],
-            'links_point_to_URL' =>     $this->_cp['links_point_to_URL'],
-            'more_link_text' =>         $this->_cp['more_link_text'],
-            'related_show' =>           $this->_cp['related_show'],
-            'subtitle_show' =>          $this->_cp['subtitle_show'],
-            'thumbnail_at_top' =>       $this->_cp['thumbnail_at_top'],
-            'thumbnail_image' =>        $this->_cp['thumbnail_image'],
-            'thumbnail_link' =>         $this->_cp['thumbnail_link'],
-            'thumbnail_show' =>         $this->_cp['thumbnail_show'],
-            'thumbnail_width' =>        $this->_cp['thumbnail_width']
+            'author_show' =>                $this->_cp['author_show'],
+            'block_layout' =>               $this->_cp['block_layout'],
+            'category_show' =>              $this->_cp['category_show'],
+            'content_char_limit' =>         $this->_cp['content_char_limit'],
+            'content_plaintext' =>          $this->_cp['content_plaintext'],
+            'content_show' =>               $this->_cp['content_show'],
+            'content_use_summary' =>        $this->_cp['content_use_summary'],
+            'extra_fields_list' =>          $this->_cp['extra_fields_list'],
+            'date_show' =>                  $this->_cp['date_show'],
+            'item_footer_component' =>      $this->_cp['item_footer_component'],
+            'links_point_to_URL' =>         $this->_cp['links_point_to_URL'],
+            'more_link_text' =>             $this->_cp['more_link_text'],
+            'related_show' =>               $this->_cp['related_show'],
+            'subtitle_show' =>              $this->_cp['subtitle_show'],
+            'thumbnail_at_top' =>           $this->_cp['thumbnail_at_top'],
+            'thumbnail_height' =>           $this->_cp['thumbnail_height'],
+            'thumbnail_image' =>            $this->_cp['thumbnail_image'],
+            'thumbnail_link' =>             $this->_cp['thumbnail_link'],
+            'thumbnail_maintain_aspect' =>  $this->_cp['thumbnail_maintain_aspect'],
+            'thumbnail_show' =>             $this->_cp['thumbnail_show'],
+            'thumbnail_width' =>            $this->_cp['thumbnail_width']
         );
         $this->_html.= $this->_ObjArticle->draw_from_recordset($items, $args);
     }

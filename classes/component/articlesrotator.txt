@@ -1,3 +1,5 @@
+  1.0.12 (2016-12-31)
+    1) ArticlesRotator::setupLoadRecords() now uses newly named getFilteredSortedAndPagedRecords() method
   1.0.11 (2016-03-26)
     1) ArticlesRotator::setupLoadRecords() replaced parameter filter_category with filter_category_list
   1.0.10 (2016-03-15)

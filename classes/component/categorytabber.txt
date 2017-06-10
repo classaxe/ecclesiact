@@ -1,3 +1,5 @@
+  1.0.8 (2017-01-02)
+    1) CategoryTabber::setupLoadBlockLayout() now looks like its parent
   1.0.7 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.6 (2015-07-26)

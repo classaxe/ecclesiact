@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.72 (2017-01-02)
-    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
+  1.0.73 (2017-06-10)
+    1) Block_Layout::BL_thumbnail_image() now handles thumbnail_maintain_aspect cp
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.72';
+    const VERSION = '1.0.73';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -883,36 +883,32 @@ class Block_Layout extends Record
         } else {
             $read_link = $this->BL_link();
         }
+        $thumbnail_img_parts = array();
+        if (isset($this->_cp['thumbnail_height']) && $this->_cp['thumbnail_height']) {
+            $thumbnail_img_parts[] = "height=".$this->_cp['thumbnail_height'];
+        }
+        if (isset($this->_cp['thumbnail_maintain_aspect']) && $this->_cp['thumbnail_maintain_aspect']) {
+            $thumbnail_img_parts[] = "maintain=".$this->_cp['thumbnail_maintain_aspect'];
+        }
+        if (isset($this->_cp['thumbnail_width']) && $this->_cp['thumbnail_width']) {
+            $thumbnail_img_parts[] = "width=".$this->_cp['thumbnail_width'];
+        }
+        if ($cs) {
+            $thumbnail_img_parts[] = "cs=".$cs;
+        }
+        $thumbnail_img_parts[] = "maintain=1";
         $thumbnail_img =
-        ($this->_cp['thumbnail_width'] ?
-         ($this->_cp['thumbnail_height'] ?
-             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
-            ."?width=".$this->_cp['thumbnail_width']
-            ."&amp;height=".$this->_cp['thumbnail_height']
-            .($cs ? "&amp;cs=".$cs : "")
-          :
-             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
-            ."?width=".$this->_cp['thumbnail_width']
-            .($cs ? "&amp;cs=".$cs : "")
-         )
-         :
-         ($this->_cp['thumbnail_height'] ?
-             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
-            ."?height=".$this->_cp['thumbnail_height']
-            .($cs ? "&amp;cs=".$cs : "")
-          :
-             BASE_PATH."img/".($wm ? "wm" : "resize").$thumbnail_file
-            ."?"
-            .($cs ? "&amp;cs=".$cs : "")
-         )
-        );
+             BASE_PATH."img/"
+            .($wm ? "wm" : "resize")
+            .$thumbnail_file
+            .($thumbnail_img_parts ? "?".implode("&amp;", $thumbnail_img_parts) : "");
         return
-        "<div class='thumbnail'>"
-        .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? $read_link : "")
-        ."<img class=\"thumbnail_".$image_letter."\" role=\"presentation\" alt=\"".$this->record['title']."\""
-        ." src=\"".$thumbnail_img."\" />"
-        .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? "</a>" : "")
-        ."</div>";
+             "<div class='thumbnail'>"
+            .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? $read_link : "")
+            ."<img class=\"thumbnail_".$image_letter."\" role=\"presentation\" alt=\"".$this->record['title']."\""
+            ." src=\"".$thumbnail_img."\" />"
+            .(isset($this->_cp['thumbnail_link']) && $this->_cp['thumbnail_link'] ? "</a>" : "")
+            ."</div>";
     }
 
     protected function BL_thumbnail_image_filename()

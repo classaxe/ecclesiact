@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.8 (2017-01-02)
-    1) CategoryTabber::setupLoadBlockLayout() now looks like its parent
+  1.0.9 (2017-06-10)
+    1) New cp for 'thumbnail_maintain_aspect'
 */
 class CategoryTabber extends Base
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     protected $records = array();
     protected $Obj;
@@ -134,6 +134,11 @@ class CategoryTabber extends Base
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
+            ),
+            'thumbnail_maintain_aspect' =>      array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>                 array(
                 'match' =>      'enum|0,1',

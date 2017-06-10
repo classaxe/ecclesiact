@@ -1,3 +1,6 @@
+  1.0.42 (2016-03-26)
+    1) New CP filter_text_list to require matches to contain one or more of the words giving in the CSV list
+    2) New CP filter_allow_override to allow for additional customisation of results by category, keyword or text
   1.0.41 (2016-02-27)
     1) Now has new CP for listings - filter_has_video
   1.0.40 (2016-01-18)

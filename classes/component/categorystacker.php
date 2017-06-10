@@ -1,13 +1,14 @@
 <?php
 namespace Component;
+
 /*
 Version History:
-  1.0.5 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.6 (2017-06-10)
+    1) New cp for 'thumbnail_maintain_aspect' and fixed broken propagation of thumbnail_height
 */
 class CategoryStacker extends Base
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     protected $Obj;
     protected $categories = array();
@@ -109,6 +110,11 @@ class CategoryStacker extends Base
                 'default' =>    '1',
                 'hint' =>       ''
             ),
+            'thumbnail_height' =>           array(
+                'match' =>      'range|1,n',
+                'default' =>    '300',
+                'hint' =>       '|1..n or blank - height in px to resize'
+            ),
             'thumbnail_image' =>            array(
                 'match' =>      'enum|s,m,l',
                 'default' =>    's',
@@ -118,6 +124,11 @@ class CategoryStacker extends Base
                 'match' =>      'enum|0,1',
                 'default' =>    '0',
                 'hint' =>       '0|1'
+            ),
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>             array(
                 'match' =>      'enum|0,1',
@@ -148,23 +159,25 @@ class CategoryStacker extends Base
             return;
         }
         $args =  array(
-            'author_show' =>          $this->_cp['author_show'],
-            'category_show' =>        $this->_cp['category_show'],
-            'content_plaintext' =>    $this->_cp['content_plaintext'],
-            'content_char_limit' =>   $this->_cp['content_char_limit'],
-            'content_show' =>         $this->_cp['content_show'],
-            'content_use_summary' =>  $this->_cp['content_use_summary'],
-            'extra_fields_list' =>    $this->_cp['extra_fields_list'],
-            'date_show' =>            $this->_cp['date_show'],
-            'links_point_to_URL' =>   $this->_cp['links_point_to_URL'],
-            'more_link_text' =>       $this->_cp['more_link_text'],
-            'related_show' =>         $this->_cp['related_show'],
-            'subtitle_show' =>        $this->_cp['subtitle_show'],
-            'thumbnail_at_top' =>     $this->_cp['thumbnail_at_top'],
-            'thumbnail_image' =>      $this->_cp['thumbnail_image'],
-            'thumbnail_link' =>       $this->_cp['thumbnail_link'],
-            'thumbnail_show' =>       $this->_cp['thumbnail_show'],
-            'thumbnail_width' =>      $this->_cp['thumbnail_width']
+            'author_show' =>                $this->_cp['author_show'],
+            'category_show' =>              $this->_cp['category_show'],
+            'content_plaintext' =>          $this->_cp['content_plaintext'],
+            'content_char_limit' =>         $this->_cp['content_char_limit'],
+            'content_show' =>               $this->_cp['content_show'],
+            'content_use_summary' =>        $this->_cp['content_use_summary'],
+            'extra_fields_list' =>          $this->_cp['extra_fields_list'],
+            'date_show' =>                  $this->_cp['date_show'],
+            'links_point_to_URL' =>         $this->_cp['links_point_to_URL'],
+            'more_link_text' =>             $this->_cp['more_link_text'],
+            'related_show' =>               $this->_cp['related_show'],
+            'subtitle_show' =>              $this->_cp['subtitle_show'],
+            'thumbnail_at_top' =>           $this->_cp['thumbnail_at_top'],
+            'thumbnail_height' =>           $this->_cp['thumbnail_height'],
+            'thumbnail_image' =>            $this->_cp['thumbnail_image'],
+            'thumbnail_link' =>             $this->_cp['thumbnail_link'],
+            'thumbnail_maintain_aspect' =>  $this->_cp['thumbnail_maintain_aspect'],
+            'thumbnail_show' =>             $this->_cp['thumbnail_show'],
+            'thumbnail_width' =>            $this->_cp['thumbnail_width']
         );
         $this->_html.= "<div id=\"".$this->_safe_ID."\">\n";
         foreach ($this->categories as $value => $text) {

@@ -1,14 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.35 (2016-12-27)
-    1) Added cp for 'contents_show_watermark' -
-       See example here:
-         https://www.churchesinyourtown.ca/gallery-album/communities/richmond-hill/members/gormley-church/profile
+  1.0.36 (2017-06-10)
+    1) New cp for lists and details mode 'thumbnail_maintain_aspect'
 */
 class Gallery_Album extends Posting_Container
 {
-    const VERSION = '1.0.35';
+    const VERSION = '1.0.36';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -104,6 +102,11 @@ class Gallery_Album extends Posting_Container
                 'match' =>      'enum|s,m,l',
                 'default' =>    's',
                 'hint' =>       's|m|l - Choose only \'s\' unless Multiple-Thumbnails option is enabled'
+            ),
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>             array(
                 'match' =>      'enum|0,1',
@@ -296,6 +299,11 @@ class Gallery_Album extends Posting_Container
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
+            ),
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>             array(
                 'match' =>      'enum|0,1',

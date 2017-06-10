@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.77 (2016-12-27)
-    1) Implemented image watermarking for thumbnail images where enabled
+  1.0.78 (2017-06-10)
+    1) Mow maintains aspect ratio of thumbnail sizes
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.77';
+    const VERSION = '1.0.78';
 
     private $_Obj_JL =                false;
     private $_albums =                false;
@@ -859,7 +859,7 @@ class Component_Gallery_Album extends Component_Base
                      BASE_PATH."img/"
                     .($this->_cp['show_watermark'] && !$img['no_watermark'] ? 'wm' : 'resize')
                     ."/".trim($img['thumbnail_small'], '/')
-                    ."?max=".$this->_cp['thumb_size']
+                    ."?max=".$this->_cp['thumb_size']."&maintain=1"
                     .($img['thumbnail_cs_small'] ? "&cs=".$img['thumbnail_cs_small'] : '');
                 $this->_html.=
                      "  <div id=\"".$this->_safe_ID."_".$img['ID']."\""

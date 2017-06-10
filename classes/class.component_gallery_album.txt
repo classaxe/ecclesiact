@@ -1,3 +1,5 @@
+  1.0.77 (2016-12-27)
+    1) Implemented image watermarking for thumbnail images where enabled
   1.0.76 (2016-12-24)
     1) Changes to support image watermarking in rollovers and slideshow
     2) Changes to function names for PSR-2 compliance

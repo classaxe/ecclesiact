@@ -1,3 +1,5 @@
+  1.0.26 (2016-12-31)
+    1) Gallery_Image::set_path() method declaration now looks like its parent
   1.0.25 (2016-12-27)
     1) Added cp for 'show_watermark'
   1.0.24 (2016-02-21)

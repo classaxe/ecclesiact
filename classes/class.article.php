@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.42 (2016-03-26)
-    1) New CP filter_text_list to require matches to contain one or more of the words giving in the CSV list
-    1) New CP filter_allow_override to allow for additional customisation of results by category, keyword or text
+  1.0.43 (2017-06-10)
+    1) New cp for lists and details mode 'thumbnail_maintain_aspect'
 */
 class Article extends Posting
 {
-    const VERSION = '1.0.42';
+    const VERSION = '1.0.43';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -113,6 +112,11 @@ class Article extends Posting
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
+            ),
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>           array(
                 'match' =>      'enum|0,1',
@@ -348,6 +352,11 @@ class Article extends Posting
                 'match' =>      'enum|0,1',
                 'default' =>    '1',
                 'hint' =>       '0|1'
+            ),
+            'thumbnail_maintain_aspect' =>  array(
+                'match' =>      'enum|0,1',
+                'default' =>    '1',
+                'hint' =>       'Maximum height in pixels'
             ),
             'thumbnail_show' =>           array(
                 'match' =>      'enum|0,1',

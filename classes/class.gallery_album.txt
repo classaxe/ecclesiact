@@ -1,3 +1,7 @@
+  1.0.35 (2016-12-27)
+    1) Added cp for 'contents_show_watermark' -
+       See example here:
+         https://www.churchesinyourtown.ca/gallery-album/communities/richmond-hill/members/gormley-church/profile
   1.0.34 (2016-12-24)
     1) Now includes no_watermark field in Gallery_Album::get_images()
   1.0.33 (2015-01-31)
