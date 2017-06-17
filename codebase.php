@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.9");
+define("CODEBASE_VERSION", "5.0.10");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,33 +17,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.9.2490 (2017-06-17)
+5.0.10.2491 (2017-06-17)
 Summary:
-  Fixed routing bug in Gallery that lead to some bogus paths matching, and some valid ones not doing.
+  Now serves 404 if a gallery album folder isn't found
 
 Final Checksums:
-  Classes     CS:4aa1771b
+  Classes     CS:58b36c27
   Database    CS:4317aaaa
-  Libraries   CS:b2e6f1e5
+  Libraries   CS:87381a45
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.9     (2017-06-17)
+  codebase.php                                                                                   5.0.10    (2017-06-17)
     1) Updated version information
-  classes/class.component_gallery_album.php                                                      1.0.79    (2017-06-17)
-    1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
-       e.g.
-       https://www.churchesinyourtown.ca/gallery/communities/aurora/king/hanover/members/hanover-baptist-church/profile
-       Now previous URL now gives 404, but this correct path is now matched:
-       https://www.churchesinyourtown.ca/gallery/communities/hanover/members/hanover-baptist-church/profile
+  classes/class.component_gallery_album.php                                                      1.0.80    (2017-06-17)
+    1) Now serves a 404 error whern a resource isn't found
 
-2490.sql
+2491.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.9
+  codebase.php                                        5.0.10
   classes/  (1 file changed)
-    class.component_gallery_album.php                 1.0.77    CS:e68bed19
+    class.component_gallery_album.php                 1.0.78    CS:bf680257
 
 
 Bug:

@@ -1,17 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.79 (2017-06-17)
-    1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
-       e.g.
-       https://www.churchesinyourtown.ca/gallery/communities/aurora/king/hanover/members/hanover-baptist-church/profile
-       Now previous URL now gives 404, but this correct path is now matched:
-       https://www.churchesinyourtown.ca/gallery/communities/hanover/members/hanover-baptist-church/profile
+  1.0.80 (2017-06-17)
+    1) Now serves a 404 error whern a resource isn't found
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.77';
+    const VERSION = '1.0.78';
 
     private $_Obj_JL =                false;
     private $_albums =                false;
@@ -702,6 +698,7 @@ class Component_Gallery_Album extends Component_Base
         }
         if (!$this->_album_title) {
             $this->_html.= $this->_cp['text_no_such_resource'];
+            header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
             return;
         }
         $stats = array();

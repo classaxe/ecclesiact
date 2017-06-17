@@ -1,3 +1,9 @@
+  1.0.79 (2017-06-17)
+    1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
+       e.g.
+       https://www.churchesinyourtown.ca/gallery/communities/aurora/king/hanover/members/hanover-baptist-church/profile
+       Now previous URL now gives 404, but this correct path is now matched:
+       https://www.churchesinyourtown.ca/gallery/communities/hanover/members/hanover-baptist-church/profile
   1.0.78 (2017-06-10)
     1) Mow maintains aspect ratio of thumbnail sizes
   1.0.77 (2016-12-27)
