@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.8");
+define("CODEBASE_VERSION", "5.0.9");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,50 +17,34 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.8.2489 (2017-06-10)
+5.0.9.2490 (2017-06-17)
 Summary:
-  Added support for thumbnail_maintain_aspect to most listings and components
+  Fixed routing bug in Gallery that lead to some bogus paths matching, and some valid ones not doing.
 
 Final Checksums:
-  Classes     CS:4f342e32
+  Classes     CS:4aa1771b
   Database    CS:4317aaaa
-  Libraries   CS:2dae6d7c
+  Libraries   CS:b2e6f1e5
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.8     (2017-06-10)
+  codebase.php                                                                                   5.0.9     (2017-06-17)
     1) Updated version information
-  classes/class.article.php                                                                      1.0.43    (2017-06-10)
-    1) New cp for lists and details mode 'thumbnail_maintain_aspect'
-  classes/class.block_layout.php                                                                 1.0.73    (2017-06-10)
-    1) Block_Layout::BL_thumbnail_image() now handles thumbnail_maintain_aspect cp
-  classes/class.component_gallery_album.php                                                      1.0.78    (2017-06-10)
-    1) Mow maintains aspect ratio of thumbnail sizes
-  classes/class.gallery_album.php                                                                1.0.36    (2017-06-10)
-    1) New cp for lists and details mode 'thumbnail_maintain_aspect'
-  classes/class.gallery_image.php                                                                1.0.27    (2017-06-10)
-    1) New cp for lists and details mode 'thumbnail_maintain_aspect'
-  classes/component/articlesrotator.php                                                          1.0.13    (2017-06-10)
-    1) New cp for 'thumbnail_maintain_aspect' and fixed broken propagation of thumbnail_height
-  classes/component/categorystacker.php                                                          1.0.6     (2017-06-10)
-    1) New cp for 'thumbnail_maintain_aspect' and fixed broken propagation of thumbnail_height
-  classes/component/categorytabber.php                                                           1.0.9     (2017-06-10)
-    1) New cp for 'thumbnail_maintain_aspect'
+  classes/class.component_gallery_album.php                                                      1.0.79    (2017-06-17)
+    1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
+       e.g.
+       https://www.churchesinyourtown.ca/gallery/communities/aurora/king/hanover/members/hanover-baptist-church/profile
+       Now previous URL now gives 404, but this correct path is now matched:
+       https://www.churchesinyourtown.ca/gallery/communities/hanover/members/hanover-baptist-church/profile
 
-2489.sql
+2490.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.8
-  classes/  (8 files changed)
-    class.article.php                                 1.0.43    CS:a17b027
-    class.block_layout.php                            1.0.73    CS:1e3c95b5
-    class.component_gallery_album.php                 1.0.78    CS:96fe8eb3
-    class.gallery_album.php                           1.0.36    CS:73bc14ff
-    class.gallery_image.php                           1.0.27    CS:33066591
-    component/articlesrotator.php                     1.0.13    CS:bef79f53
-    component/categorystacker.php                     1.0.6     CS:8a8b1a46
-    component/categorytabber.php                      1.0.9     CS:f9f445f2
+  codebase.php                                        5.0.9
+  classes/  (1 file changed)
+    class.component_gallery_album.php                 1.0.77    CS:e68bed19
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

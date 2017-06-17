@@ -1,13 +1,17 @@
 <?php
 /*
 Version History:
-  1.0.78 (2017-06-10)
-    1) Mow maintains aspect ratio of thumbnail sizes
+  1.0.79 (2017-06-17)
+    1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
+       e.g.
+       https://www.churchesinyourtown.ca/gallery/communities/aurora/king/hanover/members/hanover-baptist-church/profile
+       Now previous URL now gives 404, but this correct path is now matched:
+       https://www.churchesinyourtown.ca/gallery/communities/hanover/members/hanover-baptist-church/profile
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.78';
+    const VERSION = '1.0.77';
 
     private $_Obj_JL =                false;
     private $_albums =                false;
@@ -1040,7 +1044,6 @@ class Component_Gallery_Album extends Component_Base
                 $page_vars['path'],
                 strlen(
                     $page_vars['path_real']
-                    .($this->_cp['indicated_root_folder'] ? trim($this->_cp['indicated_root_folder'], '/').'/' : '')
                 )
             );
         }

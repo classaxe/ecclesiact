@@ -1,3 +1,5 @@
+  1.0.78 (2017-06-10)
+    1) Mow maintains aspect ratio of thumbnail sizes
   1.0.77 (2016-12-27)
     1) Implemented image watermarking for thumbnail images where enabled
   1.0.76 (2016-12-24)
