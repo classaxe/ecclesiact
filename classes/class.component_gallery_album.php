@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.80 (2017-06-17)
-    1) Now serves a 404 error whern a resource isn't found
+  1.0.81 (2017-06-19)
+    1) Added overrideable method getAlbumPath() which is used in both setupLoadMode() and setupLoadAlbumDetails()
+       This method is overridden in Component_Community_Gallery_Album class
 */
 
 class Component_Gallery_Album extends Component_Base
 {
-    const VERSION = '1.0.78';
+    const VERSION = '1.0.81';
 
     private $_Obj_JL =                false;
     private $_albums =                false;
@@ -1021,6 +1022,23 @@ class Component_Gallery_Album extends Component_Base
         $this->setupRememberShopPage();
     }
 
+    protected function getAlbumPath()
+    {
+        global $page_vars;
+        if ($page_vars['path']==$page_vars['path_real'].trim($this->_cp['indicated_root_folder'], '/')) {
+            return '';
+        }
+        return
+            "//"
+            .($this->_cp['filter_root_path'] ? trim($this->_cp['filter_root_path'], '/').'/' : '')
+            .substr(
+                $page_vars['path'],
+                strlen(
+                    $page_vars['path_real']
+                )
+            );
+    }
+
     private function setupLoadAlbumDetails()
     {
         global $page_vars;
@@ -1031,20 +1049,7 @@ class Component_Gallery_Album extends Component_Base
             return;
         }
         $Obj_Gallery_Album =    new Gallery_Album;
-        if ($page_vars['path']==$page_vars['path_real'].trim($this->_cp['indicated_root_folder'], '/')) {
-            $subpath = '';
-        } else {
-            $subpath =
-             "//"
-            .($this->_cp['filter_root_path'] ? trim($this->_cp['filter_root_path'], '/').'/' : '')
-            .substr(
-                $page_vars['path'],
-                strlen(
-                    $page_vars['path_real']
-                )
-            );
-        }
-        if (!$ID = $Obj_Gallery_Album->get_ID_by_path($subpath)) {
+        if (!$ID = $Obj_Gallery_Album->get_ID_by_path($this->getAlbumPath())) {
             header("Status: 404 Not Found", true, 404); // Keep those pesky bots from following dead links!
             return;
         }
@@ -1112,16 +1117,7 @@ class Component_Gallery_Album extends Component_Base
     private function setupLoadMode()
     {
         global $page_vars;
-        $subpath =
-         "//"
-        .($this->_cp['filter_root_path'] ? trim($this->_cp['filter_root_path'], '/').'/' : '')
-        .substr(
-            $page_vars['path'],
-            strlen(
-                $page_vars['path_real']
-                .($this->_cp['indicated_root_folder'] ? trim($this->_cp['indicated_root_folder'], '/').'/' : '')
-            )
-        );
+        $subpath = $this->getAlbumPath();
         $Obj_Gallery_Image =    new Gallery_Image;
         if ($ID = $Obj_Gallery_Image->get_ID_by_path($subpath)) {
             $this->_ID =      $ID;

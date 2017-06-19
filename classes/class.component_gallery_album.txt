@@ -1,3 +1,5 @@
+  1.0.80 (2017-06-17)
+    1) Now serves a 404 error whern a resource isn't found
   1.0.79 (2017-06-17)
     1) Removed bug in path routing that caused some bogus URLs to show apparently valid results:
        e.g.

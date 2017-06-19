@@ -1,3 +1,6 @@
+  1.0.9 (2017-02-12)
+    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange()
+    2) Various PSR-2 fixes
   1.0.8 (2017-01-02)
     1) Renamed Community_Resource::draw() to Community_Resource::drawResource() to prevent confusion with
        parent's draw() method which has a different method declaration

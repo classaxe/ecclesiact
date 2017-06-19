@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.9 (2017-02-12)
-    1) Call to Portal::_parse_request_search_range() now replaced with static::checkSearchRange()
-    2) Various PSR-2 fixes
+  1.0.10 (2017-06-19)
+    1) Community_Resource::drawGallery() now invokes Component_Community_Gallery_Album not Component_Gallery_Album
 */
 
 class Community_Resource extends Community_Display
 {
-    const VERSION = '1.0.9';
+    const VERSION = '1.0.10';
 
     public function drawResource($cp, $path_extension, $community_record)
     {
@@ -43,7 +42,7 @@ class Community_Resource extends Community_Display
 
     protected function drawGallery()
     {
-        $Obj = new Component_Gallery_Album;
+        $Obj = new Component_Community_Gallery_Album;
         $args = array(
              'filter_root_path' =>        '//communities/'.$this->_cp['community_name'].'/members/',
              'folder_tree_height' =>      800,

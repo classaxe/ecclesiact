@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.10");
+define("CODEBASE_VERSION", "5.0.11");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,30 +17,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.10.2491 (2017-06-17)
+5.0.11.2492 (2017-06-19)
 Summary:
-  Now serves 404 if a gallery album folder isn't found
+  Fixed bad Gallery Image or Gallery Folder path issue for both community and non-community renderings
 
 Final Checksums:
-  Classes     CS:58b36c27
+  Classes     CS:11c045e0
   Database    CS:4317aaaa
-  Libraries   CS:87381a45
+  Libraries   CS:187086dc
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.10    (2017-06-17)
+  codebase.php                                                                                   5.0.11    (2017-06-19)
     1) Updated version information
-  classes/class.component_gallery_album.php                                                      1.0.80    (2017-06-17)
-    1) Now serves a 404 error whern a resource isn't found
+  classes/class.community_resource.php                                                           1.0.10    (2017-06-19)
+    1) Community_Resource::drawGallery() now invokes Component_Community_Gallery_Album not Component_Gallery_Album
+  classes/class.component_gallery_album.php                                                      1.0.81    (2017-06-19)
+    1) Added overrideable method getAlbumPath() which is used in both setupLoadMode() and setupLoadAlbumDetails()
+       This method is overridden in Component_Community_Gallery_Album class
 
-2491.sql
+2492.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.10
-  classes/  (1 file changed)
-    class.component_gallery_album.php                 1.0.78    CS:bf680257
-
+  codebase.php                                        5.0.11
+  classes/  (2 files changed)
+    class.community_resource.php                      1.0.10    CS:e7c78a73
+    class.component_gallery_album.php                 1.0.81    CS:f06570f6
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
