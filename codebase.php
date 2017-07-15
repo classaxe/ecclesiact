@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.11");
+define("CODEBASE_VERSION", "5.0.12");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,38 +17,47 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.11.2492 (2017-06-19)
+5.0.12.2493 (2017-07-15)
 Summary:
-  Fixed bad Gallery Image or Gallery Folder path issue for both community and non-community renderings
+  Minor HTML fixes for proper document validation
 
 Final Checksums:
-  Classes     CS:11c045e0
+  Classes     CS:72f0b24
   Database    CS:4317aaaa
-  Libraries   CS:187086dc
+  Libraries   CS:62d82536
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.11    (2017-06-19)
+  codebase.php                                                                                   5.0.12    (2017-07-15)
     1) Updated version information
-  classes/class.community_resource.php                                                           1.0.10    (2017-06-19)
-    1) Community_Resource::drawGallery() now invokes Component_Community_Gallery_Album not Component_Gallery_Album
-  classes/class.component_gallery_album.php                                                      1.0.81    (2017-06-19)
-    1) Added overrideable method getAlbumPath() which is used in both setupLoadMode() and setupLoadAlbumDetails()
-       This method is overridden in Component_Community_Gallery_Album class
+  classes/class.export.php                                                                       1.0.28    (2017-07-15)
+    1) Export::excel() url fixes for un-encoded ampersand in download path
+  classes/class.html.php                                                                         1.0.95    (2017-07-15)
+    1) Changes to HTML::_draw_toolbar_type_report() to use span tag in place of ancient font tag
+  classes/class.page_edit.php                                                                    1.0.20    (2017-07-15)
+    1) Changes to Page_Edit::draw() to use span tag in place of ancient font tag
+    2) Now uses class constant for version control
+  classes/class.report_column_report_field.php                                                   1.0.32    (2017-07-15)
+    1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
+  classes/component/wowslider.php                                                                1.0.17    (2017-07-15)
+    1) WOWSlider::drawCssInclude()  url fixes for un-encoded ampersand in css path
 
-2492.sql
+2493.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.0.11
-  classes/  (2 files changed)
-    class.community_resource.php                      1.0.10    CS:e7c78a73
-    class.component_gallery_album.php                 1.0.81    CS:f06570f6
+  codebase.php                                        5.0.12
+  classes/  (5 files changed)
+    class.export.php                                  1.0.28    CS:8fa33477
+    class.html.php                                    1.0.95    CS:d0a10af4
+    class.page_edit.php                               1.0.20    CS:620692dd
+    class.report_column_report_field.php              1.0.32    CS:777a2fc4
+    component/wowslider.php                           1.0.17    CS:74e14e31
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
-    http://www.armsofjesus.org/2009/03/14/kariobangi-youth-center
+    http://aoj.ecclesiact.com/2009/03/14/kariobangi-youth-center
     An sql script could probably find more examples
     Provide disambiguation based on ID?
 

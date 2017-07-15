@@ -1,3 +1,6 @@
+  1.0.27 (2016-12-31)
+    1) Export::excel() now calls Report::getReportRecords() to get data
+    2) PSR-2 fixes
   1.0.26 (2015-10-06)
     1) Added specific support for link_view_tickets
   1.0.25 (2015-03-23)

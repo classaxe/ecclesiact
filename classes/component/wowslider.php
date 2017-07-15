@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.16 (2016-12-26)
-    12) Now respects watermark setting for thumbnail images also
+  1.0.17 (2017-07-15)
+    1) WOWSlider::drawCssInclude()  url fixes for un-encoded ampersand in css path
 */
 class WOWSlider extends Base
 {
-    const VERSION = '1.0.16';
+    const VERSION = '1.0.17';
 
     protected $_first_image =   array();
     protected $_first_idx =     0;
@@ -251,7 +251,7 @@ class WOWSlider extends Base
     {
         static $shown = false;
         global $page_vars;
-        $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&targetValue='.$this->_safe_ID;
+        $url =      BASE_PATH.trim($page_vars['path'], '/').'?submode=css&amp;targetValue='.$this->_safe_ID;
         \Output::push(
             'head_top',
             ($shown ? "" : "<link rel=\"stylesheet\" type=\"text/css\" href=\"".BASE_PATH."css/ws\" />\n")

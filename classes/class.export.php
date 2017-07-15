@@ -1,14 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.27 (2016-12-31)
-    1) Export::excel() now calls Report::getReportRecords() to get data
-    2) PSR-2 fixes
-
+  1.0.28 (2017-07-15)
+    1) Export::excel() url fixes for un-encoded ampersand in download path
 */
 class Export extends Record
 {
-    const VERSION = '1.0.27';
+    const VERSION = '1.0.28';
 
     public static function draw()
     {
@@ -235,9 +233,9 @@ class Export extends Record
                                  trim($system_vars['URL'], '/')
                                 .BASE_PATH
                                 ."?command=download_data"
-                                ."&reportID=".$targetReportID
-                                ."&targetID=".$records[$row]['ID']
-                                ."&targetValue=".$columns[$col]['reportField'];
+                                ."&amp;reportID=".$targetReportID
+                                ."&amp;targetID=".$records[$row]['ID']
+                                ."&amp;targetValue=".$columns[$col]['reportField'];
                             $ObjWorksheet->getCell($cell)
                                 ->getHyperlink()
                                 ->setURL($url);

@@ -1,13 +1,14 @@
 <?php
-define('VERSION_PAGE_EDIT', '1.0.19');
 /*
 Version History:
-  1.0.19 (2016-10-16)
-    1) Added support for assigning pages to a specified community
-
+  1.0.20 (2017-07-15)
+    1) Changes to Page_Edit::draw() to use span tag in place of ancient font tag
+    2) Now uses class constant for version control
 */
 class Page_Edit extends Page
 {
+    const VERSION = '1.0.20';
+
     public function draw()
     {
         global $system_vars;
@@ -298,7 +299,7 @@ class Page_Edit extends Page
         ."        <table class='minimal'>\n"
         ."          <tr>\n"
         ."            <td valign='top' class='admin_containertable'><table class='minimal'>\n"
-        .($msg!="" ? "<tr><td><font color='#ff0000' size='2'>".$msg."</font></td></tr>" : "")
+        .($msg!="" ? "<tr><td><span style='color:#f00'>".$msg."</span></td></tr>" : "")
         ."              <tr>\n"
         ."                <td><table cellpadding='1' border='0' cellspacing='0'"
         ." class='auto_report admin_containerpanel'>\n"
@@ -833,10 +834,5 @@ class Page_Edit extends Page
         ."  </tr>\n"
         ."</table>\n";
         return $out;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_PAGE_EDIT;
     }
 }

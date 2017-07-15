@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.31 (2016-01-08)
-    1) Report_Column_Report_Field::draw() for textarea types now detects <pre> tags and doesn't nl2br() that output
-    2) Now uses VERSION class constant for version control
+  1.0.32 (2017-07-15)
+    1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
 */
 
 class Report_Column_Report_Field extends Record
 {
-    const VERSION = '1.0.31';
+    const VERSION = '1.0.32';
+
     public function draw(
         $column,
         $row,
@@ -165,7 +165,7 @@ class Report_Column_Report_Field extends Record
                                 .$system_vars['system_cancellation_days']
                                 ." days notice period has not been given.\\n\\n"
                                 ."Please contact us if you need to discuss this.');return false;\">"
-                                ."<font color='#808080'><i>Cancel</i></font></a></td>\n";
+                                ."<span style='color:#888'><i>Cancel</i></span></a></td>\n";
                         } else {
                             $out.=
                                  "    <td><a title=\"Cancel registration\" href=\"#\""

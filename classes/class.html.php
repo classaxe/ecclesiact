@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.94 (2016-03-24)
-    1) Changes to HTML::_draw_toolbar_type_page_edit() to prevent editing or deleting of pages belonging to
-       global system other than by master admins
+  1.0.95 (2017-07-15)
+    1) Changes to HTML::_draw_toolbar_type_report() to use span tag in place of ancient font tag
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.94';
+    const VERSION = '1.0.95';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -1326,7 +1325,7 @@ class HTML extends Record
         $reportTitle =
              $row['reportTitle']
             .($this->_args['report_name']=='system'?
-                " in database <font color='#ff0000'>$db</font> (Codebase: ".CODEBASE_VERSION.")"
+                " in database <span style='color:#f00'>$db</span> (Codebase: ".CODEBASE_VERSION.")"
              :
                 ""
              );

@@ -1,3 +1,5 @@
+  1.0.16 (2016-12-26)
+    1) Now respects watermark setting for thumbnail images also
   1.0.15 (2016-12-26)
     1) Now has CP for show_watermark - default is off
     2) WOWSlider::drawCssInclude() now only includes generic css for all WOW Slider instances once

@@ -1,3 +1,5 @@
+  1.0.19 (2016-10-16)
+    1) Added support for assigning pages to a specified community
   1.0.18 (2015-09-12)
     1) Call to Layout::get_selector_sql() now Layout::getSelectorSql()
     2) References to Page::push_content() now changed to Output::push()
