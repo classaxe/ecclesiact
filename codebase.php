@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.0.12");
+define("CODEBASE_VERSION", "5.1.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,42 +17,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.0.12.2493 (2017-07-15)
+5.1.0.2494 (2017-07-29)
 Summary:
-  Minor HTML fixes for proper document validation
+  Sites Menu added for sites with the 'archive' flag enabled
 
 Final Checksums:
-  Classes     CS:72f0b24
+  Classes     CS:86943b34
   Database    CS:4317aaaa
-  Libraries   CS:62d82536
+  Libraries   CS:55f6ed46
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.0.12    (2017-07-15)
+  codebase.php                                                                                   5.1.0     (2017-07-29)
     1) Updated version information
-  classes/class.export.php                                                                       1.0.28    (2017-07-15)
-    1) Export::excel() url fixes for un-encoded ampersand in download path
-  classes/class.html.php                                                                         1.0.95    (2017-07-15)
-    1) Changes to HTML::_draw_toolbar_type_report() to use span tag in place of ancient font tag
-  classes/class.page_edit.php                                                                    1.0.20    (2017-07-15)
-    1) Changes to Page_Edit::draw() to use span tag in place of ancient font tag
-    2) Now uses class constant for version control
-  classes/class.report_column_report_field.php                                                   1.0.32    (2017-07-15)
-    1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
-  classes/component/wowslider.php                                                                1.0.17    (2017-07-15)
-    1) WOWSlider::drawCssInclude()  url fixes for un-encoded ampersand in css path
+  classes/class.html.php                                                                         1.0.96    (2017-07-29)
+    1) Added support for new 'Sites' toolbar for archived sites
+  classes/class.system.php                                                                       1.0.177   (2017-07-29)
+    1) New method System::getArchivedSites() used with Sites menu for archived sites
 
-2493.sql
-  1) Set version information
+2494.sql
+  1) Change to ecl tag 'draw_admin_links' to include 'Sites' menu for archived sites
+  2) Set version information
 
 Promote:
-  codebase.php                                        5.0.12
-  classes/  (5 files changed)
-    class.export.php                                  1.0.28    CS:8fa33477
-    class.html.php                                    1.0.95    CS:d0a10af4
-    class.page_edit.php                               1.0.20    CS:620692dd
-    class.report_column_report_field.php              1.0.32    CS:777a2fc4
-    component/wowslider.php                           1.0.17    CS:74e14e31
+  codebase.php                                        5.1.0
+  classes/  (2 files changed)
+    class.html.php                                    1.0.96    CS:2cfa91
+    class.system.php                                  1.0.177   CS:1804181a
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

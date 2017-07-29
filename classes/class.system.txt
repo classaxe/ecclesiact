@@ -1,3 +1,6 @@
+  1.0.176 (2017-02-12)
+    1) Call to System_Health::_getConfigClasses() now changed to System_Health::getConfigClasses()
+    2) Call to System_Health::_getConfigTables()  now changed to Call to System_Health::getConfigTables()
   1.0.175 (2016-12-27)
     1) System::get_global_date_range() now properly declared as static
   1.0.174 (2016-05-13)

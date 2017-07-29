@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.95 (2017-07-15)
-    1) Changes to HTML::_draw_toolbar_type_report() to use span tag in place of ancient font tag
+  1.0.96 (2017-07-29)
+    1) Added support for new 'Sites' toolbar for archived sites
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.95';
+    const VERSION = '1.0.96';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -425,6 +425,9 @@ class HTML extends Record
     {
         global $system_vars;
         $this->_args = $args;
+        if (strToLower($type)==='sites' && $system_vars['archive']) {
+            return $this->_draw_toolbar_type_sites();
+        }
         if (!isset($_SESSION['person'])) {
             return (isset($this->_args['ajax_mode']) && $this->_args['ajax_mode'] ? array('html'=>'','js'=>'') : '');
         }
@@ -1467,6 +1470,36 @@ class HTML extends Record
                 ""
              );
         return HTML::draw_toolbar_frame($out, 'left');
+    }
+
+    protected function _draw_toolbar_type_sites()
+    {
+ //       return '';
+        $Obj_System = new System;
+        $sites = $Obj_System->getArchivedSites();
+        if (count($sites)<2) {
+            return;
+        }
+        $html =
+             "<div id='am' class='zoom_text'>\n"
+            ."<div class='admin_toolbartable'>\n"
+            ."<ul><li><label>Archived Sites</label><ul>\n";
+        foreach ($sites as $site) {
+            $html.=
+                 "<li><a href=\"".$site['URL']."\">"
+                ."          <span class='ami'>[ICON]16 16 800 External Site[/ICON]</span>\n"
+                ."          <span class='aml'>".$site['textEnglish']."</span>\n"
+                .((int)$site['ID']===(int)SYS_ID ?
+                    "        <span class='amh'>[ICON]10 10 2042 You are viewing this site[/ICON]</span>"
+                 :
+                    ""
+                 )
+                ."</a></li>";
+        }
+        $html.=
+             "</ul></li></ul>"
+            ."<div class='clear'>&nbsp;</div></div></div>\n";
+        return HTML::draw_toolbar_frame($html, 'right').(isset($_SESSION['person']) ? "" : "<br /><br />");
     }
 
     protected function _draw_toolbar_type_with_selected()
