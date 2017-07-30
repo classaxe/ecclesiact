@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.96 (2017-07-29)
-    1) Added support for new 'Sites' toolbar for archived sites
+  1.0.97 (2017-07-29)
+    1) Moved 'Sites' toolbar to left as some layouts were causing it to be truncated 
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.96';
+    const VERSION = '1.0.97';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -1499,7 +1499,7 @@ class HTML extends Record
         $html.=
              "</ul></li></ul>"
             ."<div class='clear'>&nbsp;</div></div></div>\n";
-        return HTML::draw_toolbar_frame($html, 'right').(isset($_SESSION['person']) ? "" : "<br /><br />");
+        return HTML::draw_toolbar_frame($html, 'left').(isset($_SESSION['person']) ? "" : "<br /><br />");
     }
 
     protected function _draw_toolbar_type_with_selected()

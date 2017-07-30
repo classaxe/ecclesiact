@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.1.0");
+define("CODEBASE_VERSION", "5.1.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,33 +17,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.1.0.2494 (2017-07-29)
+5.1.1.2495 (2017-07-29)
 Summary:
-  Sites Menu added for sites with the 'archive' flag enabled
+  Sites Menu moved over to left as some layouts were causing it to be truncated
 
 Final Checksums:
-  Classes     CS:86943b34
+  Classes     CS:101376bb
   Database    CS:4317aaaa
-  Libraries   CS:55f6ed46
+  Libraries   CS:cabe71df
   Reports     CS:2282f990
 
 Code Changes:
-  codebase.php                                                                                   5.1.0     (2017-07-29)
+  codebase.php                                                                                   5.1.1     (2017-07-29)
     1) Updated version information
-  classes/class.html.php                                                                         1.0.96    (2017-07-29)
-    1) Added support for new 'Sites' toolbar for archived sites
-  classes/class.system.php                                                                       1.0.177   (2017-07-29)
-    1) New method System::getArchivedSites() used with Sites menu for archived sites
+  classes/class.html.php                                                                         1.0.97    (2017-07-29)
+    1) Moved 'Sites' toolbar to left as some layouts were causing it to be truncated
 
-2494.sql
-  1) Change to ecl tag 'draw_admin_links' to include 'Sites' menu for archived sites
-  2) Set version information
+2495.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.1.0
-  classes/  (2 files changed)
-    class.html.php                                    1.0.96    CS:2cfa91
-    class.system.php                                  1.0.177   CS:1804181a
+  codebase.php                                        5.1.1
+  classes/  (1 file changed)
+    class.html.php                                    1.0.97    CS:351c9f53
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
