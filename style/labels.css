@@ -1,9 +1,9 @@
-/* 1.0.50
+/* 1.0.51
 // Don't forget to clear the cached file from style/cache!
 
 Version History:
-  1.0.50 (2016-12-26)
-    1) Added lbl_no_watermark
+  1.0.51 (2017-08-07)
+    1) Added table counts for geocode_cache, language_assign, push_product_assign, system and tax_code
 */
 .lbl_actions{
   background-position:-22px 0; width:11px; height:46px;
@@ -864,7 +864,7 @@ Version History:
   background-position:-4301px 0; width:11px; height:100px;
 }
 .lbl_tbl_address_substitution{
-  background-position:-5237px 0; width:11px; height:100px;
+  background-position:-5236px 0; width:11px; height:100px;
 }
 .lbl_tbl_block_layout{
   background-position:-4312px 0; width:11px; height:100px;
@@ -917,6 +917,9 @@ Version History:
 .lbl_tbl_gateway_type{
   background-position:-4488px 0; width:11px; height:100px;
 }
+.lbl_tbl_geocode_cache{
+  background-position:-5257px 0; width:11px; height:100px;
+}
 .lbl_tbl_group_assign{
   background-position:-4499px 0; width:11px; height:100px;
 }
@@ -931,6 +934,9 @@ Version History:
 }
 .lbl_tbl_keywords{
   background-position:-4543px 0; width:11px; height:100px;
+}
+.lbl_tbl_language_assign{
+  background-position:-5268px 0; width:11px; height:100px;
 }
 .lbl_tbl_layout{
   background-position:-4554px 0; width:11px; height:100px;
@@ -998,6 +1004,9 @@ Version History:
 .lbl_tbl_product_relationship{
   background-position:-4785px 0; width:11px; height:100px;
 }
+.lbl_tbl_push_product_assign{
+  background-position:-5279px 0; width:11px; height:100px;
+}
 .lbl_tbl_registerevent{
   background-position:-4796px 0; width:11px; height:100px;
 }
@@ -1021,6 +1030,12 @@ Version History:
 }
 .lbl_tbl_scheduled_task{
   background-position:-4873px 0; width:11px; height:100px;
+}
+.lbl_tbl_system{
+  background-position:-5290px 0; width:11px; height:100px;
+}
+.lbl_tbl_tax_code{
+  background-position:-5301px 0; width:11px; height:100px;
 }
 .lbl_tbl_tax_regime{
   background-position:-4884px 0; width:11px; height:100px;

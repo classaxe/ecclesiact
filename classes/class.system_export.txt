@@ -1,3 +1,5 @@
+  1.0.19 (2015-03-24)
+    1) Added support for address_substitution table export and some minor refactoring
   1.0.18 (2015-01-10)
     1) Changed references from System::tables to System::TABLES
   1.0.17 (2014-02-19)

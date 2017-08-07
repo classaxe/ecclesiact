@@ -1,11 +1,10 @@
 <?php
-define('VERSION_SYSTEM_EXPORT', '1.0.19');
+define('VERSION_SYSTEM_EXPORT', '1.0.20');
 
 /*
 Version History:
-  1.0.19 (2015-03-24)
-    1) Added support for address_substitution table export and some minor refactoring
-
+  1.0.20 (2017-07-08)
+    1) Bug fix for export of geocode_cache records
 */
 
 class System_Export extends System
@@ -353,7 +352,7 @@ class System_Export extends System
             'field_templates' =>          "`systemID`,`name`",
             'gateway_settings' =>         "`systemID`,`name`",
             'gateway_type' =>             "`systemID`,`name`",
-            'geocode_cache' =>            "`systemID`,`query_date`,`input_address",
+            'geocode_cache' =>            "`systemID`,`query_date`,`input_address`",
             'groups' =>                   "`systemID`,`name`",
             'group_assign' =>             "`systemID`,`groupID`,`assign_type`",
             'group_members' =>            "`systemID`,`groupID`",
