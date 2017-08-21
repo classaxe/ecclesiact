@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.1.2");
+define("CODEBASE_VERSION", "5.2.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,33 +17,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.1.2.2496 (2017-08-07)
+5.2.0.2497 (2017-08-21)
 Summary:
-  Bug fix for system export where there are geocode cache records, additional table stats in system report
+  1) Implemented long overdue caching mode for streamed manipluated images
 
-Final Checksums:
-  Classes     CS:4561e076
-  Database    CS:4317aaaa
-  Libraries   CS:fbc4a225
-  Reports     CS:523dfa87
-
-Code Changes:
-  codebase.php                                                                                   5.1.1     (2017-08-07)
-    1) Updated version information
-  classes/class.system_export.php                                                                1.0.20    (2017-07-08)
-    1) Bug fix for export of geocode_cache records
-  style/labels.css                                                                               1.0.51    (2017-08-07)
-    1) Added table counts for geocode_cache, language_assign, push_product_assign, system and tax_code
-
-2496.sql
-  1) Changes to 'system' report to add in 5 extra tables
-  2) Set version information
-
-Promote:
-  codebase.php                                        5.1.1
-  classes/  (1 file changed)
-    class.system_export.php                           1.0.20    CS:b49880d6
-  images/labels.gif                                             CS:646c2256  style/labels.css                                    1.0.51    CS:a344b4a1
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:

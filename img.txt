@@ -1,3 +1,5 @@
+  2.0.99 (2017-05-03)
+    1) Modes img/wm and /img/resize no longer enforce maintaining of aspect ratio - was messing up image faders
   2.0.98 (2016-12-26)
     1) Reduced opacity of watermark from 80% to 60%
   2.0.97 (2016-07-02)

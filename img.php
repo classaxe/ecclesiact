@@ -1,9 +1,12 @@
 <?php
-define("VERSION", "2.0.99");
+define("VERSION", "2.1.0");
 /*
 Version History:
-  2.0.99 (2017-05-03)
-    1) Modes img/wm and /img/resize no longer enforce maintaining of aspect ratio - was messing up image faders
+  2.1.0 (2017-08-21)
+    1) Implemented long overdue caching for all sysimg modes into shared/cache/image
+    2) Moved cache for css into new container folder shared/cache/css
+    3) Moved cache for js into new container folder shared/cache/js
+    4) Added implementation of apache_request_headers() if missing in PHP build
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -16,6 +19,7 @@ if (!defined("SYS_BUTTONS")) {
     define("SYS_STYLE", SYS_SHARED."style/");
     define("SYS_SWF", SYS_SHARED."swf/");
     define("SYS_WS", SYS_SHARED."wowslider/");
+    define("SYS_CACHE", SYS_SHARED."cache/");
 }
 $request =  explode("?", urldecode($_SERVER["REQUEST_URI"]));
 $request =  trim($request[0], '/');
@@ -29,6 +33,28 @@ if (strlen($_SERVER['SCRIPT_NAME'])-(strlen('streamer.php'))-1) {
 }
 $request =  substr($request, strlen(BASE_PATH)-1);
 
+if (!function_exists('apache_request_headers') ) {
+    function apache_request_headers() {
+        $arh = array();
+        $rx_http = '/\AHTTP_/';
+        foreach($_SERVER as $key => $val) {
+            if (!preg_match($rx_http, $key)) {
+                continue;
+            }
+            $arh_key = preg_replace($rx_http, '', $key);
+            $rx_matches = array();
+            $rx_matches = explode('_', $arh_key);
+            if (count($rx_matches) > 0 and strlen($arh_key) > 2) {
+                foreach ($rx_matches as $ak_key => $ak_val) {
+                    $rx_matches[$ak_key] = ucfirst($ak_val);
+                }
+                $arh_key = implode('-', $rx_matches);
+            }
+            $arh[$arh_key] = $val;
+        }
+        return $arh;
+    }
+}
 
 $request_arr = explode("/", $request);
 
@@ -642,7 +668,7 @@ function css_compress($file)
 function css_compress_cache($submode, $file)
 {
     $ID =           (isset($_REQUEST['ID']) ? $_REQUEST['ID'] : false);
-    $filename =     SYS_STYLE."cache/".str_replace('.', '_', $submode).($ID ? '_'.$ID : "").'.cache';
+    $filename =     SYS_CACHE."css/".str_replace('.', '_', $submode).($ID ? '_'.$ID : "").'.cache';
     if (!file_exists($filename)) {
         file_put_contents($filename, css_compress($file));
     }
@@ -907,7 +933,7 @@ function js_compress($file)
 {
     $resource =       $_REQUEST['submode'];
     $level =          $_REQUEST['level'];
-    $filename =       SYS_JS."cache/".str_replace('.', '_', $resource).$level.'.cache';
+    $filename =       SYS_CACHE."js/".str_replace('.', '_', $resource).$level.'.cache';
     if (!file_exists($filename)) {
         use_codebase();
         switch($resource){
@@ -922,7 +948,7 @@ function js_compress($file)
                 $version = "";
                 break;
         }
-        $filename =   SYS_JS."cache/".str_replace('.', '_', $resource.$version).'.cache';
+        $filename =   SYS_CACHE."js/".str_replace('.', '_', $resource.$version).'.cache';
         file_put_contents($filename, trim(JSMin::minify(file_get_contents($file))));
     }
     print substitute_vars_for_file($filename);
@@ -1166,20 +1192,21 @@ function spacer()
 
 function sysimg()
 {
-    $max =            (isset($_REQUEST['max'])      && (int)$_REQUEST['max'] ?      (int)$_REQUEST['max'] :      false);
-    $width =          (isset($_REQUEST['width'])    && (int)$_REQUEST['width'] ?    (int)$_REQUEST['width'] :    false);
-    $height =         (isset($_REQUEST['height'])   && (int)$_REQUEST['height'] ?   (int)$_REQUEST['height'] :   false);
-    $resize =         (isset($_REQUEST['resize'])   && (int)$_REQUEST['resize'] ?   (int)$_REQUEST['resize'] :   false);
-    $maintain =       (isset($_REQUEST['maintain']) && (int)$_REQUEST['maintain'] ? (int)$_REQUEST['maintain'] : false);
-    $wm =             (isset($_REQUEST['wm'])       && (int)$_REQUEST['wm'] ?       (int)$_REQUEST['wm'] :       false);
-    $alt =            (isset($_REQUEST['alt']) ?          path_safe($_REQUEST['alt']) : false);
-    $border =         (isset($_REQUEST['border']) ?       $_REQUEST['border'] : false);
-    $file =           path_safe(isset($_REQUEST['img']) ? $_REQUEST['img'] :    '');
-    $file_arr =       explode(",", $file);
-    $file =           trim(array_shift($file_arr), '/');
-    $filename =       "./".$file;
-    $file_ext_arr =   explode(".", $filename);
-    $ext =            strToLower(array_pop($file_ext_arr));
+    $cacheFile =    SYS_CACHE.'image/'.SYS_ID.'|'.crc32($_SERVER['REQUEST_URI']);
+    $max =          (isset($_REQUEST['max'])      && (int)$_REQUEST['max'] ?      (int)$_REQUEST['max'] :      false);
+    $width =        (isset($_REQUEST['width'])    && (int)$_REQUEST['width'] ?    (int)$_REQUEST['width'] :    false);
+    $height =       (isset($_REQUEST['height'])   && (int)$_REQUEST['height'] ?   (int)$_REQUEST['height'] :   false);
+    $resize =       (isset($_REQUEST['resize'])   && (int)$_REQUEST['resize'] ?   (int)$_REQUEST['resize'] :   false);
+    $maintain =     (isset($_REQUEST['maintain']) && (int)$_REQUEST['maintain'] ? (int)$_REQUEST['maintain'] : false);
+    $wm =           (isset($_REQUEST['wm'])       && (int)$_REQUEST['wm'] ?       (int)$_REQUEST['wm'] :       false);
+    $alt =          (isset($_REQUEST['alt']) ?          path_safe($_REQUEST['alt']) : false);
+    $border =       (isset($_REQUEST['border']) ?       $_REQUEST['border'] : false);
+    $file =         path_safe(isset($_REQUEST['img']) ? $_REQUEST['img'] :    '');
+    $file_arr =     explode(",", $file);
+    $file =         trim(array_shift($file_arr), '/');
+    $filename =     "./".$file;
+    $file_ext_arr = explode(".", $filename);
+    $ext =          strToLower(array_pop($file_ext_arr));
     switch($ext){
         case "gif":
         case "ico":
@@ -1238,6 +1265,10 @@ function sysimg()
             die('Cannot open '.$file);
         }
         return;
+    }
+    if (file_exists($cacheFile)) {
+        readfile($cacheFile);
+        die;
     }
     switch ($ext){
         case "gif":
@@ -1393,16 +1424,17 @@ function sysimg()
     }
     switch ($ext){
         case "gif":
-            ImageGIF($img);
+            ImageGIF($img, $cacheFile);
             break;
         case "png":
-            ImagePNG($img);
+            ImagePNG($img, $cacheFile);
             break;
         case "jpg":
         case "jpeg":
-            ImageJPEG($img, null, 100);
+            ImageJPEG($img, $cacheFile, 100);
             break;
     }
+    readfile($cacheFile);
 }
 
 function sysjs()
