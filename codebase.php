@@ -21,6 +21,28 @@ define(
 Summary:
   1) Implemented long overdue caching mode for streamed manipluated images
 
+Final Checksums:
+  Classes     CS:4561e076
+  Database    CS:4317aaaa
+  Libraries   CS:e7c73f46
+  Reports     CS:523dfa87
+
+Code Changes:
+  codebase.php                                                                                   5.2.0     (2017-08-21)
+    1) Updated version information
+  img.php                                                                                        2.1.0     (2017-08-21)
+    1) Implemented long overdue caching for all sysimg modes into shared/cache/image
+    2) Moved cache for css into new container folder shared/cache/css
+    3) Moved cache for js into new container folder shared/cache/js
+    4) Added implementation of apache_request_headers() if missing in PHP build
+
+2497.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        5.2.0
+  img.php                                             2.1.0     CS:14ba076c
+
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
     search results will be shown instead:
