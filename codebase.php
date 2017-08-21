@@ -24,7 +24,7 @@ Summary:
 Final Checksums:
   Classes     CS:4561e076
   Database    CS:4317aaaa
-  Libraries   CS:e7c73f46
+  Libraries   CS:3f8e3707
   Reports     CS:523dfa87
 
 Code Changes:
@@ -41,7 +41,7 @@ Code Changes:
 
 Promote:
   codebase.php                                        5.2.0
-  img.php                                             2.1.0     CS:14ba076c
+  img.php                                             2.1.0     CS:84c4af6e
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

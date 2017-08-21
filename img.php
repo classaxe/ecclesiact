@@ -1192,7 +1192,7 @@ function spacer()
 
 function sysimg()
 {
-    $cacheFile =    SYS_CACHE.'image/'.SYS_ID.'|'.crc32($_SERVER['REQUEST_URI']);
+    $cacheFile =    SYS_CACHE.'image/'.SYS_ID.'_'.crc32($_SERVER['REQUEST_URI']);
     $max =          (isset($_REQUEST['max'])      && (int)$_REQUEST['max'] ?      (int)$_REQUEST['max'] :      false);
     $width =        (isset($_REQUEST['width'])    && (int)$_REQUEST['width'] ?    (int)$_REQUEST['width'] :    false);
     $height =       (isset($_REQUEST['height'])   && (int)$_REQUEST['height'] ?   (int)$_REQUEST['height'] :   false);
