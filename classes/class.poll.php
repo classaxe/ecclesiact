@@ -1,14 +1,13 @@
 <?php
-define('VERSION_POLL','1.0.10');
 /*
 Version History:
-  1.0.10 (2014-02-17)
-    1) Refreshed fields list - now declared as a class constant
-
-  (Older version history in class.poll.txt)
+  1.0.11 (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
 */
 class Poll extends Displayable_Item {
-  const fields = 'ID, archive, archiveID, deleted, systemID, active, category, choices_in_random_order, date, date_end, max_votes_per_ballot, question, responses, show_descriptions, show_scores, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.11';
+    const fields = 'ID, archive, archiveID, deleted, systemID, active, category, choices_in_random_order, date, date_end, max_votes_per_ballot, question, responses, show_descriptions, show_scores, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
   public function __construct($ID=""){
     parent::__construct("poll",$ID);
@@ -20,8 +19,8 @@ class Poll extends Displayable_Item {
     $this->_set_message_associated('and defined Choices, Questions and Responses have');
   }
 
-  function copy($new_name=false,$new_systemID=false,$new_date=true) {
-    $newID =        parent::copy($new_name,$new_systemID,$new_date);
+  public function copy($new_name=false,$new_systemID=false,$new_date=true, $data = false) {
+    $newID =        parent::copy($new_name,$new_systemID,$new_date, $data);
     $answers =      $this->get_choices();
     $Obj =          new Poll_Choice;
     foreach ($answers as $data) {
@@ -337,8 +336,4 @@ class Poll extends Displayable_Item {
     return (int)$a['votes'] == (int)$b['votes'] ? 0 : ((int)$a['votes'] > (int)$b['votes']) ? -1 : +1;
   }
 
-  public static function getVersion(){
-    return VERSION_POLL;
-  }
 }
-?>

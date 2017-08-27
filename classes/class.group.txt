@@ -1,3 +1,6 @@
+  1.0.29 (2014-06-22)
+    1) Group::member_assign() now includes support for permEMAILOPTIN and optional parameter
+       $email_subscription_log
   1.0.28 (2013-11-20)
     1) Group::member_assign() removed support for permADMIN and permAPPROVER
     2) Group::get_perms_array_from_csv() removed support for permADMIN and permAPPROVER

@@ -1,3 +1,5 @@
+  1.0.42 (2015-08-29)
+    1) Added sdmenu_exclusive and sdmenu_speed to field list
   1.0.41 (2015-09-21)
     1) Suite::getJsPreload() and Suite::drawJsPreload() now have additional parameter to indicate whether menu is
        responsive or not

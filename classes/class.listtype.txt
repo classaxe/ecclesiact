@@ -1,3 +1,6 @@
+  1.0.8 (2017-01-02)
+    1) Listtype::copy() now looks and behaves like its parent
+    2) many PSR-2 fixes
   1.0.7 (2014-02-18)
     1) Refreshed fields list - now declared as a class constant
   1.0.6 (2012-09-03)

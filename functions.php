@@ -1,9 +1,9 @@
 <?php
-define("FUNCTIONS_VERSION", "1.0.21");
+define("FUNCTIONS_VERSION", "1.0.22");
 /*
 Version History:
-  1.0.21 (2017-01-02)
-    1) Multi-clause 'if' statements no longer enclosed using double brackets trick
+  1.0.22 (2017-08-27)
+    1) Changes to memory monitor to use new clipboard copy technique and shows additional details
 */
 function errorHandler($errno, $errstr, $errfile, $errline)
 {
@@ -41,12 +41,11 @@ function mem($label = '')
 {
     static $mem_usage = array();
     if ($label!='') {
-        $mem_usage[] =
-        array(
-        'lbl' =>            $label,
-        'mem' =>            number_format(memory_get_usage()),
-        'class_files' =>    includes_monitor(),
-        'html_classes'=>    array()
+        $mem_usage[] = array(
+            'lbl' =>            $label,
+            'mem' =>            number_format(memory_get_usage()),
+            'class_files' =>    includes_monitor(),
+            'html_classes'=>    array()
         );
         return;
     }
@@ -119,7 +118,14 @@ function mem($label = '')
             ."</tr>\n"
         ;
     }
-    $memory_monitor_clipboard = "\t".System::get_item_version('build');
+    $memory_monitor_clipboard =
+        SYSTEM_FAMILY."\t".System::get_item_version('build')."\n"
+        ."PHP\t".System::get_item_version('php')."\n"
+        ."MySQL\t".System::get_item_version('mysql')."\n"
+        ."HTTP\t".System::get_item_version('http_software')."\n"
+        ."\n"
+        ."Marker\tMemory\n"
+        ."-------------------------------";
     foreach ($mem_usage as $mu) {
         $memory_monitor_clipboard.= "\n".$mu['lbl']."\t".$mu['mem'];
     }
@@ -134,14 +140,12 @@ function mem($label = '')
     $out.=
          "  <tr>\n"
         ."    <th colspan='2'>\n"
-        ."      <input type=\"button\""
-        ." onclick=\"copy_clip(geid_val('memory_monitor_data'))\" value='Copy' />\n"
-        ."      <input type=\"button\""
-        ." onclick=\"window.focus();geid('memory_monitor').style.display='none';\" value='Close' />\n"
+        ."      <input type=\"button\" value=\"Copy\" class=\"copy\" data-clipboard-action='copy' data-clipboard-target='#memory_monitor_data' />\n"
+        ."      <input type=\"button\" value=\"Close\" onclick=\"window.focus();geid('memory_monitor').style.display='none';\" />\n"
         ."    </th>\n"
         ."  </tr>\n"
         ."</table>"
-        .draw_form_field('memory_monitor_data', $memory_monitor_clipboard, 'hidden')
+        ."<textarea id='memory_monitor_data' style='position:absolute;left: -10000px'>$memory_monitor_clipboard</textarea>"
         ."</div>";
     return $out;
 }

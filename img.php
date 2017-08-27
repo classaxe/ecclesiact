@@ -1,12 +1,11 @@
 <?php
-define("VERSION", "2.1.0");
+define("VERSION", "2.1.1");
 /*
 Version History:
-  2.1.0 (2017-08-21)
-    1) Implemented long overdue caching for all sysimg modes into shared/cache/image
-    2) Moved cache for css into new container folder shared/cache/css
-    3) Moved cache for js into new container folder shared/cache/js
-    4) Added implementation of apache_request_headers() if missing in PHP build
+  2.1.1 (2017-08-26)
+    1) Now safely handles generation of watermarked images when no ttf font support is available.
+       Such images are removed from cache after use since they are not correct.
+    2) Added support for JS streaming of clipboard.min.js
 */
 if (!defined("SYS_BUTTONS")) {
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
@@ -1342,7 +1341,7 @@ function sysimg()
                 break;
         }
     }
-    if ($wm) {
+    if ($wm && function_exists('imagettfbbox')) {
         $img_width =    imagesx($img);
         $record =       get_system();
         $text =         $record['textEnglish'];
@@ -1435,6 +1434,9 @@ function sysimg()
             break;
     }
     readfile($cacheFile);
+    if ($wm && !function_exists('imagettfbbox')) {
+        unlink($cacheFile);
+    }
 }
 
 function sysjs()
@@ -1453,6 +1455,7 @@ function sysjs()
             break;
         case "ajaxupload":
         case "camera":
+        case "clipboard":
         case "device":
         case "jquery":
         case "jquery.cookie":

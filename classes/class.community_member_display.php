@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.54 (2017-04-09)
-    1) Highlighted tabs for Christmas and Easter
+  1.0.55 (2017-08-26)
+    1) Changes to better handle absense of Piwik Analytics on installed server
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.54';
+    const VERSION = '1.0.55';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1488,7 +1488,11 @@ class Community_Member_Display extends Community_Member
             return;
         }
         if (!PIWIK_DEV &&
-            (substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' || substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.')
+            (
+                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 4)=='mac.'
+            )
         ) {
             return;
         }
@@ -1541,6 +1545,9 @@ class Community_Member_Display extends Community_Member
         $member_url =       $community_url.'/'.trim($r['name'], '/');
         for ($i=count($this->_stats_dates)-1; $i>=0; $i--) {
             $YYYYMM = $this->_stats_dates[$i];
+            if (!isset($this->_stats[$YYYYMM]['visits'][$community_url])) {
+                continue;    
+            }
             $comm =   $this->_stats[$YYYYMM]['visits'][$community_url];
             $prof =
                 (isset($this->_stats[$YYYYMM]['visits'][$member_url]) ?

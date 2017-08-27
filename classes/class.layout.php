@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.40 (2016-07-02)
-    1) Layout::prepareResponsiveFoot() now brings in tmscripts for better native support for responsive sites
+  1.0.41 (2017-08-27)
+    1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.40';
+    const VERSION = '1.0.41';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -924,10 +924,15 @@ class Layout extends Record
         mem('Post Render');
         if (DEBUG_MEMORY || get_var('mem')==1) {
             print
-            mem()
-            ."<script type='text/javascript'>\n"
-            ."\$J('#memory_monitor').draggable({ handle:'#memory_monitor_handle',opacity:0.9});\n"
-            ."</script>";
+                 mem()
+                ."<script src='".BASE_PATH."sysjs/clipboard'></script>\n"
+                ."<script>var clipboard = new Clipboard('.copy');\n"
+                ."clipboard.on('success', function(e) { alert('Memory Monitor data copied to clipboard') });\n"
+                ."clipboard.on('error',   function(e) { alert('Error copying data to clipboard'); console.log(e) });\n"
+                ."</script>\n"
+                ."<script type='text/javascript'>\n"
+                ."\$J('#memory_monitor').draggable({ handle:'#memory_monitor_handle',opacity:0.9});\n"
+                ."</script>";
         }
     }
 

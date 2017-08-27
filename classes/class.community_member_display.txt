@@ -1,3 +1,5 @@
+  1.0.54 (2017-04-09)
+    1) Highlighted tabs for Christmas and Easter
   1.0.53 (2017-04-09)
     1) Switched off reftagger in communities listing for contact, summary and members panels
   1.0.52 (2016-12-31)

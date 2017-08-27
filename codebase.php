@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.2.0");
+define("CODEBASE_VERSION", "5.2.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,31 +17,105 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.2.0.2497 (2017-08-21)
+5.2.1.2498 (2017-08-27)
 Summary:
-  1) Implemented long overdue caching mode for streamed manipluated images
+  1) System clone now includes community records
+  2) Fixed Get Communities code to limit to current system
+  3) Made Piwik fetch code more resilient in cases where piwik is not installed
+  4) Completely replaced clipboard copy code used my memory monitor and system status for newer browsers
 
 Final Checksums:
-  Classes     CS:4561e076
+  Classes     CS:bc531a96
   Database    CS:4317aaaa
-  Libraries   CS:3f8e3707
+  Libraries   CS:cbcc958a
   Reports     CS:523dfa87
 
 Code Changes:
-  codebase.php                                                                                   5.2.0     (2017-08-21)
+  codebase.php                                                                                   5.2.1     (2017-08-27)
     1) Updated version information
-  img.php                                                                                        2.1.0     (2017-08-21)
-    1) Implemented long overdue caching for all sysimg modes into shared/cache/image
-    2) Moved cache for css into new container folder shared/cache/css
-    3) Moved cache for js into new container folder shared/cache/js
-    4) Added implementation of apache_request_headers() if missing in PHP build
+  classes/class.community.php                                                                    1.0.121   (2017-08-26)
+    1) Community::get_communities() now only selects communities from the current system
+    2) Community::_on_action_community_setup_website_button() no longer executes if there is no
+       support for ttf fonts on server
+  classes/class.community_display.php                                                            1.0.52    (2017-08-26)
+    1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
+  classes/class.community_member_display.php                                                     1.0.55    (2017-08-26)
+    1) Changes to better handle absense of Piwik Analytics on installed server
+  classes/class.crm_case.php                                                                     1.0.14    (2017-08-26)
+    1) Gave CRM_Case::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  classes/class.group.php                                                                        1.0.30    (2017-08-26)
+    1) Gave Group::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
+  classes/class.layout.php                                                                       1.0.41    (2017-08-27)
+    1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
+  classes/class.listtype.php                                                                     1.0.9     (2017-08-26)
+    1) Gave Listtype::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  classes/class.piwik.php                                                                        1.0.3     (2017-08-26)
+    1) Fix to deal with Piwik not being installed in community edition when logged in and viewing member
+    2) Now uses VERSION constant for version control
+  classes/class.poll.php                                                                         1.0.11    (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
+  classes/class.record.php                                                                       1.0.103   (2017-08-26)
+    1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
+  classes/class.report.php                                                                       1.0.93    (2017-08-26)
+    1) Gave Report::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  classes/class.survey.php                                                                       1.0.19    (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
+  classes/class.system.php                                                                       1.0.178   (2017-08-26)
+    1) Gave System::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  classes/class.system_copy.php                                                                  1.0.11    (2017-08-25)
+    1) System_Copy::copy() now includes community records and related data
+    2) Gave System_Copy::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  classes/class.system_health.php                                                                1.0.50    (2017-08-27)
+    1) Replaced the copy to clipboard system with a newer version that works in modern browsers
+  classes/class.tax_regime.php                                                                   1.0.16    (2017-08-26)
+    1) Gave Tax_Regime::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
+  classes/class.tax_zone.php                                                                     1.0.5     (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
+  classes/nav/suite.php                                                                          1.0.43    (2017-08-26)
+    1) Gave Suite::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  functions.php                                                                                  1.0.22    (2017-08-27)
+    1) Changes to memory monitor to use new clipboard copy technique and shows additional details
+  img.php                                                                                        2.1.1     (2017-08-26)
+    1) Now safely handles generation of watermarked images when no ttf font support is available.
+       Such images are removed from cache after use since they are not correct.
+    2) Added support for JS streaming of clipboard.min.js
+  js/functions.js                                                                                1.0.272   (2017-08-26)
+    1) Completely replaced copy_clip() with external library code in clipboard.min.js
 
-2497.sql
+2498.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.2.0
-  img.php                                             2.1.0     CS:84c4af6e
+  codebase.php                                        5.2.1
+  classes/  (18 files changed)
+    class.community.php                               1.0.121   CS:504d4a2e
+    class.community_display.php                       1.0.52    CS:e09c139f
+    class.community_member_display.php                1.0.55    CS:acf1bcf8
+    class.crm_case.php                                1.0.14    CS:2408a392
+    class.group.php                                   1.0.30    CS:1dd0cbb1
+    class.layout.php                                  1.0.41    CS:26e052c9
+    class.listtype.php                                1.0.9     CS:4d2184b8
+    class.piwik.php                                   1.0.3     CS:6d73328e
+    class.poll.php                                    1.0.11    CS:135b3c4c
+    class.record.php                                  1.0.103   CS:49cb2648
+    class.report.php                                  1.0.93    CS:2975fc20
+    class.survey.php                                  1.0.19    CS:5edbd85c
+    class.system.php                                  1.0.178   CS:82f9c711
+    class.system_copy.php                             1.0.11    CS:f04c4557
+    class.system_health.php                           1.0.50    CS:a7529448
+    class.tax_regime.php                              1.0.16    CS:30a45da5
+    class.tax_zone.php                                1.0.5     CS:77733990
+    nav/suite.php                                     1.0.43    CS:dc38e517
+  functions.php                                       1.0.22    CS:813cdc31
+  img.php                                             2.1.1     CS:ee0f32bd
+  js/functions.js                                     1.1.272   CS:61b6b85c
+
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

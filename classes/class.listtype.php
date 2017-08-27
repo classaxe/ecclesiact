@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.8 (2017-01-02)
-    1) Listtype::copy() now looks and behaves like its parent
-    2) many PSR-2 fixes
+  1.0.9 (2017-08-26)
+    1) Gave Listtype::copy() method fourth parameter 'data' to look like recently modified Record::copy()
 */
 class Listtype extends Record
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -24,10 +23,10 @@ class Listtype extends Record
         );
     }
 
-    public function copy($new_name = "", $new_systemID = "", $new_date = true)
+    public function copy($new_name = "", $new_systemID = "", $new_date = true, $data = false)
     {
         $list_data_arr = $this->get_listdata();
-        $ID =           parent::copy($new_name, $new_systemID, $new_date);
+        $ID =           parent::copy($new_name, $new_systemID, $new_date, $data);
         $Obj_Listtype = new Listtype($ID);
         $Obj_ListData = new ListData;
         foreach ($list_data_arr as $list_data) {

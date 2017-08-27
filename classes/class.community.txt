@@ -1,3 +1,7 @@
+  1.0.120 (2016-10-16)
+    1) Community::get_selector_sql() renamed to Community::getSelectorSql() and now actually lists communities
+       rather than community members.
+       That selector type has moved to Community_Member which is where it more properly belongs.
   1.0.119 (2016-03-03)
     1) Moved Community::_setup_load_user_rights() out into Community_Display::setupListingsLoadUserRights()
   1.0.118 (2015-12-30)

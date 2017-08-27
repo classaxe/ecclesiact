@@ -2,18 +2,26 @@
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|search|sysjs)');
 /*
 Version History:
-  1.0.49 (2017-02-12)
-    1) Eliminated warnings that may be seen when a class is a new addition for the build
+  1.0.50 (2017-08-27)
+    1) Replaced the copy to clipboard system with a newer version that works in modern browsers
 */
 class System_Health extends System
 {
-    const VERSION = '1.0.49';
+    const VERSION = '1.0.50';
 
     public function draw($config_arr, $ID)
     {
         if (!is_array($config_arr)) {
             return "System details not known.";
         }
+        \Output::push(
+            "body_bottom",
+            "<script src='".BASE_PATH."sysjs/clipboard'></script>\n"
+            ."<script>var clipboard = new Clipboard('.copy');\n"
+            ."clipboard.on('success', function(e) { alert('Data copied to clipboard') });\n"
+            ."clipboard.on('error',   function(e) { alert('Error copying data to clipboard'); console.log(e) });\n"
+            ."</script>\n"
+        );        
         return
              $this->drawSystemTable($config_arr, $ID)
             .$this->drawClassesTable($config_arr)
@@ -178,9 +186,9 @@ class System_Health extends System
                     .pad($version, 10)
                     .trim(
                         "CS:".pad($checksum, 10)
-                        ."\n"
-                    );
-                    $changed_files[] = trim($entry[0], '/');
+                    )
+                    ."\n";
+                $changed_files[] = trim($entry[0], '/');
             }
         }
         $changed_files_list = "";
@@ -247,13 +255,9 @@ class System_Health extends System
             ."  1) Set version information\n\n"
             .$value;
         return
-             draw_form_field($ID.'_code_build_info', $value, 'hidden')
-            ."<input class='formButton fr txt_c' type=\"button\" value=\"Code Header\""
-            ." onclick=\"copy_clip(geid_val('".$ID."_code_build_info'));"
-            ."alert('Code Header info copied to clipboard.\\n"
-            ."Steps remaining:\\n"
-            ."  1) Provide top-level summary\\n"
-            ."  2) Insert SQL changes where indicated')\" />";
+             "<textarea id='".$ID."_code_build_info' style='position:absolute;left: -10000px'>$value</textarea>"
+            ."<input class='formButton fr txt_c copy' type='button' value=\"Code Header\""
+            ." data-clipboard-action='copy' data-clipboard-target='#".$ID."_code_build_info' />";
     }
 
     private function drawButtonSQLBuildInfo($config_arr, $ID)
@@ -350,12 +354,10 @@ class System_Health extends System
             ."    '".wordwrap(implode(', ', $reports_detail_arr), 500, " ',\n    '")."');\n"
              : ""
             );
-
         return
-            draw_form_field($ID.'_sql_build_info', $value, 'hidden')
-            ."<input class='formButton fr txt_c' type=\"button\" value=\"SQL Build\""
-            ." onclick=\"copy_clip(geid_val('".$ID."_sql_build_info'));alert('SQL Build info copied to clipboard')\" />"
-        ;
+             "<textarea id='".$ID."_sql_build_info' style='position:absolute;left: -10000px'>$value</textarea>"
+            ."<input class='formButton fr txt_c copy' type='button' value=\"SQL Build\""
+            ." data-clipboard-action='copy' data-clipboard-target='#".$ID."_sql_build_info' />";
     }
 
     private function drawDBTable($config_arr)

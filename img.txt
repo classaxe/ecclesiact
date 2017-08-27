@@ -1,3 +1,8 @@
+  2.1.0 (2017-08-21)
+    1) Implemented long overdue caching for all sysimg modes into shared/cache/image
+    2) Moved cache for css into new container folder shared/cache/css
+    3) Moved cache for js into new container folder shared/cache/js
+    4) Added implementation of apache_request_headers() if missing in PHP build
   2.0.99 (2017-05-03)
     1) Modes img/wm and /img/resize no longer enforce maintaining of aspect ratio - was messing up image faders
   2.0.98 (2016-12-26)

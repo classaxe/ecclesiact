@@ -2,12 +2,12 @@
 namespace Nav;
 /*
 Version History:
-  1.0.42 (2015-08-29)
-    1) Added sdmenu_exclusive and sdmenu_speed to field list
+  1.0.43 (2017-08-26)
+    1) Gave Suite::copy() method fourth parameter 'data' to look like recently modified Record::copy()
 */
 class Suite extends \Record
 {
-    const VERSION = '1.0.42';
+    const VERSION = '1.0.43';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, buttonStyleID, childID_csv, name, parentButtonID, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public static $cache_buttons_array = array();
@@ -67,9 +67,9 @@ class Suite extends \Record
         }
     }
 
-    public function copy($new_name = false, $new_systemID = false, $new_date = true)
+    public function copy($new_name = false, $new_systemID = false, $new_date = true, $data = false)
     {
-        $newID =    parent::copy($new_name, $new_systemID, $new_date);
+        $newID =    parent::copy($new_name, $new_systemID, $new_date, $data);
         $buttons =  $this->getButtons(true);
         $Obj =      new \Nav\button;
         $mapping = array();

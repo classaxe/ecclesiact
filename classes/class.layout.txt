@@ -1,3 +1,5 @@
+  1.0.40 (2016-07-02)
+    1) Layout::prepareResponsiveFoot() now brings in tmscripts for better native support for responsive sites
   1.0.39 (2016-07-01)
     1) Layout::prepareResponsiveFoot() now includes 'jquery-ui'
   1.0.38 (2016-06-20)

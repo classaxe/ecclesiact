@@ -1,14 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.102 (2017-01-02)
-    1) Renamed Record::manage_actions() to Record::manageActionsForNamedReport()
-    2) Record::copy_actions() now handles assignment of newly copied actions to the new parent entity itself
-    3) PSR-2 fixes
+  1.0.103 (2017-08-26)
+    1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.102';
+    const VERSION = '1.0.103';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -317,8 +315,9 @@ class Record extends Portal
         $Obj->delete_for_assignment($this->_get_assign_type(), $this->_get_ID());
     }
 
-    public function copy($new_name = false, $new_systemID = false, $new_date = true)
-    {
+    public function copy(
+        $new_name = false, $new_systemID = false, $new_date = true, $data = false
+    ) {
         $now =      get_timestamp();
         $newID =    $this->uniqID();
         $sql =
@@ -332,56 +331,60 @@ class Record extends Portal
         $fields = static::getRecordForSql($sql);
         $sql_arr = array();
         foreach ($fields as $key => $value) {
-            switch ($key) {
-                case "ID":
-                    $value = $newID;
-                    break;
-                case "history_created_by":
-                    if ($new_date) {
-                        $value = get_userID();
-                    }
-                    break;
-                case "history_created_date":
-                    if ($new_date) {
-                        $value = $now;
-                    }
-                    break;
-                case "history_created_IP":
-                    if ($new_date) {
-                        $value = $_SERVER['REMOTE_ADDR'];
-                    }
-                    break;
-                case "history_modified_by":
-                case "history_modified_date":
-                case "history_modified_IP":
-                    if ($new_date) {
-                        $value = "";
-                    }
-                    break;
-                case "comments_count":
-                case "max_sequence":
-                    $value= 0;
-                    break;
-                case "qb_ident":
-                    $value= "";
-                    break;
-                case $this->_get_name_field():
-                    if ($new_name) {
-                        $value = $new_name;
-                    }
-                    break;
-                case "page":
-                    if ($this->_get_table_name()=="pages") {
-                        if (!$new_systemID) {
+            if (is_array($data) && isset($data[$key])) {
+                $value = $data[$key];
+            } else {
+                switch ($key) {
+                    case "ID":
+                        $value = $newID;
+                        break;
+                    case "history_created_by":
+                        if ($new_date) {
+                            $value = get_userID();
+                        }
+                        break;
+                    case "history_created_date":
+                        if ($new_date) {
+                            $value = $now;
+                        }
+                        break;
+                    case "history_created_IP":
+                        if ($new_date) {
+                            $value = $_SERVER['REMOTE_ADDR'];
+                        }
+                        break;
+                    case "history_modified_by":
+                    case "history_modified_date":
+                    case "history_modified_IP":
+                        if ($new_date) {
+                            $value = "";
+                        }
+                        break;
+                    case "comments_count":
+                    case "max_sequence":
+                        $value= 0;
+                        break;
+                    case "qb_ident":
+                        $value= "";
+                        break;
+                    case $this->_get_name_field():
+                        if ($new_name) {
                             $value = $new_name;
                         }
-                    }
-                    break;
-                case "systemID":
-                    if ($new_systemID) {
-                        $value = $new_systemID;
-                    }
-                    break;
+                        break;
+                    case "page":
+                        if ($this->_get_table_name()=="pages") {
+                            if (!$new_systemID) {
+                                $value = $new_name;
+                            }
+                        }
+                        break;
+                    case "systemID":
+                        if ($new_systemID) {
+                            $value = $new_systemID;
+                        }
+                        break;
+                }
             }
             $sql_arr[] = "  \"".addslashes($value)."\"";
         }

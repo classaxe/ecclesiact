@@ -1,0 +1,10 @@
+  1.0.2 (2014-02-05)
+    1) Piwik::get_outlinks() is incapable of accepting a filter so removed 'find'
+    2) Added Piwik::get_outlink() - takes a pipe delimited find parameter
+    3) Added Piwik::get_visit() - takes a pipe delimited find parameter
+  1.0.1 (2013-10-17)
+    1) Piwik::get_visits() is now recursive
+    2) Piwik::_get_visits_for_subtable() now gets cumulative count for visits
+       including submodes rather tha letting last matching entry blow the rest away.
+  1.0.0 (2011-09-10)
+    1) Initial release

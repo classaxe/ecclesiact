@@ -1,3 +1,6 @@
+  1.0.10 (2017-01-02)
+    1) System_Copy::copy() now looks like its parent
+    2) PSR-2 fixes
   1.0.9 (2016-04-27)
     1) References to Mail_Identity now MailIdentity
   1.0.8 (2015-08-02)

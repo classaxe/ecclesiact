@@ -1,19 +1,12 @@
 <?php
-define('VERSION_PIWIK','1.0.2');
 /*
 Version History:
-  1.0.2 (2014-02-05)
-    1) Piwik::get_outlinks() is incapable of accepting a filter so removed 'find'
-    2) Added Piwik::get_outlink() - takes a pipe delimited find parameter
-    3) Added Piwik::get_visit() - takes a pipe delimited find parameter
-  1.0.1 (2013-10-17)
-    1) Piwik::get_visits() is now recursive
-    2) Piwik::_get_visits_for_subtable() now gets cumulative count for visits
-       including submodes rather tha letting last matching entry blow the rest away.
-  1.0.0 (2011-09-10)
-    1) Initial release
+  1.0.3 (2017-08-26)
+    1) Fix to deal with Piwik not being installed in community edition when logged in and viewing member
+    2) Now uses VERSION constant for version control
 */
 class Piwik extends System{
+    const VERSION = '1.0.3';
   private $_base_URL;
   private $_idSite;
   private $_token_auth;
@@ -28,7 +21,10 @@ class Piwik extends System{
     $params[] =         "token_auth=".$this->_token_auth;
     $this->_request =   implode('&',$params);
     $Obj_CURL =         new Curl($this->_base_URL,$this->_request);
-    $xml_doc =$Obj_CURL->get();
+    $xml_doc =          $Obj_CURL->get();
+    if (strpos($xml_doc, '<')===false) {
+        return false;
+    }
     $out =              new SimpleXMLElement($xml_doc);
 //    print $this->_base_URL.'?'.$this->_request."<pre>".print_r($out,true)."</false>";
     return $out;
@@ -92,10 +88,12 @@ class Piwik extends System{
       $params[] =     "period=".$this->_period;
       $params[] =     "date=".$this->_date;
       $xml =          $this->do_xml_request($params);
-      $out[$url] =  array(
-        'hits' =>   (int)(string)$xml->row->nb_hits,
-        'visits' => (int)(string)$xml->row->nb_visits
-      );
+      if ($xml !== false) {
+          $out[$url] =  array(
+            'hits' =>   (int)(string)$xml->row->nb_hits,
+            'visits' => (int)(string)$xml->row->nb_visits
+          );
+      }
     }
     return $out;
   }
@@ -108,6 +106,9 @@ class Piwik extends System{
     $params[] =     "date=".$this->_date;
     $params[] =     "expanded=1";
     $xml =          $this->do_xml_request($params);
+    if ($xml === false) {
+        return false;
+    }
     $out = array();
     foreach ($xml->row as $type => $node){
       $url =    (string)$node->url;
@@ -142,13 +143,15 @@ class Piwik extends System{
       $params[] =     "period=".$this->_period;
       $params[] =     "date=".$this->_date;
       $xml =          $this->do_xml_request($params);
-      $out[$url] =  array(
-        'hits' =>   (string)$xml->row->nb_hits,
-        'visits' => (string)$xml->row->nb_visits,
-        'time_a' => (string)$xml->row->avg_time_on_page,
-        'time_t' => (string)$xml->row->sum_time_spent,
-        'bounce' => (string)$xml->row->bounce_rate
-      );
+      if ($xml !== false) {
+          $out[$url] =  array(
+            'hits' =>   (string)$xml->row->nb_hits,
+            'visits' => (string)$xml->row->nb_visits,
+            'time_a' => (string)$xml->row->avg_time_on_page,
+            'time_t' => (string)$xml->row->sum_time_spent,
+            'bounce' => (string)$xml->row->bounce_rate
+          );
+      }
     }
 //    y($xml);y($params);die;
     return $out;
@@ -167,6 +170,9 @@ class Piwik extends System{
       $params[] =   "filter_pattern_recursive=".$find;
     }
     $xml =          $this->do_xml_request($params);
+    if ($xml === false) {
+        return false;
+    }
     $out = array();
 //    y($xml);die;
     foreach ($xml->row as $type=>$node){
@@ -205,10 +211,4 @@ class Piwik extends System{
     }
   }
 
-
-  public static function getVersion(){
-    return VERSION_PIWIK;
-  }
 }
-
-?>

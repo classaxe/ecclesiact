@@ -1,15 +1,14 @@
 <?php
-define('VERSION_TAX_REGIME','1.0.15');
 /*
 Version History:
-  1.0.15 (2014-01-28)
-    1) Refreshed fields list - now declared as a class constant
-
-  (Older version history in class.tax_regime.txt)
+  1.0.16 (2017-08-26)
+    1) Gave Tax_Regime::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
 */
 
 class Tax_Regime extends Record {
-  const fields = 'ID, archive, archiveID, deleted, systemID, name, color_background, color_text, seq, tax_zoneID, description, qb_ident, qb_name, tax1_rate, tax2_rate, tax3_rate, tax4_rate, tax5_rate, tax6_rate, tax7_rate, tax8_rate, tax9_rate, tax10_rate, tax11_rate, tax12_rate, tax13_rate, tax14_rate, tax15_rate, tax16_rate, tax17_rate, tax18_rate, tax19_rate, tax20_rate, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.16';
+    const fields = 'ID, archive, archiveID, deleted, systemID, name, color_background, color_text, seq, tax_zoneID, description, qb_ident, qb_name, tax1_rate, tax2_rate, tax3_rate, tax4_rate, tax5_rate, tax6_rate, tax7_rate, tax8_rate, tax9_rate, tax10_rate, tax11_rate, tax12_rate, tax13_rate, tax14_rate, tax15_rate, tax16_rate, tax17_rate, tax18_rate, tax19_rate, tax20_rate, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
   public function __construct($ID="") {
     parent::__construct("tax_regime",$ID);
@@ -17,9 +16,9 @@ class Tax_Regime extends Record {
     $this->_set_message_associated(' and associated Tax Rules have');
   }
 
-  function copy($new_name=false,$new_systemID=false,$new_date=true) {
+  public function copy($new_name=false,$new_systemID=false,$new_date=true, $data = false) {
     $isMASTERADMIN = get_person_permission("MASTERADMIN");
-    $newID =    parent::copy($new_name,$new_systemID,$new_date);
+    $newID =    parent::copy($new_name,$new_systemID,$new_date, $data);
     $rules =    $this->get_tax_rules();
     $Obj =      new Tax_Rule;
     foreach ($rules as $data) {
@@ -220,8 +219,4 @@ class Tax_Regime extends Record {
     return parent::try_copy($newID,$msg,$msg_tooltip);
   }
 
-  public static function getVersion(){
-    return VERSION_TAX_REGIME;
-  }
 }
-?>

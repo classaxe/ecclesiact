@@ -3,15 +3,15 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.120 (2016-10-16)
-    1) Community::get_selector_sql() renamed to Community::getSelectorSql() and now actually lists communities
-       rather than community members.
-       That selector type has moved to Community_Member which is where it more properly belongs.
+  1.0.121 (2017-08-26)
+    1) Community::get_communities() now only selects communities from the current system
+    2) Community::_on_action_community_setup_website_button() no longer executes if there is no
+       support for ttf fonts on server
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.120';
+    const VERSION = '1.0.121';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -101,7 +101,9 @@ class Community extends Displayable_Item
             ."  `".$this->_get_table_name()."`.*\n"
             ."FROM\n"
             ."  `".$this->_get_table_name()."`\n"
-            .($this->_current_user_rights['canEdit'] ? "" : "WHERE\n  `enabled`=1\n")
+            ."WHERE\n"
+            ."  `systemID` = ".SYS_ID
+            .($this->_current_user_rights['canEdit'] ? "\n" : " AND\n  `enabled`=1\n")
             ."ORDER BY\n"
             ."  `title`";
         return $this->get_records_for_sql($sql);
@@ -689,6 +691,9 @@ class Community extends Displayable_Item
     public function _on_action_community_setup_website_button()
     {
         if (!$this->record['URL_external']) {
+            return;
+        }
+        if (!function_exists('imagettfbbox')) {
             return;
         }
         $path =         '/UserFiles/Image/gallery-images/communities/'.$this->record['name'].'/button.png';

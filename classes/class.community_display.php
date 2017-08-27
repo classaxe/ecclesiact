@@ -7,14 +7,13 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.51 (2016-12-31)
-    1) Community_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) Community_Display::draw() now uses newly renamed Community_Resource::drawResource() method
+  1.0.52 (2017-08-26)
+    1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.51';
+    const VERSION = '1.0.52';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2155,8 +2154,9 @@ class Community_Display extends Community
         }
         if (!PIWIK_DEV &&
             (
-                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.'
+                substr($_SERVER["SERVER_NAME"], 0, 8) === 'desktop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 7) === 'laptop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 4) === 'max.'
             )
         ) {
             return;
@@ -2207,16 +2207,16 @@ class Community_Display extends Community
                 ."      <th".$this->drawContextMenuMember($r).">"
                 ."<a href=\"".$r['member_URL']."\">".$r['title']."</a>"
                 ."</th>\n"
-                ."      <td>".$r['profile_hits']."</td>\n"
-                ."      <td>".$r['profile_visits']."</td>\n"
-                ."      <td>".($r['link_website'] ?  $r['links']['website']['hits'] :    '')."</td>\n"
-                ."      <td>".($r['link_website'] ?  $r['links']['website']['visits'] :  '')."</td>\n"
-                ."      <td>".($r['link_facebook'] ? $r['links']['facebook']['hits']  :  '')."</td>\n"
-                ."      <td>".($r['link_facebook'] ? $r['links']['facebook']['visits'] : '')."</td>\n"
-                ."      <td>".($r['link_twitter'] ?  $r['links']['twitter']['hits']  :  '')."</td>\n"
-                ."      <td>".($r['link_twitter'] ?  $r['links']['twitter']['visits'] : '')."</td>\n"
-                ."      <td>".($r['link_video'] ?    $r['links']['video']['hits']  :  '')."</td>\n"
-                ."      <td>".($r['link_video'] ?    $r['links']['video']['visits'] : '')."</td>\n"
+                ."      <td>".(isset($r['profile_hits']) ? $r['profile_hits'] : '')."</td>\n"
+                ."      <td>".(isset($r['profile_visits']) ? $r['profile_visits'] : '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_website'] ?  $r['links']['website']['hits'] :    '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_website'] ?  $r['links']['website']['visits'] :  '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_facebook'] ? $r['links']['facebook']['hits']  :  '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_facebook'] ? $r['links']['facebook']['visits'] : '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_twitter'] ?  $r['links']['twitter']['hits']  :  '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_twitter'] ?  $r['links']['twitter']['visits'] : '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_video'] ?    $r['links']['video']['hits']  :  '')."</td>\n"
+                ."      <td>".(isset($r['links']) && $r['link_video'] ?    $r['links']['video']['visits'] : '')."</td>\n"
                 ."    </tr>\n";
         }
         $this->_html.=
@@ -2242,8 +2242,8 @@ class Community_Display extends Community
                 ."      <th".$this->drawContextMenuSponsor($r).">"
                 .$r['title']
                 ."</th>\n"
-                ."      <td>".$r['links']['hits']."</td>\n"
-                ."      <td>".$r['links']['visits']."</td>\n"
+                ."      <td>".(isset($r['links']['hits']) ? $r['links']['hits'] : '')."</td>\n"
+                ."      <td>".(isset($r['links']['visits']) ? $r['links']['visits'] : '')."</td>\n"
                 ."    </tr>\n";
         }
         $this->_html.=
@@ -2410,8 +2410,9 @@ class Community_Display extends Community
         global $system_vars;
         if (!PIWIK_DEV &&
             (
-                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.'
+                substr($_SERVER["SERVER_NAME"], 0, 8) === 'desktop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 7) === 'laptop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 4) === 'max.'
             )
         ) {
             return;
@@ -2429,8 +2430,9 @@ class Community_Display extends Community
   //    $find = "/aurora-cornerstone-church";
         $this->_track_outlinks = $Obj_Piwik->get_outlinks($this->_stats_date_start, $this->_stats_date_end, '');
         $this->_track_views =    $Obj_Piwik->get_visits($this->_stats_date_start, $this->_stats_date_end, $find);
-  //y($this->_track_outlinks);
-  //y($this->_track_views);die;
+        if ($this->_track_views === false) {
+            return;
+        }
         foreach ($this->_records as &$r) {
             $link_types = array('website','facebook','twitter','video');
             $r['links'] = array();

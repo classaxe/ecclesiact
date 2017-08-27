@@ -1,3 +1,7 @@
+  1.0.102 (2017-01-02)
+    1) Renamed Record::manage_actions() to Record::manageActionsForNamedReport()
+    2) Record::copy_actions() now handles assignment of newly copied actions to the new parent entity itself
+    3) PSR-2 fixes
   1.0.101 (2016-10-16)
     1) Change to Record::get_field() to enable to work with CSV list of IDs -
        Used in Page_Edit::draw() to get multiple group matches in bulk update mode

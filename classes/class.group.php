@@ -1,15 +1,13 @@
 <?php
-define('VERSION_GROUP','1.0.29');
 /*
 Version History:
-  1.0.29 (2014-06-22)
-    1) Group::member_assign() now includes support for permEMAILOPTIN and optional parameter
-       $email_subscription_log
-
-  (Older version history in class.group.txt)
+  1.0.30 (2017-08-26)
+    1) Gave Group::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
 */
 class Group extends Record{
-
+    const VERSION = '1.0.30';
+    
   public function __construct($ID="") {
     parent::__construct("groups",$ID);
     $this->_set_object_name('Group');
@@ -23,8 +21,8 @@ class Group extends Record{
     );
   }
 
-  function copy($new_name=false,$new_systemID=false,$new_date=true) {
-    $newID =    parent::copy($new_name,$new_systemID,$new_date);
+  public function copy($new_name=false,$new_systemID=false,$new_date=true, $data = false) {
+    $newID =    parent::copy($new_name,$new_systemID,$new_date, $data);
     $members =  $this->get_members();
     $Obj =      new Group_Member;
     foreach ($members as $data) {
@@ -555,9 +553,4 @@ class Group extends Record{
       ($perms_arr['permVIEWER']==1 ||
        $perms_arr['permEDITOR']==1);
   }
-
-  public static function getVersion(){
-    return VERSION_GROUP;
-  }
 }
-?>

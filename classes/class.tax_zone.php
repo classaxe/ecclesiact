@@ -1,28 +1,21 @@
 <?php
-define('VERSION_TAX_ZONE','1.0.4');
 /*
 Version History:
-  1.0.4 (2012-12-03)
-    1) Tax_Zone::copy() now has same signature as Record::copy()
-  1.0.3 (2010-10-19)
-    1) Tax_Zone::copy() now calls insert() method
-  1.0.2 (2010-10-04)
-    1) Changes to setter and getter names for parent-based object properties
-  1.0.1 (2010-03-18)
-    1) Tweak to Tax_Zone::export_sql() to explicitly use GROUP_CONCAT() in
-       subselect - otherwise query breaks on older mysql servers (e.g. 5.0.44)
-  1.0.0 (2010-03-17)
-    Initial release
+  1.0.5 (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
 */
 class Tax_Zone extends Record {
+    const VERSION = '1.0.5';
+
   function __construct($ID="") {
     parent::__construct("tax_zone",$ID);
     $this->_set_object_name("Tax Zone");
     $this->_set_message_associated('');
   }
 
-  function copy($new_name=false,$new_systemID=false,$new_date=true) {
-    $newID =    parent::copy($new_name,$new_systemID,$new_date);
+  public function copy($new_name=false,$new_systemID=false,$new_date=true, $data = false) {
+    $newID =    parent::copy($new_name,$new_systemID,$new_date, $data);
     $rules =    $this->get_tax_regimes();
     $Obj =      new Tax_Regime;
     foreach ($rules as $data) {
@@ -91,9 +84,4 @@ class Tax_Zone extends Record {
   function handle_report_copy(&$newID,&$msg,&$msg_tooltip,$name){
     return parent::try_copy($newID,$msg,$msg_tooltip);
   }
-
-  public static function getVersion(){
-    return VERSION_TAX_ZONE;
-  }
 }
-?>

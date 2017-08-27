@@ -1,13 +1,13 @@
 <?php
-define('VERSION_SURVEY','1.0.18');
 /*
 Version History:
-  1.0.18 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.19 (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
 */
 class Survey extends Posting {
-  protected $_blocks = false;
+    const VERSION = '1.0.19';
+    protected $_blocks = false;
 
   public function __construct($ID="",$systemID=SYS_ID) {
     parent::__construct($ID,$systemID);
@@ -148,8 +148,8 @@ class Survey extends Posting {
     return $out;
   }
 
-  function copy($new_name=false,$new_systemID=false,$new_date=true) {
-    $newID =    parent::copy($new_name,$new_systemID,$new_date);
+  public function copy($new_name=false,$new_systemID=false,$new_date=true, $data = false) {
+    $newID =    parent::copy($new_name,$new_systemID,$new_date, $data);
     $Obj =      new Survey_Block;
     $blocks =   $this->get_blocks();
     foreach ($blocks as $data) {
@@ -251,9 +251,4 @@ class Survey extends Posting {
     }
     return $out;
   }
-
-  public static function getVersion(){
-    return VERSION_SURVEY;
-  }
 }
-?>

@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.13 (2017-01-02)
-    1) Removed debug version of CRM_Case::update() that looked different tha its parent
-    2) PSR-2 changes
+  1.0.14 (2017-08-26)
+    1) Gave CRM_Case::copy() method fourth parameter 'data' to look like recently modified Record::copy()
 */
 class CRM_Case extends Record
 {
-    const VERSION = '1.0.13';
+    const VERSION = '1.0.14';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, assigned_personID, category, closed, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_1, date_2, date_3, date_4, notes, notes_combined, related_orderID, related_personID, priority, status, subject, XML_data, history_closed_date, history_created_by, history_created_date, history_created_IP, history_due_date, history_modified_by, history_modified_date, history_modified_IP';
 
     // Note: cannot call these Case - that's a reserved word in PHP
@@ -30,9 +29,9 @@ class CRM_Case extends Record
         return draw_auto_report('cases_assigned_to_person', 1);
     }
 
-    public function copy($new_name = false, $new_systemID = false, $new_date = true)
+    public function copy($new_name = false, $new_systemID = false, $new_date = true, $data = false)
     {
-        $newID = parent::copy($new_name, $new_systemID, $new_date);
+        $newID = parent::copy($new_name, $new_systemID, $new_date, $data);
         $Obj_CRM_Case_task =  new CRM_Case_task;
         $tasks = $this->get_tasks();
         foreach ($tasks as $data) {

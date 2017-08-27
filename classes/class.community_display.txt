@@ -1,3 +1,6 @@
+  1.0.51 (2016-12-31)
+    1) Community_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) Community_Display::draw() now uses newly renamed Community_Resource::drawResource() method
   1.0.50 (2016-12-26)
     1) Tweaked image size for profile slideshow to be closer to that wow-slider scales it as
   1.0.49 (2016-12-25)

@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.10 (2017-01-02)
-    1) System_Copy::copy() now looks like its parent
-    2) PSR-2 fixes
+  1.0.11 (2017-08-25)
+    1) System_Copy::copy() now includes community records and related data
+    2) Gave System_Copy::copy() method fourth parameter 'data' to look like recently modified Record::copy()
 */
 
 class System_Copy extends System
 {
-    const VERSION = '1.0.10';
+    const VERSION = '1.0.11';
 
     private $_map = array();
     private $_Old_System_Record;
@@ -18,35 +18,37 @@ class System_Copy extends System
 
     private function initialise()
     {
-        $this->_map['Category_Assign'] =    array();
-        $this->_map['Component'] =          array();
-        $this->_map['Group'] =              array();
-        $this->_map['Group_Assign'] =       array();
-        $this->_map['Layout'] =             array();
-        $this->_map['Listdata'] =           array();
-        $this->_map['Listtype'] =           array();
-        $this->_map['MailIdentity'] =       array();
-        $this->_map['Mail_Template'] =      array();
-        $this->_map['Mail_Queue'] =         array();
-        $this->_map['\Nav\Button'] =        array();
-        $this->_map['\Nav\Style'] =         array();
-        $this->_map['\Nav\Suite'] =         array();
-        $this->_map['Page'] =               array();
-        $this->_map['Person'] =             array();
-        $this->_map['Posting'] =            array();
-        $this->_map['Product'] =            array();
-        $this->_map['Report'] =             array();
-        $this->_map['Report_Column'] =      array();
-        $this->_map['Theme'] =              array();
+        $this->_map['Category_Assign'] =        array();
+        $this->_map['Community'] =              array();
+        $this->_map['CommunityMember'] =        array();
+        $this->_map['CommunityMembership'] =    array();
+        $this->_map['Component'] =              array();
+        $this->_map['Group'] =                  array();
+        $this->_map['Group_Assign'] =           array();
+        $this->_map['Layout'] =                 array();
+        $this->_map['Listdata'] =               array();
+        $this->_map['Listtype'] =               array();
+        $this->_map['MailIdentity'] =           array();
+        $this->_map['Mail_Template'] =          array();
+        $this->_map['Mail_Queue'] =             array();
+        $this->_map['\Nav\Button'] =            array();
+        $this->_map['\Nav\Style'] =             array();
+        $this->_map['\Nav\Suite'] =             array();
+        $this->_map['Page'] =                   array();
+        $this->_map['Person'] =                 array();
+        $this->_map['Posting'] =                array();
+        $this->_map['Product'] =                array();
+        $this->_map['Report'] =                 array();
+        $this->_map['Report_Column'] =          array();
+        $this->_map['Theme'] =                  array();
     }
 
-    public function copy($new_name = false, $new_systemID = false, $new_date = true)
+    public function copy($new_name = false, $new_systemID = false, $new_date = true, $data = false)
     {
         // $new_systemID and $new_date are completely ignored
         /*
         This does NOT copy any data from the following tables:
-        action, activity, case_tasks, cases, colour_scheme,
-        comment, community, community_member, community_membership,
+        action, activity, case_tasks, cases, colour_scheme, comment, 
         custom_form, gateway_settings, gateway_type, keyword_assign, keywords,
         membership_rule, order_items, orders, poll, poll_choice
         product, product_categories, register_events, report, report_columns,
@@ -60,6 +62,9 @@ class System_Copy extends System
         $this->copy_group_assign_records();
         $this->copy_group_members();
         $this->copy_block_layouts();
+        $this->copy_communities();
+        $this->copy_communityMembers();
+        $this->copy_communityMembership();
         $this->copy_components();
         $this->copy_content_blocks();
         $this->copy_ecl_tags();
@@ -79,7 +84,7 @@ class System_Copy extends System
         $this->remap_category_assigns();
         $this->remap_group_assigns();
         $this->remap_page_parents();
-    //    $this->copy_reports();
+        $this->copy_reports();
         return $this->_New_SystemID;
     }
 
@@ -117,6 +122,15 @@ class System_Copy extends System
                 $newVal = $this->_map[$type][$oldVal]['newID'];
                 $Obj->set_field('assignID', $newVal, false);
             }
+        }
+    }
+
+    private function copied_item_remap_communityIDs($Obj, $record)
+    {
+        $oldVal =                 $record['communityID'];
+        if (isset($this->_map['Community'][$oldVal]['newID'])) {
+            $newVal =    $this->_map['Community'][$oldVal]['newID'];
+            $Obj->set_field('communityID', $newVal, false);
         }
     }
 
@@ -232,6 +246,15 @@ class System_Copy extends System
         }
     }
 
+    private function copied_item_remap_communityMemberIDs($Obj, $record)
+    {
+        $oldVal =                 $record['memberID'];
+        if (isset($this->_map['CommunityMember'][$oldVal]['newID'])) {
+            $newVal =    $this->_map['CommunityMember'][$oldVal]['newID'];
+            $Obj->set_field('memberID', $newVal, false);
+        }
+    }
+    
     private function copied_item_remap_navstyles($Obj, $record)
     {
         $oldVal =                 $record['buttonStyleID'];
@@ -323,6 +346,43 @@ class System_Copy extends System
         }
     }
 
+    private function copy_communities()
+    {
+        $Obj =         new Record('community');
+        $Items =                $Obj->get_IDs_by_system($this->_Old_SystemID);
+        foreach ($Items as $ID) {
+            $Obj->_set_ID($ID);
+            $newID =              $Obj->copy("", $this->_New_SystemID);
+            $this->_map['Community'][$ID] =  array('newID'=>$newID);
+        }
+    }
+    
+    private function copy_communityMembers()
+    {
+        $Obj =         new Record('community_member');
+        $Items =                $Obj->get_IDs_by_system($this->_Old_SystemID);
+        foreach ($Items as $ID) {
+            $Obj->_set_ID($ID);
+            $newID =              $Obj->copy("", $this->_New_SystemID);
+            $this->_map['CommunityMember'][$ID] =  array('newID'=>$newID);
+        }
+    }
+    
+    private function copy_communityMembership()
+    {
+        $Obj =         new Record('community_membership');
+        $Items =                $Obj->get_IDs_by_system($this->_Old_SystemID);
+        foreach ($Items as $ID) {
+            $Obj->_set_ID($ID);
+            $record = $Obj->load();
+            $data_fix = array(
+                'communityID' =>    $this->_map['Community'][$record['communityID']]['newID'],  
+                'memberID' =>       $this->_map['CommunityMember'][$record['memberID']]['newID']
+            );
+            $newID =              $Obj->copy("", $this->_New_SystemID, true, $data_fix);
+        }
+    }
+    
     private function copy_category_assign_records()
     {
         $Obj =         new Record('category_assign');
@@ -602,6 +662,8 @@ class System_Copy extends System
             $record = $Obj->get_record();
             $this->copied_item_remap_themes($Obj, $record);
             $this->copied_item_remap_layouts($Obj, $record);
+            $this->copied_item_remap_communityIDs($Obj, $record);
+            $this->copied_item_remap_communityMemberIDs($Obj, $record);
             $this->copied_item_remap_group_assign_csv($Obj, $record);
         }
         $this->remap_posting_parents();

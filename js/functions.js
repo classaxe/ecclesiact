@@ -1,9 +1,9 @@
-// 1.1.271
+// 1.1.272
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.271 (2016-01-02)
-    1) Made popup window for version() larger
+  1.0.272 (2017-08-26)
+    1) Completely replaced copy_clip() with external library code in clipboard.min.js
 */
 
 // ************************************
@@ -47,7 +47,7 @@ var addEvent, afb, ajax_div_loading, ajax_keytest, ajax_post, ajax_post_streamed
   centerPopWin, char_counter, column_over, combo_selector_set,
   comment, comment_delete, comment_get_count, comment_mark, comment_show_all,
   community_member_embed, community_member_embed_code,
-  copy_clip, cssAddJsonStyle, cssAttributeGet, cssAttributeSet, csv_item_set,
+  cssAddJsonStyle, cssAttributeGet, cssAttributeSet, csv_item_set,
   cursorGetSelectionEnd, cursorGetSelectionStart, cursorIsAtEnd, cursorIsAtStart,
   cursorSetPosition, customform_draw_fees_overview, customform_get_tax_costs, customise_colours,
   date_selector_draw, date_selector_onchange, disableTabIndexes, displaySelectBoxes,
@@ -1676,49 +1676,6 @@ function community_embed_code(title,path){
     (p ? "<div id='ecc_"+(num++)+"' class='ecc ecc_n'>Loading Podcasts from "+title+"...<\/div>\n" : "")+
     (c ? "<div id='ecc_"+(num++)+"' class='ecc ecc_w'>Loading Calendar for "+title+"...<\/div>\n" : "");
   geid_set('community_member_embed_body',html_body.replace(/^\s+|\s+$/g,''));
-}
-
-
-function copy_clip(meintext){
-  if (window.clipboardData) {
-    window.clipboardData.setData("Text", meintext);
-    return true;
-  }
-  if (window.netscape){
-    try {
-      window.netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-      var clip = Components.classes['@mozilla.org/widget/clipboard;1'].createInstance(Components.interfaces.nsIClipboard);
-      if (!clip){
-        return false;
-      }
-      var trans = Components.classes['@mozilla.org/widget/transferable;1'].createInstance(Components.interfaces.nsITransferable);
-      if (!trans){
-        return false;
-      }
-      trans.addDataFlavor('text/unicode');
-      var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-      var copytext = meintext;
-      str.data = copytext;
-      trans.setTransferData("text/unicode",str,copytext.length*2);
-      var clipid=Components.interfaces.nsIClipboard;
-      if (!clip){
-        return false;
-      }
-      clip.setData(trans,null,clipid.kGlobalClipboard);
-      return true;
-    }
-    catch(e){
-      alert(
-        "For Firefox you need to enable the privilege:\n"+
-        "  1) Type   about:config   in the address bar\n"+
-        "  2) In the filter bar enter 'signed'\n"+
-        "  3) Double click on the line 'signed.applets.codebase_principal_support'\n"+
-        "  4) Now try again - and then confirm that you do indeed trust this site.\n"
-      );
-      return false;
-    }
-  }
-  return false;
 }
 
 function csv_item_set(csv,value,add){

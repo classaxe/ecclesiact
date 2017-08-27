@@ -1,3 +1,7 @@
+  1.0.92 (2017-01-02)
+    1) Renamed Report::get_records() to Report::getReportRecords()
+    2) Report::manage_actions() now uses renamed Record::manageActionsForNamedReport()
+    3) PSR-2 fixes
   1.0.91 (2016-11-20)
     1) Added 'selected_set_random_password' to Report::REPORT_FEATURES list
   1.0.90 (2016-04-19)

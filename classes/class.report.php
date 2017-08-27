@@ -1,15 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.92 (2017-01-02)
-    1) Renamed Report::get_records() to Report::getReportRecords()
-    2) Report::manage_actions() now uses renamed Record::manageActionsForNamedReport()
-    3) PSR-2 fixes
+  1.0.93 (2017-08-26)
+    1) Gave Report::copy() method fourth parameter 'data' to look like recently modified Record::copy()
 */
 
 class Report extends Displayable_Item
 {
-    const VERSION = '1.0.92';
+    const VERSION = '1.0.93';
     const COLUMN_FULL_ACCESS =    1;
     const COLUMN_DEFAULT_VALUE =  -1;
     const COLUMN_NO_ACCESS =      0;
@@ -195,9 +193,9 @@ class Report extends Displayable_Item
         );
     }
 
-    public function copy($new_name = false, $new_systemID = false, $new_date = true)
+    public function copy($new_name = false, $new_systemID = false, $new_date = true, $data = false)
     {
-        $newID =    parent::copy($new_name, $new_systemID, $new_date);
+        $newID =    parent::copy($new_name, $new_systemID, $new_date, $data);
         $old_reportSortBy = $this->get_field('reportSortBy');
         $new_reportSortBy = false;
         $columns =          $this->get_report_columns();
