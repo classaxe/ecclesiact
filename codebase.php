@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.2.1");
+define("CODEBASE_VERSION", "5.2.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,105 +17,34 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.2.1.2498 (2017-08-27)
-Summary:
-  1) System clone now includes community records
-  2) Fixed Get Communities code to limit to current system
-  3) Made Piwik fetch code more resilient in cases where piwik is not installed
-  4) Completely replaced clipboard copy code used my memory monitor and system status for newer browsers
+5.2.2.2499 (2017-09-30)
+Summary: Changes for PHP 7.1 - more to come later
+  1) Changes to system licence key detection to prevent deprecated warning for crypt() function
+  2) Changes to get_browser_safe() to include chrome and fix a casting bug when browscap.ini is not present
 
 Final Checksums:
-  Classes     CS:bc531a96
+  Classes     CS:db817726
   Database    CS:4317aaaa
-  Libraries   CS:cbcc958a
+  Libraries   CS:935d701
   Reports     CS:523dfa87
 
 Code Changes:
-  codebase.php                                                                                   5.2.1     (2017-08-27)
+  codebase.php                                                                                   5.2.2     (2017-09-30)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.121   (2017-08-26)
-    1) Community::get_communities() now only selects communities from the current system
-    2) Community::_on_action_community_setup_website_button() no longer executes if there is no
-       support for ttf fonts on server
-  classes/class.community_display.php                                                            1.0.52    (2017-08-26)
-    1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
-  classes/class.community_member_display.php                                                     1.0.55    (2017-08-26)
-    1) Changes to better handle absense of Piwik Analytics on installed server
-  classes/class.crm_case.php                                                                     1.0.14    (2017-08-26)
-    1) Gave CRM_Case::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  classes/class.group.php                                                                        1.0.30    (2017-08-26)
-    1) Gave Group::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
-  classes/class.layout.php                                                                       1.0.41    (2017-08-27)
-    1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
-  classes/class.listtype.php                                                                     1.0.9     (2017-08-26)
-    1) Gave Listtype::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  classes/class.piwik.php                                                                        1.0.3     (2017-08-26)
-    1) Fix to deal with Piwik not being installed in community edition when logged in and viewing member
-    2) Now uses VERSION constant for version control
-  classes/class.poll.php                                                                         1.0.11    (2017-08-26)
-    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
-  classes/class.record.php                                                                       1.0.103   (2017-08-26)
-    1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
-  classes/class.report.php                                                                       1.0.93    (2017-08-26)
-    1) Gave Report::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  classes/class.survey.php                                                                       1.0.19    (2017-08-26)
-    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
-  classes/class.system.php                                                                       1.0.178   (2017-08-26)
-    1) Gave System::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  classes/class.system_copy.php                                                                  1.0.11    (2017-08-25)
-    1) System_Copy::copy() now includes community records and related data
-    2) Gave System_Copy::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  classes/class.system_health.php                                                                1.0.50    (2017-08-27)
-    1) Replaced the copy to clipboard system with a newer version that works in modern browsers
-  classes/class.tax_regime.php                                                                   1.0.16    (2017-08-26)
-    1) Gave Tax_Regime::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
-  classes/class.tax_zone.php                                                                     1.0.5     (2017-08-26)
-    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
-  classes/nav/suite.php                                                                          1.0.43    (2017-08-26)
-    1) Gave Suite::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-  functions.php                                                                                  1.0.22    (2017-08-27)
-    1) Changes to memory monitor to use new clipboard copy technique and shows additional details
-  img.php                                                                                        2.1.1     (2017-08-26)
-    1) Now safely handles generation of watermarked images when no ttf font support is available.
-       Such images are removed from cache after use since they are not correct.
-    2) Added support for JS streaming of clipboard.min.js
-  js/functions.js                                                                                1.0.272   (2017-08-26)
-    1) Completely replaced copy_clip() with external library code in clipboard.min.js
+  classes/class.portal.php                                                                       1.0.41    (2017-09-30)
+    1) Changes to Portal::parseRequestModePrefix() for early handling of context menu JS generation
+  classes/class.posting.php                                                                      1.0.133   (2017-09-30)
+    1) Bug fix for Posting::check_posting_prefix() to handle being called in inappropriate context
+       and to address incorrect handling of leapyear date sanitisation
 
-2498.sql
+2499.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.2.1
-  classes/  (18 files changed)
-    class.community.php                               1.0.121   CS:504d4a2e
-    class.community_display.php                       1.0.52    CS:e09c139f
-    class.community_member_display.php                1.0.55    CS:acf1bcf8
-    class.crm_case.php                                1.0.14    CS:2408a392
-    class.group.php                                   1.0.30    CS:1dd0cbb1
-    class.layout.php                                  1.0.41    CS:26e052c9
-    class.listtype.php                                1.0.9     CS:4d2184b8
-    class.piwik.php                                   1.0.3     CS:6d73328e
-    class.poll.php                                    1.0.11    CS:135b3c4c
-    class.record.php                                  1.0.103   CS:49cb2648
-    class.report.php                                  1.0.93    CS:2975fc20
-    class.survey.php                                  1.0.19    CS:5edbd85c
-    class.system.php                                  1.0.178   CS:82f9c711
-    class.system_copy.php                             1.0.11    CS:f04c4557
-    class.system_health.php                           1.0.50    CS:a7529448
-    class.tax_regime.php                              1.0.16    CS:30a45da5
-    class.tax_zone.php                                1.0.5     CS:77733990
-    nav/suite.php                                     1.0.43    CS:dc38e517
-  functions.php                                       1.0.22    CS:813cdc31
-  img.php                                             2.1.1     CS:ee0f32bd
-  js/functions.js                                     1.1.272   CS:61b6b85c
-
-
+  codebase.php                                        5.2.2
+  classes/  (2 files changed)
+    class.portal.php                                  1.0.41    CS:cd792785
+    class.posting.php                                 1.0.133   CS:f2e854d5
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -1684,36 +1613,42 @@ function get_browser_safe()
     if (@$out = get_browser(null, true)) {
         return $out;
     }
-    $out = array();
-    $browsers =
-    array(
-      "mozilla",
-      "msie",
-      "gecko",
-      "firefox",
-      "konqueror",
-      "safari",
-      "netscape",
-      "navigator",
-      "opera",
-      "mosaic",
-      "lynx",
-      "amaya",
-      "omniweb");
+    $out = array(
+        'browser' =>  'unknown',
+        'version' =>  'unknown',
+        'platform' => 'unknown',
+        'crawler' =>  'unknown'
+    );
+    // The order of these strings matters - don't sort this list!
+    $browsers = array(
+        "chrome",
+        "mozilla",
+        "msie",
+        "gecko",
+        "firefox",
+        "konqueror",
+        "safari",
+        "netscape",
+        "navigator",
+        "opera",
+        "mosaic",
+        "lynx",
+        "amaya",
+        "omniweb"
+    );
     $agent = strToLower(@$_SERVER['HTTP_USER_AGENT']);
     $l = strlen($agent);
     for ($i=0; $i<count($browsers); $i++) {
         $browser = $browsers[$i];
         $n = stristr($agent, $browser);
-        if (strlen($n)>0) {
+        if ($n!==false && strlen($n)>0) {
             $out["browser"] = $browser;
-            $j=strpos($agent, $out["browser"])+$n+strlen($out["browser"])+1;
+            $j=strpos($agent, $out["browser"])+strlen($out["browser"])+1;
             preg_match("/([0-9.]+)/", substr($agent, $j, $l-$j), $ver);
             $out["version"] = (isset($ver[1]) ? $ver[1] : '');
+            break;
         }
     }
-    $out["platform"] = "unknown";
-    $out["crawler"] = "unknown";
     return $out;
 }
 

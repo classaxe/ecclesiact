@@ -1,3 +1,9 @@
+  1.0.40 (2017-02-12)
+    1) Changes to class names invoked for sitemap.xml and robots.txt generation
+    2) Made protected methods private to keep them clean
+    3) Static calls to internal methods now use static:: rather than Portal::
+    4) Renamed Portal::_parse_request_search_range() to Portal::checkSearchRange()
+    5) Various PSR-2 fixes
   1.0.39 (2016-05-06)
     1) Portal::isDev() no longer considers valid live domains for auroraonline.com, classaxe.com and ecclesiact.com
        to be Dev sites, so therefore redirects can force them to https as with other sites

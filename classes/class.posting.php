@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.132 (2017-05-03)
-    1) Bug fix following last change
+  1.0.133 (2017-09-30)
+    1) Bug fix for Posting::check_posting_prefix() to handle being called in inappropriate context
+       and to address incorrect handling of leapyear date sanitisation
 */
 
 class Posting extends Displayable_Item
 {
-    const VERSION = '1.0.132';
+    const VERSION = '1.0.133';
     const FIELDS = 'ID, archive, archiveID, deleted, enabled, type, subtype, systemID, communityID, memberID, personID, group_assign_csv, name, path, container_path, active, author, canRegister, category, childID_csv, childID_featured, comments_allow, comments_count, component_parameters, contact_email, contact_info, contact_name, contact_phone, content, content_summary, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_end, date, effective_date_end, effective_date_start, effective_time_end, effective_time_start, enclosure_meta, enclosure_secs, enclosure_size, enclosure_type, enclosure_url, icon, image_templateID, important, keywords, layoutID, location, location_country, location_info, location_locale, location_region, location_zone, map_geocodeID, map_geocode_address, map_geocode_area, map_geocode_quality, map_geocode_type, map_lat, map_lon, map_location, max_sequence, meta_description, meta_keywords, no_email, no_watermark, notes1, notes2, notes3, notes4, number_of_views, orderID, parameters, parentID, password, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSHARED, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, process_maps, ratings_allow, recur_description, recur_mode, recur_daily_mode, recur_daily_interval, recur_weekly_interval, recur_weekly_days_csv, recur_monthly_mode, recur_monthly_dd, recur_monthly_interval, recur_monthly_nth, recur_monthly_day, recur_yearly_interval, recur_yearly_mode, recur_yearly_mm, recur_yearly_dd, recur_yearly_nth, recur_yearly_day, recur_range_mode, recur_range_count, recur_range_end_by, required_feature, popup, seq, status, subtitle, themeID, thumbnail_cs_small, thumbnail_cs_medium, thumbnail_cs_large, thumbnail_small, thumbnail_medium, thumbnail_large, time_end, time_start, title, URL, video, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $subtype;
@@ -131,11 +132,11 @@ class Posting extends Displayable_Item
                 if (count($path_arr)!=4) {
                     return false;
                 }
-                $YYYY = $path_arr[0];
-                $MM =   $path_arr[1];
-                $DD =   $path_arr[2];
-                switch ($DD) {
-                  // Pay special attention to February:
+                $YYYY = (int)$path_arr[0];
+                $MM =   (int)$path_arr[1];
+                $DD =   (int)$path_arr[2];
+                switch ($MM) {
+                    // Pay special attention to February:
                     case "02":
                         $_leap = (($YYYY%4==0) && ($YYYY%100!=0)) || ($YYYY%400==0);
                         $_DD = ($_leap ? 29 : 28);

@@ -1,16 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.40 (2017-02-12)
-    1) Changes to class names invoked for sitemap.xml and robots.txt generation
-    2) Made protected methods private to keep them clean
-    3) Static calls to internal methods now use static:: rather than Portal::
-    4) Renamed Portal::_parse_request_search_range() to Portal::checkSearchRange()
-    5) Various PSR-2 fixes
+  1.0.41 (2017-09-30)
+    1) Changes to Portal::parseRequestModePrefix() for early handling of context menu JS generation
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.40';
+    const VERSION = '1.0.41';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -328,6 +324,10 @@ class Portal extends Base
                 return true;
             break;
             case "rss":
+                $mode = $path_prefix;
+                return true;
+            break;
+            case "sysjs":
                 $mode = $path_prefix;
                 return true;
             break;

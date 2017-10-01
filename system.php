@@ -2,13 +2,13 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.38 (ECC)");
+define("SYSTEM_VERSION", "1.0.39 (ECC)");
 
 /*
 Version History:
-  1.0.38 (2016-06-05)
-    1) Additional fix for path switching to correctyly redirect for sites whose root folder isn't /
-       e.g. http://www.classaxe.com/smarties
+  1.0.39 (2017-09-30)
+    1) Tweak to function k35hy35992jjk3fkmkgoioi() to prevent deprecated warning in PHP 7.1
+    2) Tweak to function encrypt() to prevent deprecated warning in PHP 7.1
 */
 
 if (get_magic_quotes_gpc()) {
@@ -24,7 +24,7 @@ if (!(
 
 function encrypt($text)
 {
-    return bin2hex(crypt($text, strrev(base64_decode('a2tHZTEyMWJy'))));
+    return bin2hex(@crypt($text, strrev(base64_decode('a2tHZTEyMWJy'))));
 }
 
 function main($mode)
@@ -303,7 +303,8 @@ function k35hy35992jjk3fkmkgoioi($string)
 
     $out = "";
     for ($i=0; $i<strlen($string)+8; $i=$i+8) {
-        $out.=    crypt(substr($string, $i, $i+8), $key);
+        $out.=    @crypt(substr($string, $i, $i+8), $key);
+        // Causes Deprecated warning in PHP 7.1
     }
     return base64_encode($out);
 }
