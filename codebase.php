@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.2.2");
+define("CODEBASE_VERSION", "5.2.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,34 +17,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.2.2.2499 (2017-09-30)
-Summary: Changes for PHP 7.1 - more to come later
-  1) Changes to system licence key detection to prevent deprecated warning for crypt() function
-  2) Changes to get_browser_safe() to include chrome and fix a casting bug when browscap.ini is not present
+5.2.3.2500 (2017-10-02)
+Summary: More changes for PHP 7.1 and handling of invalid systemID
+  1) More changes for PHP 7.1 relaing to no-numerical values used in calculated widths
+  2) Now handles missing system records in database without endless redirection
 
 Final Checksums:
-  Classes     CS:db817726
+  Classes     CS:397bc506
   Database    CS:4317aaaa
-  Libraries   CS:935d701
+  Libraries   CS:fe4deb47
   Reports     CS:523dfa87
 
 Code Changes:
-  codebase.php                                                                                   5.2.2     (2017-09-30)
-    1) Updated version information
-  classes/class.portal.php                                                                       1.0.41    (2017-09-30)
-    1) Changes to Portal::parseRequestModePrefix() for early handling of context menu JS generation
-  classes/class.posting.php                                                                      1.0.133   (2017-09-30)
-    1) Bug fix for Posting::check_posting_prefix() to handle being called in inappropriate context
-       and to address incorrect handling of leapyear date sanitisation
+  codebase.php                                                                                   5.2.3     (2017-10-02)
+    1) Now halts with message if SYS_ID data isn't present in the database - previously entered endless redirect loop
+    2) Updated version information
+  classes/class.product_catalogue.php                                                            1.0.33    (2017-10-01)
+    1) Removed non-working code to set tab-index values
+  classes/class.product_catalogue_order_history.php                                              1.0.5     (2017-10-01)
+    1) Removed non-working code to set tab-index values
+  classes/class.report_column.php                                                                1.0.143   (2017-10-01)
+    1) Various bug fixes for width values containing units - PHP 7.1 complained
+  system.php                                                                                     1.0.40 (2017-10-01)
+    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if required SystemID isn't present
 
-2499.sql
+2500.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.2.2
-  classes/  (2 files changed)
-    class.portal.php                                  1.0.41    CS:cd792785
-    class.posting.php                                 1.0.133   CS:f2e854d5
+  codebase.php                                        5.2.3
+  classes/  (3 files changed)
+    class.product_catalogue.php                       1.033     CS:e9442214
+    class.product_catalogue_order_history.php         1.0.5     CS:648225a9
+    class.report_column.php                           1.0.143   CS:fe4db88e
+  system.php                                          1.0.40
+
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -211,6 +219,10 @@ if (!function_exists('includes_monitor')) {
 // ************************************
 // * Definitions and Includes         *
 // ************************************
+if (!defined('SYS_ID')) {
+    include_once(SYS_SHARED."system.php");
+    hvFF9mrhFbntrDgfGb9wc1gf('no_id');
+}
 session_name("ECC_".SYS_ID);
 session_cache_limiter('must-revalidate');
 ini_set('session.use_only_cookies', 1);

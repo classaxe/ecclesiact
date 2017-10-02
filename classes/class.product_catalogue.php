@@ -1,13 +1,14 @@
 <?php
-define ("VERSION_PRODUCT_CATALOGUE","1.0.32");
 /*
 Version History:
-  1.0.32 (2015-09-14)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.33 (2017-10-01)
+    1) Removed non-working code to set tab-index values
 
 */
 
-class Product_Catalogue {
+class Product_Catalogue extends Base{
+    const VERSION = '1.033';
+
   protected $_BCountryID;
   protected $_BSpID;
   protected $_current_user_rights =   array();
@@ -25,7 +26,6 @@ class Product_Catalogue {
   protected $_popup =                 array();
   protected $_product_groupings =     array();
   protected $_shipping;
-  protected $_tabindex =              1;
 
   public function draw($args) {
     return "This class is intended for use as a base class";
@@ -376,7 +376,7 @@ class Product_Catalogue {
             ."    <td class='txt_r'>".$item['price']."</td>\n"
             ."    <td>\n"
             ."<div class='fl' style='width:40px'><a href=\"#\" onclick=\"order_item_refund_nra_reset('".$item['orderItemID']."','".$item['price_non_refundable']."');return false;\">Reset</a>&nbsp;</div>"
-            ."<input id=\"ref_".$item['orderItemID']."_nra\" tabindex=\"".$this->_tabIndex++."\" type='text' class='formField txt_r fl' style='width:40px;' value=\"".two_dp($item['price_non_refundable'])."\" "
+            ."<input id=\"ref_".$item['orderItemID']."_nra\" type='text' class='formField txt_r fl' style='width:40px;' value=\"".two_dp($item['price_non_refundable'])."\" "
             ."onchange=\""
             ."order_item_refund_calculate("
             ."'".$item['orderItemID']."',"
@@ -587,9 +587,4 @@ class Product_Catalogue {
     }
     return false;
   }
-
-  public static function getVersion(){
-    return VERSION_PRODUCT_CATALOGUE;
-  }
 }
-?>

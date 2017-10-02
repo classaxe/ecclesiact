@@ -1,3 +1,7 @@
+  1.0.142 (2017-01-22)
+    1) Report_Column::drawNavSample() further changes:
+       Now that nav Style Samples now correctly show their state on the button text, removed the text labels added
+       in last version.  Simplified code also.
   1.0.141 (2017-01-22)
     1) Report_Column::drawNavSample() now uses loops and includes text for button state
   1.0.140 (2016-12-03)

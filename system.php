@@ -2,13 +2,12 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.39 (ECC)");
+define("SYSTEM_VERSION", "1.0.40 (ECC)");
 
 /*
 Version History:
-  1.0.39 (2017-09-30)
-    1) Tweak to function k35hy35992jjk3fkmkgoioi() to prevent deprecated warning in PHP 7.1
-    2) Tweak to function encrypt() to prevent deprecated warning in PHP 7.1
+  1.0.40 (2017-10-01)
+    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if required SystemID isn't present
 */
 
 if (get_magic_quotes_gpc()) {
@@ -31,8 +30,16 @@ function main($mode)
 {
     global $color, $command, $ID, $submode, $page_vars, $system_vars, $state, $shadow, $version;
     global $user_status, $username, $password, $password2, $topbar_username, $topbar_password;
+    if (!defined('SYS_ID')) {
+        hvFF9mrhFbntrDgfGb9wc1gf("no_id");
+        die;
+    }
     if (!defined('SYS_KEY')) {
         hvFF9mrhFbntrDgfGb9wc1gf("no_key");
+        die;
+    }
+    if (!isset($system_vars['ID'])) {
+        hvFF9mrhFbntrDgfGb9wc1gf("wrong_id");
         die;
     }
     $server_scheme =    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? "https://" : "http://");
@@ -233,6 +240,18 @@ function hvFF9mrhFbntrDgfGb9wc1gf($problem)
         ."</a><br />\n";
 
     switch ($problem) {
+        case "no_id":
+            $out .=
+                 "<h3>Configuration Issue</h3>\n"
+                ."<p>The system requires a SYS_ID value corresponding to the systemID of records in the database.</p>\n"
+                ."<p>Please contact the site administrator for more information.</p>";
+            break;
+        case "wrong_id":
+            $out .=
+                 "<h3>Configuration Issue</h3>\n"
+                ."<p>Data for SystemID ".SYS_ID." is not present in the database.</p>\n"
+                ."<p>Please contact the site administrator for more information.</p>";
+            break;
         case "no_key":
             $out .=
                  "<h3>Configuration Issue</h3>\n"

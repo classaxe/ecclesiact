@@ -1,3 +1,5 @@
+  1.0.32 (2015-09-14)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.31 (2012-10-17)
     1) Product_Catalogue::_draw_setup_load_product_groupings() now sets item field
        'has_second_row' for each item loaded

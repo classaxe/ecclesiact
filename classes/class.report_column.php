@@ -1,15 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.142 (2017-01-22)
-    1) Report_Column::drawNavSample() further changes:
-       Now that nav Style Samples now correctly show their state on the button text, removed the text labels added
-       in last version.  Simplified code also.
+  1.0.143 (2017-10-01)
+    1) Varios bug fixes for width values containing units - PHP 7.1 complained
 */
 class Report_Column extends Record
 {
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.142';
+    const VERSION = '1.0.143';
 
     public function __construct($ID = "")
     {
@@ -68,7 +66,7 @@ class Report_Column extends Record
             ."    <td>&nbsp;</td>\n"
             ."    <td align='right'><span id=\"".$field."_alt_span\" style=\"display:none;\">"
             ."<input id=\"".$field_alt."\" type=\"text\" value=\"".$value_alt."\" class='formField'"
-            ." style=\"width: ".(($width/2)-5)."px;\" "
+            ." style=\"width: ".(((int)$width/2)-5)."px;\" "
             .($jsCode ? $jsCode : " onchange=\"combo_selector_set('".$field."','".$width."')\"")
             ."/>"
             ."</span></td>\n"
@@ -111,7 +109,7 @@ class Report_Column extends Record
             }
         }
         if ($bulk_update) {
-            $width = $width-20;
+            $width = (int)$width-20;
         }
         if (!strpos($width, 'px') &&
             !strpos($width, '%') &&
@@ -432,7 +430,7 @@ class Report_Column extends Record
                     $out =
                          "<div id=\"div_".$field."\" class='formField'"
                         ." style='width:".$width.";height:1.4em;background-color:".$bgColor.";"
-                        .($width>100 ? "overflow:auto;" : "")
+                        .((int)$width>100 ? "overflow:auto;" : "")
                         ."'>"
                         .$value
                         ."<input type='hidden' id=\"".$field."\" value=\"".$value."\" /></div>";
@@ -441,7 +439,7 @@ class Report_Column extends Record
                     $out =
                          "<div id=\"div_".$field."\" class='admin_formFixed'"
                         ." style='width:".$width.";height:1.4em;background-color:".$bgColor.";"
-                        .($width>100 ? "overflow:auto;" : "")
+                        .((int)$width>100 ? "overflow:auto;" : "")
                         ."'>"
                         .$value
                         ."<input type='hidden' id=\"".$field."\" value=\"".$value."\" /></div>";
@@ -890,7 +888,7 @@ class Report_Column extends Record
                                 $field,
                                 $value,
                                 $selectorSQL,
-                                ($width-22)."px",
+                                ((int)$width-22)."px",
                                 $reportID,
                                 $jsCode
                             )
@@ -1102,7 +1100,7 @@ class Report_Column extends Record
                 break;
                 case "fieldset_text_text_date":
                     $field_names = explode(',', $field);
-                    $_width =         ((int)($width-121)/2)-($bulk_update ? 21 : 0);
+                    $_width =         (((int)$width-121)/2)-($bulk_update ? 21 : 0);
                     $_div_open =      "<div style='float:left;height:21px;'>";
                     $field_1 =        $field_names[0];
                     $value_1 =        (isset($row[$field_1]) ?
@@ -1480,7 +1478,7 @@ class Report_Column extends Record
                                 $field,
                                 $value,
                                 $selectorSQL,
-                                ($width-22)."px",
+                                ((int)$width-22)."px",
                                 ($height ? $height : 35),
                                 ($formFieldSpecial=='1' ? '1' : 0)
                             )
@@ -1731,7 +1729,7 @@ class Report_Column extends Record
                          )
                         ." <textarea class='fl' name=\"_notes_".$field."\" rows=\"4\" cols=\"80\""
                         ." style=\"width:"
-                        .($width-(System::has_feature('Allow-Unstamped-Notes') ? 78 : 37))
+                        .((int)$width-(System::has_feature('Allow-Unstamped-Notes') ? 78 : 37))
                         ."px;height:".(int)($height/3)."px;\" ".$jsCode."></textarea>"
                         ."<br clear='both' />\n"
                         ."<textarea id=\"".$field."\" readonly=\"readonly\" name=\"".$field."\""
@@ -1930,7 +1928,7 @@ class Report_Column extends Record
                                 $field,
                                 $value,
                                 $selectorSQL,
-                                ($width-22)."px",
+                                ((int)$width-22)."px",
                                 ($height ? $height : 35)
                             )
                             ."&nbsp; </div>"
@@ -1993,7 +1991,7 @@ class Report_Column extends Record
                         $_popup_size =    get_popup_size($_report_name);
                         $out =
                               "<span class=\"fl\">"
-                             .static::draw_selector($field, $value, $selectorSQL, ($width-22)."px", $jsCode)
+                             .static::draw_selector($field, $value, $selectorSQL, ((int)$width-22)."px", $jsCode)
                              ."&nbsp; </span>"
                              .($ID!="" ?
                                     "<a class='fl' "
@@ -2057,7 +2055,7 @@ class Report_Column extends Record
                         if (isset($row['ID'])) {
                             $out =
                                  "<span class=\"fl\">"
-                                .static::draw_selector($field, $value, $selectorSQL, ($width-24)."px", $jsCode)
+                                .static::draw_selector($field, $value, $selectorSQL, ((int)$width-24)."px", $jsCode)
                                 ."&nbsp; </span>"
                                 ."<a class='fl' "
                                 ."onmouseover=\"window.status='".$_tooltip."';return true;\" "

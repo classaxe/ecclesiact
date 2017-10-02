@@ -1,23 +1,13 @@
 <?php
-define ("VERSION_PRODUCT_CATALOGUE_ORDER_HISTORY","1.0.4");
 /*
 Version History:
-  1.0.4 (2012-10-17)
-    1) Product_Catalogue_Order_History::_draw_item_quantity() now ONLY spans two rows
-       IF item's 'has_second_row' flag is true
-  1.0.3 (2012-09-19)
-    1) Product_Catalogue_Order_History::_draw_item_quantity() now spans two rows
-  1.0.2 (2012-05-23)
-    1) Product_Catalogue_Order_History::_draw_item_quantity() now looks at both
-       product AND related object (if any) to see if an item is flagged or not
-  1.0.1 (2011-12-15)
-    1) Product_Catalogue_Order_History::_draw_credit_memo_controls() changed JS
-       calls from attach_field_behaviour() to shorter alias afb()
-  1.0.0 (2011-08-25)
-    1) Initial release - extends Product_Catalogue for 'order_history' operations
+  1.0.5 (2017-10-01)
+    1) Removed non-working code to set tab-index values
 */
 
 class Product_Catalogue_Order_History extends Product_Catalogue {
+
+    const VERSION = '1.0.5';
 
   public function draw($args) {
     $this->_draw_setup($args);
@@ -173,6 +163,9 @@ class Product_Catalogue_Order_History extends Product_Catalogue {
     if (!$this->_current_user_rights['canIssueRefund']) {
       return;
     }
+    if (!isset($this->_tabIndex)) {
+        $this->_tabIndex = 0;
+    }
     $this->_html.=
        "<table class='order_cost_summary'>\n"
       ."  <tr>\n"
@@ -186,11 +179,11 @@ class Product_Catalogue_Order_History extends Product_Catalogue {
       ."  </tr>\n"
       ."  <tr>\n"
       ."    <td>Actual awarded refund:</td>\n"
-      ."    <td><input type='text' tabindex=\"".$this->_tabIndex++."\" id='ref_actual_total' class='formField txt_r fl' style='width:40px;' name='ref_actual_total' value='0.00' /></td>\n"
+      ."    <td><input type='text' id='ref_actual_total' class='formField txt_r fl' style='width:40px;' name='ref_actual_total' value='0.00' /></td>\n"
       ."  </tr>\n"
       ."  <tr>\n"
       ."    <td>Notes to customer:</td>\n"
-      ."    <td><textarea id='ref_notes_customer' tabindex=\"".$this->_tabIndex++."\" class='formField' rows='2' cols='80' style='width:300px;height:40px' name='ref_notes_customer'></textarea></td>\n"
+      ."    <td><textarea id='ref_notes_customer' class='formField' rows='2' cols='80' style='width:300px;height:40px' name='ref_notes_customer'></textarea></td>\n"
       ."  </tr>\n"
       ."  <tr>\n"
       ."    <td colspan='2' class='txt_c'><input type='button' class='formButton' onclick=\"order_issue_credit_memo('".$this->_orderID."',ref_items_arr);\" value='Issue Credit Memo' /></td>\n"
@@ -212,9 +205,4 @@ class Product_Catalogue_Order_History extends Product_Catalogue {
       ."//]]>\n"
       ."</script>\n";
   }
-
-  public static function getVersion(){
-    return VERSION_PRODUCT_CATALOGUE_ORDER_HISTORY;
-  }
 }
-?>
