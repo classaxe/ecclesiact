@@ -1,15 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.34 (2017-10-07)
-    1) Now implements PII scrubbing for records associated with 'contact' and 'user' reports
-    2) Added support for submode of 'empty' to listdata report to allow a list-type to be emptied of all its data
-    3) A bit of refactoring around Report_Report::draw() but still pretty untidy
+  1.0.35 (2017-10-10)
+    1) Code to empty listtype of all data now calls Listtype::deleteListData() instead of Listtype::empty()
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.34';
+    const VERSION = '1.0.35';
 
     public function do_commands()
     {
@@ -477,7 +475,7 @@ class Report_Report extends Report
                             case "listtype":
                                 $Obj = new ListType($targetID);
                                 $entries = count($Obj->get_listdata());
-                                $Obj->empty();
+                                $Obj->deleteListData();
                                 $msg = status_message(
                                     0,
                                     true,

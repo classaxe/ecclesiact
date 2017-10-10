@@ -1,3 +1,7 @@
+  1.0.34 (2017-10-07)
+    1) Now implements PII scrubbing for records associated with 'contact' and 'user' reports
+    2) Added support for submode of 'empty' to listdata report to allow a list-type to be emptied of all its data
+    3) A bit of refactoring around Report_Report::draw() but still pretty untidy
   1.0.33 (2017-01-02)
     1) Report_Report::draw() now calls getReportRecords() to get records for display
     2) PSR-2 fixes

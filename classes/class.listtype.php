@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.10 (20177-10-08)
-    1) Added Listtype::empty() method
+  1.0.11 (2017-10-10)
+    1) Renamed Listtype::empty() to Listtype::deleteListData() -
+       empty() cannot be used as method name in PHP 5.6, altghough it is fine in 7.1
 */
 class Listtype extends Record
 {
-    const VERSION = '1.0.10';
+    const VERSION = '1.0.11';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -49,11 +50,11 @@ class Listtype extends Record
 
     public function delete()
     {
-        $this->empty();
+        $this->deleteListData();
         parent::delete();
     }
 
-    public function empty()
+    public function deleteListData()
     {
         $list_data_arr = $this->get_listdata();
         $Obj_ListData = new ListData;
