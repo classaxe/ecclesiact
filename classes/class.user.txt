@@ -1,3 +1,5 @@
+  1.0.7 (2014-02-17)
+    1) User::update_logon_count() now validates updated fields against field list
   1.0.6 (2014-01-05)
     1) User::get_ssi_token_for_email() no longer invokes an instance of person
        to carry out the operation -

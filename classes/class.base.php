@@ -1,17 +1,12 @@
 <?php
-define('VERSION_BASE', '1.0.16');
 /*
 Version History:
-  1.0.16 (2015-10-16)
-    1) Version now given statically
-    2) Now provides a version of getVersion() that can be used by all descendents
-    3) Now more PSR-2 compliant
-
-
+  1.0.17 (2017-10-07)
+    1) Added '*.dev' to list of development servers where full error message may be given if a class is not found
 */
 class Base
 {
-    const VERSION = '1.0.16';
+    const VERSION = '1.0.17';
 
     protected static $methods = array();
     protected static $module_version;
@@ -22,29 +17,35 @@ class Base
         if (in_array($method, self::$methods)) {
             return call_user_func($method, $this, $args);
         } else {
-            do_log(3, get_class($this)."::".$method."()", '(none)', "The ".get_class($this)." class doesn't have a ".$method." method.");
+            do_log(
+                3,
+                get_class($this)."::".$method."()",
+                '(none)',
+                "The ".get_class($this)." class doesn't have a ".$method." method."
+            );
             $dev_status =
-            $_SERVER["SERVER_NAME"]=='localhost' ||
-            substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
-            substr($_SERVER["SERVER_NAME"], 0, 4)=='dev.' ||
-            substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.';
+                $_SERVER["SERVER_NAME"]=='localhost' ||
+                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 4)=='dev.' ||
+                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.' ||
+                substr($_SERVER["SERVER_NAME"], -4)=='.dev';
             die(
-             "<h1>Technical Fault</h1>\n"
-            .($dev_status ?
-             "<p>The following method does not exist: <b>".get_class($this)."</b>::<b>".$method."</b>()</p>"
-             .x()
-             :
-             "<p>Sorry, we have just experienced a technical fault with the page you just tried to access.<br />\n"
-            ."Our technicians have now been alerted to the issue.</p>\n"
-            ."<p>If you wish to contact us about this, please quote the following reference number<br />\n"
-            ."to help us better assist you in dealing with this matter:</p>\n"
-            ."<quote>".CODEBASE_VERSION." - ".get_timestamp()."</quote>"
-            )
+                "<h1>Technical Fault</h1>\n"
+                .($dev_status ?
+                     "<p>The following method does not exist: <b>".get_class($this)."</b>::<b>".$method."</b>()</p>"
+                    .x()
+                 :
+                     "<p>We have just experienced a technical fault with the page you just tried to access.<br />\n"
+                    ."Our technicians have now been alerted to the issue.</p>\n"
+                    ."<p>If you wish to contact us about this, please quote the following reference number<br />\n"
+                    ."to help us better assist you in dealing with this matter:</p>\n"
+                    ."<quote>".CODEBASE_VERSION." - ".get_timestamp()."</quote>"
+                )
             );
         }
     }
 
-    protected function _get_args($args = false, &$vars, $deprecate_lists = false, $debug = true)
+    protected function _get_args($args = false, &$vars = array(), $deprecate_lists = false, $debug = true)
     {
         if ($args===false || !isset($args[0])) {
             return false;

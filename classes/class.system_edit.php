@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.38 (2017-02-11)
-    1) Implemented Archive mode under 'Advanced' that prevents search engines
-    2) Multiple PSR-2 fixes
+  1.0.39 (2017-10-09)
+    1) Added support fopr setting of Google Maps Key
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.38';
+    const VERSION = '1.0.39';
 
     private $_colour_schemeID;
     private $_html;
@@ -27,8 +26,8 @@ class System_Edit extends System
         $this->_selected_section =  get_var('selected_section', 'general');
         $this->_isMASTERADMIN =     get_person_permission("MASTERADMIN");
         $this->_msg =               "";
-        $this->_height =            475;
-        $this->_width =             800;
+        $this->_height =            500;
+        $this->_width =             820;
         $this->doInitialActions();
         $this->drawJs();
         if ($this->_submode=='save_and_close' && $this->_msg=='') {
@@ -160,6 +159,7 @@ class System_Edit extends System
             'defaultThemeID'=>              addslashes(get_var('defaultThemeID')),
             'favicon'=>                     addslashes(get_var('favicon')),
             'google_analytics_key'=>        addslashes(get_var('google_analytics_key')),
+            'google_maps_key'=>             addslashes(get_var('google_maps_key')),
             'notify_email'=>                addslashes(get_var('notify_email')),
             'notify_triggers'=>             addslashes(get_var('notify_triggers')),
             'piwik_id'=>                    addslashes(get_var('piwik_id')),
@@ -1140,19 +1140,30 @@ class System_Edit extends System
                 "100px"
             )
             ."</div>\n"
-            ."    <div class='val' style='width:155px'>&nbsp; &nbsp; <b>Status:</b> "
+            ."    <div class='val' style='width:100px;'>&nbsp; &nbsp; <b>Status:</b> "
             .$this->getAkismetKeyStatus()."</div>\n"
-            ."    <div class='lbl' style='width:190px'><b>Google Analytics Key "
-            ."<a href='http://www.google.com/analytics' rel='external'>Get ID</a></b></div>\n"
+            ."    <div class='lbl' style='width:70px' title='Google Maps Key'>&nbsp;<b>GM Key</b> "
+            ."<a href='https://developers.google.com/maps/documentation/javascript/get-api-key' rel='external'>"
+            ."<b>?</b></a></div>\n"
+            ."    <div class='val'>"
+            .draw_form_field(
+                "google_maps_key",
+                $this->record['google_maps_key'],
+                "text",
+                "125px"
+            )
+            ."</div>\n"
+            ."    <div class='lbl' style='width:76px' title='Google Analytics Key'>&nbsp;<b>GA Key</b> "
+            ."<a href='http://www.google.com/analytics' rel='external'><b>?</b></a></div>\n"
             ."    <div class='val'>"
             .draw_form_field(
                 "google_analytics_key",
                 $this->record['google_analytics_key'],
                 "text",
-                "155px"
+                "125px"
             )
             ."</div>\n"
-            ."    <div class='clr_b'></div>\n"
+                ."    <div class='clr_b'></div>\n"
             ."    <div class='lbl' style='width:170px'><b>Bug Tracker</b></div>"
             ."    <div class='val' style='width:200px;'>"
             .draw_form_field(

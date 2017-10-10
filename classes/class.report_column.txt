@@ -1,3 +1,5 @@
+  1.0.143 (2017-10-01)
+    1) Various bug fixes for width values containing units - PHP 7.1 complained
   1.0.142 (2017-01-22)
     1) Report_Column::drawNavSample() further changes:
        Now that nav Style Samples now correctly show their state on the button text, removed the text labels added

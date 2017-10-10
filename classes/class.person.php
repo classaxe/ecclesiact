@@ -1,15 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.130 (2016-12-31)
-    1) Person::get_records() now renamed Person::getFilteredSortedAndPagedRecords()
-    2) Person::get_coords() now has same method declaration as parent although address if given is completely ignored.
-    3) PSR-2 fixes
+  1.0.131 (2017-10-09)
+    1) Added Person::scrubPiiData()
 */
 class Person extends Displayable_Item
 {
     const FIELDS = 'ID, archive, archiveID, about, deleted, type, about, active_date_from, active_date_to, AAddress1, AAddress2, ACellphone, ACity, ACountryID, AEmail, AFacebook, AFax, AGooglePlus, ALinkedIn, AMap_description, AMap_geocodeID, AMap_geocode_address, AMap_geocode_area, AMap_geocode_quality, AMap_geocode_type, AMap_lat, AMap_lon, AMap_location, APostal, ASpID, ATelephone, ATwitter, AWeb, AYoutube, avatar, category, communityID, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, custom_11, custom_12, custom_13, custom_14, custom_15, custom_16, custom_17, custom_18, custom_19, custom_20, custom_21, custom_22, custom_23, custom_24, custom_25, custom_26, custom_27, custom_28, custom_29, custom_30, groups_list, image, keywords, memberID, module_creditsystem_balance, NDob, NFirst, NGender, NGreetingName, NLast, NMiddle, NProfDes, NTitle, notes, notes2, notes3, notes4, PFMWebUsername, PFMWebPassword, PEmail, PLogonCount, PLogonLastDate, PLogonLastHost, PLogonLastIP, PLogonLastMethod, PMemberType, PPassword, PUsername, PPrefLang, PSearchListing, PWidgets_csv, permACTIVE, permCOMMUNITYADMIN, permMASTERADMIN, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSMEMBER, permUSERADMIN, privacy_about, privacy_address_home, privacy_address_work, privacy_cell_home, privacy_cell_work, privacy_email_home, privacy_email_work, privacy_image, privacy_phone_home, privacy_phone_work, privacy_web_home, privacy_web_work, profile_locked, qb_ident, qb_name, process_maps, systemID, tax_codeID, WAddress1, WAddress2, WBusinessType, WCellphone, WCity, WCompany, WCountryID, WDepartment, WDivision, WEmail, WFacebook, WFax, WGooglePlus, WJobTitle, WLinkedIn, WMap_description, WMap_geocodeID, WMap_geocode_address, WMap_geocode_area, WMap_geocode_quality, WMap_geocode_type, WMap_lat, WMap_lon, WMap_location, WPostal, WSpID, WTelephone, WTelephoneExt, WTwitter, WWeb, WYoutube, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.130';
+    const VERSION = '1.0.131';
 
     public function __construct($ID = "")
     {
@@ -2540,6 +2538,20 @@ class Person extends Displayable_Item
             }
         }
         return false;
+    }
+
+    public function scrubPiiData()
+    {
+        $ObjScrubber = new PIIScrubber();
+        $Ids = explode(',', $this->_get_ID());
+        foreach ($Ids as $Id) {
+            $this->_set_ID($Id);
+            $data = $this->load();
+            $ObjScrubber->scrubName($data);
+            $ObjScrubber->scrubHomeAddress($data);
+            $ObjScrubber->scrubWorkAddress($data);
+            $this->update($data, true);
+        }
     }
 
     public static function send_email_for_new_user()

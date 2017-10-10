@@ -1,18 +1,18 @@
 <?php
 /*
 Version History:
-  1.0.93 (2017-08-26)
-    1) Gave Report::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  1.0.94 (2017-10-07)
+    1) Added 'selected_scrub_pii_data' to Report::REPORT_FEATURES list
 */
 
 class Report extends Displayable_Item
 {
-    const VERSION = '1.0.93';
+    const VERSION = '1.0.94';
     const COLUMN_FULL_ACCESS =    1;
     const COLUMN_DEFAULT_VALUE =  -1;
     const COLUMN_NO_ACCESS =      0;
     const FIELDS =                'ID, archive, archiveID, deleted, name, systemID, icon, seq, tab, label, archiveChanges, description, formComponentID, formTitle, help, listTypeID, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, popupFormHeight, popupFormWidth, primaryObject, primaryTable, reportComponentID, reportGroupBy, reportMembersGlobalEditors, reportSortBy, reportSQL_COMMUNITYADMIN, reportSQL_GROUPADMIN, reportSQL_MASTERADMIN, reportSQL_SYSADMIN, reportTitle, required_feature, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const REPORT_FEATURES =       'selected_add_to_group, selected_delete, selected_empty, selected_export_excel, selected_export_sql, selected_merge_profiles, selected_process_maps, selected_process_order, selected_queue_again, selected_send_email, selected_send_again, selected_set_as_approved, selected_set_as_attended, selected_set_as_hidden, selected_set_as_member, selected_set_as_spam, selected_set_as_unapproved, selected_set_email_opt_in, selected_set_email_opt_out, selected_set_importance, selected_set_random_password, selected_show_on_map, selected_update, selected_view_email_addresses';
+    const REPORT_FEATURES =       'selected_add_to_group, selected_delete, selected_empty, selected_export_excel, selected_export_sql, selected_merge_profiles, selected_process_maps, selected_process_order, selected_queue_again, selected_scrub_pii_data, selected_send_email, selected_send_again, selected_set_as_approved, selected_set_as_attended, selected_set_as_hidden, selected_set_as_member, selected_set_as_spam, selected_set_as_unapproved, selected_set_email_opt_in, selected_set_email_opt_out, selected_set_importance, selected_set_random_password, selected_show_on_map, selected_update, selected_view_email_addresses';
 
     public static $cache_feature_array =     array();
     public static $cache_titles =            false;

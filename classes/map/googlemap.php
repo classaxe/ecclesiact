@@ -1,13 +1,14 @@
 <?php
 namespace Map;
+
 /*
 Version History:
-  1.0.2 (2016-02-27)
-    1) Now uses VERSION class constant for version control and extends \Base to have access to that method
+  1.0.3 (2017-10-09)
+    1) Added support for Google Maps Key where required (say for non-public dev sites)
 */
 class GoogleMap extends \Base
 {
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.3';
 
     public $function_code;
     public $function_code_loader;
@@ -235,7 +236,7 @@ class GoogleMap extends \Base
     {
         $shadow =   '';
         $shape =    '';
-        switch(strToLower($name)){
+        switch (strToLower($name)) {
             case '':
                 $icon =     '';
                 break;
@@ -559,7 +560,7 @@ class GoogleMap extends \Base
         $match_area =       0;
         $match_quality =    0;
         $match_address =    $response['results'][0]['formatted_address'];
-        switch($match_type){
+        switch ($match_type) {
             case 'ROOFTOP':
                 $match_quality = 100;
                 break;
@@ -710,8 +711,7 @@ class GoogleMap extends \Base
 
     public static function getSqlMapRange($args)
     {
-        if (
-        !isset($args) ||
+        if (!isset($args) ||
         !isset($args['lat']) ||
         !isset($args['lon']) ||
         !isset($args['units']) ||
@@ -720,7 +720,7 @@ class GoogleMap extends \Base
         ) {
             die(__CLASS__."::".__FUNCTION__."() expects array with lat, lon, units (km|mile), lat_field, lon_field");
         }
-        switch(strToLower($args['units'])){
+        switch (strToLower($args['units'])) {
             case "km":
                 $multiplier = 111.05;
                 break;
@@ -755,8 +755,7 @@ class GoogleMap extends \Base
 
     public static function getSqlMapRangeFilter($args)
     {
-        if (
-            !isset($args) ||
+        if (!isset($args) ||
             !isset($args['lat']) ||
             !isset($args['lon']) ||
             !isset($args['range']) ||
@@ -766,10 +765,10 @@ class GoogleMap extends \Base
         ) {
             die(
                 __CLASS__."::".__FUNCTION__."() expects array with lat, lon, range,"
-               ." units (km|mile), lat_field, lon_field"
+                ." units (km|mile), lat_field, lon_field"
             );
         }
-        switch(strToLower($args['units'])){
+        switch (strToLower($args['units'])) {
             case "km":
                 $multiplier = 111.05;
                 break;
@@ -818,7 +817,9 @@ class GoogleMap extends \Base
         if (!GoogleMap::$js_lib_included) {
             \Output::push(
                 'javascript_top',
-                "<script type=\"text/javascript\" src=\"//maps.google.com/maps/api/js?sensor=false\"></script>\n"
+                "<script type=\"text/javascript\" src=\"//maps.google.com/maps/api/js?"
+                .($system_vars['google_maps_key'] ? "key=".$system_vars['google_maps_key']."&" : "")
+                ."sensor=false\"></script>\n"
             );
             GoogleMap::$js_lib_included = true;
         }

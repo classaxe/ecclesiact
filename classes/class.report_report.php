@@ -1,14 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.33 (2017-01-02)
-    1) Report_Report::draw() now calls getReportRecords() to get records for display
-    2) PSR-2 fixes
+  1.0.34 (2017-10-07)
+    1) Now implements PII scrubbing for records associated with 'contact' and 'user' reports
+    2) Added support for submode of 'empty' to listdata report to allow a list-type to be emptied of all its data
+    3) A bit of refactoring around Report_Report::draw() but still pretty untidy
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.33';
+    const VERSION = '1.0.34';
+
     public function do_commands()
     {
         if (!isset($_REQUEST['command'])) {
@@ -30,13 +32,138 @@ class Report_Report extends Report
                     false
                 );
                 $result = $this->draw($_REQUEST['report_name'], $_REQUEST['toolbar'], $json_mode);
-                if ($json_mode) {
-                    print convert_safe_to_php($result['html']);
-                } else {
-                    print convert_safe_to_php($result);
-                }
+                print convert_safe_to_php($json_mode ? $result['html'] : $result);
                 die;
             break;
+        }
+    }
+
+    public function doReportOperations(
+        $targetReportID,
+        $targetID,
+        $targetValue,
+        $submode,
+        $filterField,
+        $filterExact,
+        $filterValue,
+        $isMASTERADMIN,
+        $isSYSADMIN
+    ) {
+        switch ($submode) {
+            case "copy_report":
+                if (!$isMASTERADMIN) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                    break;
+                }
+                if ($targetValue == "") {
+                    return "<b>Error:</b> Report must have a name.";
+                    break;
+                }
+                $Obj = new Report($targetReportID);
+                $targetSystemID = $Obj->get_field('systemID');
+                if ($Obj->exists_named($targetValue, $targetSystemID)) {
+                    return "<b>Error:</b> a report named ".$targetValue." already exists.";
+                    break;
+                }
+                $newID = $Obj->copy($targetValue);
+                if ($newID) {
+                    $ID = $newID;
+                    return status_message(
+                        0,
+                        true,
+                        'Report',
+                        '',
+                        "been copied to "
+                        ."<a href=\"".BASE_PATH."report/report?"
+                        ."filterField=82&amp;filterExact=1&amp;filterValue="
+                        .$targetValue."\">"
+                        .$targetValue."</a>.",
+                        $newID
+                    );
+                }
+                break;
+            case "filter_add":
+                $Obj_Filter = new Report_Filter;
+                $Obj_Filter->filter_add($targetReportID, $targetValue, $filterField, $filterExact, $filterValue);
+                break;
+            case "filter_assign_global":
+                if (!$isMASTERADMIN) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter = new Report_Filter($targetID);
+                $Obj_Filter->assign($targetReportID, 'global', 0);
+                break;
+            case "filter_assign_local":
+                if (!($isMASTERADMIN || $isSYSADMIN)) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter = new Report_Filter($targetID);
+                $Obj_Filter->assign($targetReportID, 'system', SYS_ID);
+                break;
+            case "filter_assign_me":
+                if (!($isMASTERADMIN || $isSYSADMIN)) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter = new Report_Filter($targetID);
+                $Obj_Filter->assign($targetReportID, 'person', get_userID());
+                break;
+            case "filter_delete":
+                $Obj_Filter = new Report_Filter($targetID);
+                $filter = $Obj_Filter->get_record();
+                $canDo = false;
+                if ($isMASTERADMIN && $filter['destinationType']=='global') {
+                    $canDo = true;
+                } elseif (($isMASTERADMIN || $isSYSADMIN) &&
+                    $filter['destinationType']=='system' &&
+                    $filter['destinationID']==SYS_ID
+                ) {
+                    $canDo = true;
+                } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
+                    $canDo = true;
+                }
+                if (!$canDo) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter->delete();
+                break;
+            case "filter_rename":
+                $Obj_Filter = new Report_Filter($targetID);
+                $filter = $Obj_Filter->get_record();
+                $canDo = false;
+                if ($isMASTERADMIN && $filter['destinationType']=='global') {
+                    $canDo = true;
+                } elseif (($isMASTERADMIN || $isSYSADMIN) &&
+                    $filter['destinationType']=='system' &&
+                    $filter['destinationID']==SYS_ID
+                ) {
+                    $canDo = true;
+                } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
+                    $canDo = true;
+                }
+                if (!$canDo) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter->set_field('label', $targetValue);
+                break;
+            case "filter_seq":
+                $Obj_Filter = new Report_Filter($targetID);
+                $filter = $Obj_Filter->get_record();
+                $canDo = false;
+                if ($isMASTERADMIN && $filter['destinationType']=='global') {
+                    $canDo = true;
+                } elseif (($isMASTERADMIN || $isSYSADMIN) &&
+                    $filter['destinationType']=='system' &&
+                    $filter['destinationID']==SYS_ID
+                ) {
+                    $canDo = true;
+                } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
+                    $canDo = true;
+                }
+                if (!$canDo) {
+                    return "<b>Error:</b> You don't have permission to do that.";
+                }
+                $Obj_Filter->set_seq($targetValue);
+                break;
         }
     }
 
@@ -63,16 +190,16 @@ class Report_Report extends Report
         global $db, $system_vars, $MM, $YYYY;
         @set_time_limit(600);    // Extend maximum execution time to 10 mins (if permitted)
         $isMASTERADMIN =        get_person_permission("MASTERADMIN");
-        $isUSERADMIN =            get_person_permission("USERADMIN");
-        $isCOMMUNITYADMIN =        get_person_permission("COMMUNITYADMIN");
-        $isSYSADMIN =            get_person_permission("SYSADMIN");
+        $isUSERADMIN =          get_person_permission("USERADMIN");
+        $isCOMMUNITYADMIN =     get_person_permission("COMMUNITYADMIN");
+        $isSYSADMIN =           get_person_permission("SYSADMIN");
         $isSYSAPPROVER =        get_person_permission("SYSAPPROVER");
-        $isSYSEDITOR =            get_person_permission("SYSEDITOR");
-        $isSYSMEMBER =            get_person_permission("SYSMEMBER");
-        $isSYSLOGON =            get_person_permission("SYSLOGON");
+        $isSYSEDITOR =          get_person_permission("SYSEDITOR");
+        $isSYSMEMBER =          get_person_permission("SYSMEMBER");
+        $isSYSLOGON =           get_person_permission("SYSLOGON");
         $isGROUPEDITOR =        get_person_permission("GROUPEDITOR");
         $isGROUPVIEWER =        get_person_permission("GROUPVIEWER");
-        $isPUBLIC =                get_person_permission("PUBLIC");
+        $isPUBLIC =             get_person_permission("PUBLIC");
   //    y($_POST);DIE;
 /*
         print
@@ -192,9 +319,9 @@ class Report_Report extends Report
         }
         mem(__FUNCTION__."()-3");
   //    y($report_row);
-        $popupFormHeight =                $report_row['popupFormHeight'];
-        $popupFormWidth =                $report_row['popupFormWidth'];
-        $thisReportID =                    $report_row['ID'];
+        $popupFormHeight =              $report_row['popupFormHeight'];
+        $popupFormWidth =               $report_row['popupFormWidth'];
+        $thisReportID =                 $report_row['ID'];
         $reportComponentID =            $report_row['reportComponentID'];
         $reportGroupBy =                $report_row['reportGroupBy'];
         $reportSortReverse =            false;
@@ -222,129 +349,18 @@ class Report_Report extends Report
         $columnList =    $this->get_columns();
         mem(__FUNCTION__."()-6");
       // These operations do NOT have field level permissions:
-        if ($thisReportID==$targetReportID) {
-            switch ($submode) {
-                case "copy_report":
-                    if (!$isMASTERADMIN) {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                        break;
-                    }
-                    if ($targetValue=="") {
-                        $msg = "<b>Error:</b> Report must have a name.";
-                        break;
-                    }
-                    $Obj = new Report($targetReportID);
-                    $targetSystemID = $Obj->get_field('systemID');
-                    if ($Obj->exists_named($targetValue, $targetSystemID)) {
-                        $msg = "<b>Error:</b> a report named ".$targetValue." already exists.";
-                        break;
-                    }
-                    $newID = $Obj->copy($targetValue);
-                    if ($newID) {
-                        $ID = $newID;
-                        $msg = status_message(
-                            0,
-                            true,
-                            'Report',
-                            '',
-                            "been copied to "
-                            ."<a href=\"".BASE_PATH."report/report?"
-                            ."filterField=82&amp;filterExact=1&amp;filterValue="
-                            .$targetValue."\">"
-                            .$targetValue."</a>.",
-                            $newID
-                        );
-                    }
-                    break;
-                case "filter_add":
-                    $Obj_Filter = new Report_Filter;
-                    $Obj_Filter->filter_add($targetReportID, $targetValue, $filterField, $filterExact, $filterValue);
-                    break;
-                case "filter_assign_global":
-                    if ($isMASTERADMIN) {
-                        $Obj_Filter = new Report_Filter($targetID);
-                        $Obj_Filter->assign($targetReportID, 'global', 0);
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-                case "filter_assign_local":
-                    if ($isMASTERADMIN || $isSYSADMIN) {
-                        $Obj_Filter = new Report_Filter($targetID);
-                        $Obj_Filter->assign($targetReportID, 'system', SYS_ID);
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-                case "filter_assign_me":
-                    if ($isMASTERADMIN || $isSYSADMIN) {
-                        $Obj_Filter = new Report_Filter($targetID);
-                        $Obj_Filter->assign($targetReportID, 'person', get_userID());
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-                case "filter_delete":
-                    $Obj_Filter = new Report_Filter($targetID);
-                    $filter = $Obj_Filter->get_record();
-                    $canDo = false;
-                    if ($isMASTERADMIN && $filter['destinationType']=='global') {
-                        $canDo = true;
-                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
-                        $filter['destinationType']=='system' &&
-                        $filter['destinationID']==SYS_ID
-                    ) {
-                        $canDo = true;
-                    } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
-                        $canDo = true;
-                    }
-                    if ($canDo) {
-                        $Obj_Filter->delete();
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-                case "filter_rename":
-                    $Obj_Filter = new Report_Filter($targetID);
-                    $filter = $Obj_Filter->get_record();
-                    $canDo = false;
-                    if ($isMASTERADMIN && $filter['destinationType']=='global') {
-                        $canDo = true;
-                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
-                        $filter['destinationType']=='system' &&
-                        $filter['destinationID']==SYS_ID
-                    ) {
-                        $canDo = true;
-                    } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
-                        $canDo = true;
-                    }
-                    if ($canDo) {
-                        $Obj_Filter->set_field('label', $targetValue);
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-                case "filter_seq":
-                    $Obj_Filter = new Report_Filter($targetID);
-                    $filter = $Obj_Filter->get_record();
-                    $canDo = false;
-                    if ($isMASTERADMIN && $filter['destinationType']=='global') {
-                        $canDo = true;
-                    } elseif (($isMASTERADMIN || $isSYSADMIN) &&
-                        $filter['destinationType']=='system' &&
-                        $filter['destinationID']==SYS_ID
-                    ) {
-                        $canDo = true;
-                    } elseif ($filter['destinationType']=='person' && $filter['destinationID']==get_userID()) {
-                        $canDo = true;
-                    }
-                    if ($canDo) {
-                        $Obj_Filter->set_seq($targetValue);
-                    } else {
-                        $msg = "<b>Error:</b> You don't have permission to do that.";
-                    }
-                    break;
-            }
+        if ($thisReportID == $targetReportID) {
+            $msg = $this->doReportOperations(
+                $targetReportID,
+                $targetID,
+                $targetValue,
+                $submode,
+                $filterField,
+                $filterExact,
+                $filterValue,
+                $isMASTERADMIN,
+                $isSYSADMIN
+            );
         }
         mem(__FUNCTION__."()-7");
       // Test for field-level permissions before doing anything with records
@@ -355,19 +371,19 @@ class Report_Report extends Report
           //        y($column);die;
                     $targetField = $column['formField'];
                     if (($column['access']==1) &&
-                    (
-                    ($isPUBLIC &&         $column['permPUBLIC'] =='2') ||
-                    ($isGROUPVIEWER &&    $column['permGROUPVIEWER'] =='2') ||
-                    ($isGROUPEDITOR &&    $column['permGROUPEDITOR'] =='2') ||
-                    ($isSYSLOGON &&       $column['permSYSLOGON'] =='2') ||
-                    ($isSYSMEMBER &&      $column['permSYSMEMBER'] =='2') ||
-                    ($isSYSEDITOR &&      $column['permSYSEDITOR'] =='2') ||
-                    ($isSYSAPPROVER &&    $column['permSYSAPPROVER'] =='2') ||
-                    ($isSYSADMIN &&       $column['permSYSADMIN'] =='2') ||
-                    ($isUSERADMIN &&      $column['permUSERADMIN'] =='2') ||
-                    ($isCOMMUNITYADMIN && $column['permCOMMUNITYADMIN'] =='2') ||
-                    ($isMASTERADMIN &&    $column['permMASTERADMIN'] =='2')
-                    )
+                        (
+                            ($isPUBLIC &&         $column['permPUBLIC'] =='2') ||
+                            ($isGROUPVIEWER &&    $column['permGROUPVIEWER'] =='2') ||
+                            ($isGROUPEDITOR &&    $column['permGROUPEDITOR'] =='2') ||
+                            ($isSYSLOGON &&       $column['permSYSLOGON'] =='2') ||
+                            ($isSYSMEMBER &&      $column['permSYSMEMBER'] =='2') ||
+                            ($isSYSEDITOR &&      $column['permSYSEDITOR'] =='2') ||
+                            ($isSYSAPPROVER &&    $column['permSYSAPPROVER'] =='2') ||
+                            ($isSYSADMIN &&       $column['permSYSADMIN'] =='2') ||
+                            ($isUSERADMIN &&      $column['permUSERADMIN'] =='2') ||
+                            ($isCOMMUNITYADMIN && $column['permCOMMUNITYADMIN'] =='2') ||
+                            ($isMASTERADMIN &&    $column['permMASTERADMIN'] =='2')
+                        )
                     ) {
                         $isEDITOR = true;
                     }
@@ -377,13 +393,12 @@ class Report_Report extends Report
         mem(__FUNCTION__."()-8");
     //  print "$thisReportID==$targetReportID ";
         if ($thisReportID==$targetReportID && $isEDITOR) {
-            $args =
-            array(
-            'submode' =>        $submode,
-            'report_name' =>    $report_name,
-            'reportPrimaryTable' => $reportPrimaryTable,
-            'targetID' =>       $targetID,
-            'targetValue' =>    $targetValue
+            $args = array(
+                'submode' =>        $submode,
+                'report_name' =>    $report_name,
+                'reportPrimaryTable' => $reportPrimaryTable,
+                'targetID' =>       $targetID,
+                'targetValue' =>    $targetValue
             );
         // ***************************
       // * Pre Operation Actions   *
@@ -411,13 +426,12 @@ class Report_Report extends Report
             $done = false;
         // (Handler extender code begins)
             $ObjHandler = new Handler('draw_auto_report');
-            $args =
-            array(
-            'submode' =>        $submode,
-            'report_name' =>    $report_name,
-            'reportPrimaryTable' => $reportPrimaryTable,
-            'targetID' =>       $targetID,
-            'targetValue' =>    $targetValue
+            $args = array(
+                'submode' =>        $submode,
+                'report_name' =>    $report_name,
+                'reportPrimaryTable' => $reportPrimaryTable,
+                'targetID' =>       $targetID,
+                'targetValue' =>    $targetValue
             );
             $handler = $ObjHandler->handle($args);
             if ($handler['handled']) {
@@ -443,7 +457,7 @@ class Report_Report extends Report
                         break;
                     case "delete":
                         $this->handle_delete($report_name, $args, $msg);
-                        $targetID=false;
+                        $targetID = false;
                         break;
                     case "empty":
                         switch ($report_name) {
@@ -457,6 +471,19 @@ class Report_Report extends Report
                                     $record_type,
                                     'had all '.$members.' members',
                                     'deleted.',
+                                    $targetID
+                                );
+                                break;
+                            case "listtype":
+                                $Obj = new ListType($targetID);
+                                $entries = count($Obj->get_listdata());
+                                $Obj->empty();
+                                $msg = status_message(
+                                    0,
+                                    true,
+                                    $record_type,
+                                    'had all '.$entries.' entries',
+                                    'removed.',
                                     $targetID
                                 );
                                 break;
@@ -484,6 +511,44 @@ class Report_Report extends Report
                                 "been processed as none were previously unprocessed.",
                                 $targetID
                             );
+                        }
+                        break;
+                    case "scrub_pii_data":
+                        switch ($report_name) {
+                            case "contact":
+                                $Obj = new Contact($targetID);
+                                $Obj->scrubPiiData();
+                                $msg = status_message(
+                                    0,
+                                    true,
+                                    $record_type,
+                                    '',
+                                    "been scrubbed of PII Data.",
+                                    $targetID
+                                );
+                                break;
+                            case "user":
+                                $Obj = new User($targetID);
+                                $Obj->scrubPiiData();
+                                $msg = status_message(
+                                    0,
+                                    true,
+                                    $record_type,
+                                    '',
+                                    "been scrubbed of PII Data.",
+                                    $targetID
+                                );
+                                break;
+                            default:
+                                $msg = status_message(
+                                    2,
+                                    true,
+                                    $record_type,
+                                    '',
+                                    "were not updated - this operations is not supported for report '$report_name'",
+                                    $targetID
+                                );
+                                break;
                         }
                         break;
                     case "set":

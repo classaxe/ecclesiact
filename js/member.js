@@ -1,9 +1,10 @@
-// 1.0.150
+// 1.0.151
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.150 (2016-11-20)
-    1) Added support for 'selected_set_random_password'
+  1.0.151 (2017-10-07)
+    1) Added support for 'selected_scrub_pii_data'
+    2) Added support for 'selected_empty' to listtypes in addition to groups previously implemented
 */
 
 // ************************************
@@ -1249,11 +1250,14 @@ function selected_operation(form,report_name,reportID,args) {
       else{alert('No records selected to delete');}
     break;
     case 'selected_empty':
+      var entityType = (report_name=='listtype' ? 'List Type' : 'Group');
       if (num>0) {
-        if (confirm('Empty '+num+' selected group'+(num==1 ? '': 's')+' - are you sure?')) {
+        if (confirm(
+          'Empty '+num+' selected '+entityType+(num==1 ? '': 's')+' - are you sure?')
+        ) {
           geid_set('submode','empty');
         }
-        else{alert('Group Empty cancelled');}
+        else{alert(entityType+' Empty cancelled');}
       }
       else {alert('No groups selected to empty');}
     break;
@@ -1306,6 +1310,25 @@ function selected_operation(form,report_name,reportID,args) {
         } else {
             alert('No persons to requeue email for');
         }
+      break;
+    case 'selected_scrub_pii_data':
+        if (num>0) {
+          if (confirm('Scrub all personally identifiable data for '+num+' user'+(num==1 ? '': 's')+' - are you sure?')) {
+            if (confirm(
+              'Please confirm that you REALLY want scrub PII Data -\n' +
+              '\n' +
+              '  * All Passwords will be randomised...\n' +
+              '  * All Names will be randomised...\n' +
+              '  * All Addresses will be recreated...\n' +
+              '\n' +
+              'Proceed?'
+            )) {
+              geid_set('submode','scrub_pii_data');
+            }
+          }
+          else{alert('Updates cancelled');}
+        }
+        else {alert('No users selected to scrub PII data for');}
       break;
     case 'selected_send_again':
       if (num>0) {

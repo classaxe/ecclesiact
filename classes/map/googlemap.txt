@@ -1,3 +1,5 @@
+  1.0.2 (2016-02-27)
+    1) Now uses VERSION class constant for version control and extends \Base to have access to that method
   1.0.1 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.0 (2015-03-23)

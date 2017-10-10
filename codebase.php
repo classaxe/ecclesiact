@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.2.3");
+define("CODEBASE_VERSION", "5.3.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,41 +17,88 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.2.3.2500 (2017-10-02)
-Summary: More changes for PHP 7.1 and handling of invalid systemID
-  1) More changes for PHP 7.1 relaing to no-numerical values used in calculated widths
-  2) Now handles missing system records in database without endless redirection
+5.2.3.2501 (2017-10-09)
+Summary:
+  1) Introduction of data scrubber system to allow any User or Contact to have their PII data anonymised
+  2) New option for Google Maps Key to be set for development sites not yet on the web
+  3) Listtypes can now be emptied of their data
+  4) Sites whose domain ends with .dev now show full error messages
+  5) More PHP 7.1 fixes
 
 Final Checksums:
-  Classes     CS:397bc506
-  Database    CS:4317aaaa
-  Libraries   CS:fe4deb47
-  Reports     CS:523dfa87
+  Classes     CS:4fce7132
+  Database    CS:9cc06149
+  Libraries   CS:238b305a
+  Reports     CS:7f500a57
 
 Code Changes:
-  codebase.php                                                                                   5.2.3     (2017-10-02)
-    1) Now halts with message if SYS_ID data isn't present in the database - previously entered endless redirect loop
-    2) Updated version information
-  classes/class.product_catalogue.php                                                            1.0.33    (2017-10-01)
-    1) Removed non-working code to set tab-index values
-  classes/class.product_catalogue_order_history.php                                              1.0.5     (2017-10-01)
-    1) Removed non-working code to set tab-index values
-  classes/class.report_column.php                                                                1.0.143   (2017-10-01)
-    1) Various bug fixes for width values containing units - PHP 7.1 complained
-  system.php                                                                                     1.0.40 (2017-10-01)
-    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if required SystemID isn't present
+  codebase.php                                                                                   5.3.0     (2017-10-09)
+    1) Updated version information
+  classes/class.base.php                                                                         1.0.17    (2017-10-07)
+    1) Added '*.dev' to list of development servers where full error message may be given if a class is not found
+  classes/class.block_layout.php                                                                 1.0.74    (2017-10-07)
+    1) Bug fix for Block_Layout::draw_Block_Layout() to prevent non-mumeric value warning in PHP7.1
+  classes/class.help.php                                                                         1.0.8     (2017-10-07)
+    1) Declared methods static to allow static calling with later versions of PHP
+    2) Version now in class consant
+  classes/class.listtype.php                                                                     1.0.10    (20177-10-08)
+    1) Added Listtype::empty() method
+  classes/class.lst_named_type.php                                                               1.0.5     (2017-10-07)
+    1) Now uses class constant for version control - necessary for child classes to use this method
+    2) PSR-2 fixes
+  classes/class.person.php                                                                       1.0.131   (2017-10-09)
+    1) Added Person::scrubPiiData()
+  classes/class.report.php                                                                       1.0.94    (2017-10-07)
+    1) Added 'selected_scrub_pii_data' to Report::REPORT_FEATURES list
+  classes/class.report_column.php                                                                1.0.144   (2017-10-07)
+    1) New option 'Scrub PII Data' for Report_Column::draw_selector_with_selected()
+  classes/class.report_report.php                                                                1.0.34    (2017-10-07)
+    1) Now implements PII scrubbing for records associated with 'contact' and 'user' reports
+    2) Added support for submode of 'empty' to listdata report to allow a list-type to be emptied of all its data
+    3) A bit of refactoring around Report_Report::draw() but still pretty untidy
+  classes/class.system.php                                                                       1.0.179   (2017-10-09)
+    1) Added new field to list 'google_maps_key'
+  classes/class.system_edit.php                                                                  1.0.39    (2017-10-09)
+    1) Added support fopr setting of Google Maps Key
+  classes/class.user.php                                                                         1.0.8     (2017-10-07)
+    1) Implements PII scrubbing offered by parent class
+    2) Now uses class conmstant for version and mainly PSR-2 compliant
+  classes/map/googlemap.php                                                                      1.0.3     (2017-10-09)
+    1) Added support for Google Maps Key where required (say for non-public dev sites)
+  js/member.js                                                                                   1.0.151   (2017-10-07)
+    1) Added support for 'selected_scrub_pii_data'
+    2) Added support for 'selected_empty' to listtypes in addition to groups previously implemented
 
-2500.sql
-  1) Set version information
+2501.sql
+  1) New column for `system` table - `google_maps_api_key`
+  2) New Report Column for google_maps_key in System report
+  3) New Report Column Type 'SELECTED: Scrub PII Data'
+  4) New feature for Contacts Report (as a report column) - 'Scrub PII Data'
+  5) New feature for Users Report (as a report column) - 'Scrub PII Data'
+  6) New feature for listdata Report *as a report column) - 'Empty'
+  7) New report 'lst_scrubber_data'
+  8) New list type 'lst_scrubber_data' with data (800 rows)
+  9) Tweak to form size for system report
+ 10) Set version information
 
 Promote:
-  codebase.php                                        5.2.3
-  classes/  (3 files changed)
-    class.product_catalogue.php                       1.033     CS:e9442214
-    class.product_catalogue_order_history.php         1.0.5     CS:648225a9
-    class.report_column.php                           1.0.143   CS:fe4db88e
-  system.php                                          1.0.40
-
+  codebase.php                                        5.3.0
+  classes/  (13 files changed)
+    class.base.php                                    1.0.17    CS:1d0200ce
+    class.block_layout.php                            1.0.74    CS:c1e87e08
+    class.help.php                                    1.0.8     CS:6a8ae55
+    class.listtype.php                                1.0.10    CS:7e91672
+    class.lst_named_type.php                          1.0.5     CS:37765696
+    class.person.php                                  1.0.131   CS:5359bd48
+    class.report.php                                  1.0.94    CS:f65bd1ff
+    class.report_column.php                           1.0.144   CS:2781da45
+    class.report_report.php                           1.0.34    CS:4673ff4
+    class.system.php                                  1.0.179   CS:afb3daef
+    class.system_edit.php                             1.0.39    CS:6da32443
+    class.user.php                                    1.0.8     CS:8c1910bc
+    map/googlemap.php                                 1.0.3     CS:966c9a7
+  images/icons.gif                                              CS:f40be344
+  js/member.js                                        1.0.151   CS:336aa549
 
 
 Bug:

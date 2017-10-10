@@ -1,3 +1,5 @@
+  1.0.73 (2017-06-10)
+    1) Block_Layout::BL_thumbnail_image() now handles thumbnail_maintain_aspect cp
   1.0.72 (2017-01-02)
     1) Multi-clause 'if' statements no longer enclosed using double brackets trick
   1.0.71 (2016-12-24)

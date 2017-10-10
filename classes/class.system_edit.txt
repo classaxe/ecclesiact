@@ -1,3 +1,6 @@
+  1.0.38 (2017-02-11)
+    1) Implemented Archive mode under 'Advanced' that prevents search engines
+    2) Multiple PSR-2 fixes
   1.0.37 (2016-01-16)
     1) Tidied up css flow formatting for calendar colour schemes and Advanced section entries
   1.0.36 (2015-12-29)

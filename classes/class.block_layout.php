@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.73 (2017-06-10)
-    1) Block_Layout::BL_thumbnail_image() now handles thumbnail_maintain_aspect cp
+  1.0.74 (2017-10-07)
+    1) Bug fix for Block_Layout::draw_Block_Layout() to prevent non-mumeric value warning in PHP7.1
 */
 class Block_Layout extends Record
 {
-    const VERSION = '1.0.73';
+    const VERSION = '1.0.74';
     
     public function __construct($table = 'block_layout', $ID = '', $systemID = SYS_ID)
     {
@@ -77,7 +77,7 @@ class Block_Layout extends Record
         :
          "Add comment"
         );
-        switch ($this->_mode){
+        switch ($this->_mode) {
             case "detail":
                 $_href =    "#anchor_comments_list";
                 $_onclick =
@@ -541,7 +541,7 @@ class Block_Layout extends Record
         }
         sscanf($this->record['date'], "%04d-%02d-%02d", $_YYYY, $_MM, $_DD);
         $_YYYY =  ($_YYYY == "0000" ? $YYYY : $_YYYY);
-        switch ($results_grouping){
+        switch ($results_grouping) {
             case "month":
                 $idx =          $this->_ident."_".$_YYYY."_".$_MM;
                 if ($idx != $this->_grouping_tab_current) {
@@ -843,7 +843,7 @@ class Block_Layout extends Record
             $image_name = 'small';
         } else {
             $image_letter = $this->_cp['thumbnail_image'];
-            switch ($this->_cp['thumbnail_image']){
+            switch ($this->_cp['thumbnail_image']) {
                 case "s":
                     $image_name = 'small';
                     break;
@@ -926,14 +926,18 @@ class Block_Layout extends Record
         if (!isset($this->_cp['thumbnail_image'])) {
             return $this->record['thumbnail_small'];
         }
-        switch ($this->_cp['thumbnail_image']){
-            case "s":   $img = $this->record['thumbnail_small'];
+        switch ($this->_cp['thumbnail_image']) {
+            case "s":
+                $img = $this->record['thumbnail_small'];
                 break;
-            case "m":   $img = $this->record['thumbnail_medium'];
+            case "m":
+                $img = $this->record['thumbnail_medium'];
                 break;
-            case "l":   $img = $this->record['thumbnail_large'];
+            case "l":
+                $img = $this->record['thumbnail_large'];
                 break;
-            default:    $img = false;
+            default:
+                $img = false;
                 break;
         }
         return $img;
@@ -1017,7 +1021,7 @@ class Block_Layout extends Record
         for ($i=0; $i<count($this->_records); $i++) {
             $this->record = $this->_records[$i];
             $this->xmlfields_decode($this->record);
-            $this->record['computed_sequence_value'] = $i+1+$this->_filter_offset;
+            $this->record['computed_sequence_value'] = $i+1+(int)$this->_filter_offset;
             if ($i>0 && !$this->_draw_detail_test_if_grouping_has_changed()) {
                 $out.=  $this->convert_Block_Layout($this->_block_layout['listings_item_separator']);
             }
@@ -1033,7 +1037,7 @@ class Block_Layout extends Record
     public function draw_css_include($type)
     {
         static $css_included;
-        switch ($type){
+        switch ($type) {
             case "detail":
                 $field = 'single_item_css';
                 break;

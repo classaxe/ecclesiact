@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.143 (2017-10-01)
-    1) Varios bug fixes for width values containing units - PHP 7.1 complained
+  1.0.144 (2017-10-07)
+    1) New option 'Scrub PII Data' for Report_Column::draw_selector_with_selected()
 */
 class Report_Column extends Record
 {
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.143';
+    const VERSION = '1.0.144';
 
     public function __construct($ID = "")
     {
@@ -3205,6 +3205,11 @@ class Report_Column extends Record
              :
                 ""
             )
+            .($s['selected_scrub_pii_data']!==false ?
+                "    selected_scrub_pii_data: ".$s['selected_scrub_pii_data'].",\n"
+              :
+                ""
+             )
             .($s['selected_send_email']!==false ?
                 "    selected_send_email: ".$s['selected_send_email'].",\n"
              :
@@ -3445,6 +3450,12 @@ class Report_Column extends Record
             .($s['selected_merge_profiles']!==false ?
                  "  <option value='selected_merge_profiles' style='background-color: RGB(255,220,180);'>"
                 ."Merge Profiles</option>\n"
+             :
+                ""
+            )
+            .($s['selected_scrub_pii_data']!==false ?
+                 "  <option value='selected_scrub_pii_data' style='background-color: RGB(255,220,180);'>"
+                ."Scrub PII Data</option>\n"
              :
                 ""
             )

@@ -1,0 +1,11 @@
+  1.0.4 (2012-04-20)
+    1) Added new method lst_named_type::get_listdata() to get all items
+  1.0.3 (2011-09-06)
+    1) Added lst_named_type::get_value_for_text() - used in Country class
+  1.0.2 (2011-02-01)
+    1) Moved setter and getter for listTypeID into record and fixed a bug there
+    2) Added get_text_for_value() and get_value_for_text()
+  1.0.1 (2010-10-04)
+    1) Changes to setter and getter names for parent-based object properties
+  1.0.0 (2009-07-02)
+    Initial release
