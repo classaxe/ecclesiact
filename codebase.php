@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.1");
+define("CODEBASE_VERSION", "5.3.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,33 +17,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.1.2502 (2017-10-10)
+5.3.2.2503 (2017-10-21)
 Summary:
-  1) Bug fix - ListType::empty() renamed to ListType::deleteListData() - was crashing PHP 5.6
+  1) Finally - a long overdue fix for button images and button style sample images
 
 Final Checksums:
-  Classes     CS:1ad7c4b6
+  Classes     CS:de344a0a
   Database    CS:9cc06149
-  Libraries   CS:d4f30c1c
+  Libraries   CS:a7ed4d49
   Reports     CS:7f500a57
 
 Code Changes:
-  codebase.php                                                                                   5.3.1     (2017-10-10)
+  codebase.php                                                                                   5.3.2     (2017-10-21)
     1) Updated version information
-  classes/class.listtype.php                                                                     1.0.11    (2017-10-10)
-    1) Renamed Listtype::empty() to Listtype::deleteListData() -
-       empty() cannot be used as method name in PHP 5.6, altghough it is fine in 7.1
-  classes/class.report_report.php                                                                1.0.35    (2017-10-10)
-    1) Code to empty listtype of all data now calls Listtype::deleteListData() instead of Listtype::empty()
+  classes/nav/button.php                                                                         1.0.21    (2017-10-21)
+    1) Now works with button images in shared/cache/buttons instead of shared/buttons
+    2) Now includes SYS_ID in all button images
+  classes/nav/style.php                                                                          1.0.16    (2017-10-21)
+    1) Now works with button style images in shared/cache/buttons instead of shared/buttons
+    2) Now includes SYS_ID in all button style images
+  img.php                                                                                        2.2.0     (2017-10-21)
+    1) Modes img/button and img/button_sample now handle recreation of button images without redirect to codebase
+       and now work correctly at long last
 
-2502.sql
+2503.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.3.1
+  codebase.php                                        5.3.2
   classes/  (2 files changed)
-    class.listtype.php                                1.0.11    CS:3edc23bf
-    class.report_report.php                           1.0.35    CS:d04a70a6
+    nav/button.php                                    1.0.21    CS:700deffd
+    nav/style.php                                     1.0.16    CS:604e952e
+  img.php                                             2.2.0     CS:896dcbb0
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -220,8 +226,9 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid', false);
 session_start();
 if (!defined("SYS_BUTTONS")) {
+    define("SYS_CACHE", SYS_SHARED."cache/");
+    define("SYS_BUTTONS", SYS_CACHE."buttons/");
     define("MONO_FONT", "veramono.ttf");
-    define("SYS_BUTTONS", SYS_SHARED."buttons/");
     define("SYS_CLASSES", SYS_SHARED."classes/");
     define("SYS_FONTS", SYS_SHARED."fonts/");
     define("SYS_IMAGES", SYS_SHARED."images/");
@@ -2190,18 +2197,6 @@ function img($submode, $ID, $no_show = 0)
             die;
         break;
     }
-}
-
-function img_button($ID, $no_show = 0)
-{
-    $Obj = new Nav/Button($ID);
-    return $Obj->Image($no_show);
-}
-
-function img_button_sample($ID)
-{
-    $Obj = new \Nav\style($ID);
-    return $Obj->makeImages(false);
 }
 
 function lead($text, $places)

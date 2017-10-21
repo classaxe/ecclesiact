@@ -2,7 +2,4 @@
 .buildpath
 .project
 .settings
-buttons/
 button_templates/
-cache/
-style/cache/*

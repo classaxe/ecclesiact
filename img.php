@@ -1,16 +1,16 @@
 <?php
-define("VERSION", "2.1.1");
+define("VERSION", "2.2.0");
 /*
 Version History:
-  2.1.1 (2017-08-26)
-    1) Now safely handles generation of watermarked images when no ttf font support is available.
-       Such images are removed from cache after use since they are not correct.
-    2) Added support for JS streaming of clipboard.min.js
+  2.2.0 (2017-10-21)
+    1) Modes img/button and img/button_sample now handle recreation of button images without redirect to codebase
+       and now work correctly at long last
 */
-if (!defined("SYS_BUTTONS")) {
+if (!defined("SYS_CACHE")) {
+    define("SYS_CACHE", SYS_SHARED."cache/");
+    define("SYS_BUTTONS", SYS_CACHE."buttons/");
     define("HELP_PAGE", "http://www.ecclesiact.com/_help_img");
     define("MONO_FONT", "veramono.ttf");
-    define("SYS_BUTTONS", SYS_SHARED."buttons/");
     define("SYS_CLASSES", SYS_SHARED."classes/");
     define("SYS_FONTS", SYS_SHARED."fonts/");
     define("SYS_IMAGES", SYS_SHARED."images/");
@@ -18,7 +18,6 @@ if (!defined("SYS_BUTTONS")) {
     define("SYS_STYLE", SYS_SHARED."style/");
     define("SYS_SWF", SYS_SHARED."swf/");
     define("SYS_WS", SYS_SHARED."wowslider/");
-    define("SYS_CACHE", SYS_SHARED."cache/");
 }
 $request =  explode("?", urldecode($_SERVER["REQUEST_URI"]));
 $request =  trim($request[0], '/');
@@ -388,31 +387,38 @@ function beacon()
 
 function button()
 {
-    $filename = SYS_BUTTONS."btn_".$_REQUEST['ID'].".png";
-    if (file_exists($filename)) {
-        img_set_cache(3600*24*1); // expire in one week
-        header("Content-type: image/png");
-        readfile($filename);
-        die;
+    $ID =         $_REQUEST['ID'];
+    $filename = SYS_BUTTONS."btn_".SYS_ID."_".$ID.".png";
+    if (!file_exists($filename)) {
+        use_codebase();
+        $Obj = new \Nav\Button($ID);
+        $suiteID =      $Obj->get_field('suiteID');
+        if (!$suiteID) {
+            return;
+        }
+        $Obj_parent = new \Nav\Suite($suiteID);
+        $Obj_parent->clearCache();
     }
-    header("Location: ../../../img_button/".$_REQUEST['ID']);
+    img_set_cache(3600*24*1); // expire in one week
+    header("Content-type: image/png");
+    readfile($filename);
+    die;
 }
 
 function button_sample()
 {
     $submode =    $_REQUEST['submode'];
     $ID =         $_REQUEST['ID'];
-    $filename =   SYS_BUTTONS.$submode."_".$ID.".png";
-    if (file_exists($filename)) {
-        img_set_cache(3600*24*7); // expire in one week
-        header("Content-type: image/png");
-        readfile($filename);
-        die;
+    $filename =   SYS_BUTTONS.$submode."_".SYS_ID."_".$ID.".png";
+    if (!file_exists($filename)) {
+        use_codebase();
+        $Obj = new \Nav\style($ID);
+        $Obj->makeImages(false);
     }
-    header(
-        "Location: ../../../../img_button_sample/".$ID
-        .(isset($_REQUEST['cs']) ? "/".$_REQUEST['cs'] : "")
-    );
+    img_set_cache(3600*24*7); // expire in one week
+    header("Content-type: image/png");
+    readfile($filename);
+    die;
 }
 
 function color()
@@ -676,6 +682,7 @@ function css_compress_cache($submode, $file)
 
 function custom_button()
 {
+    // Only used for some old AOL Sites - not site specific (2017-10-21)
     $path = $_SERVER["REQUEST_URI"];
     $prefix = "custom_button_";
     $pathBits = explode("/", $path);

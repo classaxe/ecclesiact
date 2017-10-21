@@ -1,3 +1,7 @@
+  2.1.1 (2017-08-26)
+    1) Now safely handles generation of watermarked images when no ttf font support is available.
+       Such images are removed from cache after use since they are not correct.
+    2) Added support for JS streaming of clipboard.min.js
   2.1.0 (2017-08-21)
     1) Implemented long overdue caching for all sysimg modes into shared/cache/image
     2) Moved cache for css into new container folder shared/cache/css

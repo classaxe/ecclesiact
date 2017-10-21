@@ -2,12 +2,13 @@
 namespace Nav;
 /*
 Version History:
-  1.0.20 (2016-02-27)
-    1) Now uses VERSION class constant for version control
+  1.0.21 (2017-10-21)
+    1) Now works with button images in shared/cache/buttons instead of shared/buttons
+    2) Now includes SYS_ID in all button images
 */
 class Button extends \Record
 {
-    const VERSION = '1.0.20';
+    const VERSION = '1.0.21';
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, group_assign_csv, icon_over_h_align, icon_over_image, icon_under_h_align, icon_under_image, img_checksum, img_height, img_width, permPUBLIC, permSYSLOGON, permSYSMEMBER, popup, position, sitemap_frequency, sitemap_priority, suiteID, text1, text2, URL, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_file_prefix =      "btn_";
@@ -24,7 +25,7 @@ class Button extends \Record
     {
         $ID_arr = explode(",", $this->_get_ID());
         foreach ($ID_arr as $ID) {
-            $filename = SYS_BUTTONS.$this->_file_prefix.$ID.".png";
+            $filename = SYS_BUTTONS.$this->_file_prefix.SYS_ID."_".$ID.".png";
             if (file_exists($filename)) {
                 unlink($filename);
             }
@@ -144,7 +145,7 @@ class Button extends \Record
 
     public function image($no_show = 0)
     {
-        $filename = SYS_BUTTONS.$this->_file_prefix.$this->_get_ID().".png";
+        $filename = SYS_BUTTONS.$this->_file_prefix.SYS_ID."_".$this->_get_ID().".png";
         if (file_exists($filename)) {
             if ($no_show==0) {
                 set_cache(3600*24*7); // expire in one week
@@ -269,7 +270,7 @@ class Button extends \Record
     public function makeImage()
     {
         $record =   $this->info();
-        $filename = SYS_BUTTONS.$this->_file_prefix.$record['ID'].".png";
+        $filename = SYS_BUTTONS.$this->_file_prefix.SYS_ID."_".$record['ID'].".png";
         if ($record['type']=='Image') {
             $Obj_Navbutton_Image = new \Nav\ButtonImage($this->_get_ID());
             $Obj_Navbutton_Image->draw($record, $filename, 1);
@@ -344,7 +345,7 @@ class Button extends \Record
 
     public function save($destination)
     {
-        $button = $this->_file_prefix.$this->_get_ID().".png";
+        $button = $this->_file_prefix.SYS_ID."_".$this->_get_ID().".png";
         if (!file_exists($destination.$button)) {
             $this->image(true);
             if (!copy(SYS_BUTTONS.$button, $destination.$button)) {
