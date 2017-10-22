@@ -1,10 +1,9 @@
 <?php
-define("VERSION", "2.2.0");
+define("VERSION", "2.2.1");
 /*
 Version History:
-  2.2.0 (2017-10-21)
-    1) Modes img/button and img/button_sample now handle recreation of button images without redirect to codebase
-       and now work correctly at long last
+  2.2.1 (2017-10-22)
+    1) Mode now takes systemID as provided by URL to determine the correct system owner for button samples
 */
 if (!defined("SYS_CACHE")) {
     define("SYS_CACHE", SYS_SHARED."cache/");
@@ -212,10 +211,10 @@ switch ($request_arr[0]) {
                     $_REQUEST['submode'] =    $request_arr[2];
                 }
                 if (isset($request_arr[3])) {
-                    $_REQUEST['ID'] =         $request_arr[3];
+                    $_REQUEST['systemID'] =   $request_arr[3];
                 }
                 if (isset($request_arr[4])) {
-                    $_REQUEST['cs'] =         $request_arr[4];
+                    $_REQUEST['ID'] =         $request_arr[4];
                 }
                 button_sample();
                 break;
@@ -408,8 +407,9 @@ function button()
 function button_sample()
 {
     $submode =    $_REQUEST['submode'];
+    $systemID =   $_REQUEST['systemID'];
     $ID =         $_REQUEST['ID'];
-    $filename =   SYS_BUTTONS.$submode."_".SYS_ID."_".$ID.".png";
+    $filename =   SYS_BUTTONS.$submode."_".$systemID."_".$ID.".png";
     if (!file_exists($filename)) {
         use_codebase();
         $Obj = new \Nav\style($ID);

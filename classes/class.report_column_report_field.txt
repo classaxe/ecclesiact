@@ -1,3 +1,5 @@
+  1.0.32 (2017-07-15)
+    1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
   1.0.31 (2016-01-08)
     1) Report_Column_Report_Field::draw() for textarea types now detects <pre> tags and doesn't nl2br() that output
     2) Now uses VERSION class constant for version control

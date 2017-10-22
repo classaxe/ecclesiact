@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.2");
+define("CODEBASE_VERSION", "5.3.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,39 +17,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.2.2503 (2017-10-21)
+5.3.3.2504 (2017-10-22)
 Summary:
-  1) Finally - a long overdue fix for button images and button style sample images
+  1) Fix to allow viewing by admins of button style sample that belong to other sites -
+     even now they have systemID as part of their file name
 
 Final Checksums:
-  Classes     CS:de344a0a
+  Classes     CS:64643c6e
   Database    CS:9cc06149
-  Libraries   CS:a7ed4d49
+  Libraries   CS:999d7d4a
   Reports     CS:7f500a57
 
 Code Changes:
-  codebase.php                                                                                   5.3.2     (2017-10-21)
+  codebase.php                                                                                   5.3.3     (2017-10-22)
     1) Updated version information
-  classes/nav/button.php                                                                         1.0.21    (2017-10-21)
-    1) Now works with button images in shared/cache/buttons instead of shared/buttons
-    2) Now includes SYS_ID in all button images
-  classes/nav/style.php                                                                          1.0.16    (2017-10-21)
-    1) Now works with button style images in shared/cache/buttons instead of shared/buttons
-    2) Now includes SYS_ID in all button style images
-  img.php                                                                                        2.2.0     (2017-10-21)
-    1) Modes img/button and img/button_sample now handle recreation of button images without redirect to codebase
-       and now work correctly at long last
+  classes/class.report_column.php                                                                1.0.145   (2017-10-22)
+    1) Report_Column::drawNavSample() now includes systemID in URL for button image
+  classes/class.report_column_report_field.php                                                   1.0.33    (2017-10-22)
+    1) Now drawing of Report_Column_Report_Field::draw() for 'sample_buttonstyle' and 'sample_navsuite'
+       detects SD and Responsive types and doesn't attempt to draw them.
+    2) Also includes systemID as part of URL now that we're including systemID as part of button style image name
+  img.php                                                                                        2.2.1     (2017-10-22)
+    1) Mode now takes systemID as provided by URL to determine the correct system owner for button samples
 
-2503.sql
+2504.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.3.2
+  codebase.php                                        5.3.3
   classes/  (2 files changed)
-    nav/button.php                                    1.0.21    CS:700deffd
-    nav/style.php                                     1.0.16    CS:604e952e
-  img.php                                             2.2.0     CS:896dcbb0
-
+    class.report_column.php                           1.0.145   CS:ce7ab2d5
+    class.report_column_report_field.php              1.0.33    CS:82d08f33
+  img.php                                             2.2.1     CS:bd8e1d8d
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

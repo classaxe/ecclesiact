@@ -1,13 +1,15 @@
 <?php
 /*
 Version History:
-  1.0.32 (2017-07-15)
-    1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
+  1.0.33 (2017-10-22)
+    1) Now drawing of Report_Column_Report_Field::draw() for 'sample_buttonstyle' and 'sample_navsuite'
+       detects SD and Responsive types and doesn't attempt to draw them.
+    2) Also includes systemID as part of URL now that we're including systemID as part of button style image name
 */
 
 class Report_Column_Report_Field extends Record
 {
-    const VERSION = '1.0.32';
+    const VERSION = '1.0.33';
 
     public function draw(
         $column,
@@ -618,25 +620,37 @@ class Report_Column_Report_Field extends Record
                 break;
             case "sample_buttonstyle":
             case "sample_navsuite":
-                $submode =  "btn_style";
-                $height =   $row['img_height'];
-                $width =    $row['img_width'];
-                $url =      "url(".BASE_PATH."img/sample/".$submode."/".$value."/".$row['img_checksum'].")";
-                $out.=
-                     "<td class='nowrap' style='width:".(4*$width+10)."px;'>"
-                    ."<img class='fl' src='".BASE_PATH."img/spacer'"
-                    ." style='margin:1px;background: ".$url." no-repeat 100% 0px' "
-                    ."width='".$width."' height='".$height."' alt='Active'/>"
-                    ."<img class='fl' src='".BASE_PATH."img/spacer'"
-                    ." style='margin:1px;background: ".$url." no-repeat 100% -".$height."px' "
-                    ."width='".$width."' height='".$height."' alt='Down'/>"
-                    ."<img class='fl' src='".BASE_PATH."img/spacer'"
-                    ." style='margin:1px;background: ".$url." no-repeat 100% -".(2*$height)."px' "
-                    ."width='".$width."' height='".$height."' alt='Normal'/>"
-                    ."<img class='fl' src='".BASE_PATH."img/spacer'"
-                    ." style='margin:1px;background: ".$url." no-repeat 100% -".(3*$height)."px'"
-                    ." width='".$width."' height='".$height."' alt='Over'/>"
-                    ."</td>";
+                switch ($row['type']) {
+                    case "SD Menu":
+                        return "<td>SD Menu - no images generated</td>";
+                        break;
+                    case "Responsive":
+                        return "<td>Responsive Menu - no images generated</td>";
+                        break;
+                    default:
+                        $submode =  "btn_style";
+                        $type =     $row['type'];
+                        $height =   $row['img_height'];
+                        $width =    $row['img_width'];
+                        $systemID = $row['systemID'];
+                        $url =      "url(".BASE_PATH."img/sample/".$submode."/".$systemID."/".$value."/".$row['img_checksum'].")";
+                        $out.=
+                             "<td class='nowrap' style='width:".(4*$width+10)."px;'>"
+                            ."<img class='fl' src='".BASE_PATH."img/spacer'"
+                            ." style='margin:1px;background: ".$url." no-repeat 100% 0px' "
+                            ."width='".$width."' height='".$height."' alt='Active'/>"
+                            ."<img class='fl' src='".BASE_PATH."img/spacer'"
+                            ." style='margin:1px;background: ".$url." no-repeat 100% -".$height."px' "
+                            ."width='".$width."' height='".$height."' alt='Down'/>"
+                            ."<img class='fl' src='".BASE_PATH."img/spacer'"
+                            ." style='margin:1px;background: ".$url." no-repeat 100% -".(2*$height)."px' "
+                            ."width='".$width."' height='".$height."' alt='Normal'/>"
+                            ."<img class='fl' src='".BASE_PATH."img/spacer'"
+                            ." style='margin:1px;background: ".$url." no-repeat 100% -".(3*$height)."px'"
+                            ." width='".$width."' height='".$height."' alt='Over'/>"
+                            ."</td>";
+                    break;
+                }
                 break;
             case "sample_fontface":
                 $Obj = new Font_Face($value);

@@ -1,3 +1,6 @@
+  2.2.0 (2017-10-21)
+    1) Modes img/button and img/button_sample now handle recreation of button images without redirect to codebase
+       and now work correctly at long last
   2.1.1 (2017-08-26)
     1) Now safely handles generation of watermarked images when no ttf font support is available.
        Such images are removed from cache after use since they are not correct.
