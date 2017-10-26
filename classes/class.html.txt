@@ -1,3 +1,5 @@
+  1.0.97 (2017-07-29)
+    1) Moved 'Sites' toolbar to left as some layouts were causing it to be truncated 
   1.0.96 (2017-07-29)
     1) Added support for new 'Sites' toolbar for archived sites
   1.0.95 (2017-07-15)

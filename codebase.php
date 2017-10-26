@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.3");
+define("CODEBASE_VERSION", "5.3.4");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,20 +17,22 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.3.2504 (2017-10-22)
+5.3.4.2505 (2017-10-25)
 Summary:
-  1) Fix to allow viewing by admins of button style sample that belong to other sites -
-     even now they have systemID as part of their file name
+  1) Fix for 'Archived Sites' toolbar to properly float contents
+  2) Fix for Navsuites report with variable button style types
 
 Final Checksums:
-  Classes     CS:64643c6e
+  Classes     CS:83537f9d
   Database    CS:9cc06149
-  Libraries   CS:999d7d4a
-  Reports     CS:7f500a57
+  Libraries   CS:3066c25b
+  Reports     CS:d51fc923
 
 Code Changes:
-  codebase.php                                                                                   5.3.3     (2017-10-22)
+  codebase.php                                                                                   5.3.4     (2017-10-25)
     1) Updated version information
+  classes/class.html.php                                                                         1.0.98    (2017-10-25)
+    1) Fixes for 'Archived Sites' to properly float contents
   classes/class.report_column.php                                                                1.0.145   (2017-10-22)
     1) Report_Column::drawNavSample() now includes systemID in URL for button image
   classes/class.report_column_report_field.php                                                   1.0.33    (2017-10-22)
@@ -40,8 +42,17 @@ Code Changes:
   img.php                                                                                        2.2.1     (2017-10-22)
     1) Mode now takes systemID as provided by URL to determine the correct system owner for button samples
 
-2504.sql
-  1) Set version information
+2505.sql
+  1) Bug fix for navsuite report to include navstyle type, needed to render style samples correctly
+  2) Set version information
+
+Promote:
+  codebase.php                                        5.3.4
+  classes/  (3 files changed)
+    class.html.php                                    1.0.98    CS:1ad6eef2
+    class.report_column.php                           1.0.145   CS:ce7ab2d5
+    class.report_column_report_field.php              1.0.33    CS:82d08f33
+  img.php                                             2.2.1     CS:bd8e1d8d
 
 Promote:
   codebase.php                                        5.3.3

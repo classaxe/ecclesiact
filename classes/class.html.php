@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.97 (2017-07-29)
-    1) Moved 'Sites' toolbar to left as some layouts were causing it to be truncated 
+  1.0.98 (2017-10-25)
+    1) Fixes for 'Archived Sites' to properly float contents
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.97';
+    const VERSION = '1.0.98';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -1481,9 +1481,9 @@ class HTML extends Record
             return;
         }
         $html =
-             "<div id='am' class='zoom_text'>\n"
-            ."<div class='admin_toolbartable'>\n"
-            ."<ul><li><label>Archived Sites</label><ul>\n";
+             "<div id='am' class='zoom_text fl'>\n"
+            ."<div class='admin_toolbartable fl'>\n"
+            ."<ul><li><label style='color:red;font-weight:bold'>Archived Sites</label><ul>\n";
         foreach ($sites as $site) {
             $html.=
                  "<li><a href=\"".$site['URL']."\">"
