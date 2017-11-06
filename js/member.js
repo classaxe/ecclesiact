@@ -1,11 +1,12 @@
-//1.0.152a4
+// 1.0.152
 /* First line must show version number - update as builds change
 
 Version History:
   1.0.152 (2017-11-03)
     1) Operation 'selected_scrub_pii_data' now works for System and distinguishes between contacts, users and sites
     2) Indentation now 4 spaces
- */
+
+*/
 
 //************************************
 //* External References (for JSLint) *
