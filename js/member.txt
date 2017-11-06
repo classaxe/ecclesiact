@@ -1,3 +1,6 @@
+  1.0.151 (2017-10-07)
+    1) Added support for 'selected_scrub_pii_data'
+    2) Added support for 'selected_empty' to listtypes in addition to groups previously implemented
   1.0.150 (2016-11-20)
     1) Added support for 'selected_set_random_password'
   1.0.149 (2016-10-28)

@@ -1,3 +1,5 @@
+  1.0.179 (2017-10-09)
+    1) Added new field to list 'google_maps_key'
   1.0.178 (2017-08-26)
     1) Gave System::copy() method fourth parameter 'data' to look like recently modified Record::copy()
   1.0.177 (2017-07-29)

@@ -1,3 +1,5 @@
+  1.0.35 (2017-10-10)
+    1) Code to empty listtype of all data now calls Listtype::deleteListData() instead of Listtype::empty()
   1.0.34 (2017-10-07)
     1) Now implements PII scrubbing for records associated with 'contact' and 'user' reports
     2) Added support for submode of 'empty' to listdata report to allow a list-type to be emptied of all its data

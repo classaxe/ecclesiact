@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.35 (2017-10-10)
-    1) Code to empty listtype of all data now calls Listtype::deleteListData() instead of Listtype::empty()
+  1.0.36 (2017-11-03)
+    1) Added hook for PII scrubbing of Systems
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.35';
+    const VERSION = '1.0.36';
 
     public function do_commands()
     {
@@ -537,13 +537,25 @@ class Report_Report extends Report
                                     $targetID
                                 );
                                 break;
-                            default:
+                                case "system":
+                                    $Obj = new System($targetID);
+                                    $Obj->scrubPiiData();
+                                    $msg = status_message(
+                                            0,
+                                            true,
+                                            $record_type,
+                                            '',
+                                            "been scrubbed of PII Data.",
+                                            $targetID
+                                            );
+                                    break;
+                                default:
                                 $msg = status_message(
                                     2,
                                     true,
                                     $record_type,
                                     '',
-                                    "were not updated - this operations is not supported for report '$report_name'",
+                                    "were not updated - this operation is not supported for report '$report_name'",
                                     $targetID
                                 );
                                 break;

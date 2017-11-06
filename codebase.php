@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.4");
+define("CODEBASE_VERSION", "5.3.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,49 +17,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.4.2505 (2017-10-25)
+5.3.5.2506 (2017-11-06)
 Summary:
-  1) Fix for 'Archived Sites' toolbar to properly float contents
-  2) Fix for Navsuites report with variable button style types
+  1) Started implementation of PII Scrubbing for entire sites
 
 Final Checksums:
-  Classes     CS:83537f9d
+  Classes     CS:130597da
   Database    CS:9cc06149
-  Libraries   CS:3066c25b
-  Reports     CS:d51fc923
+  Libraries   CS:a1febb53
+  Reports     CS:16a77eba
 
 Code Changes:
-  codebase.php                                                                                   5.3.4     (2017-10-25)
+  codebase.php                                                                                   5.3.5     (2017-11-06)
     1) Updated version information
-  classes/class.html.php                                                                         1.0.98    (2017-10-25)
-    1) Fixes for 'Archived Sites' to properly float contents
-  classes/class.report_column.php                                                                1.0.145   (2017-10-22)
-    1) Report_Column::drawNavSample() now includes systemID in URL for button image
-  classes/class.report_column_report_field.php                                                   1.0.33    (2017-10-22)
-    1) Now drawing of Report_Column_Report_Field::draw() for 'sample_buttonstyle' and 'sample_navsuite'
-       detects SD and Responsive types and doesn't attempt to draw them.
-    2) Also includes systemID as part of URL now that we're including systemID as part of button style image name
-  img.php                                                                                        2.2.1     (2017-10-22)
-    1) Mode now takes systemID as provided by URL to determine the correct system owner for button samples
+  classes/class.person.php                                                                       1.0.132   (2017-11-06)
+    1) Added helper method Person::scrubPIIDataForPerson() also used in system-wide scrubbing
+  classes/class.report_report.php                                                                1.0.36    (2017-11-03)
+    1) Added hook for PII scrubbing of Systems
+  classes/class.system.php                                                                       1.0.180   (2017-11-03)
+    1) Added method System::scrubPiiData()
+  js/member.js                                                                                   1.0.152   (2017-11-03)
+    1) Operation 'selected_scrub_pii_data' now works for System and distinguishes between contacts, users and sites
+    2) Indentation now 4 spaces
 
-2505.sql
-  1) Bug fix for navsuite report to include navstyle type, needed to render style samples correctly
+2506.sql
+  1) Add 'With Selected Scrub PII Data' for system menu
   2) Set version information
 
 Promote:
-  codebase.php                                        5.3.4
+  codebase.php                                        5.3.5
   classes/  (3 files changed)
-    class.html.php                                    1.0.98    CS:1ad6eef2
-    class.report_column.php                           1.0.145   CS:ce7ab2d5
-    class.report_column_report_field.php              1.0.33    CS:82d08f33
-  img.php                                             2.2.1     CS:bd8e1d8d
+    class.person.php                                  1.0.132   CS:7c235df3
+    class.report_report.php                           1.0.36    CS:275c1580
+    class.system.php                                  1.0.180   CS:1e1f6ba4
+  js/member.js                                        1.0.152   CS:1b41d866
 
-Promote:
-  codebase.php                                        5.3.3
-  classes/  (2 files changed)
-    class.report_column.php                           1.0.145   CS:ce7ab2d5
-    class.report_column_report_field.php              1.0.33    CS:82d08f33
-  img.php                                             2.2.1     CS:bd8e1d8d
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

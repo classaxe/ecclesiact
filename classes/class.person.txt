@@ -1,3 +1,5 @@
+  1.0.131 (2017-10-09)
+    1) Added Person::scrubPiiData()
   1.0.130 (2016-12-31)
     1) Person::get_records() now renamed Person::getFilteredSortedAndPagedRecords()
     2) Person::get_coords() now has same method declaration as parent although address if given is completely ignored.
