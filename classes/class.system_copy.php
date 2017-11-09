@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.11 (2017-08-25)
-    1) System_Copy::copy() now includes community records and related data
-    2) Gave System_Copy::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  1.0.12 (2017-11-08)
+    1) System_Copy::copy()  now handles copying of nav in a new combined function copy_nav()
+       which now includes call to a new function remap_navsuite_parents() that remaps button attachments
 */
 
 class System_Copy extends System
 {
-    const VERSION = '1.0.11';
+    const VERSION = '1.0.12';
 
     private $_map = array();
     private $_Old_System_Record;
@@ -74,9 +74,7 @@ class System_Copy extends System
         $this->copy_listdata();
         $this->copy_category_assign_records();
         $this->copy_mail();
-        $this->copy_navstyles();
-        $this->copy_navsuites();
-        $this->copy_navbuttons();
+        $this->copy_nav();
         $this->copy_layouts();
         $this->copy_themes();
         $this->copy_pages();
@@ -578,10 +576,18 @@ class System_Copy extends System
         }
     }
 
+    private function copy_nav()
+    {
+        $this->copy_navstyles();
+        $this->copy_navsuites();
+        $this->copy_navbuttons();
+        $this->remap_nav();
+    }
+
     private function copy_navbuttons()
     {
         $Obj =             new Record('navbuttons');
-        $Items =                    $Obj->get_IDs_by_system($this->_Old_SystemID);
+        $Items =           $Obj->get_IDs_by_system($this->_Old_SystemID);
         foreach ($Items as $ID) {
             $Obj->_set_ID($ID);
             $newID = $Obj->copy("", $this->_New_SystemID);
@@ -628,7 +634,6 @@ class System_Copy extends System
             $record = $Obj->get_record();
             $this->copied_item_remap_navstyles($Obj, $record);
         }
-        $this->remap_navsuites();
     }
 
     private function copy_pages()
@@ -713,26 +718,26 @@ class System_Copy extends System
         $this->_New_SystemID =      $Obj_Record->copy($new_name);
         $this->_Obj_New_System =    new System($this->_New_SystemID);
         $data = array(
-        'adminEmail' =>                   '',
-        'bugs_password' =>                '',
-        'bugs_username' =>                '',
-        'cron_job_heartbeat_last_run' =>  '0000-00-00 00:00:00',
-        'custom_1' =>                     '',
-        'custom_2' =>                     '',
-        'google_analytics_key' =>         '',
-        'last_user_access' =>             '',
-        'notes' =>                        '',
-        'notify_email' =>                 '',
-        'notify_triggers' =>              '',
-        'piwik_id' =>                     '',
-        'piwik_token' =>                  '',
-        'piwik_user' =>                   '',
-        'qbwc_AssetAccountRef' =>         '',
-        'qbwc_COGSAccountRef' =>          '',
-        'qbwc_IncomeAccountRef' =>        '',
-        'smtp_password' =>                '',
-        'smtp_username' =>                '',
-        'URL' =>                          ''
+            'adminEmail' =>                   '',
+            'bugs_password' =>                '',
+            'bugs_username' =>                '',
+            'cron_job_heartbeat_last_run' =>  '0000-00-00 00:00:00',
+            'custom_1' =>                     '',
+            'custom_2' =>                     '',
+            'google_analytics_key' =>         '',
+            'last_user_access' =>             '',
+            'notes' =>                        '',
+            'notify_email' =>                 '',
+            'notify_triggers' =>              '',
+            'piwik_id' =>                     '',
+            'piwik_token' =>                  '',
+            'piwik_user' =>                   '',
+            'qbwc_AssetAccountRef' =>         '',
+            'qbwc_COGSAccountRef' =>          '',
+            'qbwc_IncomeAccountRef' =>        '',
+            'smtp_password' =>                '',
+            'smtp_username' =>                '',
+            'URL' =>                          ''
         );
         $this->_Obj_New_System->update($data, true, false);
     }
@@ -778,16 +783,20 @@ class System_Copy extends System
         }
     }
 
-    public function remap_navsuites()
+    public function remap_nav()
     {
         $Obj =              new Record('navsuite');
         $Items =            $Obj->get_IDs_by_system($this->_New_SystemID);
         foreach ($Items as $ID) {
             $Obj->_set_ID($ID);
             $record = $Obj->get_record();
-            $this->copied_item_remap_navsuite_parentButtonID($Obj, $record);
+            $oldVal = $record['parentButtonID'];
+            if ($oldVal!=='1' && isset($this->_map['\Nav\Button'][$oldVal]['newID'])) {
+                $Obj->set_field('parentButtonID', $this->_map['\Nav\Button'][$oldVal]['newID'], false);
+            }
             $this->copied_item_remap_navsuite_childID_csv($Obj, $record);
         }
+        
     }
 
     public function remap_page_parents()

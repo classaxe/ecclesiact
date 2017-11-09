@@ -2,12 +2,12 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.40 (ECC)");
+define("SYSTEM_VERSION", "1.0.41 (ECC)");
 
 /*
 Version History:
-  1.0.40 (2017-10-01)
-    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if required SystemID isn't present
+  1.0.41 (2017-11-08)
+    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if URL value isn't set for the site in the database
 */
 
 if (get_magic_quotes_gpc()) {
@@ -38,8 +38,12 @@ function main($mode)
         hvFF9mrhFbntrDgfGb9wc1gf("no_key");
         die;
     }
-    if (!isset($system_vars['ID'])) {
+    if (!isset($system_vars['ID']) || !$system_vars['ID']) {
         hvFF9mrhFbntrDgfGb9wc1gf("wrong_id");
+        die;
+    }
+    if (!isset($system_vars['URL']) || !$system_vars['URL']) {
+        hvFF9mrhFbntrDgfGb9wc1gf("no_url");
         die;
     }
     $server_scheme =    (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? "https://" : "http://");
@@ -256,6 +260,12 @@ function hvFF9mrhFbntrDgfGb9wc1gf($problem)
             $out .=
                  "<h3>Configuration Issue</h3>\n"
                 ."<p>This system will not operate without a valid licence key.</p>\n"
+                ."<p>Please contact the site administrator for more information.</p>";
+            break;
+        case "no_url":
+            $out .=
+                 "<h3>Configuration Issue</h3>\n"
+                ."<p>This system does not have an entry in the database for `system`.`URL` for the specified SYS_ID value given in your config file, and it will not operate without one.</p>\n"
                 ."<p>Please contact the site administrator for more information.</p>";
             break;
         case "wrong_site":

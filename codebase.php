@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.5");
+define("CODEBASE_VERSION", "5.3.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,41 +17,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.5.2506 (2017-11-06)
+5.3.6.2507 (2017-11-09)
 Summary:
-  1) Started implementation of PII Scrubbing for entire sites
+  Fix for correct mapping of copied navsuites in cloned systems
 
 Final Checksums:
-  Classes     CS:130597da
+  Classes     CS:9b1c36d7
   Database    CS:9cc06149
-  Libraries   CS:a1febb53
+  Libraries   CS:6307f9d8
   Reports     CS:16a77eba
 
 Code Changes:
-  codebase.php                                                                                   5.3.5     (2017-11-06)
+  codebase.php                                                                                   5.3.6     (2017-11-09)
     1) Updated version information
-  classes/class.person.php                                                                       1.0.132   (2017-11-06)
-    1) Added helper method Person::scrubPIIDataForPerson() also used in system-wide scrubbing
-  classes/class.report_report.php                                                                1.0.36    (2017-11-03)
-    1) Added hook for PII scrubbing of Systems
-  classes/class.system.php                                                                       1.0.180   (2017-11-03)
-    1) Added method System::scrubPiiData()
-  js/member.js                                                                                   1.0.152   (2017-11-03)
-    1) Operation 'selected_scrub_pii_data' now works for System and distinguishes between contacts, users and sites
-    2) Indentation now 4 spaces
+  classes/class.system_copy.php                                                                  1.0.12    (2017-11-08)
+    1) System_Copy::copy()  now handles copying of nav in a new combined function copy_nav()
+       which now includes call to a new function remap_navsuite_parents() that remaps button attachments
 
-2506.sql
-  1) Add 'With Selected Scrub PII Data' for system menu
-  2) Set version information
+2507.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.3.5
-  classes/  (3 files changed)
-    class.person.php                                  1.0.132   CS:7c235df3
-    class.report_report.php                           1.0.36    CS:275c1580
-    class.system.php                                  1.0.180   CS:1e1f6ba4
-  js/member.js                                        1.0.152   CS:1b41d866
-
+  codebase.php                                        5.3.6
+  classes/  (1 file changed)
+    class.system_copy.php                             1.0.12    CS:58537a5b
 
 
 Bug:
