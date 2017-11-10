@@ -1,14 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.5 (2017-02-11)
-    1) Implemented Archive mode for sites that disables robots.txt and sitemap.xml
-    2) Moved code dealing with robots.txt generation into its own class
-    3) Multiple PSR-2 fixes
+  1.0.6 (2017-11-10)
+    1) Now respects 'enabled' status of buttons before allowing their sitemap entries to be seen
 */
 class XML_Sitemap extends Record
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
 
     private $_items =         array();
     private $_navsuiteID =    0;
@@ -41,10 +39,10 @@ class XML_Sitemap extends Record
                     $urls[$button_arr[2]] = true;
                     $depth =        count(explode('/', $button_arr[2]))-4;
                     $buttons[] =    array(
-                    'changefreq' => $button_arr[1],
-                    'depth' =>      $depth,
-                    'loc' =>        $button_arr[2],
-                    'priority' =>   $button_arr[0]
+                        'changefreq' => $button_arr[1],
+                        'depth' =>      $depth,
+                        'loc' =>        $button_arr[2],
+                        'priority' =>   $button_arr[0]
                     );
                 }
             }
@@ -65,21 +63,28 @@ class XML_Sitemap extends Record
         $buttons =          $Obj_Nav_Suite->getButtons();
         if ($buttons) {
             foreach ($buttons as $button) {
-                if ($button['sitemap_priority'] && $button['visible']) {
-                    $childID =    $button['childID'];
-                    $bURL =       $button['URL'];
-                    if (substr($bURL, 0, 8)=='./?page=') {
-                        $bURL = BASE_PATH.substr($bURL, 8);
-                    } elseif (substr($bURL, 0, 2)=='./') {
-                        $bURL = BASE_PATH.substr($bURL, 2);
-                    }
-                    $out[] =
-                         $button['sitemap_priority']."|"
-                        .$button['sitemap_frequency']."|"
-                        .trim($this->vars['URL'], '/')."/".trim($bURL, '/');
-                    if ($childID) {
-                        $out[] = $this->get_items_recursive($childID);
-                    }
+                if (!$button['enabled']) {
+                    continue;
+                }
+                if (!$button['visible']) {
+                    continue;
+                }
+                if (!$button['sitemap_priority']) {
+                    continue;
+                }
+                $childID =    $button['childID'];
+                $bURL =       $button['URL'];
+                if (substr($bURL, 0, 8)=='./?page=') {
+                    $bURL = BASE_PATH.substr($bURL, 8);
+                } elseif (substr($bURL, 0, 2)=='./') {
+                    $bURL = BASE_PATH.substr($bURL, 2);
+                }
+                $out[] =
+                     $button['sitemap_priority']."|"
+                    .$button['sitemap_frequency']."|"
+                    .trim($this->vars['URL'], '/')."/".trim($bURL, '/');
+                if ($childID) {
+                    $out[] = $this->get_items_recursive($childID);
                 }
             }
         }
