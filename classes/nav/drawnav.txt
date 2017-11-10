@@ -1,3 +1,6 @@
+  1.0.8 (2016-06-18)
+    1) Simplified DrawNav::drawResponsiveMenu() by adding helper DrawNav::drawResponsiveMenuButton()
+    2) DrawNav::drawResponsiveMenu() now only marks first navbar as having data-type navbar
   1.0.7 (2016-02-27)
     1) Now extends \Base so it can use getVersion() from there instead
   1.0.6 (2015-09-21)

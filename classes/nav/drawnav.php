@@ -3,13 +3,12 @@ namespace Nav;
 
 /*
 Version History:
-  1.0.8 (2016-06-18)
-    1) Simplified DrawNav::drawResponsiveMenu() by adding helper DrawNav::drawResponsiveMenuButton()
-    2) DrawNav::drawResponsiveMenu() now only marks first navbar as having data-type navbar
+  1.0.9 (2017-11-09)
+    1) DrawNav::drawImageButton() now passes 'enabled' for CM enable / disable of navbuttons
 */
 class DrawNav extends \Base
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     protected $buttons;
     protected $buttonsCount = 0;
@@ -82,6 +81,9 @@ class DrawNav extends \Base
 
     protected function drawImageButton($b)
     {
+        if (!$b['enabled'] && !$this->isAdmin) {
+            return;
+        }
         if (!$b['visible'] && !$this->isAdmin) {
             return;
         }
@@ -89,11 +91,17 @@ class DrawNav extends \Base
              str_repeat('  ', $this->depth)
             ."  <li"
             ." id=\"btn_".$b['ID']."\""
-            .($b['visible'] ?
+            .($b['visible'] && $b['enabled']?
                 ""
              :
                 " class=\"invisible\""
-               ." title=\"This button would normally be hidden,\nbut administrators can still see it.\""
+               ." title=\"HINT\nThis button would normally be hidden.\n"
+               ."This is "
+               .(!$b['enabled'] ? "because it is currently disabled" : "")
+               .(!$b['enabled'] && !$b['visible'] ? " and also" : "")
+               .(!$b['visible'] ? "due to its permission settings" : "")
+               .".\n"
+               ."However administrators like you can still see it.\""
              )
             .">"
             ."<a"
@@ -104,6 +112,7 @@ class DrawNav extends \Base
                  " onmouseover=\""
                 ."CM_Navbutton_Over("
                 .$b['ID'].","
+                .($b['enabled'] ? 1 : 0).","
                 .$this->navsuite['buttonStyleID'].","
                 .$b['canAddSubmenu'].","
                 ."'".$b['suiteNameSafe']."',"
@@ -331,7 +340,7 @@ class DrawNav extends \Base
             return true;
         }
         foreach ($this->buttons as $button) {
-            if ($button['visible']) {
+            if ($button['visible'] && $button['enabled']) {
                 return true;
             }
         }
@@ -341,7 +350,7 @@ class DrawNav extends \Base
     protected function getVisibleButtonsCount()
     {
         foreach ($this->buttons as $button) {
-            if ($button['visible'] || $this->isAdmin) {
+            if ($button['visible'] && $button['enabled'] || $this->isAdmin) {
                 $this->buttonsCount++;
             }
         }

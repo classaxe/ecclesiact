@@ -1,3 +1,5 @@
+  1.0.103 (2017-08-26)
+    1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
   1.0.102 (2017-01-02)
     1) Renamed Record::manage_actions() to Record::manageActionsForNamedReport()
     2) Record::copy_actions() now handles assignment of newly copied actions to the new parent entity itself

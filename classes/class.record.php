@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.103 (2017-08-26)
-    1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
+  1.0.104 (2017-11-10)
+    1) Added Record::is_enabled() - used with draw-nav
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.103';
+    const VERSION = '1.0.104';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1637,6 +1637,11 @@ class Record extends Portal
         return $this->_get_ID();
     }
 
+    public static function is_enabled($record)
+    {
+        return (isset($record['enabled']) && $record['enabled']);
+    }
+
     public static function is_visible($record)
     {
         $group_assign_csv = (isset($record['group_assign_csv']) ? $record['group_assign_csv'] : "");
@@ -1649,7 +1654,7 @@ class Record extends Portal
         $isSYSMEMBER =      get_person_permission("SYSMEMBER", $group_assign_csv);
         $isSYSLOGON =       get_person_permission("SYSLOGON", $group_assign_csv);
         $isPUBLIC =         get_person_permission("PUBLIC", $group_assign_csv);
-        $isMember =(
+        $isMember = (
             $isMASTERADMIN ||
             $isUSERADMIN ||
             $isCOMMUNITYADMIN ||

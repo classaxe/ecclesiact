@@ -1,10 +1,9 @@
-// 1.0.152
+// 1.0.153
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.152 (2017-11-03)
-    1) Operation 'selected_scrub_pii_data' now works for System and distinguishes between contacts, users and sites
-    2) Indentation now 4 spaces
+  1.0.153 (2017-11-09)
+    1) CM_Navbutton_Over() now has parameter for enabled on hovered buttons
 
 */
 
@@ -200,7 +199,7 @@ function CM_load(){
 }
 
 function CM_Navbutton_Over(
-		bID,bStyleID,bcanAddSubnav,bSuiteName,bStyleName
+	bID, enabled, bStyleID, bcanAddSubnav, bSuiteName, bStyleName
 ){
 	var btn, bHasSubmenu, bSuiteID;
 	if (CM_visible('CM_navbutton')) {
@@ -211,6 +210,7 @@ function CM_Navbutton_Over(
 	bHasSubmenu = geid('btn_'+bID).getElementsByTagName('UL').length>0 ? 1 : 0;
 	_CM.type='navbutton';
 	_CM.seq=0;
+	_CM.enabled=enabled;
 	_CM.navbuttonID=bID;
 	_CM.navsuiteID=bSuiteID;
 	_CM.navstyleID=bStyleID;

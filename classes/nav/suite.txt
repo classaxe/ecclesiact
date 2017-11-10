@@ -1,3 +1,5 @@
+  1.0.43 (2017-08-26)
+    1) Gave Suite::copy() method fourth parameter 'data' to look like recently modified Record::copy()
   1.0.42 (2015-08-29)
     1) Added sdmenu_exclusive and sdmenu_speed to field list
   1.0.41 (2015-09-21)

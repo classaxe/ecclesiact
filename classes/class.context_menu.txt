@@ -1,3 +1,6 @@
+  1.0.78 (2015-12-08)
+    1) Added support for including map description in new member events
+    2) Added support for Easter and Christmas events which are shared by default
   1.0.77 (2015-09-21)
     1) Context_Menu::_cm_navbutton() now implements sequence up / down modes for SD and Responsive menus
   1.0.76 (2015-09-20)

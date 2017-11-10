@@ -1,3 +1,6 @@
+  1.0.21 (2017-10-21)
+    1) Now works with button images in shared/cache/buttons instead of shared/buttons
+    2) Now includes SYS_ID in all button images
   1.0.20 (2016-02-27)
     1) Now uses VERSION class constant for version control
   1.0.19 (2015-08-14)

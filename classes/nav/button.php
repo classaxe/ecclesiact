@@ -2,14 +2,13 @@
 namespace Nav;
 /*
 Version History:
-  1.0.21 (2017-10-21)
-    1) Now works with button images in shared/cache/buttons instead of shared/buttons
-    2) Now includes SYS_ID in all button images
+  1.0.22 (2017-11-10)
+    1) Added `enabled` to FIELDS list
 */
 class Button extends \Record
 {
-    const VERSION = '1.0.21';
-    const FIELDS =  'ID, archive, archiveID, deleted, systemID, group_assign_csv, icon_over_h_align, icon_over_image, icon_under_h_align, icon_under_image, img_checksum, img_height, img_width, permPUBLIC, permSYSLOGON, permSYSMEMBER, popup, position, sitemap_frequency, sitemap_priority, suiteID, text1, text2, URL, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.22';
+    const FIELDS =  'ID, archive, archiveID, deleted, enabled, systemID, group_assign_csv, icon_over_h_align, icon_over_image, icon_under_h_align, icon_under_image, img_checksum, img_height, img_width, permPUBLIC, permSYSLOGON, permSYSMEMBER, popup, position, sitemap_frequency, sitemap_priority, suiteID, text1, text2, URL, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_file_prefix =      "btn_";
 

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.3.6");
+define("CODEBASE_VERSION", "5.4.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,31 +17,51 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.3.6.2507 (2017-11-09)
+5.4.0.2508 (2017-11-10)
 Summary:
-  Fix for correct mapping of copied navsuites in cloned systems
+  Added ability to disble / enable navbuttons without removing their permissions settings
 
 Final Checksums:
-  Classes     CS:9b1c36d7
-  Database    CS:9cc06149
-  Libraries   CS:6307f9d8
-  Reports     CS:16a77eba
+  Classes     CS:cad5d1b4
+  Database    CS:ec599053
+  Libraries   CS:fc673dad
+  Reports     CS:32b2ffb
 
 Code Changes:
-  codebase.php                                                                                   5.3.6     (2017-11-09)
+  codebase.php                                                                                   5.4.0     (2017-11-10)
     1) Updated version information
-  classes/class.system_copy.php                                                                  1.0.12    (2017-11-08)
-    1) System_Copy::copy()  now handles copying of nav in a new combined function copy_nav()
-       which now includes call to a new function remap_navsuite_parents() that remaps button attachments
+  classes/class.context_menu.php                                                                 1.0.79    (2017-11-09)
+    1) Context_Menu::_cm_navbutton() now adds support for enabling / disabling navbuttons
+    2) Now uses class constant for version control
+  classes/class.record.php                                                                       1.0.104   (2017-11-10)
+    1) Added Record::is_enabled() - used with draw-nav
+  classes/class.system.php                                                                       1.0.181   (2017-11-10)
+    1) Added support for command 'navbutton_toggle_enabled'
+  classes/nav/button.php                                                                         1.0.22    (2017-11-10)
+    1) Added `enabled` to FIELDS list
+  classes/nav/drawnav.php                                                                        1.0.9     (2017-11-09)
+    1) DrawNav::drawImageButton() now passes 'enabled' for CM enable / disable of navbuttons
+  classes/nav/suite.php                                                                          1.0.44    (2017-11-10)
+    1) Nav/Suite::getButtons() now also includes the 'enabled' status of each button
+  js/member.js                                                                                   1.0.153   (2017-11-09)
+    1) CM_Navbutton_Over() now has parameter for enabled on hovered buttons
 
-2507.sql
-  1) Set version information
+2508.sql
+  1) Added 'enabled' field for navbuttons table
+  2) Added 'enabled' column to 'navbuttons' report
+  3) Added 'enabled' column to 'navbuttons_for_navsuite' report
+  4) Set version information
 
 Promote:
-  codebase.php                                        5.3.6
-  classes/  (1 file changed)
-    class.system_copy.php                             1.0.12    CS:58537a5b
-
+  codebase.php                                        5.4.0
+  classes/  (6 files changed)
+    class.context_menu.php                            1.0.79    CS:148c07be
+    class.record.php                                  1.0.104   CS:38bfaba6
+    class.system.php                                  1.0.181   CS:1739dd34
+    nav/button.php                                    1.0.22    CS:cc8e96a9
+    nav/drawnav.php                                   1.0.9     CS:19375970
+    nav/suite.php                                     1.0.44    CS:19081dc
+  js/member.js                                        1.0.153   CS:35cad2cb
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

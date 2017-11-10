@@ -2,12 +2,12 @@
 namespace Nav;
 /*
 Version History:
-  1.0.43 (2017-08-26)
-    1) Gave Suite::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+  1.0.44 (2017-11-10)
+    1) Nav/Suite::getButtons() now also includes the 'enabled' status of each button
 */
 class Suite extends \Record
 {
-    const VERSION = '1.0.43';
+    const VERSION = '1.0.44';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, buttonStyleID, childID_csv, name, parentButtonID, width, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public static $cache_buttons_array = array();
@@ -218,6 +218,9 @@ class Suite extends \Record
         }
         if ($all) {
             return $buttons;
+        }
+        foreach ($buttons as &$button) {
+            $button['enabled'] = $this->is_enabled($button);
         }
         foreach ($buttons as &$button) {
             $button['visible'] = $this->is_visible($button);

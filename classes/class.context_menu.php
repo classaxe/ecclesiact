@@ -1,14 +1,15 @@
 <?php
-define('VERSION_CONTEXT_MENU', '1.0.78');
 /*
 Version History:
-  1.0.78 (2015-12-08)
-    1) Added support for including map description in new member events
-    2) Added support for Easter and Christmas events which are shared by default
+  1.0.79 (2017-11-09)
+    1) Context_Menu::_cm_navbutton() now adds support for enabling / disabling navbuttons
+    2) Now uses class constant for version control
 */
 
 class Context_Menu extends Base
 {
+    const VERSION = '1.0.79';
+
     public $popup_size_arr = array();
     public $_modules =       array();
     public $_cm_js =         array();
@@ -1274,18 +1275,18 @@ class Context_Menu extends Base
     {
         $args = func_get_args();
         $vars = array(
-        'CM' =>       'CM_navbutton',
-        'icons' =>    array(
-        '26|16|1898|Edit Button',
-        '26|16|1924|Edit Button Suite',
-        '26|16|1950|Edit Button Style'
-        ),
-        'reports' =>  array(
-        'navbuttons',
-        'navsuite',
-        'navbuttons_for_navsuite',
-        'navstyle'
-        )
+            'CM' =>       'CM_navbutton',
+            'icons' =>    array(
+                '26|16|1898|Edit Button',
+                '26|16|1924|Edit Button Suite',
+                '26|16|1950|Edit Button Style'
+            ),
+            'reports' =>  array(
+                'navbuttons',
+                'navsuite',
+                'navbuttons_for_navsuite',
+                'navstyle'
+            )
         );
         $this->_get_args($args, $vars, true);
         $CM =       $vars['CM'];
@@ -1294,30 +1295,32 @@ class Context_Menu extends Base
         $this->register_js(
             $CM,
             "CM_label('".$CM."1',_CM.navbuttonText);\n"
-            ."CM_label('".$CM."2','Move up / left');\n"
-            ."CM_label('".$CM."3',_CM.navsuiteName);\n"
-            ."CM_label('".$CM."4','Move down / right');\n"
+            ."CM_label('".$CM."2',(_CM.enabled ? 'Disable' :'Enable'));\n"
+            ."CM_label('".$CM."3',_CM.navbuttonText);\n"
+            ."CM_label('".$CM."4','Move up / left');\n"
             ."CM_label('".$CM."5',_CM.navsuiteName);\n"
-            ."CM_label('".$CM."6','Delete',_CM.hasSubmenu);\n"
-            ."CM_label('".$CM."7',_CM.navbuttonText,_CM.hasSubmenu);\n"
-            ."CM_label('".$CM."8','Add Submenu to ',_CM.canAddSubnav<1);\n"
-            ."CM_label('".$CM."9',_CM.navbuttonText,_CM.canAddSubnav<1);\n"
-            ."CM_label('".$CM."10',_CM.navbuttonText);\n"
-            ."CM_label('".$CM."11',_CM.navsuiteName);\n"
-            ."CM_label('".$CM."12',_CM.navsuiteName);\n"
-            ."CM_label('".$CM."13',_CM.navstyleName);\n"
-            ."CM_label('".$CM."14',_CM.navstyleName);\n"
-            ."CM_show('".$CM."15',false);\n"
-            ."CM_show('".$CM."16',false);\n"
-            ."CM_show('".$CM."2',_CM.seq);\n"
-            ."CM_show('".$CM."3',_CM.seq);\n"
+            ."CM_label('".$CM."6','Move down / right');\n"
+            ."CM_label('".$CM."7',_CM.navsuiteName);\n"
+            ."CM_label('".$CM."8','Delete',_CM.hasSubmenu);\n"
+            ."CM_label('".$CM."9',_CM.navbuttonText,_CM.hasSubmenu);\n"
+            ."CM_label('".$CM."10','Add Submenu to ',_CM.canAddSubnav<1);\n"
+            ."CM_label('".$CM."11',_CM.navbuttonText,_CM.canAddSubnav<1);\n"
+            ."CM_label('".$CM."12',_CM.navbuttonText);\n"
+            ."CM_label('".$CM."13',_CM.navsuiteName);\n"
+            ."CM_label('".$CM."14',_CM.navsuiteName);\n"
+            ."CM_label('".$CM."15',_CM.navstyleName);\n"
+            ."CM_label('".$CM."16',_CM.navstyleName);\n"
+            ."CM_show('".$CM."17',false);\n"
+            ."CM_show('".$CM."18',false);\n"
             ."CM_show('".$CM."4',_CM.seq);\n"
             ."CM_show('".$CM."5',_CM.seq);\n"
+            ."CM_show('".$CM."6',_CM.seq);\n"
+            ."CM_show('".$CM."7',_CM.seq);\n"
             ."img = $('#btn_'+_CM.navbuttonID+' a img');\n"
             ."if (img.length){\n"
             ."  b_src = img.css('background-image');\n"
             ."  b_url = b_src.split('\"')[1];\n"
-            ."  CM_label('".$CM."16',\n"
+            ."  CM_label('".$CM."18',\n"
             ."    \"<div>\"+\n"
             ."    \"  <div class='fl' style='width:40px;line-height:\"+img.height()+\"px;'>Active</div>\\n\"+\n"
             ."    \"  <img alt='Active' src='\"+base_url+\"img/spacer'\"+\n"
@@ -1346,8 +1349,8 @@ class Context_Menu extends Base
             ."    \"(Width: \"+img.width()+\"px, Height: \"+img.height()+\"px, \\n\"+\n"
             ."    \"[<a target='_blank' href='\"+b_url+\"'>image</a>])</p>\"\n"
             ."  );\n"
-            ."  CM_show('".$CM."15', true);\n"
-            ."  CM_show('".$CM."16', true);\n"
+            ."  CM_show('".$CM."17', true);\n"
+            ."  CM_show('".$CM."18', true);\n"
             ."}\n"
         );
         return $this->draw_cm(
@@ -1369,11 +1372,10 @@ class Context_Menu extends Base
                     .$this->draw_cm_action(
                         'm',
                         $CM.'2',
-                        '',
+                        'Toggle',
                         's',
                         $CM.'3',
-                        "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',-1);"
-                        ."geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
+                        "CM_CloseContext();geid_set('command','navbutton_toggle_enabled');geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
                     )
                     .$this->draw_cm_action(
                         'm',
@@ -1381,7 +1383,7 @@ class Context_Menu extends Base
                         '',
                         's',
                         $CM.'5',
-                        "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',1);"
+                        "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',-1);"
                         ."geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
                     )
                     .$this->draw_cm_action(
@@ -1390,6 +1392,15 @@ class Context_Menu extends Base
                         '',
                         's',
                         $CM.'7',
+                        "CM_CloseContext();geid_set('command','navbutton_seq');geid_set('targetValue',1);"
+                        ."geid_set('targetID',_CM.navbuttonID);geid('form').submit();"
+                    )
+                    .$this->draw_cm_action(
+                        'm',
+                        $CM.'8',
+                        '',
+                        's',
+                        $CM.'9',
                         "if (_CM.hasSubmenu==1){"
                         ." alert('The '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button has a submenu attached to it.\\nYou cannot delete a button that has a buttonsuite attached.');\n"
                         ."}\n"
@@ -1402,10 +1413,10 @@ class Context_Menu extends Base
                     )
                     .$this->draw_cm_action(
                         'm',
-                        $CM.'8',
+                        $CM.'10',
                         '',
                         's',
-                        $CM.'9',
+                        $CM.'11',
                         "switch(_CM.canAddSubnav){"
                         ."  case -1:"
                         ."    alert('The '+_CM.navbuttonText.replace(/&amp;quot;/ig,'&quot;')+' button already has a submenu attached');"
@@ -1427,7 +1438,7 @@ class Context_Menu extends Base
                         '',
                         'Export SQL for',
                         's',
-                        $CM.'10',
+                        $CM.'12',
                         "CM_CloseContext();export_sql('".$reports[0]."',_CM.navbuttonID)"
                     )
                     : ""
@@ -1443,7 +1454,7 @@ class Context_Menu extends Base
                         '',
                         'Edit',
                         's',
-                        $CM.'11',
+                        $CM.'13',
                         "CM_CloseContext();void details('".$reports[1]."',_CM.navsuiteID,"
                         .$this->popup_size_arr[$reports[1]]['h'].",".$this->popup_size_arr[$reports[1]]['w'].",'','');"
                     )
@@ -1462,7 +1473,7 @@ class Context_Menu extends Base
                         '',
                         'Export SQL for',
                         's',
-                        $CM.'12',
+                        $CM.'14',
                         "CM_CloseContext();export_sql('".$reports[1]."',_CM.navsuiteID)"
                     )
                     : ""
@@ -1479,7 +1490,7 @@ class Context_Menu extends Base
                         '',
                         'Edit',
                         's',
-                        $CM.'13',
+                        $CM.'15',
                         "CM_CloseContext();void details('".$reports[3]."',_CM.navstyleID,"
                         .$this->popup_size_arr[$reports[3]]['h'].",".$this->popup_size_arr[$reports[3]]['w'].",'','');"
                     )
@@ -1489,7 +1500,7 @@ class Context_Menu extends Base
                         '',
                         'Export SQL for',
                         's',
-                        $CM.'14',
+                        $CM.'16',
                         "CM_CloseContext();export_sql('".$reports[3]."',_CM.navstyleID)"
                     )
                     : ""
@@ -1499,7 +1510,7 @@ class Context_Menu extends Base
             : ""
             )
             .$this->draw_div_tip('navbutton')
-            .$this->draw_div_sample($CM.'15', 'Image states for this button:', "<span id='".$CM."16'></span>")
+            .$this->draw_div_sample($CM.'17', 'Image states for this button:', "<span id='".$CM."16'></span>")
         );
     }
 
@@ -2938,10 +2949,5 @@ class Context_Menu extends Base
     private function register_type($type)
     {
         $this->_cm_types[] = $type;
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_CONTEXT_MENU;
     }
 }
