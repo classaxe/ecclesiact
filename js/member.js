@@ -1,9 +1,9 @@
-// 1.0.153
+// 1.0.154a4
 /* First line must show version number - update as builds change
 
 Version History:
-  1.0.153 (2017-11-09)
-    1) CM_Navbutton_Over() now has parameter for enabled on hovered buttons
+  1.0.154 (2017-11-11)
+    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled'
 
 */
 
@@ -1227,7 +1227,7 @@ function selected_send_email(targetReportID,popup_w,popup_h) {
 			"send_email",'scrollbars=0,resizable=0',popup_w,popup_h,'centre');
 }
 
-function selected_operation(form,report_name,reportID,args) {
+function selected_operation(form, report_name, reportID, args) {
 	var control = 'selected_op_'+reportID;
 	var mode =    geid_val(control);
 	if (typeof args[mode]!=='number') {
@@ -1236,275 +1236,300 @@ function selected_operation(form,report_name,reportID,args) {
 	var num =      row_select_count(reportID);
 	var targetID = row_select_list(reportID);
 	var targetFieldID = args[mode];
+	var entities = {
+		'articles':					'Article',
+		'contact':					'Contact',
+		'events':					'Event',
+		'gallery-albums':			'Gallery Album',
+		'gallery-images':			'Gallery Image',
+		'groups': 					'Group',
+		'job-postings':				'Job',
+		'listtype':					'List Type',
+		'navbuttons': 				'Nav Button',
+		'navbuttons_for_navsuite': 	'Nav Button',
+		'news-items': 				'News Item',
+		'podcast-albums':			'Podcast Album',
+		'podcasts':					'Podcast',
+		'system': 					'Site',
+		'user':						'User'
+	}
+	var entityType = entities[report_name];
 	switch(mode) {
-	case 'selected_add_to_group':
-		add_to_group(reportID,580,460);
-		geid_set('submode','');
-		break;
-	case 'selected_delete':
-		if (num>0) {
-			if (confirm('Delete '+num+' selected record'+(num==1 ? '': 's')+' - are you sure?')) {
-				geid_set('submode','delete');
+		case 'selected_add_to_group':
+			add_to_group(reportID,580,460);
+			geid_set('submode','');
+			break;
+		case 'selected_delete':
+			if (num>0) {
+				if (confirm('Delete '+num+' selected record'+(num==1 ? '': 's')+' - are you sure?')) {
+					geid_set('submode','delete');
+				}
+				else{alert('Deletion cancelled');}
 			}
-			else{alert('Deletion cancelled');}
-		}
-		else{alert('No records selected to delete');}
-		break;
-	case 'selected_empty':
-		var entityType = (report_name=='listtype' ? 'List Type' : 'Group');
-		if (num>0) {
-			if (confirm(
-					'Empty '+num+' selected '+entityType+(num==1 ? '': 's')+' - are you sure?')
-			) {
-				geid_set('submode','empty');
-			}
-			else{alert(entityType+' Empty cancelled');}
-		}
-		else {alert('No groups selected to empty');}
-		break;
-	case 'selected_export_excel':
-		if (num>0) {
-			export_excel(reportID);
-		}
-		else {alert('No records to export');}
-		geid_set('submode','');
-		break;
-	case 'selected_export_sql':
-		if (num>0) {
-			export_sql(report_name,targetID);
-		}
-		else {alert('No records to export');}
-		geid_set('submode','');
-		break;
-	case 'selected_merge_profiles':
-		if (num>1) {
-			merge_profiles(targetID);
-		}
-		else {alert('Select two or more profiles to merge - the first one chosen will be the one any others are merged to.');}
-		geid_set('submode','');
-		break;
-	case 'selected_process_maps':
-		if (num>0) {
-			if (confirm('Process map lookups for '+num+' entr'+(num==1 ? 'y': 'ies')+' - are you sure?')) {
-				geid_set('submode','set_process_maps');
-			}
-			else{alert('Map processing cancelled');}
-		}
-		else {alert('No items selected to reprocess');}
-		break;
-	case 'selected_process_order':
-		if (num>0) {
-			if (confirm('Process '+num+' selected order'+(num==1 ? '': 's')+' - are you sure?')) {
-				geid_set('submode','process_order');
-			}
-			else{alert('Order processing cancelled');}
-		}
-		else {alert('No orders selected to process');}
-		break;
-	case 'selected_queue_again':
-		if (num>0) {
-			if (confirm('Requeue '+num+' selected email job'+(num==1 ? '': 's')+' for deliver later - are you sure?')) {
-				geid_set('submode','queue_again');
-			} else {
-				alert('Requeue Email cancelled');
-			}
-		} else {
-			alert('No persons to requeue email for');
-		}
-		break;
-	case 'selected_scrub_pii_data':
-		if (num>0) {
-			var entityType;
-			switch (report_name) {
-			case 'contact':
-				entityType = 'Contact';
-				break;
-			case 'system':
-				entityType = 'Site';
-				break;
-			case 'user':
-				entityType = 'User';
-				break;
-			}
-			if (confirm('Scrub all personally identifiable data for '+num+' '+entityType+(num==1 ? '': 's')+' - are you sure?')) {
+			else{alert('No records selected to delete');}
+			break;
+		case 'selected_empty':
+			if (num>0) {
 				if (confirm(
-						'Please confirm that you REALLY want scrub PII Data -\n' +
-						'\n' +
-						'  * All Passwords will be randomised...\n' +
-						'  * All Names will be randomised...\n' +
-						'  * All Addresses will be recreated...\n' +
-						'\n' +
-						'Proceed?'
-				)) {
-					if (entityType!=='Site' || confirm('This is SERIOUS - all PII data for the Site'+(num==1?'':'s')+' will be scrubbed.')) {
-						geid_set('submode','scrub_pii_data');
-					} else {
-						alert('Phew! You had me worried there.');
+					'Empty '+num+' selected '+entities[report_name]+(num==1 ? '': 's')+' - are you sure?')
+				) {
+					geid_set('submode','empty');
+				}
+				else {alert(entityType+' Empty cancelled');}
+			}
+			else {alert('No groups selected to empty');}
+			break;
+		case 'selected_export_excel':
+			if (num>0) {
+				export_excel(reportID);
+			}
+			else {alert('No records to export');}
+			geid_set('submode','');
+			break;
+		case 'selected_export_sql':
+			if (num>0) {
+				export_sql(report_name,targetID);
+			}
+			else {alert('No records to export');}
+			geid_set('submode','');
+			break;
+		case 'selected_merge_profiles':
+			if (num>1) {
+				merge_profiles(targetID);
+			}
+			else {
+				alert('Select two or more profiles to merge - the first one chosen will be the one any others are merged to.');
+			}
+			geid_set('submode','');
+			break;
+		case 'selected_process_maps':
+			if (num>0) {
+				if (confirm('Process map lookups for '+num+' entr'+(num==1 ? 'y': 'ies')+' - are you sure?')) {
+					geid_set('submode','set_process_maps');
+				}
+				else{alert('Map processing cancelled');}
+			}
+			else {alert('No items selected to reprocess');}
+			break;
+		case 'selected_process_order':
+			if (num>0) {
+				if (confirm('Process '+num+' selected order'+(num==1 ? '': 's')+' - are you sure?')) {
+					geid_set('submode','process_order');
+				}
+				else{alert('Order processing cancelled');}
+			}
+			else {alert('No orders selected to process');}
+			break;
+		case 'selected_queue_again':
+			if (num>0) {
+				if (confirm('Requeue '+num+' selected email job'+(num==1 ? '': 's')+' for deliver later - are you sure?')) {
+					geid_set('submode','queue_again');
+				} else {
+					alert('Requeue Email cancelled');
+				}
+			} else {
+				alert('No persons to requeue email for');
+			}
+			break;
+		case 'selected_scrub_pii_data':
+			if (num>0) {
+				if (confirm('Scrub all personally identifiable data for '+num+' '+entityType+(num==1 ? '': 's')+' - are you sure?')) {
+					if (confirm(
+							'Please confirm that you REALLY want scrub PII Data -\n' +
+							'\n' +
+							'  * All Passwords will be randomised...\n' +
+							'  * All Names will be randomised...\n' +
+							'  * All Addresses will be recreated...\n' +
+							'\n' +
+							'Proceed?'
+					)) {
+						if (entityType!=='Site' || confirm('This is SERIOUS - all PII data for the Site'+(num==1?'':'s')+' will be scrubbed.')) {
+							geid_set('submode','scrub_pii_data');
+						} else {
+							alert('Phew! You had me worried there.');
+						}
 					}
 				}
+				else{alert('Updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No '+entityType+'s selected to scrub PII data for');}
-		break;
-	case 'selected_send_again':
-		if (num>0) {
-			if (confirm('Resend '+num+' selected email job'+(num==1 ? '': 's')+' for immediate delivery - are you sure?')) {
-				geid_set('submode','send_again');
+			else {alert('No '+entityType+'s selected to scrub PII data for');}
+			break;
+		case 'selected_send_again':
+			if (num>0) {
+				if (confirm('Resend '+num+' selected email job'+(num==1 ? '': 's')+' for immediate delivery - are you sure?')) {
+					geid_set('submode','send_again');
+				} else {
+					alert('Resend Email cancelled');
+				}
 			} else {
-				alert('Resend Email cancelled');
+				alert('No persons to send email to');
 			}
-		} else {
-			alert('No persons to send email to');
-		}
-		break;
-	case 'selected_send_email':
-		if (num>0) {
-			selected_send_email(args.selected_send_email,760,500);
-		}
-		else {alert('No persons to send email to');}
-		geid_set(control,'');
-		return;
-	case 'selected_set_as_approved':
-		if (num>0) {
-			if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as being approved - are you sure?')) {
-				geid_set('submode','set_as_approved');
+			break;
+		case 'selected_send_email':
+			if (num>0) {
+				selected_send_email(args.selected_send_email,760,500);
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_as_attended':
-		if (num>0) {
-			if (confirm('Set '+num+' registrant'+(num==1 ? '': 's')+' as having attended - are you sure?')) {
-				geid_set('submode','set_as_attended');
-			}
-			else{alert('Attendance updates cancelled');}
-		}
-		else {alert('No registrants selected to mark');}
-		break;
-	case 'selected_set_as_hidden':
-		if (num>0) {
-			if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as hidden - are you sure?')) {
-				geid_set('submode','set_as_hidden');
-			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_as_member':
-		if (num>0) {
-			if (confirm('Set '+num+' person'+(num==1 ? '': 's')+' to have Member permissions - are you sure?')) {
-				geid_set('submode','set_as_member');
-			}
-			else{alert('Membership updates cancelled');}
-		}
-		else {alert('No persons selected to promote');}
-		break;
-	case 'selected_set_as_spam':
-		if (num>0) {
-			if (confirm('Set and report '+num+' comment'+(num==1 ? '': 's')+' as spam - are you sure?')) {
-				geid_set('submode','set_as_spam');
-			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_as_unapproved':
-		if (num>0) {
-			if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as being unapproved - are you sure?')) {
-				geid_set('submode','set_as_unapproved');
-			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_email_opt_in':
-		if (num>0) {
-			if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having opted in to receiving emails sent to this group - are you sure?')) {
-				var reason = prompt('Please give a reason for this Email opt-in assignment','');
-				if (reason!==null && reason!==''){
-					geid_set('submode','set_email_opt_in');
-					geid_set('targetValue',reason);
+			else {alert('No persons to send email to');}
+			geid_set(control,'');
+			return;
+		case 'selected_set_as_approved':
+			if (num>0) {
+				if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as being approved - are you sure?')) {
+					geid_set('submode','set_as_approved');
 				}
-				else {
-					alert('You must give a valid reason for this change');
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_as_attended':
+			if (num>0) {
+				if (confirm('Set '+num+' registrant'+(num==1 ? '': 's')+' as having attended - are you sure?')) {
+					geid_set('submode','set_as_attended');
 				}
+				else{alert('Attendance updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_email_opt_out':
-		if (num>0) {
-			if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having opted out to receiving emails sent to this group - are you sure?')) {
-				var reason = prompt('Please give a reason for this Email opt-out assignment','');
-				if (reason!==null){
-					geid_set('submode','set_email_opt_out');
-					geid_set('targetValue',reason);
+			else {alert('No registrants selected to mark');}
+			break;
+		case 'selected_set_as_disabled':
+			if (num>0) {
+				if (confirm('Disable '+num+' '+entityType+(num==1 ? '': 's')+' - are you sure?')) {
+					geid_set('submode','set_as_disabled');
 				}
-				else {
-					alert('You must give a valid reason for this change');
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to disable');}
+			break;
+		case 'selected_set_as_enabled':
+			if (num>0) {
+				if (confirm('Enable '+num+' '+entityType+(num==1 ? '': 's')+' - are you sure?')) {
+					geid_set('submode','set_as_enabled');
 				}
+				else{alert('Updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_important_on':
-		if (num>0) {
-			if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having high importance - are you sure?')) {
-				geid_set('submode','set_important_on');
+			else {alert('No items selected to enable');}
+			break;
+		case 'selected_set_as_hidden':
+			if (num>0) {
+				if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as hidden - are you sure?')) {
+					geid_set('submode','set_as_hidden');
+				}
+				else{alert('Updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_important_off':
-		if (num>0) {
-			if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having normal importance - are you sure?')) {
-				geid_set('submode','set_important_off');
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_as_member':
+			if (num>0) {
+				if (confirm('Set '+num+' person'+(num==1 ? '': 's')+' to have Member permissions - are you sure?')) {
+					geid_set('submode','set_as_member');
+				}
+				else{alert('Membership updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No items selected to update');}
-		break;
-	case 'selected_set_random_password':
-		if (num>0) {
-			if (confirm('Set a random password for '+num+' user'+(num==1 ? '': 's')+' - are you sure?')) {
-				geid_set('submode','set_random_password');
+			else {alert('No persons selected to promote');}
+			break;
+		case 'selected_set_as_spam':
+			if (num>0) {
+				if (confirm('Set and report '+num+' comment'+(num==1 ? '': 's')+' as spam - are you sure?')) {
+					geid_set('submode','set_as_spam');
+				}
+				else{alert('Updates cancelled');}
 			}
-			else{alert('Updates cancelled');}
-		}
-		else {alert('No users selected to set a random password for');}
-		break;
-	case 'selected_update':
-		if (num>0) {
-			details(report_name,targetID,args.popup_size.h,args.popup_size.w,'','',1);
-		}
-		else {alert('No records selected to update');}
-		geid_set('submode','');
-		break;
-	case 'selected_show_on_map':
-		if (num>0) {
-			selected_show_on_map(reportID, report_name, args.toolbar, '')
-		}
-		else {alert('No persons to view email addresses for ');}
-		geid_set(control,'');
-		return;
-		break;
-	case 'selected_view_email_addresses':
-		if (num>0) {
-			selected_view_email_addresses(1, reportID, report_name, args.toolbar, '')
-		}
-		else {alert('No persons to view email addresses for ');}
-		geid_set(control,'');
-		return;
-		break;
-	default:
-		alert('Operation '+mode+' is not valid here');
-	geid_set('submode','');
-	break;
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_as_unapproved':
+			if (num>0) {
+				if (confirm('Set '+num+' comment'+(num==1 ? '': 's')+' as being unapproved - are you sure?')) {
+					geid_set('submode','set_as_unapproved');
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_email_opt_in':
+			if (num>0) {
+				if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having opted in to receiving emails sent to this group - are you sure?')) {
+					var reason = prompt('Please give a reason for this Email opt-in assignment','');
+					if (reason!==null && reason!==''){
+						geid_set('submode','set_email_opt_in');
+						geid_set('targetValue',reason);
+					}
+					else {
+						alert('You must give a valid reason for this change');
+					}
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_email_opt_out':
+			if (num>0) {
+				if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having opted out to receiving emails sent to this group - are you sure?')) {
+					var reason = prompt('Please give a reason for this Email opt-out assignment','');
+					if (reason!==null){
+						geid_set('submode','set_email_opt_out');
+						geid_set('targetValue',reason);
+					}
+					else {
+						alert('You must give a valid reason for this change');
+					}
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_important_on':
+			if (num>0) {
+				if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having high importance - are you sure?')) {
+					geid_set('submode','set_important_on');
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_important_off':
+			if (num>0) {
+				if (confirm('Set '+num+' record'+(num==1 ? '': 's')+' as having normal importance - are you sure?')) {
+					geid_set('submode','set_important_off');
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No items selected to update');}
+			break;
+		case 'selected_set_random_password':
+			if (num>0) {
+				if (confirm('Set a random password for '+num+' user'+(num==1 ? '': 's')+' - are you sure?')) {
+					geid_set('submode','set_random_password');
+				}
+				else{alert('Updates cancelled');}
+			}
+			else {alert('No users selected to set a random password for');}
+			break;
+		case 'selected_update':
+			if (num>0) {
+				details(report_name,targetID,args.popup_size.h,args.popup_size.w,'','',1);
+			}
+			else {alert('No records selected to update');}
+			geid_set('submode','');
+			break;
+		case 'selected_show_on_map':
+			if (num>0) {
+				selected_show_on_map(reportID, report_name, args.toolbar, '')
+			}
+			else {alert('No persons to view email addresses for ');}
+			geid_set(control,'');
+			return;
+			break;
+		case 'selected_view_email_addresses':
+			if (num>0) {
+				selected_view_email_addresses(1, reportID, report_name, args.toolbar, '')
+			}
+			else {alert('No persons to view email addresses for ');}
+			geid_set(control,'');
+			return;
+			break;
+		default:
+			alert('Operation '+mode+' is not valid here');
+			geid_set('submode','');
+			break;
 	}
 	if (geid_val('submode')!=''){
 		geid_set('targetReportID',reportID);

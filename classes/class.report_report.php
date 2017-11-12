@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.36 (2017-11-03)
-    1) Added hook for PII scrubbing of Systems
+  1.0.37 (2017-11-11)
+    1) Now implements 'with selected' operations 'disable' and 'enable'
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.36';
+    const VERSION = '1.0.37';
 
     public function do_commands()
     {
@@ -595,6 +595,62 @@ class Report_Report extends Report
                             $record_type,
                             '',
                             'been marked as approved.',
+                            $targetID
+                        );
+                        $this->actions_execute(
+                            'report_update_post',
+                            $reportPrimaryTable,
+                            $reportPrimaryObjectName,
+                            $targetID,
+                            $data
+                        );
+                        break;
+                    case "set_as_disabled":
+                        $ObjRecord =  new Record($reportPrimaryTable, $targetID);
+                        $data =       array('enabled'=>'0');
+                        $ObjRecord->update($data);
+                        $msg = status_message(
+                            0,
+                            true,
+                            $record_type,
+                            '',
+                            'been disabled.',
+                            $targetID
+                        );
+                        $msg_tooltip = status_message(
+                            0,
+                            false,
+                            $record_type,
+                            '',
+                            'been disabled.',
+                            $targetID
+                        );
+                        $this->actions_execute(
+                            'report_update_post',
+                            $reportPrimaryTable,
+                            $reportPrimaryObjectName,
+                            $targetID,
+                            $data
+                        );
+                        break;
+                    case "set_as_enabled":
+                        $ObjRecord =  new Record($reportPrimaryTable, $targetID);
+                        $data =       array('enabled'=>'1');
+                        $ObjRecord->update($data);
+                        $msg = status_message(
+                            0,
+                            true,
+                            $record_type,
+                            '',
+                            'been enabled.',
+                            $targetID
+                        );
+                        $msg_tooltip = status_message(
+                            0,
+                            false,
+                            $record_type,
+                            '',
+                            'been enabled.',
                             $targetID
                         );
                         $this->actions_execute(

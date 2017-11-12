@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.145 (2017-10-22)
-    1) Report_Column::drawNavSample() now includes systemID in URL for button image
+  1.0.146 (2017-11-11)
+    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled' in
+       Report_Column::draw_selector_with_selected() 
 */
 class Report_Column extends Record
 {
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.145';
+    const VERSION = '1.0.146';
 
     public function __construct($ID = "")
     {
@@ -3241,6 +3242,16 @@ class Report_Column extends Record
              :
                 ""
             )
+            .($s['selected_set_as_disabled']!==false ?
+                "    selected_set_as_disabled: ".$s['selected_set_as_disabled'].",\n"
+              :
+                ""
+            )
+            .($s['selected_set_as_enabled']!==false ?
+                "    selected_set_as_enabled: ".$s['selected_set_as_enabled'].",\n"
+              :
+                ""
+            )
             .($s['selected_set_as_hidden']!==false ?
                 "    selected_set_as_hidden: ".$s['selected_set_as_hidden'].",\n"
              :
@@ -3309,6 +3320,18 @@ class Report_Column extends Record
             ." onchange=\"selected_operation_".$reportID."(geid('form'),'".$report_name."',".$reportID.")\""
             ." class='formField'>\n"
             ."  <option value='' style='color: RGB(0,0,255);'>With selected...</option>\n"
+            .($s['selected_set_as_disabled']!==false ?
+                 "  <option value='selected_set_as_disabled' style='background-color: RGB(255,220,220);'>"
+                ."Disable</option>\n"
+             :
+                ""
+            )
+            .($s['selected_set_as_enabled']!==false ?
+                 "  <option value='selected_set_as_enabled' style='background-color: RGB(220,255,220);'>"
+                ."Enable</option>\n"
+             :
+                ""
+            )
             .($s['selected_set_as_attended']!==false ?
                  "  <option value='selected_set_as_attended' style='background-color: RGB(200,255,200);'>"
                 ."Set registrants as having attended</option>\n"

@@ -1,3 +1,5 @@
+  1.0.36 (2017-11-03)
+    1) Added hook for PII scrubbing of Systems
   1.0.35 (2017-10-10)
     1) Code to empty listtype of all data now calls Listtype::deleteListData() instead of Listtype::empty()
   1.0.34 (2017-10-07)

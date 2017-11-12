@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.1");
+define("CODEBASE_VERSION", "5.4.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,34 +17,69 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.1.2509 (2017-11-10)
+5.4.2.2510 (2017-11-11)
 Summary:
-  Sitemap and XML sitemap now respect 'enabled' status of buttons
+  Added Stop / Go 'Enabled' status icons and 'with selected enable / disable' for reports that support it
 
 Final Checksums:
-  Classes     CS:ea9f29da
+  Classes     CS:a32aca91
   Database    CS:ec599053
-  Libraries   CS:b1f01eb
-  Reports     CS:32b2ffb
+  Libraries   CS:e958975a
+  Reports     CS:42239cce
 
 Code Changes:
-  codebase.php                                                                                   5.4.1     (2017-11-10)
+  codebase.php                                                                                   5.4.2     (2017-11-11)
     1) Updated version information
-  classes/class.component_sitemap.php                                                            1.0.4     (2017-11-10)
-    1) Now respects visibility and enabled status of mapped buttons but now also allows admins
-       to see ghosted options for normally invisible entries.
-    2) Now uses class constant for version control
-  classes/class.xml_sitemap.php                                                                  1.0.6     (2017-11-10)
-    1) Now respects 'enabled' status of buttons before allowing their sitemap entries to be seen
+  classes/class.report.php                                                                       1.0.95    (2017-10-07)
+    1) Added 'selected_set_as_disabled' and 'selected_set_as_enabled' to Report::REPORT_FEATURES list
+  classes/class.report_column.php                                                                1.0.146   (2017-11-11)
+    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled' in
+       Report_Column::draw_selector_with_selected()
+  classes/class.report_report.php                                                                1.0.37    (2017-11-11)
+    1) Now implements 'with selected' operations 'disable' and 'enable'
+  js/member.js                                                                                   1.0.154   (2017-11-11)
+    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled'
 
-2509.sql
-  1) Set version information
+2510.sql
+  1) Added new report column types 'selected_set_as_enabled' and 'selected_set_as_disabled'
+  2) For 'navbuttons':                        Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  3) For 'navbuttons_for_navsuite':           Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  4) For 'articles':                          Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  5) For 'events':                            Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  6) For 'gallery-albums':                    Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  7) For 'gallery-albums-for-gallery-album':  Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  8) For 'gallery-images':                    Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+  9) For 'gallery-images-for-gallery-album':  Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 10) For 'job-postings':                      Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 11) For 'news-items':                        Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 12) For 'podcast-albums':                    Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 13) For 'podcast-albums-for-podcast-album':  Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 14) For 'podcasts':                          Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 15) For 'podcasts-for-podcast-album':        Added filter presets for 'Enabled' and 'Disabled'
+                                              Added operations 'with selected - enable' and 'with selected - disable'
+ 16) Set version information
 
 Promote:
-  codebase.php                                        5.4.1
-  classes/  (2 files changed)
-    class.component_sitemap.php                       1.0.4     CS:a5ff9be8
-    class.xml_sitemap.php                             1.0.6     CS:fc029a8f
+  codebase.php                                        5.4.2
+  classes/  (3 files changed)
+    class.report.php                                  1.0.95    CS:6c08db7f
+    class.report_column.php                           1.0.146   CS:5f048fdf
+    class.report_report.php                           1.0.37    CS:531410b1
+  images/icons.gif                                              CS:460db971
+  js/member.js                                        1.0.154a4 CS:4376118b
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -170,6 +205,8 @@ Filter Icons:
 [ICON]19 19 7487 Is a Nested Child Page[/ICON]
 [ICON]19 19 7636 Is an Administrator - Yes[/ICON]
 [ICON]19 19 7655 Is an Administrator - No[/ICON]
+[ICON]16 16 8316 Enabled[/ICON]
+[ICON]16 16 8332 Disabled[/ICON]
 
 */
 if (PHP_MAJOR_VERSION >= 7 && !ECC_PHP_7_STRICT) {

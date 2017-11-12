@@ -1,3 +1,5 @@
+  1.0.153 (2017-11-09)
+    1) CM_Navbutton_Over() now has parameter for enabled on hovered buttons
   1.0.152 (2017-11-03)
     1) Operation 'selected_scrub_pii_data' now works for System and distinguishes between contacts, users and sites
     2) Indentation now 4 spaces
