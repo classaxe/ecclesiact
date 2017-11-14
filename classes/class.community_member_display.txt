@@ -1,3 +1,5 @@
+  1.0.55 (2017-08-26)
+    1) Changes to better handle absense of Piwik Analytics on installed server
   1.0.54 (2017-04-09)
     1) Highlighted tabs for Christmas and Easter
   1.0.53 (2017-04-09)

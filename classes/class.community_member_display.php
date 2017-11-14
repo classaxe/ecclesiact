@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.55 (2017-08-26)
-    1) Changes to better handle absense of Piwik Analytics on installed server
+  1.0.56 (2017-11-14)
+    1) Community_Member_Display::draw_stats() now includes profile hits for name_alias entries
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.55';
+    const VERSION = '1.0.56';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1542,6 +1542,13 @@ class Community_Member_Display extends Community_Member
             ."  </thead>\n"
             ."  <tbody>\n";
         $community_url =    BASE_PATH.trim($this->_community_record['URL'], '/');
+        $member_url_arr =   array($community_url.'/'.trim($r['name'], '/'));
+        if (trim($r['name_aliases'])) {
+            $name_aliases = explode(',', trim($r['name_aliases']));
+            foreach ($name_aliases as $name_alias) {
+                $member_url_arr[] = $community_url.'/'.trim($name_alias, '/');
+            }
+        }
         $member_url =       $community_url.'/'.trim($r['name'], '/');
         for ($i=count($this->_stats_dates)-1; $i>=0; $i--) {
             $YYYYMM = $this->_stats_dates[$i];
@@ -1549,12 +1556,16 @@ class Community_Member_Display extends Community_Member
                 continue;    
             }
             $comm =   $this->_stats[$YYYYMM]['visits'][$community_url];
-            $prof =
-                (isset($this->_stats[$YYYYMM]['visits'][$member_url]) ?
-                    $this->_stats[$YYYYMM]['visits'][$member_url]
-                 :
-                    array('hits' => null, 'visits' => null, 'time_a' => null, 'time_t' => null)
-                );
+            $profile_stats = array('hits' => 0, 'visits' => 0, 'time_a' => 0, 'time_t' => 0);
+            foreach ($member_url_arr as $member_url) {
+                if (isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
+                    $entry = $this->_stats[$YYYYMM]['visits'][$member_url];
+                    foreach (array_keys($profile_stats) as $key) {
+                        $profile_stats[$key] += (int)$entry[$key];
+                    }
+                }
+            }
+            $prof = ($profile_stats['visits']>0 ? $profile_stats : array('hits' => null, 'visits' => null, 'time_a' => null, 'time_t' => null));
             $link =   $this->_stats[$YYYYMM]['links'];
             $bord_b = ($i==0 ? " st_bord_b" : "");
             $this->_html.=
