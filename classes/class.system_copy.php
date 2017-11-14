@@ -1,14 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.12 (2017-11-08)
-    1) System_Copy::copy()  now handles copying of nav in a new combined function copy_nav()
-       which now includes call to a new function remap_navsuite_parents() that remaps button attachments
+  1.0.13 (2017-11-13)
+    1) System::copy_communityMembers() now remaps Primary Community and Primary Ministerial for community members
+       to their new parents
 */
 
 class System_Copy extends System
 {
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
 
     private $_map = array();
     private $_Old_System_Record;
@@ -354,7 +354,7 @@ class System_Copy extends System
             $this->_map['Community'][$ID] =  array('newID'=>$newID);
         }
     }
-    
+
     private function copy_communityMembers()
     {
         $Obj =         new Record('community_member');
@@ -363,6 +363,23 @@ class System_Copy extends System
             $Obj->_set_ID($ID);
             $newID =              $Obj->copy("", $this->_New_SystemID);
             $this->_map['CommunityMember'][$ID] =  array('newID'=>$newID);
+            $Obj->_set_ID($newID);
+            $record = $Obj->load();
+            $old_primary_communityID =      $record['primary_communityID'];
+            $old_primary_ministerialID =    $record['primary_ministerialID'];
+            $new_primary_communityID = (isset($this->_map['Community'][$old_primary_communityID]) ?
+                $this->_map['Community'][$old_primary_communityID]['newID'] : 0
+            );
+            $new_primary_ministerialID = (isset($this->_map['Community'][$old_primary_ministerialID]) ?
+                $this->_map['Community'][$old_primary_ministerialID]['newID'] : 0
+            );
+            if ($new_primary_communityID || $new_primary_ministerialID) {
+                $data = array(
+                    'primary_communityID' =>    $new_primary_communityID,
+                    'primary_ministerialID' =>  $new_primary_ministerialID
+                );
+                $Obj->update($data, false, false);
+            }
         }
     }
     
@@ -737,7 +754,7 @@ class System_Copy extends System
             'qbwc_IncomeAccountRef' =>        '',
             'smtp_password' =>                '',
             'smtp_username' =>                '',
-            'URL' =>                          ''
+//            'URL' =>                          ''
         );
         $this->_Obj_New_System->update($data, true, false);
     }

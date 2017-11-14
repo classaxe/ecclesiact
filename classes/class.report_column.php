@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.146 (2017-11-11)
-    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled' in
-       Report_Column::draw_selector_with_selected() 
+  1.0.147 (2017-11-13)
+    1) Fix for draw_form_field() for case 'languages_assign' to cast width and height to int before using
 */
 class Report_Column extends Record
 {
     const FIELDS =  'ID, archive, archiveID, deleted, systemID, reportID, group_assign_csv, seq, tab, defaultValue, fieldType, formField, formFieldHeight, formFieldSpecial, formFieldTooltip, formFieldUnique, formFieldWidth, formLabel, formSelectorSQLMaster, formSelectorSQLMember, permCOMMUNITYADMIN, permGROUPVIEWER, permGROUPEDITOR, permMASTERADMIN, permPUBLIC, permSYSADMIN, permSYSAPPROVER, permSYSEDITOR, permSYSLOGON, permSYSMEMBER, permUSERADMIN, reportField, reportFieldSpecial, reportFilter, reportFilterLabel, reportLabel, reportSortBy_AZ, reportSortBy_a, reportSortBy_d, required_feature, required_feature_invert, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
-    const VERSION = '1.0.146';
+    const VERSION = '1.0.147';
 
     public function __construct($ID = "")
     {
@@ -1549,8 +1548,8 @@ class Report_Column extends Record
                                 $field,
                                 $value,
                                 $selectorSQL,
-                                ($width-22)."px",
-                                ($height ? $height : 35)
+                                ((int)$width-22)."px",
+                                ((int)$height ? (int)$height : 35)
                             )
                             ."&nbsp; </div>"
                             .($ID!="" ?

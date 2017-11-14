@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.2");
+define("CODEBASE_VERSION", "5.4.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,69 +17,46 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.2.2510 (2017-11-11)
+5.4.3.2511 (2017-11-14)
 Summary:
-  Added Stop / Go 'Enabled' status icons and 'with selected enable / disable' for reports that support it
+  Added name aliases for Community Members to allow for continuity of visitor stats when a member's name
+  changes - for example:
+        st-john-the-baptist         ->          light-on-the-hill
+        lindsay-crc                 ->          jennings-creek-christian-reformed-church
 
 Final Checksums:
-  Classes     CS:a32aca91
-  Database    CS:ec599053
-  Libraries   CS:e958975a
-  Reports     CS:42239cce
+  Classes     CS:d0dd769f
+  Database    CS:8a116bac
+  Libraries   CS:6014f426
+  Reports     CS:87a86a9a
 
 Code Changes:
-  codebase.php                                                                                   5.4.2     (2017-11-11)
+  codebase.php                                                                                   5.4.3     (2017-11-14)
     1) Updated version information
-  classes/class.report.php                                                                       1.0.95    (2017-10-07)
-    1) Added 'selected_set_as_disabled' and 'selected_set_as_enabled' to Report::REPORT_FEATURES list
-  classes/class.report_column.php                                                                1.0.146   (2017-11-11)
-    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled' in
-       Report_Column::draw_selector_with_selected()
-  classes/class.report_report.php                                                                1.0.37    (2017-11-11)
-    1) Now implements 'with selected' operations 'disable' and 'enable'
-  js/member.js                                                                                   1.0.154   (2017-11-11)
-    1) Added support for 'selected_set_as_disabled' and 'selected_set_as_enabled'
+  classes/class.community_member.php                                                             1.0.117   (2017-11-14)
+    1) Added 'name_aliases' to fields list
+    2) Community_Member::get_stats() now looks to name_aliases for other names to include for profile stats
+  classes/class.report_column.php                                                                1.0.147   (2017-11-13)
+    1) Fix for draw_form_field() for case 'languages_assign' to cast width and height to int before using
+  classes/class.report_form.php                                                                  1.0.68    (2017-11-14)
+    1) Now shows fields to be updated or inserted if DEBUG_FORM constant is set in codebase
+    2) Now uses class constant for version control
+  classes/class.system_copy.php                                                                  1.0.13    (2017-11-13)
+    1) System::copy_communityMembers() now remaps Primary Community and Primary Ministerial for community members
+       to their new parents
 
-2510.sql
-  1) Added new report column types 'selected_set_as_enabled' and 'selected_set_as_disabled'
-  2) For 'navbuttons':                        Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  3) For 'navbuttons_for_navsuite':           Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  4) For 'articles':                          Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  5) For 'events':                            Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  6) For 'gallery-albums':                    Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  7) For 'gallery-albums-for-gallery-album':  Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  8) For 'gallery-images':                    Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
-  9) For 'gallery-images-for-gallery-album':  Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 10) For 'job-postings':                      Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 11) For 'news-items':                        Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 12) For 'podcast-albums':                    Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 13) For 'podcast-albums-for-podcast-album':  Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 14) For 'podcasts':                          Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 15) For 'podcasts-for-podcast-album':        Added filter presets for 'Enabled' and 'Disabled'
-                                              Added operations 'with selected - enable' and 'with selected - disable'
- 16) Set version information
+2511.sql
+  1) Added new column `name_aliases` to `community_member` table
+  2) Added 'name_aliases' field to community_member report
+  3) Set version information
 
 Promote:
-  codebase.php                                        5.4.2
-  classes/  (3 files changed)
-    class.report.php                                  1.0.95    CS:6c08db7f
-    class.report_column.php                           1.0.146   CS:5f048fdf
-    class.report_report.php                           1.0.37    CS:531410b1
-  images/icons.gif                                              CS:460db971
-  js/member.js                                        1.0.154a4 CS:4376118b
+  codebase.php                                        5.4.3
+  classes/  (4 files changed)
+    class.community_member.php                        1.0.117   CS:251f17f2
+    class.report_column.php                           1.0.147   CS:86a95277
+    class.report_form.php                             1.0.68    CS:49756f49
+    class.system_copy.php                             1.0.13    CS:60df9caf
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

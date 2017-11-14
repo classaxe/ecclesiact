@@ -1,3 +1,5 @@
+  1.0.67 (2015-12-13)
+    1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
   1.0.66 (2015-12-13)
     1) Changes to allow 'Save and New' to retain initial context when opened on a non-existing record -
        This will greatly speed up adding of categorised events in Community interface

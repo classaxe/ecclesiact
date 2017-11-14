@@ -1,14 +1,15 @@
 <?php
-define("VERSION_REPORT_FORM", "1.0.67");
-
 /*
 Version History:
-  1.0.67 (2015-12-13)
-    1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
+  1.0.68 (2017-11-14)
+    1) Now shows fields to be updated or inserted if DEBUG_FORM constant is set in codebase
+    2) Now uses class constant for version control
 */
 
 class Report_Form extends Report
 {
+    const VERSION = '1.0.68';
+
     protected $_bulk_update;
     protected $_can_add;
     protected $_columnList;
@@ -467,6 +468,9 @@ class Report_Form extends Report
     protected function _do_insert()
     {
         $field_set =    $this->_prepare_fields();
+        if (DEBUG_FORM) {
+            y($field_set);
+        }
         $validation =   $this->_Obj_Primary->get_validation_fields();
         $this->_recordID = $this->_Obj_Primary->insert($field_set, $validation);
     }
@@ -489,6 +493,9 @@ class Report_Form extends Report
             $this->_Obj_Primary->archive();
         }
         $field_set =    $this->_prepare_fields();
+        if (DEBUG_FORM) {
+            y($field_set);
+        }
         $validation =   $this->_Obj_Primary->get_validation_fields();
         $this->_Obj_Primary->update($field_set, $validation);
     }
@@ -1333,10 +1340,5 @@ class Report_Form extends Report
         if ($debug || !$result = $this->do_sql_query($sql)) {
             z($sql);
         }
-    }
-
-    public static function getVersion()
-    {
-        return VERSION_REPORT_FORM;
     }
 }
