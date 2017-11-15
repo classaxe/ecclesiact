@@ -21,6 +21,43 @@ define(
 Summary:
   Fixed stats at community level and standardised code to detect for DEV_STATUS
 
+5.4.5.2513 (2017-11-14)
+Summary:
+  (Provide top-level summary here)
+
+Final Checksums:
+  Classes     CS:6775dd2b
+  Database    CS:8a116bac
+  Libraries   CS:e15fb3ac
+  Reports     CS:87a86a9a
+
+Code Changes:
+  codebase.php
+    1) Added global constant DEV_STATUS which uses code in Portal::isDev() to set its state      5.4.5     (2017-11-14)
+    2) Updated version information
+  classes/class.base.php                                                                         1.0.18    (2017-11-14)
+    1) Now uses global constant DEV_STATUS to determine whether to show system error messages
+  classes/class.checkout.php                                                                     1.0.46    (2017-11-14)
+    1) Checkout::_setup_ssl_redirect_if_required() now uses global constant DEV_STATUS to
+       determine whether or not to enforce HTTPS for checkout if normally required
+  classes/class.community_display.php                                                            1.0.53    (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
+       Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
+  classes/class.community_member_display.php                                                     1.0.57    (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
+       to determine whether or not to skip, unless PIWIK_DEV is set
+
+2513.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        5.4.5
+  classes/  (4 files changed)
+    class.base.php                                    1.0.18    CS:191abeaa
+    class.checkout.php                                1.0.46    CS:854172e9
+    class.community_display.php                       1.0.53    CS:db33cfe5
+    class.community_member_display.php                1.0.57    CS:f9830216
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
