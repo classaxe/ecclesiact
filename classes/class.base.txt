@@ -1,3 +1,5 @@
+  1.0.17 (2017-10-07)
+    1) Added '*.dev' to list of development servers where full error message may be given if a class is not found
   1.0.16 (2015-10-16)
     1) Version now given statically
     2) Now provides a version of getVersion() that can be used by all descendents

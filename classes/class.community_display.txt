@@ -1,3 +1,5 @@
+  1.0.52 (2017-08-26)
+    1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
   1.0.51 (2016-12-31)
     1) Community_Display::drawSponsorsLocal() now uses newly named getFilteredSortedAndPagedRecords() method
     2) Community_Display::draw() now uses newly renamed Community_Resource::drawResource() method

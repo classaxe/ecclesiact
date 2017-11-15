@@ -5,12 +5,13 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.56 (2017-11-14)
-    1) Community_Member_Display::draw_stats() now includes profile hits for name_alias entries
+  1.0.57 (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
+       to determine whether or not to skip, unless PIWIK_DEV is set
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.56';
+    const VERSION = '1.0.57';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1487,13 +1488,7 @@ class Community_Member_Display extends Community_Member
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        if (!PIWIK_DEV &&
-            (
-                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 4)=='mac.'
-            )
-        ) {
+        if (DEV_STATUS && !PIWIK_DEV) {
             return;
         }
         $r =    $this->_record;
@@ -1779,9 +1774,7 @@ class Community_Member_Display extends Community_Member
     protected function setupLoadStats()
     {
         global $system_vars;
-        if (!PIWIK_DEV &&
-            (substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.')
-        ) {
+        if (DEV_STATUS && !PIWIK_DEV) {
             return;
         }
         if (!$this->_current_user_rights['canViewStats']) {
@@ -1866,14 +1859,7 @@ class Community_Member_Display extends Community_Member
                 )
             );
         }
-        if ($this->_cp['show_stats']==1 &&
-            $this->_current_user_rights['canViewStats'] && (
-                PIWIK_DEV || (
-                    substr($_SERVER["SERVER_NAME"], 0, 8)!=='desktop.' &&
-                    substr($_SERVER["SERVER_NAME"], 0, 7)!=='laptop.'
-                )
-            )
-        ) {
+        if ($this->_cp['show_stats']==1 && $this->_current_user_rights['canViewStats'] && (PIWIK_DEV || !DEV_STATUS)) {
             $this->_section_tabs_arr[] =   array('ID'=>'stats', 'label'=>$this->_cp['tab_stats']);
         }
         if ($this->_cp['show_about']==1) {

@@ -1,3 +1,5 @@
+  1.0.45 (2015-09-13)
+    1) References to Page::push_content() now changed to Output::push()
   1.0.44 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
   1.0.43 (2014-02-06)

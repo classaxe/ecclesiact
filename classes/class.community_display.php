@@ -7,13 +7,14 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.52 (2017-08-26)
-    1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
+  1.0.53 (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats()
+       to exit early, unless PIWIK_DEV is enabled
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.52';
+    const VERSION = '1.0.53';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2152,13 +2153,7 @@ class Community_Display extends Community
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        if (!PIWIK_DEV &&
-            (
-                substr($_SERVER["SERVER_NAME"], 0, 8) === 'desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7) === 'laptop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 4) === 'max.'
-            )
-        ) {
+        if (DEV_STATUS && !PIWIK_DEV) {
             return;
         }
         $this->_html.=
@@ -2408,13 +2403,7 @@ class Community_Display extends Community
     protected function setupListingsLoadPiwikStats()
     {
         global $system_vars;
-        if (!PIWIK_DEV &&
-            (
-                substr($_SERVER["SERVER_NAME"], 0, 8) === 'desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7) === 'laptop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 4) === 'max.'
-            )
-        ) {
+        if (DEV_STATUS && !PIWIK_DEV) {
             return;
         }
         if (!$this->_current_user_rights['canViewStats']) {
@@ -2550,13 +2539,7 @@ class Community_Display extends Community
         }
         if ($this->_cp['show_stats']==1 &&
             $this->_current_user_rights['canViewStats'] &&
-            (
-                PIWIK_DEV ||
-                (
-                    substr($_SERVER["SERVER_NAME"], 0, 8)!=='desktop.' &&
-                    substr($_SERVER["SERVER_NAME"], 0, 7)!=='laptop.'
-                )
-            )
+            (!DEV_STATUS || PIWIK_DEV)
         ) {
             $this->_section_tabs_arr[] =   array('ID'=>'stats','label'=>$this->_cp['tab_stats']);
         }

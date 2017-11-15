@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.4");
+define("CODEBASE_VERSION", "5.4.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,29 +17,10 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.4.2512 (2017-11-14)
+5.4.5.2513 (2017-11-14)
 Summary:
-  Changes to Stats viewer to include profile matches from name_aliases along with regular profile name stats
+  Fixed stats at community level and standardised code to detect for DEV_STATUS
 
-Final Checksums:
-  Classes     CS:564b191a
-  Database    CS:8a116bac
-  Libraries   CS:6813d0d0
-  Reports     CS:87a86a9a
-
-Code Changes:
-  codebase.php                                                                                   5.4.4     (2017-11-14)
-    1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.56    (2017-11-14)
-    1) Community_Member_Display::draw_stats() now includes profile hits for name_alias entries
-
-2512.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        5.4.4
-  classes/  (1 file changed)
-    class.community_member_display.php                1.0.56    CS:ad943389
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -253,6 +234,7 @@ define(
     ."targetFieldID,targetID,targetReportID,targetValue,topbar_search,YYYY"
 );
 define("SYS_UPGRADE_URL", "http://www.ecclesiact.com/");
+define("DEV_STATUS", Portal::isDev());
 
 mem('in codebase-1');
 $_old_path = ini_get('include_path');

@@ -1,10 +1,10 @@
 <?php
-define('VERSION_CHECKOUT','1.0.45');
+define('VERSION_CHECKOUT','1.0.46');
 /*
 Version History:
-  1.0.45 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
-
+  1.0.46 (2017-11-14)
+    1) Checkout::_setup_ssl_redirect_if_required() now uses global constant DEV_STATUS to
+       determine whether or not to enforce HTTPS for checkout if normally required
 */
 class Checkout extends Component_Base{
   private $_lookup_status =             '';
@@ -437,11 +437,7 @@ class Checkout extends Component_Base{
     global $page_vars, $system_vars;
     $Obj_Gateway_Setting = new Gateway_Setting($system_vars['gatewayID']);
     if ($Obj_Gateway_Setting->test_requiresSSL()) {
-      if ($_SERVER["SERVER_PORT"]!=443 &&
-          substr($_SERVER["SERVER_NAME"],0,8)!='desktop.' &&
-          substr($_SERVER["SERVER_NAME"],0,4)!='dev.' &&
-          substr($_SERVER["SERVER_NAME"],0,7)!='laptop.'
-      ) {
+      if ($_SERVER["SERVER_PORT"]!=443 && !DEV_STATUS) {
         $host =   $_SERVER["HTTP_HOST"];
         header(
            "Location: https://".$host.BASE_PATH.urlencode(trim($page_vars['path'],'/')));

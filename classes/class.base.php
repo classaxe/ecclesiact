@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.17 (2017-10-07)
-    1) Added '*.dev' to list of development servers where full error message may be given if a class is not found
+  1.0.18 (2017-11-14)
+    1) Now uses global constant DEV_STATUS to determine whether to show system error messages
 */
 class Base
 {
-    const VERSION = '1.0.17';
+    const VERSION = '1.0.18';
 
     protected static $methods = array();
     protected static $module_version;
@@ -23,15 +23,9 @@ class Base
                 '(none)',
                 "The ".get_class($this)." class doesn't have a ".$method." method."
             );
-            $dev_status =
-                $_SERVER["SERVER_NAME"]=='localhost' ||
-                substr($_SERVER["SERVER_NAME"], 0, 8)=='desktop.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 4)=='dev.' ||
-                substr($_SERVER["SERVER_NAME"], 0, 7)=='laptop.' ||
-                substr($_SERVER["SERVER_NAME"], -4)=='.dev';
             die(
                 "<h1>Technical Fault</h1>\n"
-                .($dev_status ?
+                .(DEV_STATUS ?
                      "<p>The following method does not exist: <b>".get_class($this)."</b>::<b>".$method."</b>()</p>"
                     .x()
                  :
