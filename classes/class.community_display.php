@@ -8,8 +8,8 @@ Add each site to be checked to CRON table like this:
 /*
 Version History:
   1.0.53 (2017-11-14)
-    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats()
-       to exit early, unless PIWIK_DEV is enabled
+    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
+       Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
 */
 
 class Community_Display extends Community
@@ -2411,14 +2411,13 @@ class Community_Display extends Community
         }
         $Obj_Piwik = new Piwik;
         $names = array();
+        $communityURL = BASE_PATH.trim($this->_community_record['URL'], '/');
         foreach ($this->_records as $r) {
-            $names[] = '/'.$r['name'];
+            $names[] = $communityURL.'/'.$r['name'];
         }
         $find = implode('|', $names);
-  //    $find = 'apostolic-christian-church-of-the-nazarene|bethel';
-  //    $find = "/aurora-cornerstone-church";
         $this->_track_outlinks = $Obj_Piwik->get_outlinks($this->_stats_date_start, $this->_stats_date_end, '');
-        $this->_track_views =    $Obj_Piwik->get_visits($this->_stats_date_start, $this->_stats_date_end, $find);
+        $this->_track_views =    $Obj_Piwik->get_visit($this->_stats_date_start, $this->_stats_date_end, $find);
         if ($this->_track_views === false) {
             return;
         }
@@ -2439,9 +2438,8 @@ class Community_Display extends Community
             }
             $r['profile_hits'] =      '-';
             $r['profile_visits'] =    '-';
-    //      y($r);die;
             foreach ($this->_track_views as $site => $data) {
-                if (trim($site, '/') == trim($system_vars['URL'], '/').'/'.trim($r['member_URL'], '/')) {
+                if ($site === '/'.trim($r['member_URL'], '/')) {
                     $r['profile_hits'] =     $data['hits'];
                     $r['profile_visits'] =   $data['visits'];
                 }
