@@ -1,3 +1,5 @@
+  1.0.41 (2017-08-27)
+    1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
   1.0.40 (2016-07-02)
     1) Layout::prepareResponsiveFoot() now brings in tmscripts for better native support for responsive sites
   1.0.39 (2016-07-01)

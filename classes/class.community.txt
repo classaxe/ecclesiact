@@ -1,3 +1,7 @@
+  1.0.121 (2017-08-26)
+    1) Community::get_communities() now only selects communities from the current system
+    2) Community::_on_action_community_setup_website_button() no longer executes if there is no
+       support for ttf fonts on server
   1.0.120 (2016-10-16)
     1) Community::get_selector_sql() renamed to Community::getSelectorSql() and now actually lists communities
        rather than community members.

@@ -3,16 +3,14 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.121 (2017-08-26)
-    1) Community::get_communities() now only selects communities from the current system
-    2) Community::_on_action_community_setup_website_button() no longer executes if there is no
-       support for ttf fonts on server
+  1.0.122 (2017-11-15)
+    1) Added stats_cache to FIELDS list
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.121';
-    const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
+    const VERSION = '1.0.122';
+    const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, stats_cache, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
     protected $_edit_form =               array();
@@ -194,6 +192,39 @@ class Community extends Displayable_Item
             ."  `name`,`service_addr_city`";
         // z($sql);
         return $this->get_records_for_sql($sql);
+    }
+
+    public function get_stats()
+    {
+        set_time_limit(600);    // Extend maximum execution time to 10 mins
+        $r =        $this->_record;
+        $start =    '2013-07-01';
+        $end =      date('Y-m-d', time());
+        $step =     '+1 month';
+        $format =   'Y-m';
+    
+        $dates_to_check =       get_dates_in_range($start, $end, $step, $format);
+        $this->_stats_dates =   $dates_to_check;
+        $communityURL =         BASE_PATH.trim($this->_community_record['URL'], '/');
+        $find = BASE_PATH.trim($this->_community_record['URL'], '/');
+        if ($r['stats_cache']) {
+            $this->_stats = unserialize($r['stats_cache']);
+            if (isset($this->_stats['cache_date']) && $this->_stats['cache_date']==$end) {
+                // Got stats already today, quit early
+                return;
+            }
+            // Got some stats, but not today. Try again starting from month we last parsed
+            $start = substr($this->_stats['cache_date'], 0, 7).'-01';
+            $dates_to_check = get_dates_in_range($start, $end, $step, $format);
+        }
+        $Obj_Piwik = new Piwik;
+        foreach ($dates_to_check as $YYYYMM) {
+            $this->_stats[$YYYYMM] = array(
+                'visits' => $Obj_Piwik->get_visit($YYYYMM, '', $find)
+            );
+        }
+        $this->_stats['cache_date'] = $end;
+        $this->set_field('stats_cache', Record::escape_string(serialize($this->_stats), true, false));
     }
 
     public function export_sql($targetID, $show_fields)
@@ -738,4 +769,53 @@ class Community extends Displayable_Item
   //    header("Content-type: image/png"); ImagePNG($this->_img); die;
         ImagePNG($this->_img, '.'.$path);
     }
+
+    public function updateStats($debug = false)
+    {
+        $start = microtime(true);
+        $this->_record = $this->load();
+        $this->_Obj_Community = new Community($this->record['primary_communityID']);
+        $this->_community_record = $this->_Obj_Community->load();
+        $this->get_stats();
+        $end = microtime(true);
+        $result =
+            "| "
+            .pad(two_dp($end-$start), 5)
+            ." | "
+            .pad($this->_community_record['title'] ? $this->_community_record['title'] : "(None)", 14);
+        if ($debug) {
+            d($result);
+        }
+        return $result;
+    }
+
+    public function updateAllVisitorStats()
+    {
+        set_time_limit(3600);
+        $start = microtime(true);
+        $debug = 0;
+        $communities = $this->get_records(SYS_ID, 'title');
+        $header =
+            "Updating Community Stats:\n"
+            ."<pre>"
+            .str_repeat("-", 80)
+            ."\n"
+            ."| TIME  | COMMUNITY\n".str_repeat("-", 80);
+        $result = array($header);
+        if ($debug) {
+            d($header);
+        }
+        foreach ($communities as $community) {
+            $this->_set_ID($community['ID']);
+            $result[] = $this->updateStats($debug);
+        }
+        $end = microtime(true);
+        $result[] =
+        str_repeat("-", 80)
+            ."\n"
+            ."Total time taken: ".seconds_to_hhmmss($end-$start).".".substr(($end-$start)-(floor($end-$start)), 2, 3)
+            ."</pre>";
+        return implode("\n", $result);
+    }
+
 }

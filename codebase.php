@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.5");
+define("CODEBASE_VERSION", "5.4.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,47 +17,40 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.5.2513 (2017-11-14)
+5.4.6.2514 (2017-11-15)
 Summary:
-  Fixed stats at community level and standardised code to detect for DEV_STATUS
-
-5.4.5.2513 (2017-11-14)
-Summary:
-  (Provide top-level summary here)
+  Moved community level visit stats into community record and added site level stats into system record
+  This will make system more scalable when adding new communities and also allow for site-level stats
 
 Final Checksums:
-  Classes     CS:6775dd2b
-  Database    CS:8a116bac
-  Libraries   CS:e15fb3ac
+  Classes     CS:2444d20e
+  Database    CS:4edff432
+  Libraries   CS:a1fa1069
   Reports     CS:87a86a9a
 
 Code Changes:
-  codebase.php
-    1) Added global constant DEV_STATUS which uses code in Portal::isDev() to set its state      5.4.5     (2017-11-14)
-    2) Updated version information
-  classes/class.base.php                                                                         1.0.18    (2017-11-14)
-    1) Now uses global constant DEV_STATUS to determine whether to show system error messages
-  classes/class.checkout.php                                                                     1.0.46    (2017-11-14)
-    1) Checkout::_setup_ssl_redirect_if_required() now uses global constant DEV_STATUS to
-       determine whether or not to enforce HTTPS for checkout if normally required
-  classes/class.community_display.php                                                            1.0.53    (2017-11-14)
-    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
-       Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
-  classes/class.community_member_display.php                                                     1.0.57    (2017-11-14)
-    1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
-       to determine whether or not to skip, unless PIWIK_DEV is set
+  codebase.php                                                                                   5.4.6     (2017-11-15)
+    1) Updated version information
+  classes/class.community.php                                                                    1.0.122   (2017-11-15)
+    1) Added stats_cache to FIELDS list
+  classes/class.community_member.php                                                             1.0.118   (2017-11-15)
+    1) Now Community_Member::updateAllMemberStats() is triggered by System::updateStats(),
+       and it now only handles community members in each case
+  classes/class.layout.php                                                                       1.0.42    (2017-11-15)
+    1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
+  classes/class.system.php                                                                       1.0.182   (2017-11-15)
+    1) Added stats_cache to FIELDS list
 
-2513.sql
+2514.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.4.5
+  codebase.php                                        5.4.6
   classes/  (4 files changed)
-    class.base.php                                    1.0.18    CS:191abeaa
-    class.checkout.php                                1.0.46    CS:854172e9
-    class.community_display.php                       1.0.53    CS:db33cfe5
-    class.community_member_display.php                1.0.57    CS:f9830216
-
+    class.community.php                               1.0.122   CS:3246a227
+    class.community_member.php                        1.0.118   CS:31b9910
+    class.layout.php                                  1.0.42    CS:a8f995db
+    class.system.php                                  1.0.182   CS:f9c371cf
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

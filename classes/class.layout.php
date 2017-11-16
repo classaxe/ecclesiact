@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.41 (2017-08-27)
-    1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
+  1.0.42 (2017-11-15)
+    1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.41';
+    const VERSION = '1.0.42';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
