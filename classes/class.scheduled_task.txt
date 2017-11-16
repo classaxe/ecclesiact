@@ -1,3 +1,5 @@
+  1.0.4 (2014-01-28)
+    1) Refreshed fields list - now declared as a class constant
   1.0.3 (2013-09-27)
     1) Changes to Scheduled_Task::all_tasks_run() to only run enabled tasks
   1.0.2 (2012-10-03)

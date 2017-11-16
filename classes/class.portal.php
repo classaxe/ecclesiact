@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.41 (2017-09-30)
-    1) Changes to Portal::parseRequestModePrefix() for early handling of context menu JS generation
+  1.0.42 (2017-11-16)
+    1) Portal::isDev() now extends to *.dev sites
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.41';
+    const VERSION = '1.0.42';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -134,6 +134,7 @@ class Portal extends Base
                 !in_array($serverhost, array('ecclesiact.com', 'www.ecclesiact.com')) &&
                 substr($serverhost, -15) === '.ecclesiact.com'
             ) ||
+            substr($serverhost, -4) ===   '.dev' ||
             substr($serverhost, 0, 7) === 'backup.' ||
             substr($serverhost, 0, 8) === 'desktop.' ||
             substr($serverhost, 0, 4) === 'dev.' ||

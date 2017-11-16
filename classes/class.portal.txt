@@ -52,6 +52,8 @@
     1) Portal now extends Base class (much more sensible)
   1.0.25 (2012-03-15)
     1) Portal::parse_request() no longer issues calls to History::track()
+  1.0.41 (2017-09-30)
+    1) Changes to Portal::parseRequestModePrefix() for early handling of context menu JS generation
   1.0.24 (2012-03-14)
     1) Portal::parse_request() now quits early when items handled by streamer
        are encountered, but calls History::track() if valid resources are found

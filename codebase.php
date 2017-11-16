@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.6");
+define("CODEBASE_VERSION", "5.4.7");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,40 +17,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.6.2514 (2017-11-15)
+5.4.7.2515 (2017-11-16)
 Summary:
-  Moved community level visit stats into community record and added site level stats into system record
-  This will make system more scalable when adding new communities and also allow for site-level stats
+  1) Added ability to run any Scheduled Task on the next heartbeat, regardless of its regular schedule
 
 Final Checksums:
-  Classes     CS:2444d20e
-  Database    CS:4edff432
-  Libraries   CS:a1fa1069
-  Reports     CS:87a86a9a
+  Classes     CS:68aeb89c
+  Database    CS:9d8abddc
+  Libraries   CS:28b67315
+  Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.6     (2017-11-15)
+  codebase.php                                                                                   5.4.7     (2017-11-16)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.122   (2017-11-15)
-    1) Added stats_cache to FIELDS list
-  classes/class.community_member.php                                                             1.0.118   (2017-11-15)
-    1) Now Community_Member::updateAllMemberStats() is triggered by System::updateStats(),
-       and it now only handles community members in each case
-  classes/class.layout.php                                                                       1.0.42    (2017-11-15)
-    1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
-  classes/class.system.php                                                                       1.0.182   (2017-11-15)
-    1) Added stats_cache to FIELDS list
+  classes/class.portal.php                                                                       1.0.42    (2017-11-16)
+    1) Portal::isDev() now extends to *.dev sites
+  classes/class.scheduled_task.php                                                               1.0.5     (2017-11-16)
+    1) Added 'run_now' to FIELDS list
+    2) Modified Scheduled_Task::all_tasks_load() to include tasks labeled 'run_now'
+    3) Modified Scheduled_Task::_current_task_lock() to clear 'run_now' flag
+    4) Version control now via class constant
 
-2514.sql
+2515.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.4.6
-  classes/  (4 files changed)
-    class.community.php                               1.0.122   CS:3246a227
-    class.community_member.php                        1.0.118   CS:31b9910
-    class.layout.php                                  1.0.42    CS:a8f995db
-    class.system.php                                  1.0.182   CS:f9c371cf
+  codebase.php                                        5.4.7
+  classes/  (2 files changed)
+    class.portal.php                                  1.0.42    CS:f88c7154
+    class.scheduled_task.php                          1.0.5     CS:222bce17
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
