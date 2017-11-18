@@ -1,3 +1,6 @@
+  1.0.57 (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
+       to determine whether or not to skip, unless PIWIK_DEV is set
   1.0.56 (2017-11-14)
     1) Community_Member_Display::draw_stats() now includes profile hits for name_alias entries
   1.0.55 (2017-08-26)

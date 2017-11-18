@@ -1,15 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.33 (2017-10-22)
-    1) Now drawing of Report_Column_Report_Field::draw() for 'sample_buttonstyle' and 'sample_navsuite'
-       detects SD and Responsive types and doesn't attempt to draw them.
-    2) Also includes systemID as part of URL now that we're including systemID as part of button style image name
+  1.0.34 (2017-11-17)
+    1) Changes to Report_Column_Report_Field::draw() for textareas to correctly handle <pre> tags in value even if
+       they are not the very first characters in a string. 
 */
 
 class Report_Column_Report_Field extends Record
 {
-    const VERSION = '1.0.33';
+    const VERSION = '1.0.34';
 
     public function draw(
         $column,
@@ -713,7 +712,7 @@ class Report_Column_Report_Field extends Record
             case "textarea_readonly":
                 $out.=
                      "    <td>"
-                    .(substr($value,0,5)==='<pre>' ? "<pre class='admin_fixed'>".substr($value, 5) : nl2br($value))
+                    .(str_replace(array("<pre>", "\n"), array("<pre class='admin_fixed'>", '<br>'), $value ))
                     ."</td>\n";
                 break;
             case "toggle_shared":

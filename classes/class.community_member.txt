@@ -1,3 +1,6 @@
+  1.0.118 (2017-11-15)
+    1) Now Community_Member::updateAllMemberStats() is triggered by System::updateStats(),
+       and it now only handles community members in each case
   1.0.117 (2017-11-14)
     1) Added 'name_aliases' to fields list
     2) Community_Member::get_stats() now looks to name_aliases for other names to include for profile stats

@@ -7,6 +7,7 @@ define("DEBUG_MEMORY", 0);
 define("PWD_LEN_MIN", 4);
 define("SYS_LOG_SLOW", 5);  // Flag queries longer than this (mS) as SLOW in debug file
 define("PIWIK_DEV", 1);     // '1' forces community modules to engage with Piwik stats
+define("STATS_START_DATE", '2013-07-01');
 // test for RSS calendar feed:
 //   http://desktop.stphilipsunionville.com/rss/shared_events?what=calendar&YYYY=2008&MM=12
 //   http://desktop.westmountparkchurch.org/rss/shared_events?what=calendar&YYYY=2007&MM=09
@@ -22,29 +23,45 @@ Summary:
   1) More work on visitor stats collection into site, community and community member levels
 
 Final Checksums:
-  Classes     CS:a7f89c03
+  Classes     CS:4c6af41a
   Database    CS:9d8abddc
   Libraries   CS:b1f45985
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.8     (2017-11-17)
+  codebase.php                                                                                   5.4.8     (2017-11-18)
     1) Updated version information
   classes/class.community.php                                                                    1.0.123   (2017-11-17)
-    1) Corrections to Community::updateStats() to fix display of the Community name in the VCRON results log
+    1) Corrections to Community::updateStats() to fix display of the Community name in the VCRON results log 
+    2) Bug fix for Community::get_stats() to correctly handle collecting complete range if a new community with
+       no stats history is indexed
+  classes/class.community_member.php                                                             1.0.119   (2017-11-18)
+    1) Bug fix for Community_Member::get_stats() to correctly handle collecting complete range if a new member with
+       no stats history is indexed
+  classes/class.community_member_display.php                                                     1.0.58    (2017-11-18)
+    1) More work still needed, but now loads Community stats separately in Community_Member_Display::setupLoadStats()
+  classes/class.report_column_report_field.php                                                   1.0.34    (2017-11-17)
+    1) Changes to Report_Column_Report_Field::draw() for textareas to correctly handle <pre> tags in value even if
+       they are not the very first characters in a string.
   classes/class.system.php                                                                       1.0.183   (2017-11-17)
-    1) Bug fix for System::get_stats()
-    2) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
+    1) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
        if those systems are enabled
+    2) Bug fix for System::get_stats() to correctly handle collecting complete range if a new site with
+       no stats history is indexed
 
 2516.sql
-  1) Set version information
+  1) Updated component 'SCHEDULE: Update Visitor Stats' for single endpoint
+  2) Set version information
 
 Promote:
   codebase.php                                        5.4.8
-  classes/  (2 files changed)
-    class.community.php                               1.0.123   CS:c45281b3
-    class.system.php                                  1.0.183   CS:c4012b51
+  classes/  (5 files changed)
+    class.community.php                               1.0.123   CS:841630e4
+    class.community_member.php                        1.0.119   CS:5ee66f9
+    class.community_member_display.php                1.0.58    CS:27d95f41
+    class.report_column_report_field.php              1.0.34    CS:c89ecb70
+    class.system.php                                  1.0.183   CS:4aecdb6c
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

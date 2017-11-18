@@ -2,9 +2,10 @@
 /*
 Version History:
   1.0.183 (2017-11-17)
-    1) Bug fix for System::get_stats()
-    2) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
+    1) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
        if those systems are enabled
+    2) Bug fix for System::get_stats() to correctly handle collecting complete range if a new site with
+       no stats history is indexed
 */
 class System extends Record
 {
@@ -1317,14 +1318,12 @@ class System extends Record
     public function get_stats()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $this->_set_ID(SYS_ID);
         $r =        $this->load();
-        $start =    '2013-07-01';
+        $start =    STATS_START_DATE;
         $end =      date('Y-m-d', time());
         $step =     '+1 month';
         $format =   'Y-m';
-        $dates_to_check =       get_dates_in_range($start, $end, $step, $format);
-        $this->_stats_dates =   $dates_to_check;
+        $this->_stats_dates =   get_dates_in_range($start, $end, $step, $format);
         $find = BASE_PATH;
         if ($r['stats_cache']) {
             $this->_stats = unserialize($r['stats_cache']);
@@ -1334,8 +1333,8 @@ class System extends Record
             }
             // Got some stats, but not today. Try again starting from month we last parsed
             $start = substr($this->_stats['cache_date'], 0, 7).'-01';
-            $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         }
+        $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         $Obj_Piwik = new Piwik;
         foreach ($dates_to_check as $YYYYMM) {
             $this->_stats[$YYYYMM] = array(
@@ -1428,23 +1427,21 @@ class System extends Record
     public function updateAllVisitorStats()
     {
         set_time_limit(3600);
-        $start =    microtime(true);
         $debug =    0;
-        $result =   $this->updateStats($debug);
-
+        $this->_set_ID(SYS_ID);
         $ObjCommunity = new Community;
-        $result .= $ObjCommunity->updateAllVisitorStats();
-
         $ObjCommunityMember = new Community_Member;
-        $result .= $ObjCommunityMember->updateAllVisitorStats();
-
-        $end =      microtime(true);
         return
-            "Updating Site Visitor Stats:\n"
-            .$result."\n"
-            ."Total time taken: "
-            .seconds_to_hhmmss($end-$start).".".substr(($end-$start)-(floor($end-$start)), 2, 3)
-            ."</pre>";
+            "<b>Updating Site Visitor Stats:</b>\n"
+            ."<pre>"
+            .str_repeat("-", 80)
+            ."\n|   TIME | SITE                      | URL\n"
+            .str_repeat("-", 80)."\n"
+            .$this->updateStats($debug)
+            .str_repeat("-", 80)."\n"
+            ."</pre>\n"
+            .$ObjCommunity->updateAllVisitorStats()."\n"
+            .$ObjCommunityMember->updateAllVisitorStats()."\n";
     }
 
     public function updateStats($debug = false)
@@ -1454,9 +1451,13 @@ class System extends Record
         $this->get_stats();
         $end = microtime(true);
         $result =
-            $this->_record['textEnglish']
-            .' - '.$this->_record['URL']
-            .' took '.pad(two_dp($end-$start), 5);
+             "| "
+            .lead(two_dp($end-$start), 6)
+            ." | "
+            .pad($this->_record['textEnglish'],25)
+            ." | "
+            .$this->_record['URL']
+            ."\n";
         if ($debug) {
             d($result);
         }

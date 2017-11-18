@@ -5,6 +5,8 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 Version History:
   1.0.123 (2017-11-17)
     1) Corrections to Community::updateStats() to fix display of the Community name in the VCRON results log 
+    2) Bug fix for Community::get_stats() to correctly handle collecting complete range if a new community with
+       no stats history is indexed
 */
 
 class Community extends Displayable_Item
@@ -197,16 +199,16 @@ class Community extends Displayable_Item
     public function get_stats()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $r =        $this->_record;
-        $start =    '2013-07-01';
+        $r =        $this->load();
+        $start =    STATS_START_DATE;
         $end =      date('Y-m-d', time());
         $step =     '+1 month';
         $format =   'Y-m';
     
         $dates_to_check =       get_dates_in_range($start, $end, $step, $format);
         $this->_stats_dates =   $dates_to_check;
-        $communityURL =         BASE_PATH.trim($this->_community_record['URL'], '/');
-        $find = BASE_PATH.trim($this->_community_record['URL'], '/');
+        $communityURL =         BASE_PATH.trim($r['URL'], '/');
+        $find = BASE_PATH.trim($r['URL'], '/');
         if ($r['stats_cache']) {
             $this->_stats = unserialize($r['stats_cache']);
             if (isset($this->_stats['cache_date']) && $this->_stats['cache_date']==$end) {
@@ -215,8 +217,8 @@ class Community extends Displayable_Item
             }
             // Got some stats, but not today. Try again starting from month we last parsed
             $start = substr($this->_stats['cache_date'], 0, 7).'-01';
-            $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         }
+        $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         $Obj_Piwik = new Piwik;
         foreach ($dates_to_check as $YYYYMM) {
             $this->_stats[$YYYYMM] = array(
@@ -778,7 +780,7 @@ class Community extends Displayable_Item
         $end = microtime(true);
         $result =
             "| "
-            .pad(two_dp($end-$start), 5)
+            .lead(two_dp($end-$start), 6)
             ." | "
             .pad($this->_record['title'] ? $this->_record['title'] : "(None)", 14);
         if ($debug) {
@@ -794,11 +796,12 @@ class Community extends Displayable_Item
         $debug = 0;
         $communities = $this->get_records(SYS_ID, 'title');
         $header =
-            "Updating Community Stats:\n"
+            "<b>Updating Community Stats:</b>\n"
             ."<pre>"
             .str_repeat("-", 80)
             ."\n"
-            ."| TIME  | COMMUNITY\n".str_repeat("-", 80);
+            ."|   TIME | COMMUNITY\n"
+            .str_repeat("-", 80);
         $result = array($header);
         if ($debug) {
             d($header);

@@ -5,13 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.57 (2017-11-14)
-    1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
-       to determine whether or not to skip, unless PIWIK_DEV is set
+  1.0.58 (2017-11-18)
+    1) More work still needed, but now loads Community stats separately in Community_Member_Display::setupLoadStats()
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.57';
+    const VERSION = '1.0.58';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1547,11 +1546,15 @@ class Community_Member_Display extends Community_Member
         $member_url =       $community_url.'/'.trim($r['name'], '/');
         for ($i=count($this->_stats_dates)-1; $i>=0; $i--) {
             $YYYYMM = $this->_stats_dates[$i];
-            if (!isset($this->_stats[$YYYYMM]['visits'][$community_url])) {
+            if (!isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
                 continue;    
             }
-            $comm =   $this->_stats[$YYYYMM]['visits'][$community_url];
             $profile_stats = array('hits' => 0, 'visits' => 0, 'time_a' => 0, 'time_t' => 0);
+            if (isset($this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url])) {
+                $comm =   $this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url];
+            } else {
+                $comm = array('hits' => '?', 'visits' => '?', 'time_a' => 0, 'time_t' => 0);
+            }
             foreach ($member_url_arr as $member_url) {
                 if (isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
                     $entry = $this->_stats[$YYYYMM]['visits'][$member_url];
@@ -1781,6 +1784,7 @@ class Community_Member_Display extends Community_Member
             return;
         }
         $this->get_stats();
+        $this->_Obj_Community->get_stats();
     }
 
     protected function setupLoadUserRights()

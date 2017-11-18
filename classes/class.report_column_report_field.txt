@@ -1,3 +1,7 @@
+  1.0.33 (2017-10-22)
+    1) Now drawing of Report_Column_Report_Field::draw() for 'sample_buttonstyle' and 'sample_navsuite'
+       detects SD and Responsive types and doesn't attempt to draw them.
+    2) Also includes systemID as part of URL now that we're including systemID as part of button style image name
   1.0.32 (2017-07-15)
     1) Report_Column_Report_Field::draw() for 'cancel' uses span tag in place of ancient font tag
   1.0.31 (2016-01-08)
