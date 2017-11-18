@@ -1,3 +1,5 @@
+  1.0.122 (2017-11-15)
+    1) Added stats_cache to FIELDS list
   1.0.121 (2017-08-26)
     1) Community::get_communities() now only selects communities from the current system
     2) Community::_on_action_community_setup_website_button() no longer executes if there is no

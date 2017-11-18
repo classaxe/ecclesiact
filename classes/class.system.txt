@@ -1,3 +1,5 @@
+  1.0.182 (2017-11-15)
+    1) Added stats_cache to FIELDS list
   1.0.181 (2017-11-10)
     1) Added support for command 'navbutton_toggle_enabled'
   1.0.180 (2017-11-03)

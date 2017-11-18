@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.7");
+define("CODEBASE_VERSION", "5.4.8");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -17,35 +17,34 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.7.2515 (2017-11-16)
+5.4.8.2516 (2017-11-17)
 Summary:
-  1) Added ability to run any Scheduled Task on the next heartbeat, regardless of its regular schedule
+  1) More work on visitor stats collection into site, community and community member levels
 
 Final Checksums:
-  Classes     CS:68aeb89c
+  Classes     CS:a7f89c03
   Database    CS:9d8abddc
-  Libraries   CS:28b67315
+  Libraries   CS:b1f45985
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.7     (2017-11-16)
+  codebase.php                                                                                   5.4.8     (2017-11-17)
     1) Updated version information
-  classes/class.portal.php                                                                       1.0.42    (2017-11-16)
-    1) Portal::isDev() now extends to *.dev sites
-  classes/class.scheduled_task.php                                                               1.0.5     (2017-11-16)
-    1) Added 'run_now' to FIELDS list
-    2) Modified Scheduled_Task::all_tasks_load() to include tasks labeled 'run_now'
-    3) Modified Scheduled_Task::_current_task_lock() to clear 'run_now' flag
-    4) Version control now via class constant
+  classes/class.community.php                                                                    1.0.123   (2017-11-17)
+    1) Corrections to Community::updateStats() to fix display of the Community name in the VCRON results log
+  classes/class.system.php                                                                       1.0.183   (2017-11-17)
+    1) Bug fix for System::get_stats()
+    2) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
+       if those systems are enabled
 
-2515.sql
+2516.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.4.7
+  codebase.php                                        5.4.8
   classes/  (2 files changed)
-    class.portal.php                                  1.0.42    CS:f88c7154
-    class.scheduled_task.php                          1.0.5     CS:222bce17
+    class.community.php                               1.0.123   CS:c45281b3
+    class.system.php                                  1.0.183   CS:c4012b51
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

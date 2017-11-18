@@ -3,13 +3,13 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.122 (2017-11-15)
-    1) Added stats_cache to FIELDS list
+  1.0.123 (2017-11-17)
+    1) Corrections to Community::updateStats() to fix display of the Community name in the VCRON results log 
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.122';
+    const VERSION = '1.0.123';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, stats_cache, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -774,15 +774,13 @@ class Community extends Displayable_Item
     {
         $start = microtime(true);
         $this->_record = $this->load();
-        $this->_Obj_Community = new Community($this->record['primary_communityID']);
-        $this->_community_record = $this->_Obj_Community->load();
         $this->get_stats();
         $end = microtime(true);
         $result =
             "| "
             .pad(two_dp($end-$start), 5)
             ." | "
-            .pad($this->_community_record['title'] ? $this->_community_record['title'] : "(None)", 14);
+            .pad($this->_record['title'] ? $this->_record['title'] : "(None)", 14);
         if ($debug) {
             d($result);
         }
