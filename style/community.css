@@ -1,8 +1,8 @@
-/* 1.0.5
+/* 1.0.6
 
 Version History:
-  1.0.5 (2016-12-26)
-    1) Tweaks to put icons in correct position for both slideshow and static profile images
+  1.0.6 (2017-11-19)
+    1) Moved code for Easter and Christmas services into here
 */
 /* [ Community and Community Member CSS code ] */
 /* [ Community Display ] */
@@ -334,26 +334,31 @@ Version History:
 .profile_frame .table_details th{
   text-align: left; padding: 0.25em 1em 0.25em 0;
 }
+/* Stats */
 .profile_frame .member_stats { border-collapse: collapse; }
-.profile_frame .member_stats thead th { width: 4em; vertical-align: bottom}
+.profile_frame .member_stats thead th { width: 3em; vertical-align: bottom}
 .profile_frame .member_stats thead .st_bord_t { border-top:   2px solid #000; }
 .profile_frame .member_stats thead .st_bord_l { border-left:  2px solid #000; }
 .profile_frame .member_stats thead .st_bord_r { border-right: 2px solid #000; }
 .profile_frame .member_stats thead .st_bord_b { border-bottom: 2px solid #000; }
+
 .profile_frame .member_stats thead .st_date   { width: 5em; background: #d0d0d0; }
+.profile_frame .member_stats thead .st_site   { background: #e0e0ff; }
 .profile_frame .member_stats thead .st_comm   { background: #ffe0e0; }
 .profile_frame .member_stats thead .st_prof   { background: #e0ffe0; }
-.profile_frame .member_stats thead .st_link   { background: #e0e0ff; }
 .profile_frame .member_stats thead .st_line   { border-right: 3px double #000; }
 .profile_frame .member_stats thead .st_void   { color: #606060; }
-.profile_frame .member_stats tbody .st_date   { background: #d0d0d0; }
-.profile_frame .member_stats tbody .st_line   { border-right: 3px double #000; }
-.profile_frame .member_stats tbody .st_comm   { background: #fff8f8; }
-.profile_frame .member_stats tbody .st_prof   { background: #f8fff8; }
-.profile_frame .member_stats tbody .st_link   { background: #f8f8ff; }
+
 .profile_frame .member_stats tbody .st_bord_l { border-left:  2px solid #000; }
 .profile_frame .member_stats tbody .st_bord_r { border-right: 2px solid #000; }
 .profile_frame .member_stats tbody .st_bord_b { border-bottom: 2px solid #000 }
+
+.profile_frame .member_stats tbody .st_date   { background: #d0d0d0; }
+.profile_frame .member_stats tbody .st_site   { background: #f8f8ff; }
+.profile_frame .member_stats tbody .st_comm   { background: #fff8f8; }
+.profile_frame .member_stats tbody .st_prof   { background: #f8fff8; }
+.profile_frame .member_stats tbody .st_line   { border-right: 3px double #000; }
+
 .profile_frame .member_stats tbody td         { text-align: right; padding-right: 2px; background: #fff; }
 
 .profile_frame #section_about p{
@@ -369,6 +374,23 @@ Version History:
 .profile_frame #section_about li a{
   color:#0000ff;
 }
+
+.profile_frame #section_special_heading { background-color: #ffd0d0; }
+.profile_frame #section_special_heading.tab_selected { background-color: #ffa0a0; }
+
+.profile_frame #section_christmas_heading,
+.profile_frame #section_easter_heading,
+.profile_frame #section_special_heading {
+  background-color: #ffd0d0;
+}
+.profile_frame #section_christmas_heading.tab_selected,
+.profile_frame #section_easter_heading.tab_selected,
+.profile_frame #section_special_heading.tab_selected {
+  background-color: #ffa0a0;
+}
+
+
+
 .community_embedding             { padding: 5px; }
 .community_embedding .info       { width: 11px; height: 11px; background-position: -2600px 0; display: block; float: left; margin: 0 5px 10px 0;}
 .community_embedding .embed_help { padding: 3px; background:#ffff40; border:1px solid #808000; margin: 0 0 10px 0; }

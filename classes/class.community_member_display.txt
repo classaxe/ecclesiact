@@ -1,3 +1,5 @@
+  1.0.58 (2017-11-18)
+    1) More work still needed, but now loads Community stats separately in Community_Member_Display::setupLoadStats()
   1.0.57 (2017-11-14)
     1) Now uses global constant DEV_STATUS in Community_Member_Display::setupLoadStats() and when showin stats tab
        to determine whether or not to skip, unless PIWIK_DEV is set

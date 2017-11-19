@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.58 (2017-11-18)
-    1) More work still needed, but now loads Community stats separately in Community_Member_Display::setupLoadStats()
+  1.0.59 (2017-11-19)
+    1) Now includes Site Stats in Community_Member_Display::drawStats() and icons for referal services
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.58';
+    const VERSION = '1.0.59';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -85,19 +85,7 @@ class Community_Member_Display extends Community_Member
              ".profile_frame .member_slideshow                { width: "
             .(($this->_cp['profile_photo_width'])+20)."px; }\n"
             .".profile_frame .photo_frame .member_photo_frame { width: "
-            .(($this->_cp['profile_photo_width']))."px; height:".(($this->_cp['profile_photo_height']))."px; }\n"
-            ."#section_special_heading { background-color: #ffd0d0; }\n"
-            ."#section_special_heading.tab_selected { background-color: #ffa0a0; }\n"
-            ."#section_christmas_heading,\n"
-            ."#section_easter_heading,\n"
-            ."#section_special_heading {\n"
-            ."  background-color: #ffd0d0;\n"
-            ."}\n"
-            ."#section_christmas_heading.tab_selected\n"
-            ."#section_easter_heading.tab_selected,\n"
-            ."#section_special_heading.tab_selected {\n"
-            ."  background-color: #ffa0a0;\n"
-            ."}\n";
+            .(($this->_cp['profile_photo_width']))."px; height:".(($this->_cp['profile_photo_height']))."px; }\n";
         Output::push('style', $css);
     }
 
@@ -1484,6 +1472,7 @@ class Community_Member_Display extends Community_Member
 
     protected function drawStats()
     {
+        global $system_vars;
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
@@ -1491,6 +1480,58 @@ class Community_Member_Display extends Community_Member
             return;
         }
         $r =    $this->_record;
+        $video_icon =   "-7980px 0px";
+        $video_label =  "Video";
+        $website =      (isset($r['link_website']) && $r['link_website'] ?
+            substr($r['link_website'], 2+strpos($r['link_website'], '//'))
+         :
+            ""
+        );
+        $facebook =     (isset($r['link_facebook']) && $r['link_facebook'] ?
+            substr($r['link_facebook'], 2+strpos($r['link_facebook'], '//'))
+         :
+            ""
+        );
+        $twitter =      (strpos($r['link_twitter'], '@')!==-1 ?
+            substr($r['link_twitter'], 1+strpos($r['link_twitter'], '@'))
+         :
+            ""
+        );
+        if ($r['link_video']) {
+            $url_bits = explode('/', $r['link_video']);
+            if (count($url_bits)>2) {
+                switch ($url_bits[2]) {
+                    case 'livestream.com':
+                    case 'www.livestream.com':
+                    case 'new.livestream.com':
+                        $video_icon =   "-7950px 0px";
+                        $video_label =  "LS";
+                        $video_title =  "Livestream";
+                        break;
+                    case 'ustream.tv':
+                    case 'www.ustream.tv':
+                        $video_icon =   "-7966px 0px";
+                        $video_label =  "US";
+                        $video_title =  "UStream";
+                        break;
+                    case 'vimeo.com':
+                    case 'www.vimeo.com':
+                        $video_icon =   "-7934px 0px";
+                        $video_label =  "Vi";
+                        $video_title =  "Vimeo";
+                        break;
+                    case 'youtube.com':
+                    case 'www.youtube.com':
+                        $video_icon =   "-6154px 0px";
+                        $video_label =  "YT";
+                        $video_title =  "Youtube";
+                        break;
+                }
+            }
+            $video = substr($r['link_video'], 2+strpos($r['link_video'], '//'));
+        }
+        
+        
         $this->_html.=
              HTML::drawSectionTabDiv('stats', $this->_selected_section)
             ."<h2>".$this->_cp['label_stats']."</h2>"
@@ -1499,35 +1540,77 @@ class Community_Member_Display extends Community_Member
             ."  <thead>\n"
             ."    <tr>\n"
             ."      <th rowspan='3' class='st_date st_line st_bord_l st_bord_t'>Month</th>\n"
-            ."      <th colspan='4' class='st_comm st_line st_bord_t'>"
+            ."      <th colspan='4' class='st_site st_line st_bord_t txt_c'>"
+            .$system_vars['textEnglish']
+            ."</th>\n"
+                
+                ."      <th colspan='4' class='st_comm st_line st_bord_t txt_c'>"
             ."Community of ".$this->_community_record['title']
             ."</th>\n"
-            ."      <th colspan='4' class='st_prof st_line st_bord_t'>".$r['title']." Profile</th>\n"
-            ."      <th colspan='8' class='st_link st_bord_t st_bord_r'>"
-            ."Link referrals for<br />\n".$r['title']
-            ."</th>\n"
+            ."      <th colspan='8' class='st_prof st_bord_r st_bord_t txt_c'>".$r['title']." Profile</th>\n"
             ."    </tr>\n"
             ."    <tr>\n"
+            ."      <th rowspan='2' class='st_site st_bord_b'>Hits</th>\n"
+            ."      <th rowspan='2' class='st_site st_bord_b'>Visits</th>\n"
+            ."      <th colspan='2' class='st_site st_line'>Visit Time</th>\n"
             ."      <th rowspan='2' class='st_comm st_bord_b'>Hits</th>\n"
             ."      <th rowspan='2' class='st_comm st_bord_b'>Visits</th>\n"
             ."      <th colspan='2' class='st_comm st_line'>Visit Time</th>\n"
             ."      <th rowspan='2' class='st_prof st_bord_b'>Hits</th>\n"
             ."      <th rowspan='2' class='st_prof st_bord_b'>Visits</th>\n"
             ."      <th colspan='2' class='st_prof st_line'>Visit Time</th>\n"
-            ."      <th rowspan='2' class='st_link"
+            ."      <th rowspan='2' class='st_prof"
             .($r['link_website']   ? '' : " st_void")
-            ."'>Website</th>\n"
-            ."      <th rowspan='2' class='st_link"
+            ."' title='Website Referals'>"
+            .($r['link_website'] ?
+                 "<a rel=\"external\" href=\"".$r['link_website']."\">"
+                ."<img class='icon' src='/img/spacer' alt='' title=''"
+                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:-800px 0px;' /><br />"
+                ."Web</a>\n"
+             :
+                ""
+            )
+            ."</th>\n"
+            ."      <th rowspan='2' class='st_prof"
             .($r['link_facebook']  ? '' : " st_void")
-            ."'>Facebook</th>\n"
-            ."      <th rowspan='2' class='st_link"
+            ."' title='Facebook Referals'>"
+            .($r['link_facebook']?
+                 "<a rel=\"external\" href=\"".$r['link_facebook']."\">"
+                ."<img class='icon' src='/img/spacer' alt='' title=''"
+                ." style='width:14px;height:14px;margin:0px 5px 2px 0px;background-position:-3147px 0px;' /><br />"
+                ."FB</a>"
+             :
+                ""
+            )
+            ."</th>\n"
+            ."      <th rowspan='2' class='st_prof"
             .($r['link_twitter']   ? '' : " st_void")
-            ."'>Twitter</th>\n"
-            ."      <th rowspan='2' class='st_link st_bord_r"
+            ."' title='Twitter Referals'>"
+            .($r['link_twitter']?
+                 "<a rel=\"external\" href=\"".$r['link_twitter']."\">"
+                ."<img class='icon' src='/img/spacer' alt='' title=''"
+                ." style='width:14px;height:14px;margin:2px 5px 2px 0px;background-position:-5420px 0px;' /><br />"
+                ."TW</a>"
+             :
+                ""
+            )
+            ."</th>\n"
+            ."      <th rowspan='2' class='st_prof st_bord_r"
             .($r['link_video']     ? '' : " st_void")
-            ."'>Video</th>\n"
+            ."' title='".$video_title." Referals'>"
+            .($r['link_video']?
+                 "<a rel=\"external\" href=\"".$r['link_video']."\">"
+                ."<img class='icon' src='/img/spacer' alt='' title=''"
+                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:".$video_icon."' /><br />"
+                .$video_label."</a>"
+             :
+                ""
+            )
+            ."</th>\n"
             ."    </tr>\n"
             ."    <tr>\n"
+            ."      <th class='st_site st_bord_b'>Avg</th>\n"
+            ."      <th class='st_site st_bord_b st_line'>Tot</th>\n"
             ."      <th class='st_comm st_bord_b'>Avg</th>\n"
             ."      <th class='st_comm st_bord_b st_line'>Tot</th>\n"
             ."      <th class='st_prof st_bord_b'>Avg</th>\n"
@@ -1549,12 +1632,17 @@ class Community_Member_Display extends Community_Member
             if (!isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
                 continue;    
             }
-            $profile_stats = array('hits' => 0, 'visits' => 0, 'time_a' => 0, 'time_t' => 0);
+            if (isset($this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH])) {
+                $site =   $this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH];
+            } else {
+                $site = array('hits' => '?', 'visits' => '?', 'time_a' => 0, 'time_t' => 0);
+            }
             if (isset($this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url])) {
                 $comm =   $this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url];
             } else {
                 $comm = array('hits' => '?', 'visits' => '?', 'time_a' => 0, 'time_t' => 0);
             }
+            $profile_stats = array('hits' => 0, 'visits' => 0, 'time_a' => 0, 'time_t' => 0);
             foreach ($member_url_arr as $member_url) {
                 if (isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
                     $entry = $this->_stats[$YYYYMM]['visits'][$member_url];
@@ -1569,6 +1657,18 @@ class Community_Member_Display extends Community_Member
             $this->_html.=
                  "    <tr>\n"
                 ."      <td class='st_date st_bord_l st_line".$bord_b."'>".$YYYYMM."</td>\n"
+                ."      <td class='st_site".$bord_b."'>"
+                .$site['hits']
+                ."</td>\n"
+                ."      <td class='st_site".$bord_b."'>"
+                .$site['visits']
+                ."</td>\n"
+                ."      <td class='st_site".$bord_b."'>"
+                .($site['time_a'] ? format_seconds($site['time_a']) : "&nbsp;")
+                ."</td>\n"
+                ."      <td class='st_site st_line".$bord_b."'>"
+                .($site['time_t'] ? format_seconds($site['time_t']) : "&nbsp;")
+                ."</td>\n"
                 ."      <td class='st_comm".$bord_b."'>"
                 .$comm['hits']
                 ."</td>\n"
@@ -1594,28 +1694,28 @@ class Community_Member_Display extends Community_Member
                 .($prof['time_t'] ? format_seconds($prof['time_t']) : "&nbsp;")
                 ."</td>\n"
                 ."      <td class='st_link".$bord_b."'>"
-                .($r['link_website']  && $link[$r['link_website']]['hits'] ?
+                .($r['link_website']  && isset($link[$r['link_website']]['hits']) && $link[$r['link_website']]['hits'] ?
                     $link[$r['link_website']]['hits']
                  :
                     "&nbsp;"
                 )
                 ."</td>\n"
                 ."      <td class='st_link".$bord_b."'>"
-                .($r['link_facebook'] && $link[$r['link_facebook']]['hits'] ?
+                .($r['link_facebook'] && isset($link[$r['link_facebook']]['hits']) && $link[$r['link_facebook']]['hits'] ?
                     $link[$r['link_facebook']]['hits']
                  :
                     "&nbsp;"
                 )
                 ."</td>\n"
                 ."      <td class='st_link".$bord_b."'>"
-                .($r['link_twitter']  && $link[$r['link_twitter']]['hits'] ?
+                .($r['link_twitter']  && isset($link[$r['link_twitter']]['hits']) && $link[$r['link_twitter']]['hits'] ?
                     $link[$r['link_twitter']]['hits']
                  :
                     "&nbsp;"
                 )
                 ."</td>\n"
                 ."      <td class='st_link st_bord_r".$bord_b."'>"
-                .($r['link_video']    && $link[$r['link_video']]['hits'] ?
+                .($r['link_video']    && isset($link[$r['link_video']]['hits']) && $link[$r['link_video']]['hits'] ?
                     $link[$r['link_video']]['hits']
                  :
                     "&nbsp;"
@@ -1623,7 +1723,10 @@ class Community_Member_Display extends Community_Member
                 ."</td>\n"
                 ."    </tr>\n";
             if (substr($YYYYMM, 5, 2)=='01') {
-                $this->_html.= "<tr><td colspan='13' style='background:#808080'></td></tr>";
+                $this->_html.=
+                     "<tr>\n"
+                    ."<td colspan='17' class='st_bord_l st_bord_r' style='background:#808080'></td>\n"
+                    ."</tr>";
             }
         }
         $this->_html.=
@@ -1699,6 +1802,7 @@ class Community_Member_Display extends Community_Member
         $this->setupLoadUserRights();
         $this->setupLoadEditParameters();
         $this->setupLoadCommunityRecord();
+        $this->setupLoadSystemRecord();
         $this->setupLoadEventsSpecial();
         $this->setupLoadCommunityMembers();
         $this->setupLoadSponsors();
@@ -1785,6 +1889,13 @@ class Community_Member_Display extends Community_Member
         }
         $this->get_stats();
         $this->_Obj_Community->get_stats();
+        $this->_Obj_System->get_stats();
+    }
+
+    protected function setupLoadSystemRecord()
+    {
+        $this->_Obj_System = new System;
+        $this->_Obj_System->_set_ID(SYS_ID);
     }
 
     protected function setupLoadUserRights()

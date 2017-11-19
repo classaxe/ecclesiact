@@ -1,3 +1,5 @@
+  1.0.5 (2016-12-26)
+    1) Tweaks to put icons in correct position for both slideshow and static profile images
   1.0.4 (2016-12-26)
     1) Removed border for member slideshow
   1.0.3 (2015-02-02)
