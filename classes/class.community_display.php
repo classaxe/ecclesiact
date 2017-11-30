@@ -7,14 +7,16 @@ Add each site to be checked to CRON table like this:
 
 /*
 Version History:
-  1.0.53 (2017-11-14)
-    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
-       Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
+  1.0.54 (2017-11-28)
+    1) Changes to Community_Display::drawMember() to handle archived entries in website URL field
+    2) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
+       with support for legacy URLs in profile and all links
+    TODO
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.53';
+    const VERSION = '1.0.54';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -1638,6 +1640,8 @@ class Community_Display extends Community
          :
             '/640x480-photo-unavailable.png'
         );
+        $websiteURLBits = explode('|', $r['link_website']);
+        $websiteURL = array_pop($websiteURLBits);
         $featured_image =
              BASE_PATH
             ."img/sysimg"
@@ -1717,8 +1721,8 @@ class Community_Display extends Community
             ""
         )
         ."<div class='member_gallery_entry_icons'>\n"
-        .($this->_cp['members_show_website'] && $r['link_website'] ?
-             "<a rel='external' href='".htmlentities($r['link_website'])."'"
+        .($this->_cp['members_show_website'] && $websiteURL ?
+             "<a rel='external' href='".htmlentities($websiteURL)."'"
             ." onclick=\"\" title=\"View ".$r['type']." website\">"
             ."<img src='".BASE_PATH."img/spacer' width='16' height='16' class='icons'"
             ." style='background-position: -5374px 0px;float:right;' alt='View Website' />"
@@ -2422,7 +2426,7 @@ class Community_Display extends Community
             return;
         }
         foreach ($this->_records as &$r) {
-            $link_types = array('website','facebook','twitter','video');
+            $link_types = explode(', ',Community_Member::LINK_TYPES);
             $r['links'] = array();
             foreach ($link_types as $l) {
                 $r['links'][$l] = array('hits'=>'-', 'visits' => '-');

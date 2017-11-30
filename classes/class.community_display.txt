@@ -1,3 +1,6 @@
+  1.0.53 (2017-11-14)
+    1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
+       Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
   1.0.52 (2017-08-26)
     1) Several changes to deal more forgivingly with Piwik Analytics not being available on the server
   1.0.51 (2016-12-31)

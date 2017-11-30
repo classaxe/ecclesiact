@@ -5,12 +5,14 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.59 (2017-11-19)
-    1) Now includes Site Stats in Community_Member_Display::drawStats() and icons for referal services
+  1.0.60 (2017-11-28)
+    1) Links now correctly handle multiple archived enties for each entry and select last one given as current link
+    2) Community_Member_Display::drawStats() now works through all link types and includes archived link URLs in totals
+       to maintain continuity for stats when a member provides new URLs
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.59';
+    const VERSION = '1.0.60';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1011,55 +1013,9 @@ class Community_Member_Display extends Community_Member
         global $page_vars;
         $r =            $this->_record;
         $servicetimes = $this->drawServiceTimes();
-        $website =      (isset($r['link_website']) && $r['link_website'] ?
-            substr($r['link_website'], 2+strpos($r['link_website'], '//'))
-         :
-            ""
-        );
-        $facebook =     (isset($r['link_facebook']) && $r['link_facebook'] ?
-            substr($r['link_facebook'], 2+strpos($r['link_facebook'], '//'))
-         :
-            ""
-        );
-        $twitter =      (strpos($r['link_twitter'], '@')!==-1 ?
-            substr($r['link_twitter'], 1+strpos($r['link_twitter'], '@'))
-         :
-            ""
-        );
         $service_addr = $this->drawAddress('service_addr_');
         $verified =     ($r['date_survey_returned']!='0000-00-00' ? $r['date_survey_returned'] : false);
         $ministerial =  ($r['ministerial_title']!='' ? $r['ministerial_title'] : false);
-        $video_icon =   "-7980px 0px";
-        $video_label =  "Video";
-        if ($r['link_video']) {
-            $url_bits = explode('/', $r['link_video']);
-            if (count($url_bits)>2) {
-                switch ($url_bits[2]) {
-                    case 'livestream.com':
-                    case 'www.livestream.com':
-                    case 'new.livestream.com':
-                        $video_icon =   "-7950px 0px";
-                        $video_label =  "Livestream";
-                        break;
-                    case 'ustream.tv':
-                    case 'www.ustream.tv':
-                        $video_icon =   "-7966px 0px";
-                        $video_label =  "UStream";
-                        break;
-                    case 'vimeo.com':
-                    case 'www.vimeo.com':
-                        $video_icon =   "-7934px 0px";
-                        $video_label =  "Vimeo";
-                        break;
-                    case 'youtube.com':
-                    case 'www.youtube.com':
-                        $video_icon =   "-6154px 0px";
-                        $video_label =  "Youtube";
-                        break;
-                }
-            }
-            $video = substr($r['link_video'], 2+strpos($r['link_video'], '//'));
-        }
         $Obj_LA = new Language_Assign;
         $languages = $Obj_LA->get_text_csv_for_assignment($this->_get_assign_type(), $r['ID']);
         $this->_html.=
@@ -1160,50 +1116,18 @@ class Community_Member_Display extends Community_Member
                 "<h3>Regular Meeting Times:</h3><div style='margin:0 0 2em 1em;'>".$servicetimes."</div>"
              :
                 ""
-            )
-            .($r['link_website'] ?
-                 "<div class='label'><img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:-800px 0px;float:left;' />"
-                ."Web Site:</div>\n"
-                ."<div class='value'><a rel=\"external\" href=\"".$r['link_website']."\">".$website."</a></div>"
-             :
-                ""
-            )
-            .($r['link_facebook']?
-                 "<div class='label'><img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:14px;height:14px;margin:0px 5px 2px 0px;background-position:-3147px 0px;float:left;' />"
-                ."Facebook:</div>\n"
-                ."<div class='value'><a rel=\"external\" href=\""
-                .$r['link_facebook']."\">"
-                .$facebook
-                ."</a></div>"
-             :
-                ""
-            )
-            .($r['link_twitter']?
-                 "<div class='label'><img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:14px;height:14px;margin:2px 5px 2px 0px;background-position:-5420px 0px;float:left;' />"
-                ."Twitter:</div>\n"
-                ."<div class='value'><a rel=\"external\" href=\""
-                .$r['link_twitter']."\">"
-                .$twitter
-                ."</a></div>"
-             :
-                ""
-            )
-            .($r['link_video']?
-                 "<div class='label'><img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;float:left;"
-                ."background-position:".$video_icon."' />"
-                .$video_label.":</div>\n"
-                ."<div class='value'><a rel=\"external\" href=\""
-                .$r['link_video']."\">"
-                .$video
-                ."</a></div>"
-             :
-                ""
-            )
-            .($r['full_member'] || $r['primary_ministerialID'] ?
+            );
+        $link_types = explode(', ',Community_Member::LINK_TYPES);
+        foreach ($link_types as $idx => $type) {
+            $attr = $this->getLinkAttributes($type);
+            if ($attr['url']) {
+                $this->_html .=
+                     "<div class='label'>".$attr['icon'].' '.$attr['long'].":</div>"
+                    ."<div class='value'><a rel=\"external\" href=\"".$attr['url']."\">".$attr['url_s']."</a></div>";
+            }
+        }
+        $this->_html.=
+             ($r['full_member'] || $r['primary_ministerialID'] ?
              "<div class='label'>"
             ."<img class='icon' src='/img/spacer' alt='' title=''"
             ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:-8047px 0px;float:left;' />"
@@ -1480,58 +1404,6 @@ class Community_Member_Display extends Community_Member
             return;
         }
         $r =    $this->_record;
-        $video_icon =   "-7980px 0px";
-        $video_label =  "Video";
-        $website =      (isset($r['link_website']) && $r['link_website'] ?
-            substr($r['link_website'], 2+strpos($r['link_website'], '//'))
-         :
-            ""
-        );
-        $facebook =     (isset($r['link_facebook']) && $r['link_facebook'] ?
-            substr($r['link_facebook'], 2+strpos($r['link_facebook'], '//'))
-         :
-            ""
-        );
-        $twitter =      (strpos($r['link_twitter'], '@')!==-1 ?
-            substr($r['link_twitter'], 1+strpos($r['link_twitter'], '@'))
-         :
-            ""
-        );
-        if ($r['link_video']) {
-            $url_bits = explode('/', $r['link_video']);
-            if (count($url_bits)>2) {
-                switch ($url_bits[2]) {
-                    case 'livestream.com':
-                    case 'www.livestream.com':
-                    case 'new.livestream.com':
-                        $video_icon =   "-7950px 0px";
-                        $video_label =  "LS";
-                        $video_title =  "Livestream";
-                        break;
-                    case 'ustream.tv':
-                    case 'www.ustream.tv':
-                        $video_icon =   "-7966px 0px";
-                        $video_label =  "US";
-                        $video_title =  "UStream";
-                        break;
-                    case 'vimeo.com':
-                    case 'www.vimeo.com':
-                        $video_icon =   "-7934px 0px";
-                        $video_label =  "Vi";
-                        $video_title =  "Vimeo";
-                        break;
-                    case 'youtube.com':
-                    case 'www.youtube.com':
-                        $video_icon =   "-6154px 0px";
-                        $video_label =  "YT";
-                        $video_title =  "Youtube";
-                        break;
-                }
-            }
-            $video = substr($r['link_video'], 2+strpos($r['link_video'], '//'));
-        }
-        
-        
         $this->_html.=
              HTML::drawSectionTabDiv('stats', $this->_selected_section)
             ."<h2>".$this->_cp['label_stats']."</h2>"
@@ -1543,8 +1415,7 @@ class Community_Member_Display extends Community_Member
             ."      <th colspan='4' class='st_site st_line st_bord_t txt_c'>"
             .$system_vars['textEnglish']
             ."</th>\n"
-                
-                ."      <th colspan='4' class='st_comm st_line st_bord_t txt_c'>"
+            ."      <th colspan='4' class='st_comm st_line st_bord_t txt_c'>"
             ."Community of ".$this->_community_record['title']
             ."</th>\n"
             ."      <th colspan='8' class='st_prof st_bord_r st_bord_t txt_c'>".$r['title']." Profile</th>\n"
@@ -1558,56 +1429,23 @@ class Community_Member_Display extends Community_Member
             ."      <th colspan='2' class='st_comm st_line'>Visit Time</th>\n"
             ."      <th rowspan='2' class='st_prof st_bord_b'>Hits</th>\n"
             ."      <th rowspan='2' class='st_prof st_bord_b'>Visits</th>\n"
-            ."      <th colspan='2' class='st_prof st_line'>Visit Time</th>\n"
-            ."      <th rowspan='2' class='st_prof"
-            .($r['link_website']   ? '' : " st_void")
-            ."' title='Website Referals'>"
-            .($r['link_website'] ?
-                 "<a rel=\"external\" href=\"".$r['link_website']."\">"
-                ."<img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:-800px 0px;' /><br />"
-                ."Web</a>\n"
-             :
-                ""
-            )
-            ."</th>\n"
-            ."      <th rowspan='2' class='st_prof"
-            .($r['link_facebook']  ? '' : " st_void")
-            ."' title='Facebook Referals'>"
-            .($r['link_facebook']?
-                 "<a rel=\"external\" href=\"".$r['link_facebook']."\">"
-                ."<img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:14px;height:14px;margin:0px 5px 2px 0px;background-position:-3147px 0px;' /><br />"
-                ."FB</a>"
-             :
-                ""
-            )
-            ."</th>\n"
-            ."      <th rowspan='2' class='st_prof"
-            .($r['link_twitter']   ? '' : " st_void")
-            ."' title='Twitter Referals'>"
-            .($r['link_twitter']?
-                 "<a rel=\"external\" href=\"".$r['link_twitter']."\">"
-                ."<img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:14px;height:14px;margin:2px 5px 2px 0px;background-position:-5420px 0px;' /><br />"
-                ."TW</a>"
-             :
-                ""
-            )
-            ."</th>\n"
-            ."      <th rowspan='2' class='st_prof st_bord_r"
-            .($r['link_video']     ? '' : " st_void")
-            ."' title='".$video_title." Referals'>"
-            .($r['link_video']?
-                 "<a rel=\"external\" href=\"".$r['link_video']."\">"
-                ."<img class='icon' src='/img/spacer' alt='' title=''"
-                ." style='width:16px;height:16px;margin:0px 5px 2px 0px;background-position:".$video_icon."' /><br />"
-                .$video_label."</a>"
-             :
-                ""
-            )
-            ."</th>\n"
-            ."    </tr>\n"
+            ."      <th colspan='2' class='st_prof st_line'>Visit Time</th>\n";
+        $link_types = explode(', ',Community_Member::LINK_TYPES);
+        foreach ($link_types as $idx => $type) {
+            $attr = $this->getLinkAttributes($type);
+            $this->_html .=
+                "      <th rowspan='2' class='st_prof"
+                .($attr['url']   ? '' : ' st_void')
+                .($idx+1 === count($link_types) ? ' st_bord_r' : '')
+                ."'"
+                ." title='".$attr['long']." Referrals'>"
+                .($attr['url'] ? "<a rel=\"external\" href=\"".$attr['url']."\">" : "").$attr['icon']."<br />"
+                .$attr['short']
+                .($attr['url'] ? "</a>" : "")
+                ."</th>\n";
+        }
+        $this->_html.=
+             "    </tr>\n"
             ."    <tr>\n"
             ."      <th class='st_site st_bord_b'>Avg</th>\n"
             ."      <th class='st_site st_bord_b st_line'>Tot</th>\n"
@@ -1692,36 +1530,27 @@ class Community_Member_Display extends Community_Member
                 ."</td>\n"
                 ."      <td class='st_prof st_line".$bord_b."'>"
                 .($prof['time_t'] ? format_seconds($prof['time_t']) : "&nbsp;")
-                ."</td>\n"
-                ."      <td class='st_link".$bord_b."'>"
-                .($r['link_website']  && isset($link[$r['link_website']]['hits']) && $link[$r['link_website']]['hits'] ?
-                    $link[$r['link_website']]['hits']
-                 :
-                    "&nbsp;"
-                )
-                ."</td>\n"
-                ."      <td class='st_link".$bord_b."'>"
-                .($r['link_facebook'] && isset($link[$r['link_facebook']]['hits']) && $link[$r['link_facebook']]['hits'] ?
-                    $link[$r['link_facebook']]['hits']
-                 :
-                    "&nbsp;"
-                )
-                ."</td>\n"
-                ."      <td class='st_link".$bord_b."'>"
-                .($r['link_twitter']  && isset($link[$r['link_twitter']]['hits']) && $link[$r['link_twitter']]['hits'] ?
-                    $link[$r['link_twitter']]['hits']
-                 :
-                    "&nbsp;"
-                )
-                ."</td>\n"
-                ."      <td class='st_link st_bord_r".$bord_b."'>"
-                .($r['link_video']    && isset($link[$r['link_video']]['hits']) && $link[$r['link_video']]['hits'] ?
-                    $link[$r['link_video']]['hits']
-                 :
-                    "&nbsp;"
-                )
-                ."</td>\n"
-                ."    </tr>\n";
+                ."</td>\n";
+
+            $link_types = explode(', ',Community_Member::LINK_TYPES);
+            foreach ($link_types as $type) {
+                $hits = 0;
+                if ($r['link_' . $type]) {
+                    $link_arr = explode('|', $r['link_' . $type]);
+                    foreach ($link_arr as $la) {
+                        if (isset($this->_stats[$YYYYMM]['links'][$la]['hits'])) {
+                            $hits += $this->_stats[$YYYYMM]['links'][$la]['hits'];
+                        }
+                    }
+
+                }
+                $this->_html .=
+                    "      <td class='st_link" . $bord_b . "'>"
+                    . ($hits ? $hits : '&nbsp;')
+                    . "</td>\n";
+            }
+            $this->_html.=
+                 "    </tr>\n";
             if (substr($YYYYMM, 5, 2)=='01') {
                 $this->_html.=
                      "<tr>\n"

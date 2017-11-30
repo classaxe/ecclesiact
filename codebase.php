@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.9");
+define("CODEBASE_VERSION", "5.4.10");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -18,33 +18,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.9.2517 (2017-11-18)
+5.4.10.2518 (2017-11-30)
 Summary:
-  Visitor stats now include stats for the whole site 
+  Now supports having archived but tracked URLs for web, facebook, twitter and video for community members
 
 Final Checksums:
-  Classes     CS:275f09bf
+  Classes     CS:57fb64fb
   Database    CS:9d8abddc
-  Libraries   CS:1a3206f6
+  Libraries   CS:2151d72d
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.9     (2017-11-19)
+  codebase.php                                                                                   5.4.10    (2017-11-30)
     1) Updated version information
-  classes/class.community_member_display.php                                                     1.0.59    (2017-11-19)
-    1) Now includes Site Stats in Community_Member_Display::drawStats() and icons for referal services
-  style/community.css                                                                            1.0.6     (2017-11-19)
-    1) Moved code for Easter and Christmas services into here
+  classes/class.community_display.php                                                            1.0.54    (2017-11-28)
+    1) Changes to Community_Display::drawMember() to handle archived entries in website URL field
+  classes/class.community_member.php                                                             1.0.120   (2017-11-28)
+    1) New method added getLinkAttributes() to greatly simplify parsing of links to generate correct icon,
+       short and long format labels and short and long form URL even where a field contains archived entries
+    2) Community_Member::get_stats() now includes archived URLs in links collection
+  classes/class.community_member_display.php                                                     1.0.60    (2017-11-28)
+    1) Links now correctly handle multiple archived enties for each entry and select last one given as current link
+    2) Community_Member_Display::drawStats() now works through all link types and includes archived link URLs in totals
+       to maintain continuity for stats when a member provides new URLs
 
-2517.sql
+2518.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.4.9
-  classes/  (1 file changed)
-    class.community_member_display.php                1.0.59    CS:5b4bb009
-  style/community.css                                 1.0.6     CS:1842765c
-
+  codebase.php                                        5.4.10
+  classes/  (3 files changed)
+    class.community_display.php                       1.0.54    CS:4248185e
+    class.community_member.php                        1.0.120   CS:cdb0ff1a
+    class.community_member_display.php                1.0.60    CS:95885df6
 
 
 
