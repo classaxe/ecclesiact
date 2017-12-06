@@ -1,3 +1,7 @@
+  1.0.120 (2017-11-28)
+    1) New method added getLinkAttributes() to greatly simplify parsing of links to generate correct icon,
+       short and long format labels and short and long form URL even where a field contains archived entries
+    2) Community_Member::get_stats() now includes archived URLs in links collection
   1.0.119 (2017-11-18)
     1) Bug fix for Community_Member::get_stats() to correctly handle collecting complete range if a new member with
        no stats history is indexed

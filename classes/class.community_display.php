@@ -5,18 +5,15 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
-/*
 Version History:
-  1.0.54 (2017-11-28)
-    1) Changes to Community_Display::drawMember() to handle archived entries in website URL field
-    2) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
+  1.0.55 (2017-12-01)
+    1) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
        with support for legacy URLs in profile and all links
-    TODO
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.54';
+    const VERSION = '1.0.55';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2160,6 +2157,19 @@ class Community_Display extends Community
         if (DEV_STATUS && !PIWIK_DEV) {
             return;
         }
+        $field = draw_form_field(
+            'startDate',
+            '',
+            'year_month',
+            '',
+            '',
+            0,
+            '',
+            0,
+            0,
+            '',
+            STATS_START_DATE
+        );
         $this->_html.=
              HTML::drawSectionTabDiv('stats', $this->_selected_section)
             ."<h2>".$this->_cp['label_stats']."</h2>"
@@ -2167,10 +2177,10 @@ class Community_Display extends Community
             ."<fieldset>\n"
             ."<legend>Report Settings</legend>\n"
             .Report_Column::draw_label('Start Date', 'Start date for report', 'stats_date_start', false, 100)
-            .draw_form_field('stats_date_start', $this->_stats_date_start, 'date')
+            .draw_form_field('stats_date_start', $this->_stats_date_start, 'year_month', 75,'', 0, '', 0, 0, '', STATS_START_DATE)
             ."<br class='clr_b' />\n"
             .Report_Column::draw_label('End Date', 'End date for report', 'stats_date_end', false, 100)
-            .draw_form_field('stats_date_end', $this->_stats_date_end, 'date')
+            .draw_form_field('stats_date_end', $this->_stats_date_end,  'year_month', 75,'', 0, '', 0, 0, '', STATS_START_DATE)
             ."<br class='clr_b' />\n"
             ."<div class='txt_c'><input type='submit' value='Update' /></div>\n"
             ."</fieldset>\n"
@@ -2339,12 +2349,12 @@ class Community_Display extends Community
         $this->_stats_date_start = (get_var('stats_date_start') ?
             get_var('stats_date_start')
          :
-            substr(get_timestamp(), 0, 10)
+            substr(get_timestamp(), 0, 7)
         );
         $this->_stats_date_end =   (get_var('stats_date_end') ?
             get_var('stats_date_end')
          :
-            substr(get_timestamp(), 0, 10)
+            substr(get_timestamp(), 0, 7)
         );
         $this->setupListingsLoadUserRights();
         if ($this->_current_user_rights['canEdit']) {
@@ -2413,52 +2423,16 @@ class Community_Display extends Community
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        $Obj_Piwik = new Piwik;
-        $names = array();
-        $communityURL = BASE_PATH.trim($this->_community_record['URL'], '/');
-        foreach ($this->_records as $r) {
-            $names[] = $communityURL.'/'.$r['name'];
+        $r = $this->load();
+        foreach ($this->_records as &$member) {
+            $Obj_CM = new Community_Member($member['ID']);
+            $Obj_CM->_community_record = $r;
+            $member['stats'] = $Obj_CM->get_stats($this->_stats_date_start, $this->_stats_date_end);
         }
-        $find = implode('|', $names);
-        $this->_track_outlinks = $Obj_Piwik->get_outlinks($this->_stats_date_start, $this->_stats_date_end, '');
-        $this->_track_views =    $Obj_Piwik->get_visit($this->_stats_date_start, $this->_stats_date_end, $find);
-        if ($this->_track_views === false) {
-            return;
+        foreach ($this->_records as $member) {
+//            y($member); die;
         }
-        foreach ($this->_records as &$r) {
-            $link_types = explode(', ',Community_Member::LINK_TYPES);
-            $r['links'] = array();
-            foreach ($link_types as $l) {
-                $r['links'][$l] = array('hits'=>'-', 'visits' => '-');
-                if ($r['link_'.$l]) {
-                    $url =    trim($r['link_'.$l], '/');
-                    if (isset($this->_track_outlinks[$url])) {
-                        $r['links'][$l] = $this->_track_outlinks[$url];
-                    }
-                    if (isset($this->_track_outlinks[$url.'/'])) {
-                        $r['links'][$l] = $this->_track_outlinks[$url.'/'];
-                    }
-                }
-            }
-            $r['profile_hits'] =      '-';
-            $r['profile_visits'] =    '-';
-            foreach ($this->_track_views as $site => $data) {
-                if ($site === '/'.trim($r['member_URL'], '/')) {
-                    $r['profile_hits'] =     $data['hits'];
-                    $r['profile_visits'] =   $data['visits'];
-                }
-            }
-        }
-        foreach ($this->_sponsors_national_records as &$r) {
-            $r['links'] =     array('hits'=>'-', 'visits' => '-');
-            $url =    trim($r['URL'], '/');
-            if (isset($this->_track_outlinks[$url])) {
-                $r['links'] = $this->_track_outlinks[$url];
-            }
-            if (isset($this->_track_outlinks[$url.'/'])) {
-                $r['links'] = $this->_track_outlinks[$url.'/'];
-            }
-        }
+//        $this->get_stats($this->_stats_date_start, $this->_stats_date_end);
     }
 
     protected function setupListingsLoadRecords()

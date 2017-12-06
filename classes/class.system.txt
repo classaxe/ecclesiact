@@ -1,3 +1,8 @@
+  1.0.183 (2017-11-17)
+    1) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
+       if those systems are enabled
+    2) Bug fix for System::get_stats() to correctly handle collecting complete range if a new site with
+       no stats history is indexed
   1.0.182 (2017-11-15)
     1) Added stats_cache to FIELDS list
   1.0.181 (2017-11-10)

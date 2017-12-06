@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.10");
+define("CODEBASE_VERSION", "5.4.11");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -18,40 +18,47 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.10.2518 (2017-11-30)
+5.4.11.2519 (2017-12-06)
 Summary:
-  Now supports having archived but tracked URLs for web, facebook, twitter and video for community members
+  Work twoards getting community to read stats from same cache as for members - by month
 
 Final Checksums:
-  Classes     CS:57fb64fb
+  Classes     CS:7c668cf5
   Database    CS:9d8abddc
-  Libraries   CS:2151d72d
+  Libraries   CS:a81db451
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.10    (2017-11-30)
+  codebase.php                                                                                   5.4.11    (2017-12-06)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.54    (2017-11-28)
-    1) Changes to Community_Display::drawMember() to handle archived entries in website URL field
-  classes/class.community_member.php                                                             1.0.120   (2017-11-28)
-    1) New method added getLinkAttributes() to greatly simplify parsing of links to generate correct icon,
-       short and long format labels and short and long form URL even where a field contains archived entries
-    2) Community_Member::get_stats() now includes archived URLs in links collection
-  classes/class.community_member_display.php                                                     1.0.60    (2017-11-28)
-    1) Links now correctly handle multiple archived enties for each entry and select last one given as current link
-    2) Community_Member_Display::drawStats() now works through all link types and includes archived link URLs in totals
-       to maintain continuity for stats when a member provides new URLs
+  classes/class.community.php                                                                    1.0.124   (2017-12-06)
+    1) Community::get_stats() now has optional start and end date
+  classes/class.community_display.php                                                            1.0.55    (2017-12-01)
+    1) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
+       with support for legacy URLs in profile and all links
+  classes/class.community_member.php                                                             1.0.121   (2017-12-05)
+    1) Community_Member::get_stats() now has optional start and end date
+  classes/class.report_column.php                                                                1.0.148   (2017-12-01)
+    1) Internals for Report_Column::draw_form_field() now moved into new class as Report_Column_Form_Field::draw()
+       with the original method here now acting merely as a stub
+  classes/class.state_province.php                                                               1.0.5     (2017-12-01)
+    1) Archived old version details, now uses class constant for version control
+  classes/class.system.php                                                                       1.0.184   (2017-12-05)
+    1) System::get_stats() now has optional start and end date
 
-2518.sql
-  1) Set version information
+2519.sql
+  1) New Column Type - 'year_month' - with text 'VALUE: YYYY-MM'
+  2) Set version information
 
 Promote:
-  codebase.php                                        5.4.10
-  classes/  (3 files changed)
-    class.community_display.php                       1.0.54    CS:4248185e
-    class.community_member.php                        1.0.120   CS:cdb0ff1a
-    class.community_member_display.php                1.0.60    CS:95885df6
-
+  codebase.php                                        5.4.11
+  classes/  (6 files changed)
+    class.community.php                               1.0.124   CS:b9b7a5fe
+    class.community_display.php                       1.0.55    CS:eae539a2
+    class.community_member.php                        1.0.121   CS:7ebbf052
+    class.report_column.php                           1.0.148   CS:d4011762
+    class.state_province.php                          1.0.5     CS:a06da31a
+    class.system.php                                  1.0.184   CS:477f8c68
 
 
 Bug:
@@ -1327,7 +1334,7 @@ function draw_form_field(
     if ($type=='hidden') {
         return "<input type=\"hidden\" id=\"".$field."\" name=\"".$field."\" value=\"".$value."\" />";
     }
-    $Obj = new Report_Column;
+    $Obj = new Report_Column_Form_Field;
     $row = array();
     return $Obj->draw_form_field(
         $row,

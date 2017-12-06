@@ -1,3 +1,5 @@
+  1.0.54 (2017-11-28)
+    1) Changes to Community_Display::drawMember() to handle archived entries in website URL field
   1.0.53 (2017-11-14)
     1) Now uses global constant DEV_STATUS in Community_Display::drawStats() and
        Community_Display::setupListingsLoadPiwikStats() to exit early, unless PIWIK_DEV is enabled
