@@ -1,9 +1,10 @@
 <?php
-define("CODEBASE_VERSION", "5.4.11");
+define("CODEBASE_VERSION", "5.4.12");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
+define("DEBUG_NO_INTERNET", 1);
 define("PWD_LEN_MIN", 4);
 define("SYS_LOG_SLOW", 5);  // Flag queries longer than this (mS) as SLOW in debug file
 define("PIWIK_DEV", 1);     // '1' forces community modules to engage with Piwik stats
@@ -18,48 +19,69 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.11.2519 (2017-12-06)
+5.4.12.2520 (2017-12-13)
 Summary:
-  Work twoards getting community to read stats from same cache as for members - by month
+  1) Now indicates system time in Scheduled Tasks report and current systemID in sites report
+  2) Now detects whether Piwik is accessible before ever attempting to refresh stats using it
+  3) Now checks for DEBUG_NO_INTERNET constant in addition to system field of similar name
 
 Final Checksums:
-  Classes     CS:7c668cf5
+  Classes     CS:77009760
   Database    CS:9d8abddc
-  Libraries   CS:a81db451
+  Libraries   CS:e8b81794
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.11    (2017-12-06)
+  codebase.php                                                                                   5.4.12    (2017-12-13)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.124   (2017-12-06)
-    1) Community::get_stats() now has optional start and end date
-  classes/class.community_display.php                                                            1.0.55    (2017-12-01)
-    1) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
-       with support for legacy URLs in profile and all links
-  classes/class.community_member.php                                                             1.0.121   (2017-12-05)
-    1) Community_Member::get_stats() now has optional start and end date
-  classes/class.report_column.php                                                                1.0.148   (2017-12-01)
-    1) Internals for Report_Column::draw_form_field() now moved into new class as Report_Column_Form_Field::draw()
-       with the original method here now acting merely as a stub
-  classes/class.state_province.php                                                               1.0.5     (2017-12-01)
-    1) Archived old version details, now uses class constant for version control
-  classes/class.system.php                                                                       1.0.184   (2017-12-05)
-    1) System::get_stats() now has optional start and end date
+  classes/class.community.php                                                                    1.0.125   (2017-12-13)
+    1) Community::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from Community::get_stats()
+  classes/class.community_display.php                                                            1.0.56    (2017-12-13)
+    1) Community_Display::setupListingsLoadPiwikStats() now calls each member's get_stats() without trying to
+       set start and end dates
+  classes/class.community_member.php                                                             1.0.122   (2017-12-13)
+    1) Community_Member::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from Community_Member::get_stats()
+  classes/class.community_member_display.php                                                     1.0.61    (2017-12-13)
+    1) Changed order in which stats are obtained in Community_Member_Display::setupLoadStats()
+       to have system, then community, then member load in that specific order
+  classes/class.layout.php                                                                       1.0.43    (2017-12-12)
+    1) Implemented handling of DEBUG_NO_INTERNET
+  classes/class.piwik.php                                                                        1.0.4     (2017-12-13)
+    1) Added methods getServerVersion() and isOnline()
+    2) Moved connection auth setup into constructor
+    3) PSR-2 fixes
+  classes/class.report_report.php                                                                1.0.38    (2017-12-13)
+    1) Added display of current systemID on sites report and system time for scheduled tasks
+  classes/class.system.php                                                                       1.0.185   (2017-12-13)
+    1) System::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from System::get_stats()
+    3) Checks for Akismet Key Status and Bug Tracker now implement new DEBUG_NO_INTERNET flag if set
+  classes/component/twitter.php                                                                  1.0.1     (2017-12-13)
+    1) Implemented handling of system constant DEBUG_NO_INTERNET where set
+  classes/map/googlemap.php                                                                      1.0.4     (2017-12-12)
+    1) Implemented DEBUG_NO_INTERNET handling
+  classes/output.php                                                                             1.0.4     (2017-12-12)
+    1) Implemented handing of DEBUG_NO_INTERNET
 
-2519.sql
-  1) New Column Type - 'year_month' - with text 'VALUE: YYYY-MM'
-  2) Set version information
+2520.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.4.11
-  classes/  (6 files changed)
-    class.community.php                               1.0.124   CS:b9b7a5fe
-    class.community_display.php                       1.0.55    CS:eae539a2
-    class.community_member.php                        1.0.121   CS:7ebbf052
-    class.report_column.php                           1.0.148   CS:d4011762
-    class.state_province.php                          1.0.5     CS:a06da31a
-    class.system.php                                  1.0.184   CS:477f8c68
-
+  codebase.php                                        5.4.12
+  classes/  (11 files changed)
+    class.community.php                               1.0.125   CS:ce8b7128
+    class.community_display.php                       1.0.56    CS:30ef9048
+    class.community_member.php                        1.0.122   CS:6e9215b
+    class.community_member_display.php                1.0.61    CS:cdb879d9
+    class.layout.php                                  1.0.43    CS:ff60dd75
+    class.piwik.php                                   1.0.4     CS:b95767e
+    class.report_report.php                           1.0.38    CS:bf08a0ad
+    class.system.php                                  1.0.185   CS:27aaa0ed
+    component/twitter.php                             1.0.1     CS:28865b6c
+    map/googlemap.php                                 1.0.4     CS:79e43212
+    output.php                                        1.0.4     CS:e73d74de
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

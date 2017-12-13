@@ -3,12 +3,12 @@ namespace Map;
 
 /*
 Version History:
-  1.0.3 (2017-10-09)
-    1) Added support for Google Maps Key where required (say for non-public dev sites)
+  1.0.4 (2017-12-12)
+    1) Implemented DEBUG_NO_INTERNET handling
 */
 class GoogleMap extends \Base
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     public $function_code;
     public $function_code_loader;
@@ -350,7 +350,7 @@ class GoogleMap extends \Base
         }
 
         $this->jsSetup();
-        if (!$system_vars['debug_no_internet']) {
+        if (!DEBUG_NO_INTERNET && !$system_vars['debug_no_internet']) {
             \Output::push(
                 'javascript_onload',
                 "  ".$this->id."_code.push(new function(){\n"
@@ -362,9 +362,9 @@ class GoogleMap extends \Base
              "<div class=\"google_map\""
             ." id=\"".$this->id."\""
             ." style=\"width:".$map_width."px;height:".$map_height."px;"
-            .($system_vars['debug_no_internet'] ? "background:#a0c0a0;" : "")
+            .(DEBUG_NO_INTERNET || $system_vars['debug_no_internet'] ? "background:#a0c0a0;" : "")
             ."\">"
-            .($system_vars['debug_no_internet'] ?
+            .(DEBUG_NO_INTERNET || $system_vars['debug_no_internet'] ?
                  "<div style=\"line-height:".$map_height."px;text-align: center; font-size:24pt;\">"
                 ."(No Internet Connection)</div>"
              :
@@ -807,7 +807,7 @@ class GoogleMap extends \Base
     public function jsSetup()
     {
         global $system_vars;
-        if ($system_vars['debug_no_internet']) {
+        if (DEBUG_NO_INTERNET || $system_vars['debug_no_internet']) {
             \Output::push(
                 'javascript',
                 "var ".$this->id."_code=[];\n"

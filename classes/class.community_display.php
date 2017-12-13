@@ -6,14 +6,14 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.55 (2017-12-01)
-    1) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
-       with support for legacy URLs in profile and all links
+  1.0.56 (2017-12-13)
+    1) Community_Display::setupListingsLoadPiwikStats() now calls each member's get_stats() without trying to
+       set start and end dates
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.55';
+    const VERSION = '1.0.56';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2427,7 +2427,7 @@ class Community_Display extends Community
         foreach ($this->_records as &$member) {
             $Obj_CM = new Community_Member($member['ID']);
             $Obj_CM->_community_record = $r;
-            $member['stats'] = $Obj_CM->get_stats($this->_stats_date_start, $this->_stats_date_end);
+            $member['stats'] = $Obj_CM->get_stats();
         }
         foreach ($this->_records as $member) {
 //            y($member); die;

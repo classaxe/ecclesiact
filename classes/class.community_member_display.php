@@ -5,14 +5,14 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.60 (2017-11-28)
-    1) Links now correctly handle multiple archived enties for each entry and select last one given as current link
-    2) Community_Member_Display::drawStats() now works through all link types and includes archived link URLs in totals
-       to maintain continuity for stats when a member provides new URLs
+  1.0.61 (2017-12-13)
+    1) Changed order in which stats are obtained in Community_Member_Display::setupLoadStats()
+       to have system, then community, then member load in that specific order
+
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.60';
+    const VERSION = '1.0.61';
 
     protected $_events =                  array();
     protected $_events_christmas =        array();
@@ -1716,9 +1716,9 @@ class Community_Member_Display extends Community_Member
         if (!$this->_current_user_rights['canViewStats']) {
             return;
         }
-        $this->get_stats();
-        $this->_Obj_Community->get_stats();
         $this->_Obj_System->get_stats();
+        $this->_Obj_Community->get_stats();
+        $this->get_stats();
     }
 
     protected function setupLoadSystemRecord()

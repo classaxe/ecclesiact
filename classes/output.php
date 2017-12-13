@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.3 (2016-01-01)
-    1) Output::isPresent() now declared statically
-    2) All other internal static calls to Output::method() now called sa static::method()
+  1.0.4 (2017-12-12)
+    1) Implemented handing of DEBUG_NO_INTERNET
 */
 
 class Output
 {
-    const VERSION = '1.0.3';
+    const VERSION = '1.0.4';
 
     public static $content = array(
         'body' =>                     array(),
@@ -53,7 +52,7 @@ class Output
         return
          "<script type=\"text/javascript\""
         ." src=\""
-         .($system_vars['debug_no_internet']==1 ?
+         .(DEBUG_NO_INTERNET || $system_vars['debug_no_internet']==1 ?
             BASE_PATH."sysjs/jquery/1.11.0"
           :
             "//code.jquery.com/jquery-1.11.0.min.js"
@@ -61,7 +60,7 @@ class Output
         ."\"></script>\r\n"
         ."<script type=\"text/javascript\""
         ." src=\""
-        .($system_vars['debug_no_internet']==1 ?
+        .(DEBUG_NO_INTERNET || $system_vars['debug_no_internet']==1 ?
             BASE_PATH."sysjs/jquery-migrate/1.2.1"
          :
             "//code.jquery.com/jquery-migrate-1.2.1.min.js"
@@ -70,7 +69,7 @@ class Output
         ."</script>\r\n"
         ."<script type=\"text/javascript\""
         ." src=\""
-        .($system_vars['debug_no_internet']==1 ?
+        .(DEBUG_NO_INTERNET || $system_vars['debug_no_internet']==1 ?
             BASE_PATH."sysjs/jquery-ui/1.10.4"
          :
             "//code.jquery.com/ui/1.10.4/jquery-ui.min.js"

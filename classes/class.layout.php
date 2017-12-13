@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.42 (2017-11-15)
-    1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
+  1.0.43 (2017-12-12)
+    1) Implemented handling of DEBUG_NO_INTERNET
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.42';
+    const VERSION = '1.0.43';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -370,6 +370,7 @@ class Layout extends Record
             ."system_family =     \"".System::get_item_version('system_family')."\";\n"
             ."valid_prefix =      \"vp_\"; // Used with controls in Custom_Form class\n"
             .(
+                !DEBUG_NO_INTERNET &&
                 $system_vars['debug_no_internet']!=1 &&
                 $system_vars['google_analytics_key']!='' &&
                 $mode!='details' &&
@@ -383,6 +384,7 @@ class Layout extends Record
                 : ""
              )
             .(
+                !DEBUG_NO_INTERNET &&
                 $system_vars['debug_no_internet']!=1 &&
                 $system_vars['piwik_id'] &&
                 $mode!='details' &&
@@ -490,6 +492,7 @@ class Layout extends Record
         );
         if (
             Base::module_test('Church') &&
+            !DEBUG_NO_INTERNET &&
             $system_vars['debug_no_internet']!=1 &&
             $mode!='details' &&
             $mode!='report'
@@ -681,6 +684,7 @@ class Layout extends Record
             ."system_family =     \"".System::get_item_version('system_family')."\";\n"
             ."valid_prefix =      \"vp_\"; // Used with controls in Custom_Form class\n"
             .(
+                !DEBUG_NO_INTERNET &&
                 $system_vars['debug_no_internet']!=1 &&
                 $system_vars['google_analytics_key']!='' &&
                 $mode!='details' &&
@@ -694,6 +698,7 @@ class Layout extends Record
                 : ""
              )
             .(
+                !DEBUG_NO_INTERNET &&
                 $system_vars['debug_no_internet']!=1 &&
                 $system_vars['piwik_id'] &&
                 $mode!='details' &&
@@ -816,6 +821,7 @@ class Layout extends Record
         );
         if (
             Base::module_test('Church') &&
+            !DEBUG_NO_INTERNET &&
             $system_vars['debug_no_internet']!=1 &&
             $mode!='details' &&
             $mode!='report'

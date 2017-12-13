@@ -1,3 +1,6 @@
+  1.0.3 (2016-01-01)
+    1) Output::isPresent() now declared statically
+    2) All other internal static calls to Output::method() now called sa static::method()
   1.0.2 (2015-10-25)
     1) Output::drawJsInclude() now calls for the following renamed files when debug_no_internet is set:
            sysjs/jqueryui       ->  sysjs/jquery-ui

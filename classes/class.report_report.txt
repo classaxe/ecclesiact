@@ -1,3 +1,5 @@
+  1.0.37 (2017-11-11)
+    1) Now implements 'with selected' operations 'disable' and 'enable'
   1.0.36 (2017-11-03)
     1) Added hook for PII scrubbing of Systems
   1.0.35 (2017-10-10)

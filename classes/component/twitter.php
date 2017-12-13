@@ -3,12 +3,12 @@ namespace Component;
 
 /*
 Version History:
-  1.0.0 (2016-05-15)
-    1) Moved here from class.component_twitter.php
+  1.0.1 (2017-12-13)
+    1) Implemented handling of system constant DEBUG_NO_INTERNET where set
 */
 class Twitter extends Base
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     public function __construct()
     {
@@ -47,7 +47,7 @@ class Twitter extends Base
         global $system_vars;
         $this->setup($instance, $args, $disable_params);
         $this->drawControlPanel(true);
-        if ($system_vars['debug_no_internet']==1) {
+        if (DEBUG_NO_INTERNET || $system_vars['debug_no_internet']==1) {
             $this->_html.="<b>Twitter Panel Offline</b> -<br />No Internet Connection";
             return $this->_html;
         }

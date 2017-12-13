@@ -1,3 +1,6 @@
+  1.0.3 (2017-08-26)
+    1) Fix to deal with Piwik not being installed in community edition when logged in and viewing member
+    2) Now uses VERSION constant for version control
   1.0.2 (2014-02-05)
     1) Piwik::get_outlinks() is incapable of accepting a filter so removed 'find'
     2) Added Piwik::get_outlink() - takes a pipe delimited find parameter

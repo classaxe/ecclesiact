@@ -1,3 +1,5 @@
+  1.0.42 (2017-11-15)
+    1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
   1.0.41 (2017-08-27)
     1) Replaced clipboard copy code in Memory Monitor with newer external library based methods
   1.0.40 (2016-07-02)

@@ -1,3 +1,5 @@
+  1.0.121 (2017-12-05)
+    1) Community_Member::get_stats() now has optional start and end date
   1.0.120 (2017-11-28)
     1) New method added getLinkAttributes() to greatly simplify parsing of links to generate correct icon,
        short and long format labels and short and long form URL even where a field contains archived entries

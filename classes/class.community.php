@@ -3,13 +3,14 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.124 (2017-12-06)
-    1) Community::get_stats() now has optional start and end date
+  1.0.125 (2017-12-13)
+    1) Community::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from Community::get_stats()
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.124';
+    const VERSION = '1.0.125';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, stats_cache, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -194,11 +195,11 @@ class Community extends Displayable_Item
         return $this->get_records_for_sql($sql);
     }
 
-    public function get_stats($start = false, $end = false)
+    public function get_stats()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $start =    ($start ? $start : STATS_START_DATE);
-        $end =      ($end  ? $end : date('Y-m-d', time()));
+        $start =    STATS_START_DATE;
+        $end =      date('Y-m-d', time());
         $step =     '+1 month';
         $format =   'Y-m';
 
@@ -217,8 +218,11 @@ class Community extends Displayable_Item
             // Got some stats, but not today. Try again starting from month we last parsed
             $start = substr($this->_stats['cache_date'], 0, 7).'-01';
         }
-        $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         $Obj_Piwik = new Piwik;
+        if (!$Obj_Piwik->isOnline()) {
+            return $this->_stats;
+        }
+        $dates_to_check = get_dates_in_range($start, $end, $step, $format);
         foreach ($dates_to_check as $YYYYMM) {
             $this->_stats[$YYYYMM] = array(
                 'visits' => $Obj_Piwik->get_visit($YYYYMM, '', $find)

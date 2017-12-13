@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.37 (2017-11-11)
-    1) Now implements 'with selected' operations 'disable' and 'enable'
+  1.0.38 (2017-12-13)
+    1) Added display of current systemID on sites report and system time for scheduled tasks
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.37';
+    const VERSION = '1.0.38';
 
     public function do_commands()
     {
@@ -1080,6 +1080,18 @@ class Report_Report extends Report
             $msg =
                 "<b>Information:</b> In order to preserve memory, the number of records shown has been limited to "
                 .$limit;
+        }
+        switch ($report_name) {
+            case "scheduler":
+                $timestamp = get_timestamp_extended();
+                $msg =
+                    "<b>Information:</b> Server Time is ".substr($timestamp, 0, 19)
+                    .", DOW is ".substr($timestamp, 20, 1)
+                    .", DOM is ".substr($timestamp, 22, 1);
+                break;
+            case "system":
+                $msg = "<b>Information:</b> The SystemID of this site is ".SYS_ID;
+                break;
         }
         if ($offset>$record_count) {
             $offset = 0;

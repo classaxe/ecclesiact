@@ -5,13 +5,14 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.121 (2017-12-05)
-    1) Community_Member::get_stats() now has optional start and end date
+  1.0.122 (2017-12-13)
+    1) Community_Member::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from Community_Member::get_stats()
 */
 
 class Community_Member extends Displayable_Item
 {
-    const VERSION = '1.0.121';
+    const VERSION = '1.0.122';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, gallery_albumID, podcast_albumID, primary_communityID, primary_ministerialID, admin_notes, attention_required, contact_history, date_photo_taken, date_survey_returned, date_welcome_letter, date_went_live, languages, link_facebook, link_twitter, link_video, link_website, mailing_addr_line1, mailing_addr_line2, mailing_addr_city, mailing_addr_country, mailing_addr_postal, mailing_addr_sp, office_addr_line1, office_addr_line2, office_addr_city, office_addr_country, office_addr_postal, office_addr_sp, office_fax, office_map_desc, office_map_geocodeID, office_map_geocode_address, office_map_geocode_area, office_map_geocode_quality, office_map_geocode_type, office_map_loc, office_map_lat, office_map_lon, office_notes, office_phone1_lbl, office_phone1_num, office_phone2_lbl, office_phone2_num, office_times_sun, office_times_mon, office_times_tue, office_times_wed, office_times_thu, office_times_fri, office_times_sat, service_addr_line1, service_addr_line2, service_addr_city, service_addr_country, service_addr_postal, service_addr_sp, service_map_desc, service_map_geocodeID, service_map_geocode_address, service_map_geocode_area, service_map_geocode_quality, service_map_geocode_type, service_map_loc, service_map_lat, service_map_lon, service_notes, service_times_sun, service_times_mon, service_times_tue, service_times_wed, service_times_thu, service_times_fri, service_times_sat, stats_cache, name, name_aliases, title, category, contactID, contact_NFirst, contact_NGreeting, contact_NLast, contact_NMiddle, contact_NTitle, contact_PEmail, contact_Telephone, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_verified, dropbox_folder, dropbox_last_checked, dropbox_last_filelist, dropbox_last_status, featured_image, full_member, partner_csv, PEmail, shortform_name, signatories, summary, type, URL, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const LINK_TYPES = 'website, facebook, twitter, video';
     const DASHBOARD_HEIGHT = 500;
@@ -1159,18 +1160,32 @@ class Community_Member extends Displayable_Item
         return Record::get_records_for_sql($sql);
     }
 
-    public function get_stats($start = false, $end = false)
+    public function get_stats()
     {
         set_time_limit(600);    // Extend maximum execution time to 10 mins
-        $start =    ($start ? $start : STATS_START_DATE);
-        $end =      ($end ? $end : date('Y-m-d', time()));
+        $start =    STATS_START_DATE;
+        $end =      date('Y-m-d', time());
         $step =     '+1 month';
         $format =   'Y-m';
 
+        $this->_stats_dates =   get_dates_in_range($start, $end, $step, $format);
         $r =        $this->_record;
 
-        $dates_to_check =       get_dates_in_range($start, $end, $step, $format);
-        $this->_stats_dates =   $dates_to_check;
+        if ($r['stats_cache']) {
+            $this->_stats = unserialize($r['stats_cache']);
+            if (isset($this->_stats['cache_date']) && $this->_stats['cache_date']==$end) {
+                // Got stats already today, quit early
+                return $this->_stats;
+            }
+            // Got some stats, but not today. Try again starting from month we last parsed
+            $start = substr($this->_stats['cache_date'], 0, 7).'-01';
+        }
+
+        $Obj_Piwik = new Piwik;
+        if (!$Obj_Piwik->isOnline()) {
+            return $this->_stats;
+        }
+
         $communityURL =         BASE_PATH.trim($this->_community_record['URL'], '/');
         $find_arr =             array(
             $communityURL.'/'.trim($r['name'])
@@ -1193,17 +1208,7 @@ class Community_Member extends Displayable_Item
             }
         }
         $links =    implode('|', $links);
-        if ($r['stats_cache']) {
-            $this->_stats = unserialize($r['stats_cache']);
-            if (isset($this->_stats['cache_date']) && $this->_stats['cache_date']==$end) {
-                // Got stats already today, quit early
-                return $this->_stats;
-            }
-            // Got some stats, but not today. Try again starting from month we last parsed
-            $start = substr($this->_stats['cache_date'], 0, 7).'-01';
-        }
         $dates_to_check = get_dates_in_range($start, $end, $step, $format);
-        $Obj_Piwik = new Piwik;
         foreach ($dates_to_check as $YYYYMM) {
             $this->_stats[$YYYYMM] = array(
                 'visits' => $Obj_Piwik->get_visit($YYYYMM, '', $find),

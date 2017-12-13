@@ -1,3 +1,5 @@
+  1.0.184 (2017-12-05)
+    1) System::get_stats() now has optional start and end date
   1.0.183 (2017-11-17)
     1) System::updateAllVisitorStats() now takes care of Community and Community Members chaining as well -
        if those systems are enabled
