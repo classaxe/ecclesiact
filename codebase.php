@@ -1183,6 +1183,7 @@ function do_tracking($status, $allow_redirect = true)
 
 function do_trace_log($operation = 'TRACE', $max_depth = 20)
 {
+    global $system_vars;
     $trace = debug_backtrace();
     $message =    "";
     for ($i=1; $i<count($trace)&&$i<=$max_depth; $i++) {
@@ -1579,7 +1580,10 @@ function format_time($hhmm)
         return "";
     }
     sscanf($hhmm, "%02d:%02d", $_hh, $_mm);
-    return hhmm_format($_hh.":".$_mm, $system_vars['defaultTimeFormat']==1 || $system_vars['defaultTimeFormat']==3);
+    return hhmm_format(
+        $_hh.":".$_mm,
+        $system_vars['defaultTimeFormat']==1 || $system_vars['defaultTimeFormat']==3
+    );
 }
 
 function format_json($json)
