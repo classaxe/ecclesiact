@@ -4,7 +4,7 @@ define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
 define("DEBUG_MEMORY", 0);
-define("DEBUG_NO_INTERNET", 1);
+define("DEBUG_NO_INTERNET", 0);
 define("PWD_LEN_MIN", 4);
 define("SYS_LOG_SLOW", 5);  // Flag queries longer than this (mS) as SLOW in debug file
 define("PIWIK_DEV", 1);     // '1' forces community modules to engage with Piwik stats
