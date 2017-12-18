@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.7 (2016-05-05)
-    1) Modified to make clips use same transfer protocol as site to avoid mixed protocol warning messages
+  1.0.8 (2017-12-18)
+    1) Now handles 'Dubug No Internet' condition
 */
 class Media_Youtube extends Base
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     protected $url;
     protected $width;
@@ -27,6 +27,15 @@ class Media_Youtube extends Base
 
     public function draw_clip()
     {
+        global $system_vars;
+        if (DEBUG_NO_INTERNET || $system_vars['debug_no_internet']) {
+            return
+                 "<div style=\"width:".$this->width."px;height:".$this->height."px;background:#a0c0a0;\">"
+                ."<div style=\"line-height:".$this->height."px;text-align: center; font-size:14pt;\">"
+                ."YouTube Clip (No Internet Connection)</div>"
+                ."</div>";
+
+        }
         return
              "<a class=\"iframe\""
             ." href=\"".$this->url."?wmode=transparent&amp;rel=0".($this->start ? "&amp;start=".$this->start : "")."\""

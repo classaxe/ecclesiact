@@ -1,3 +1,6 @@
+  1.0.56 (2017-12-13)
+    1) Community_Display::setupListingsLoadPiwikStats() now calls each member's get_stats() without trying to
+       set start and end dates
   1.0.55 (2017-12-01)
     1) Changes to Community_Display::setupListingsLoadPiwikStats() to read stats from cache and not live
        with support for legacy URLs in profile and all links

@@ -1,3 +1,5 @@
+  1.0.7 (2016-05-05)
+    1) Modified to make clips use same transfer protocol as site to avoid mixed protocol warning messages
   1.0.6 (2014-01-20)
     1) Now accepts optional fourth parameter to determine start time for clip
   1.0.5 (2012-09-28)

@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.39 (2017-10-09)
-    1) Added support fopr setting of Google Maps Key
+  1.0.40 (2017-12-15)
+    1) Added support for setting of piwik_online
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.39';
+    const VERSION = '1.0.40';
 
     private $_colour_schemeID;
     private $_html;
@@ -163,6 +163,7 @@ class System_Edit extends System
             'notify_email'=>                addslashes(get_var('notify_email')),
             'notify_triggers'=>             addslashes(get_var('notify_triggers')),
             'piwik_id'=>                    addslashes(get_var('piwik_id')),
+            'piwik_online'=>                addslashes(get_var('piwik_online')),
             'piwik_md5_password'=>          addslashes(get_var('piwik_md5_password')),
             'piwik_token'=>                 addslashes(get_var('piwik_token')),
             'piwik_user'=>                  addslashes(get_var('piwik_user')),
@@ -1210,22 +1211,31 @@ class System_Edit extends System
                 "20px"
             )
             ."</div>\n"
+             ."    <div class='lbl txt_r' style='width:60px'><b>Online</b></div>\n"
+             ."    <div class='val' style='width:20px;'>"
+             .draw_form_field(
+                 "piwik_online",
+                 $this->record['piwik_online'],
+                 "bool",
+                 "20px"
+             )
+             ."</div>\n"
             ."    <div class='lbl txt_r' style='width:50px'><b>User</b>&nbsp;</div>\n"
-            ."    <div class='val' style='width:130px;'>"
+            ."    <div class='val' style='width:100px;'>"
             .draw_form_field(
                 "piwik_user",
                 $this->record['piwik_user'],
                 "text",
-                "130px"
+                "100px"
             )
             ."</div>\n"
             ."    <div class='lbl txt_r' style='width:50px'><b>Pwd</b>&nbsp;</div>\n"
-            ."    <div class='val' style='width:155px;'>"
+            ."    <div class='val' style='width:105px;'>"
             .draw_form_field(
                 "piwik_md5_password",
                 $this->record['piwik_md5_password'],
                 "text",
-                "155px"
+                "105px"
             )
             ."</div>\n"
             ."    <div class='lbl txt_r' style='width:50px'><b>Token</b>&nbsp;</div>\n"

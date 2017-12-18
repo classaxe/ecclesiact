@@ -1,3 +1,6 @@
+  1.0.122 (2017-12-13)
+    1) Community_Member::get_stats() now returns with existing cached stats if Piwik API is unavailable
+    2) Removed optional start and end dates from Community_Member::get_stats()
   1.0.121 (2017-12-05)
     1) Community_Member::get_stats() now has optional start and end date
   1.0.120 (2017-11-28)

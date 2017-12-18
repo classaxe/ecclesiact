@@ -1,3 +1,7 @@
+  1.0.4 (2017-12-13)
+    1) Added methods getServerVersion() and isOnline()
+    2) Moved connection auth setup into constructor
+    3) PSR-2 fixes
   1.0.3 (2017-08-26)
     1) Fix to deal with Piwik not being installed in community edition when logged in and viewing member
     2) Now uses VERSION constant for version control

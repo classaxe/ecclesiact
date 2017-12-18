@@ -1,3 +1,5 @@
+  1.0.39 (2017-10-09)
+    1) Added support for setting of Google Maps Key
   1.0.38 (2017-02-11)
     1) Implemented Archive mode under 'Advanced' that prevents search engines
     2) Multiple PSR-2 fixes

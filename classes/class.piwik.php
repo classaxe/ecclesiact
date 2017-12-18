@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.4 (2017-12-13)
-    1) Added methods getServerVersion() and isOnline()
-    2) Moved connection auth setup into constructor
-    3) PSR-2 fixes
+  1.0.5 (2017-12-15)
+    1) Piwik::isOnline() now uses new system field to check for online status
+    2) Piwik::Fixes to getServerVersion()
 */
 class Piwik extends System
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
     private $_base_URL;
     private $_idSite;
     private $_token_auth;
@@ -26,31 +25,34 @@ class Piwik extends System
 
     public function isOnline()
     {
-        $result = $this->getServerVersion();
-        return $result ? true : false;
+        global $system_vars;
+        return
+            $system_vars['piwik_online'] &&
+            $this->_idSite &&
+            $this->_token_auth;
     }
 
     public function getServerVersion()
     {
+        if (!$this->isOnline()) {
+            return false;
+        }
         $params =   array(
             'module=API',
             'method=API.getPiwikVersion',
             'token_auth='.$this->_token_auth
         );
-        $request =          implode('&', $params);
+        $request =  implode('&', $params);
+        $url =      $this->_base_URL.'?'.$request;
 
-        $ch = curl_init($this->_base_URL);
-        curl_setopt($ch, CURLOPT_HEADER, true);    // we want headers
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+        $ch =       curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch, CURLOPT_TIMEOUT,10);
-        $output =           curl_exec($ch);
-        $httpcode =         curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $xml_doc =   curl_exec($ch);
         curl_close($ch);
-        if ((int)$httpcode !== 200) {
-            return false;
-        }
-        return $output;
+        $out =              new SimpleXMLElement($xml_doc);
+
+        return $out->result;
     }
 
     private function do_xml_request($params)

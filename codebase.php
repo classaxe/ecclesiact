@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.12");
+define("CODEBASE_VERSION", "5.4.13");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,69 +19,51 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.12.2520 (2017-12-13)
+5.4.13.2521 (2017-12-18)
 Summary:
-  1) Now indicates system time in Scheduled Tasks report and current systemID in sites report
-  2) Now detects whether Piwik is accessible before ever attempting to refresh stats using it
-  3) Now checks for DEBUG_NO_INTERNET constant in addition to system field of similar name
+  1) Now uses a system value 'piwik_online' to bypass Piwik Interactions if Piwik is unavailable
+  2) Completed work to get Community stats for all members working properly using pre-cached data, including for
+     historical link values and member paths
+  3) 'No internet' mode now extends to embedded YouTube clips
 
 Final Checksums:
-  Classes     CS:77009760
-  Database    CS:9d8abddc
-  Libraries   CS:e8b81794
+  Classes     CS:ca90eff3
+  Database    CS:41de4e36
+  Libraries   CS:61f474e8
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.12    (2017-12-13)
+  codebase.php                                                                                   5.4.13    (2017-12-18)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.125   (2017-12-13)
-    1) Community::get_stats() now returns with existing cached stats if Piwik API is unavailable
-    2) Removed optional start and end dates from Community::get_stats()
-  classes/class.community_display.php                                                            1.0.56    (2017-12-13)
-    1) Community_Display::setupListingsLoadPiwikStats() now calls each member's get_stats() without trying to
-       set start and end dates
-  classes/class.community_member.php                                                             1.0.122   (2017-12-13)
-    1) Community_Member::get_stats() now returns with existing cached stats if Piwik API is unavailable
-    2) Removed optional start and end dates from Community_Member::get_stats()
-  classes/class.community_member_display.php                                                     1.0.61    (2017-12-13)
-    1) Changed order in which stats are obtained in Community_Member_Display::setupLoadStats()
-       to have system, then community, then member load in that specific order
-  classes/class.layout.php                                                                       1.0.43    (2017-12-12)
-    1) Implemented handling of DEBUG_NO_INTERNET
-  classes/class.piwik.php                                                                        1.0.4     (2017-12-13)
-    1) Added methods getServerVersion() and isOnline()
-    2) Moved connection auth setup into constructor
-    3) PSR-2 fixes
-  classes/class.report_report.php                                                                1.0.38    (2017-12-13)
-    1) Added display of current systemID on sites report and system time for scheduled tasks
-  classes/class.system.php                                                                       1.0.185   (2017-12-13)
-    1) System::get_stats() now returns with existing cached stats if Piwik API is unavailable
-    2) Removed optional start and end dates from System::get_stats()
-    3) Checks for Akismet Key Status and Bug Tracker now implement new DEBUG_NO_INTERNET flag if set
-  classes/component/twitter.php                                                                  1.0.1     (2017-12-13)
-    1) Implemented handling of system constant DEBUG_NO_INTERNET where set
-  classes/map/googlemap.php                                                                      1.0.4     (2017-12-12)
-    1) Implemented DEBUG_NO_INTERNET handling
-  classes/output.php                                                                             1.0.4     (2017-12-12)
-    1) Implemented handing of DEBUG_NO_INTERNET
+  classes/class.community_display.php                                                            1.0.57    (2012-12-15)
+    1) Fixed Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats() to correctly
+       handle monthly stats for each member, including name aliases and previous links, and all from cached stats
+  classes/class.community_member.php                                                             1.0.123   (2017-12-18)
+    1) Bug fix for Community_Member::get_stats() to make sure that record is loaded
+  classes/class.media_youtube.php                                                                1.0.8     (2017-12-18)
+    1) Now handles 'Dubug No Internet' condition
+  classes/class.piwik.php                                                                        1.0.5     (2017-12-15)
+    1) Piwik::isOnline() now uses new system field to check for online status
+    2) Piwik::Fixes to getServerVersion()
+  classes/class.system.php                                                                       1.0.186   (2017-12-15)
+    1) Added piwik_online to FIELDS list
+  classes/class.system_edit.php                                                                  1.0.40    (2017-12-15)
+    1) Added support for setting of piwik_online
 
-2520.sql
-  1) Set version information
+2521.sql
+  1) Added column piwik_online to system table
+  2) Set piwik_online column for system table entries having a piwik_id
+  3) Set version information
 
 Promote:
-  codebase.php                                        5.4.12
-  classes/  (11 files changed)
-    class.community.php                               1.0.125   CS:ce8b7128
-    class.community_display.php                       1.0.56    CS:30ef9048
-    class.community_member.php                        1.0.122   CS:6e9215b
-    class.community_member_display.php                1.0.61    CS:cdb879d9
-    class.layout.php                                  1.0.43    CS:ff60dd75
-    class.piwik.php                                   1.0.4     CS:b95767e
-    class.report_report.php                           1.0.38    CS:bf08a0ad
-    class.system.php                                  1.0.185   CS:27aaa0ed
-    component/twitter.php                             1.0.1     CS:28865b6c
-    map/googlemap.php                                 1.0.4     CS:79e43212
-    output.php                                        1.0.4     CS:e73d74de
+  codebase.php                                        5.4.13
+  classes/  (6 files changed)
+    class.community_display.php                       1.0.57    CS:f49c13e4
+    class.community_member.php                        1.0.123   CS:a7636000
+    class.media_youtube.php                           1.0.8     CS:eb1a4cec
+    class.piwik.php                                   1.0.5     CS:ac389d92
+    class.system.php                                  1.0.186   CS:4bebfc2f
+    class.system_edit.php                             1.0.40    CS:beb18b8
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
