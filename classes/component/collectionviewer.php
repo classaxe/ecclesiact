@@ -3,14 +3,13 @@ namespace Component;
 
 /*
 Version History:
-  1.0.58 (2016-12-31)
-    1) CollectionViewer::setupLoadPodcastAlbums() now uses newly named getFilteredSortedAndPagedRecords() method
-    2) CollectionViewer::setupLoadPodcasts() now uses newly named getFilteredSortedAndPagedRecords() method
-    3) PSR-2 changes
+  1.0.59 (2018-02-04)
+    1) Added new facility to export whole collection of albums and podcasts as PHP code
+    2) Bug fix for CollectionViewer::sortPodcastAuthorsByName()
 */
 class CollectionViewer extends Base
 {
-    const VERSION = '1.0.58';
+    const VERSION = '1.0.59';
 
     protected $_cm_podcast =                    '';
     protected $_cm_podcastalbum =               '';
@@ -457,6 +456,10 @@ class CollectionViewer extends Base
                     print $this->_Obj_JL->popup($this->_safe_ID);
                     die();
                     break;
+                case "export":
+                    $this->_html.= $this->drawExport();
+//                    die();
+                    break;
             }
         }
         $Obj = new \Podcast;
@@ -543,6 +546,109 @@ class CollectionViewer extends Base
             ."}";
     }
 
+    protected function drawExport() {
+        \Output::push(
+            "body_bottom",
+            "<script src='".BASE_PATH."sysjs/clipboard'></script>\n"
+            ."<script>var clipboard = new Clipboard('.copy');\n"
+            ."clipboard.on('success', function(e) { alert('Data copied to clipboard') });\n"
+            ."clipboard.on('error',   function(e) { alert('Error copying data to clipboard'); console.log(e) });\n"
+            ."</script>\n"
+        );
+        $out =
+            "<h2>Export as PHP</h2>\n"
+            ."<input type=\"button\" value=\"Copy to Clipboard\" class=\"copy\" data-clipboard-action='copy' data-clipboard-target='#php_export' />\n"
+            ."<textarea id=\"php_export\" style='width:100%; height:250px; font-family: monospace'>"
+            ."<"."?"."php\n"
+            ."\$albums = array();\n"
+            ."\$podcasts = array();\n"
+            ."\n";
+        $ObjPodcast = new \Podcast;
+        foreach ($this->_podcast_albums as $pa) {
+            $out.=
+                "\$albums[] = array(\n"
+                ."  'ID' =>          ".$pa['ID'].",\n"
+                ."  'path' =>        \"".$pa['path']."\",\n"
+                ."  'title' =>       \"".$pa['title']."\",\n"
+                ."  'content' =>     \"".(addslashes($pa['content']))."\",\n"
+                ."  'date' =>        \"".$pa['date']."\"\n"
+                .");\n";
+            $childIDs = explode(',', $pa['childID_csv']);
+            foreach ($childIDs as $childID) {
+                if (!(int)$childID) {
+                    continue;
+                }
+                $ObjPodcast->_set_ID($childID);
+                $po = $ObjPodcast->load();
+                if ($po) {
+                    $out.=
+                        "\$podcasts[] = array(\n"
+                        ."  'ID' =>          ".$po['ID'].",\n"
+                        ."  'album' =>       ".$po['parentID'].",\n"
+                        ."  'path' =>        \"".$po['path']."\",\n"
+                        ."  'title' =>       \"".$po['title']."\",\n"
+                        ."  'content' =>     \"".(addslashes($po['content']))."\",\n"
+                        ."  'date' =>        \"".$po['date']."\",\n"
+                        ."  'author' =>      \"".$po['author']."\",\n"
+                        ."  'notes' =>       \"".$po['custom_1']."\",\n"
+                        ."  'media_path' =>  \"".$po['enclosure_url']."\",\n"
+                        ."  'media_sec' =>   \"".$po['enclosure_secs']."\",\n"
+                        ."  'media_size' =>  \"".$po['enclosure_size']."\",\n"
+                        ."  'media_type' =>  \"".$po['enclosure_type']."\",\n"
+                        ."  'thumbnail' =>   \"".$po['thumbnail_small']."\",\n"
+                        ."  'video' =>       \"".$po['video']."\",\n"
+                        .");\n";
+                }
+            }
+            $out.="\n";
+        }
+        $out.=
+            "// Simple test code to make sure that this all works:\n"
+            ."// First get all albums in strict ascending date order, with the oldest shown first:\n"
+            ."usort(\n"
+            ."    \$albums,\n"
+            ."    function (\$item1, \$item2) {\n"
+            ."        if (\$item1['date'] == \$item2['date']) {\n"
+            ."            return 0;\n"
+            ."        }\n"
+            ."        return (\$item1['date'] < \$item2['date'] ? -1 : 1);\n"
+            ."    }\n"
+            .");\n"
+            ."\n"
+            ."// Now loop through each album and display titles of all podcasts belonging to each one:\n"
+            ."\$out =\n"
+            ."    \"<h1>Podcast Exporter Test Results</h1>\"\n"
+            ."    .\"<p>This test reads the arrays of albums and podcasts and should produce a display all albums in\"\n"
+            ."    .\" chronological order, listing all podcasts belonging to each album.</p>\"\n"
+            ."    .\"<ol>\";\n"
+            ."foreach (\$albums as \$a) {\n"
+            ."    \$out.=\n"
+            ."        \"<li>\".\$a['title'].\" (\".\$a['date'].\")\"\n"
+            ."        .\"<ol>\";\n"
+            ."    foreach (\$podcasts as \$po) {\n"
+            ."        if (\$po['album'] == \$a['ID']) {\n"
+            ."            \$out.=\"<li>\".\$po['title'].\" (\".\$po['date'].\")</li>\";\n"
+            ."        }\n"
+            ."    }\n"
+            ."    \$out.=\"</ol><br><br></li>\";\n"
+            ."}\n"
+            ."\$out.=\"</ol>\";\n"
+            ."\n"
+            ."print \$out;\n"
+        ;
+        $out.= "</textarea>";
+        return $out;
+    }
+
+    protected function drawExportLink()
+    {
+        if (!$this->_isAdmin) {
+            return;
+        }
+        $this->_html.=
+            "<p><a href='".$this->_path_real."?submode=export&amp;source=".$this->_safe_ID."'>Export</a></p>";
+    }
+
     protected function drawNavigation()
     {
         if (!$this->_cp['controls_albums_show'] && !$this->_cp['controls_authors_show']) {
@@ -551,6 +657,7 @@ class CollectionViewer extends Base
         $this->_html.= "<div class='collection_viewer_nav' id=\"".$this->_safe_ID."_nav\">\n";
         $this->drawNavigationPodcastAlbums();
         $this->drawNavigationPodcastAuthors();
+        $this->drawExportLink();
         $this->_html.= "</div>\n";
         \Output::push('javascript_onload', "list_set_onclick_items('".$this->_safe_ID."_nav');\n");
     }
@@ -597,9 +704,9 @@ class CollectionViewer extends Base
         $count =        $record['count'];
         $tooltip =      $record['date'].' '.$record['title'].' ('.$count.' item'.($count==1 ? '' : 's').')';
         $url =
-        $this->_path_real.'/'
-        .$this->_cp['controls_albums_url'].'/'
-        .trim(substr($record['path'], strlen($this->_cp['filter_container_path'])), '/');
+            $this->_path_real.'/'
+            .$this->_cp['controls_albums_url'].'/'
+            .trim(substr($record['path'], strlen($this->_cp['filter_container_path'])), '/');
         $selected =     $this->_path == $url;
         $this->_html.=
              "  <li".($selected ? " class='selected'" : "").">"
@@ -942,8 +1049,8 @@ class CollectionViewer extends Base
             $value =  get_web_safe_ID($label);
             if (!isset($out[$value])) {
                 $out[$value] = array(
-                'count' => 1,
-                'label' => $label
+                    'count' => 1,
+                    'label' => $label
                 );
             } else {
                 $out[$value]['count']++;
@@ -972,8 +1079,8 @@ class CollectionViewer extends Base
 
     protected static function sortPodcastAuthorsByName($a, $b)
     {
-        $al = strtolower($a['label']);
-        $bl = strtolower($b['label']);
+        $al = strtolower($a);
+        $bl = strtolower($b);
         if ($al == $bl) {
             return 0;
         }

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.13");
+define("CODEBASE_VERSION", "5.4.14");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,51 +19,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.13.2521 (2017-12-18)
+5.4.14.2522 (2018-02-04)
 Summary:
-  1) Now uses a system value 'piwik_online' to bypass Piwik Interactions if Piwik is unavailable
-  2) Completed work to get Community stats for all members working properly using pre-cached data, including for
-     historical link values and member paths
-  3) 'No internet' mode now extends to embedded YouTube clips
+  1) Added export mode to export all podcasts and podcast albums as PHP cde from
+     Collection Viewer - added at the request of Joe Furfaro
+  2) Bug fix for sermons viewer label sorting
 
 Final Checksums:
-  Classes     CS:ca90eff3
+  Classes     CS:6490ade8
   Database    CS:41de4e36
-  Libraries   CS:61f474e8
+  Libraries   CS:69f3501e
   Reports     CS:dd694633
 
 Code Changes:
-  codebase.php                                                                                   5.4.13    (2017-12-18)
+  codebase.php                                                                                   5.4.14    (2018-02-04)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.57    (2012-12-15)
-    1) Fixed Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats() to correctly
-       handle monthly stats for each member, including name aliases and previous links, and all from cached stats
-  classes/class.community_member.php                                                             1.0.123   (2017-12-18)
-    1) Bug fix for Community_Member::get_stats() to make sure that record is loaded
-  classes/class.media_youtube.php                                                                1.0.8     (2017-12-18)
-    1) Now handles 'Dubug No Internet' condition
-  classes/class.piwik.php                                                                        1.0.5     (2017-12-15)
-    1) Piwik::isOnline() now uses new system field to check for online status
-    2) Piwik::Fixes to getServerVersion()
-  classes/class.system.php                                                                       1.0.186   (2017-12-15)
-    1) Added piwik_online to FIELDS list
-  classes/class.system_edit.php                                                                  1.0.40    (2017-12-15)
-    1) Added support for setting of piwik_online
+  classes/component/collectionviewer.php                                                         1.0.59    (2018-02-04)
+    1) Added new facility to export whole collection of albums and podcasts as PHP code
+    2) Bug fix for CollectionViewer::sortPodcastAuthorsByName()
 
-2521.sql
-  1) Added column piwik_online to system table
-  2) Set piwik_online column for system table entries having a piwik_id
-  3) Set version information
+2522.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.4.13
-  classes/  (6 files changed)
-    class.community_display.php                       1.0.57    CS:f49c13e4
-    class.community_member.php                        1.0.123   CS:a7636000
-    class.media_youtube.php                           1.0.8     CS:eb1a4cec
-    class.piwik.php                                   1.0.5     CS:ac389d92
-    class.system.php                                  1.0.186   CS:4bebfc2f
-    class.system_edit.php                             1.0.40    CS:beb18b8
+  codebase.php                                        5.4.14
+  classes/  (1 file changed)
+    component/collectionviewer.php                    1.0.59    CS:ba6dc2d9
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

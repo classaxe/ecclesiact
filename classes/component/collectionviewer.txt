@@ -1,3 +1,7 @@
+  1.0.58 (2016-12-31)
+    1) CollectionViewer::setupLoadPodcastAlbums() now uses newly named getFilteredSortedAndPagedRecords() method
+    2) CollectionViewer::setupLoadPodcasts() now uses newly named getFilteredSortedAndPagedRecords() method
+    3) PSR-2 changes
   1.0.57 (2016-03-26)
     1) In CollectionViewer::setupLoadPodcastAlbums() replaced parameter filter_category with filter_category_list
   1.0.56 (2016-03-15)
