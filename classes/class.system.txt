@@ -1,3 +1,5 @@
+  1.0.186 (2017-12-15)
+    1) Added piwik_online to FIELDS list
   1.0.185 (2017-12-13)
     1) System::get_stats() now returns with existing cached stats if Piwik API is unavailable
     2) Removed optional start and end dates from System::get_stats()

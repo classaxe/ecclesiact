@@ -1,3 +1,6 @@
+  1.0.57 (2017-12-15)
+    1) Fixed Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats() to correctly
+       handle monthly stats for each member, including name aliases and previous links, and all from cached stats
   1.0.56 (2017-12-13)
     1) Community_Display::setupListingsLoadPiwikStats() now calls each member's get_stats() without trying to
        set start and end dates

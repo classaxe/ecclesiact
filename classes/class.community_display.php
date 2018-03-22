@@ -6,14 +6,13 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.57 (2012-12-15)
-    1) Fixed Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats() to correctly
-       handle monthly stats for each member, including name aliases and previous links, and all from cached stats
+  1.0.58 (2018-03-20)
+    1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.57';
+    const VERSION = '1.0.58';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -1584,7 +1583,7 @@ class Community_Display extends Community
                     ."  </thead>\n"
                     ."  <tbody>\n";
                 foreach ($members as $member => $data) {
-        //          y($slots);die;
+                 //  y($data['slots']);
                     for ($i=0; $i<count($data['slots']); $i++) {
                         $slot = $data['slots'][$i];
                         if ($i==0) {
@@ -1592,7 +1591,7 @@ class Community_Display extends Community
                                  "  <tr style='border-top:1px solid #000'>\n"
                                 ."    <td class='venue'"
                                 .$this->drawContextMenuMember($data)
-                                .(count($data['slots']>1) ? " rowspan='".count($data['slots'])."'" : "")
+                                .(count($data['slots'])>1 ? " rowspan='".count($data['slots'])."'" : "")
                                 .">"
                                 ."<a href=\"".$data['url']."\" title=\"See details for ".$data['title']."\">"
                                 .$member

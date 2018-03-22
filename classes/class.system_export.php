@@ -1,61 +1,73 @@
 <?php
-define('VERSION_SYSTEM_EXPORT', '1.0.20');
 
 /*
 Version History:
-  1.0.20 (2017-07-08)
-    1) Bug fix for export of geocode_cache records
+  1.0.21 (2018-03-21)
+    1) Changes to support dumping of entire system or systems to a specified file
 */
 
 class System_Export extends System
 {
+    const VERSION = '1.0.21';
+
     protected $customTablesCsv;
     protected $customTablesDeleteSql;
     protected $customTablesSelectSql;
     protected $sortby;
     protected $showFields;
+    protected $all;
+    protected $filename;
 
-    public function draw($showFields)
+    public function draw($showFields, $all=false, $filename=false)
     {
-        $this->setup($showFields);
+        $this->setup($showFields, $all, $filename);
         header("Content-type: text/plain; charset=UTF-8");
         $chosen = explode(',', get_var('targetValue'));
         $ObjBackup = new Backup;
         $delete_sql = "";
-        if (in_array('system', $chosen)) {
+        if ($all || in_array('system', $chosen)) {
             $delete_sql.=     "DELETE FROM `system`                  WHERE `ID`       IN (".$this->_get_ID().");\n";
         }
         $system_tables = explode(',', str_replace(' ', '', System::TABLES));
         foreach ($system_tables as $table) {
-            if ($table!=='system' && in_array($table, $chosen)) {
+            if ($table!=='system' && ($all || in_array($table, $chosen))) {
                 $delete_sql.=   "DELETE FROM ".pad("`".$table."`", 25)." WHERE `systemID` IN (".$this->_get_ID().");\n";
             }
         }
-        print
+
+        $this->output(
              $this->sql_header("Selected ".$this->_get_object_name().$this->plural($this->_get_ID()))
             .$delete_sql
             .(in_array('custom_tables', $chosen) ? $this->customTablesDeleteSql : "")
-            .$this->sql_footer();
-        foreach ($chosen as $table) {
+            .$this->sql_footer()
+        );
+        foreach ($system_tables as $table) {
+            if (!$all && !in_array($table, $chosen)) {
+                continue;
+            }
             switch ($table){
                 case 'custom_tables':
                     break;
                 default:
-                    print $ObjBackup->db_export_sql_query(
-                        "`".$table."`",
-                        "SELECT * FROM `".$table."` WHERE "
-                        .($table=='system' ? "`ID`      " : "`systemID`")
-                        ." IN (".$this->_get_ID().")"
-                        ." ORDER BY ".$this->sortby[$table],
-                        $this->showFields
+                    $this->output(
+                        $ObjBackup->db_export_sql_query(
+                            "`".$table."`",
+                            "SELECT * FROM `".$table."` WHERE "
+                            .($table=='system' ? "`ID`      " : "`systemID`")
+                            ." IN (".$this->_get_ID().")"
+                            ." ORDER BY ".$this->sortby[$table],
+                            $this->showFields
+                        )
                     );
                     break;
             }
         }
         if (in_array('custom_tables', $chosen)) {
-            print $this->customTablesSelectSql;
+            $this->output($this->customTablesSelectSql);
         }
-        die;
+        if (!$this->filename) {
+            die;
+        }
     }
 
     protected function drawForm()
@@ -323,11 +335,14 @@ class System_Export extends System
          ."\n";
     }
 
-    protected function setup($showFields)
+    protected function setup($showFields, $all=false, $filename=false)
     {
         $this->showFields = $showFields;
+        $this->all =        $all;
+        $this->filename =   $filename;
+
         $this->getDbCustomTables();
-        if (get_var('targetValue')=='') {
+        if (!$all && get_var('targetValue')=='') {
             $this->drawForm();
             die;
         }
@@ -411,8 +426,11 @@ class System_Export extends System
         $this->getCustomTablesSql();
     }
 
-    public static function getVersion()
-    {
-        return VERSION_SYSTEM_EXPORT;
+    public function output($out) {
+        if ($this->filename) {
+            file_put_contents($this->filename, $out, FILE_APPEND);
+            return;
+        }
+        print $out;
     }
 }

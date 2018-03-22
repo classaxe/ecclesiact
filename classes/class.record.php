@@ -1,12 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.104 (2017-11-10)
-    1) Added Record::is_enabled() - used with draw-nav
+  1.0.105 (2018-03-21)
+    1) Many changes throughout to allow systemID field to be changed -
+       used to allow these functions to work with system table that uses ID instead of systemID
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.104';
+    const VERSION = '1.0.105';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -296,7 +297,7 @@ class Record extends Portal
         if (!$this->_get_has_categories()) {
             return;
         }
-        $systemID = $this->get_field('systemID');
+        $systemID = $this->get_field($this->getSystemIdField());
         $assign_arr = explode(",", str_replace(' ', '', $csv));
         sort($assign_arr);
         $csv = implode(', ', $assign_arr);
@@ -434,7 +435,7 @@ class Record extends Portal
             unset($data['ID']);
             $data['assignID'] = $newID;
             if ($new_systemID!="") {
-                $data['systemID'] = $new_systemID;
+                $data[$this->getSystemIdField()] = $new_systemID;
             }
             $Obj_Category_Assign->insert($data);
         }
@@ -451,7 +452,7 @@ class Record extends Portal
             unset($data['ID']);
             $data['assignID'] = $newID;
             if ($new_systemID!="") {
-                $data['systemID'] = $new_systemID;
+                $data[$this->getSystemIdField()] = $new_systemID;
             }
             $Obj->insert($data);
         }
@@ -468,7 +469,7 @@ class Record extends Portal
             unset($data['ID']);
             $data['assignID'] = $newID;
             if ($new_systemID!="") {
-                $data['systemID'] = $new_systemID;
+                $data[$this->getSystemIdField()] = $new_systemID;
             }
             $Obj->insert($data);
         }
@@ -485,7 +486,7 @@ class Record extends Portal
             unset($data['ID']);
             $data['assignID'] = $newID;
             if ($new_systemID!="") {
-                $data['systemID'] = $new_systemID;
+                $data[$this->getSystemIdField()] = $new_systemID;
             }
             $Obj->insert($data);
         }
@@ -514,7 +515,7 @@ class Record extends Portal
             ."FROM\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
-            ."  `systemID` IN(".$systemID.")";
+            ."  `".$this->getSystemIdField()."` IN(".$systemID.")";
         return (int)$this->get_field_for_sql($sql);
     }
 
@@ -556,7 +557,7 @@ class Record extends Portal
             ."FROM\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
-            .($systemID!="" ? "  `systemID` = ".$systemID." AND\n" : "" )
+            .($systemID!="" ? "  `".$this->getSystemIdField()."` IN(".$systemID.") AND\n" : "" )
             .($this->_get_type() ? "  `type` = \"".$this->_get_type()."\" AND\n" : "")
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
             ."  `".$this->_get_name_field()."`"
@@ -844,8 +845,8 @@ class Record extends Portal
             ."INNER JOIN\n"
             ."  `".$this->_get_table_name()."` AS `parent`\n"
             ."WHERE\n"
-            ."  `".$this->_get_table_name()."`.`systemID` = ".SYS_ID." AND\n"
-            ."  `parent`.`systemID` = ".SYS_ID." AND\n"
+            ."  `".$this->_get_table_name()."`.`".$this->getSystemIdField()."` = ".SYS_ID." AND\n"
+            ."  `parent`.`".$this->getSystemIdField()."` = ".SYS_ID." AND\n"
             ."  `parent`.`ID` = `".$this->_get_table_name()."`.`parentID` AND\n"
             ."  `parent`.`ID` = ".$ID;
         return static::getRecordsForSql($sql);
@@ -864,8 +865,8 @@ class Record extends Portal
             ."INNER JOIN\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."` AS `parent`\n"
             ."WHERE\n"
-            ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`.`systemID` = ".SYS_ID." AND\n"
-            ."  `parent`.`systemID` = ".SYS_ID." AND\n"
+            ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`.`".$this->getSystemIdField()."` = ".SYS_ID." AND\n"
+            ."  `parent`.`".$this->getSystemIdField()."` = ".SYS_ID." AND\n"
             ."  `parent`.`ID` = `".$this->_get_table_name()."`.`parentID` AND\n"
             ."  `parent`.`ID` = $ID\n"
             .($sortBy!='' ? "ORDER BY $sortBy" : "");
@@ -1001,12 +1002,13 @@ class Record extends Portal
             ."WHERE\n"
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
             .($systemID ?
-              "  `systemID` IN(".$systemID.") AND\n"
-            : "  `systemID` IN(1," . SYS_ID . ") AND\n"
+                 "  `".$this->getSystemIdField()."` IN(".$systemID.") AND\n"
+              :
+                 "  `".$this->getSystemIdField()."` IN(1," . SYS_ID . ") AND\n"
             )
             ."  `".$this->_get_name_field()."` = \"".$name."\"\n"
             ."ORDER BY\n"
-            ."  `systemID` = ".SYS_ID." DESC\n"
+            ."  `".$this->getSystemIdField()."` = ".SYS_ID." DESC\n"
             ."LIMIT 0,1";
   //    z($sql);
         $value = $this->get_field_for_sql($sql);
@@ -1023,7 +1025,7 @@ class Record extends Portal
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
-            ."  `systemID` IN(".$systemID.")";
+            ."  `".$this->getSystemIdField()."` IN(".$systemID.")";
         $records = $this->get_rows_for_sql($sql);
         $out = array();
         foreach ($records as $record) {
@@ -1132,7 +1134,7 @@ class Record extends Portal
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
-            .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
+            .($systemID !="" ? "  `".$this->getSystemIdField()."` IN($systemID) AND\n" : "")
             ."  1\n"
             .($sortBy !="" ? "ORDER BY ".$sortBy : "");
         return static::getRecordsForSql($sql);
@@ -1146,7 +1148,7 @@ class Record extends Portal
             ."FROM\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
-            .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
+            .($systemID !="" ? "  `".$this->getSystemIdField()."` IN($systemID) AND\n" : "")
             ."  `ID` IN(".$this->_get_ID().")\n"
             .($sortBy !="" ? "ORDER BY = $sortBy" : "");
         return static::getRecordsForSql($sql);
@@ -1162,9 +1164,9 @@ class Record extends Portal
             ."WHERE\n"
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
             ."  `".$this->_get_name_field()."` = \"$name\" AND\n"
-            ."  `systemID` IN(1,".$systemID.")\n"
+            ."  `".$this->getSystemIdField()."` IN(1,".$systemID.")\n"
             ."ORDER BY\n"
-            ."  `systemID` = ".$systemID." DESC\n"
+            ."  `".$this->getSystemIdField()."` IN(".$systemID.") DESC\n"
             ."LIMIT 0,1";
         return static::getRecordForSql($sql);
     }
@@ -1179,7 +1181,7 @@ class Record extends Portal
             ."WHERE\n"
             ."  `parentID` = ".$parentID." AND\n"
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
-            .($systemID !="" ? "  `systemID` = $systemID AND\n" : "")
+            .($systemID !="" ? "  `".$this->getSystemIdField()."` IN($systemID) AND\n" : "")
             ."  1\n"
             .($sortBy !="" ? "ORDER BY ".$sortBy : "");
         return static::getRecordsForSql($sql);
@@ -1220,7 +1222,7 @@ class Record extends Portal
             ."FROM\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
-            ."  `systemID` = $systemID"
+            ."  `".$this->getSystemIdField()."` IN($systemID)"
             .($sortBy ? "\nORDER BY\n  $sortBy" : "");
   //    z($sql);
         return static::getRecordsForSql($sql);
@@ -1234,7 +1236,7 @@ class Record extends Portal
             ."FROM\n"
             ."  `".$this->_get_db_name()."`.`".$this->_get_table_name()."`\n"
             ."WHERE\n"
-            ."  `systemID`=".($systemID!==false ? $systemID : SYS_ID)." AND\n"
+            ."  `".$this->getSystemIdField()."` IN(".($systemID!==false ? $systemID : SYS_ID).") AND\n"
             .($this->_get_type() ? "  `type` = '".$this->_get_type()."' AND\n" : "")
             .($this->_get_listTypeID() ? "  `listTypeID` = ".$this->_get_listTypeID()." AND\n" : "")
             .($filter ? $filter." AND\n" : "")
@@ -1361,6 +1363,11 @@ class Record extends Portal
                 );
                 break;
         }
+    }
+
+    public function getSystemIdField()
+    {
+        return 'systemID';
     }
 
     public function get_table_fields($name)
@@ -1516,7 +1523,7 @@ class Record extends Portal
         if (!$this->_get_has_groups()) {
             return;
         }
-        $systemID = $this->get_field('systemID');
+        $systemID = $this->get_field($this->getSystemIdField());
         $Obj = new Group_Assign();
         $Obj->set_for_assignment($this->_get_assign_type(), $this->_get_ID(), $csv_list, $systemID);
         $data = array('group_assign_csv'=>$csv_list);
@@ -1581,8 +1588,8 @@ class Record extends Portal
             }
         }
         $now =      get_timestamp();
-        if (!array_key_exists('systemID', $data)) {
-            $data['systemID']=SYS_ID;
+        if (!array_key_exists($this->getSystemIdField(), $data)) {
+            $data[$this->getSystemIdField()]=SYS_ID;
         }
         if (!array_key_exists('history_created_by', $data)) {
             $data['history_created_by']=get_userID();
@@ -1701,7 +1708,7 @@ class Record extends Portal
         if (!$this->_get_has_keywords()) {
             return;
         }
-        $systemID = $this->get_field('systemID');
+        $systemID = $this->get_field($this->getSystemIdField());
         $assign_arr = explode(",", str_replace(' ', '', $csv));
         sort($assign_arr);
         $csv = implode(', ', $assign_arr);
@@ -1725,7 +1732,7 @@ class Record extends Portal
         if (!$this->_get_has_languages()) {
             return;
         }
-        $systemID = $this->get_field('systemID');
+        $systemID = $this->get_field($this->getSystemIdField());
         $assign_arr = explode(",", str_replace(' ', '', $csv));
         sort($assign_arr);
         $csv = implode(', ', $assign_arr);
@@ -1857,7 +1864,7 @@ class Record extends Portal
         if (!$this->_get_has_push_products()) {
             return;
         }
-        $systemID = $this->get_field('systemID');
+        $systemID = $this->get_field($this->getSystemIdField());
         $Obj = new Push_Product_Assign;
         $assign_arr = explode(",", str_replace(' ', '', $csv));
         sort($assign_arr);
@@ -2277,7 +2284,7 @@ class Record extends Portal
         if ($newID) {
             if ($targetSystemID && $sourceSystemID!=$targetSystemID) {
                 $this->_set_ID($newID);
-                $this->set_field('systemID', $targetSystemID, false, false);
+                $this->set_field($this->getSystemIdField(), $targetSystemID, false, false);
             }
             $msg =         status_message(
                 0,

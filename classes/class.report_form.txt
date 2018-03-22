@@ -1,3 +1,6 @@
+  1.0.68 (2017-11-14)
+    1) Now shows fields to be updated or inserted if DEBUG_FORM constant is set in codebase
+    2) Now uses class constant for version control
   1.0.67 (2015-12-13)
     1) Implemented submode of 'add_note_unstamped' for adding notes, also increased separator length and prominence
   1.0.66 (2015-12-13)

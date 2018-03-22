@@ -1,14 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.68 (2017-11-14)
-    1) Now shows fields to be updated or inserted if DEBUG_FORM constant is set in codebase
-    2) Now uses class constant for version control
+  1.0.69 (2018-03-17)
+    1) Bug fix for displaying tabs with PHP 7.2
 */
 
 class Report_Form extends Report
 {
-    const VERSION = '1.0.68';
+    const VERSION = '1.0.69';
 
     protected $_bulk_update;
     protected $_can_add;
@@ -235,7 +234,7 @@ class Report_Form extends Report
             }
         }
         $inline_label = $this->_field_has_inline_label($c);
-        if (count($reportTab)) {
+        if (($reportTab)) {
             if ($reportTab != $this->_tab_last_shown) {
                 if ($reportTab !="0.") {
                     if ($this->_tabs_shown) {

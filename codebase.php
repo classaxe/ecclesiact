@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.4.14");
+define("CODEBASE_VERSION", "5.5.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,32 +19,50 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.4.14.2522 (2018-02-04)
+5.5.0.2523 (2018-03-22)
 Summary:
-  1) Added export mode to export all podcasts and podcast albums as PHP cde from
-     Collection Viewer - added at the request of Joe Furfaro
-  2) Bug fix for sermons viewer label sorting
+  1) Big changes to System Export code to support dumping of entire systems to a file
+  2) Bug fixes for warning with PHP 7.2 and later
+  3) A large number of reports (16) have a missing character in the SQL dropdown selectory query.
+     This error was masked in some versions of mysql (e.g. 5.5.57), but correctly results in an error
+     in later versions of mysql (e.g. 5.6.39). These errors are corrected here.
 
 Final Checksums:
-  Classes     CS:6490ade8
+  Classes     CS:819ee178
   Database    CS:41de4e36
-  Libraries   CS:69f3501e
-  Reports     CS:dd694633
+  Libraries   CS:550ae4b8
+  Reports     CS:22839f7c
 
 Code Changes:
-  codebase.php                                                                                   5.4.14    (2018-02-04)
+  codebase.php                                                                                   5.5.0     (2018-03-22)
     1) Updated version information
-  classes/component/collectionviewer.php                                                         1.0.59    (2018-02-04)
-    1) Added new facility to export whole collection of albums and podcasts as PHP code
-    2) Bug fix for CollectionViewer::sortPodcastAuthorsByName()
+  classes/class.community_display.php                                                            1.0.58    (2018-03-20)
+    1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
+  classes/class.push_product.php                                                                 1.0.1     (2018-03-20)
+    1) Push_Product::get_selector_sql() now declared as static
+  classes/class.record.php                                                                       1.0.105   (2018-03-21)
+    1) Many changes throughout to allow systemID field to be changed -
+       used to allow these functions to work with system table that uses ID instead of systemID
+  classes/class.report_form.php                                                                  1.0.69    (2018-03-17)
+    1) Bug fix for displaying tabs with PHP 7.2
+  classes/class.system.php                                                                       1.0.187   (2018-03-21)
+    1) Added System::getSystemIdField() to override default field used for filtering on systemID
+  classes/class.system_export.php                                                                1.0.21    (2018-03-21)
+    1) Changes to support dumping of entire system or systems to a specified file
 
-2522.sql
-  1) Set version information
+2523.sql
+  1) Bug fixes for various report columns where the SQL statement for Master Admin dropdowns was truncated
+  2) Set version information
 
 Promote:
-  codebase.php                                        5.4.14
-  classes/  (1 file changed)
-    component/collectionviewer.php                    1.0.59    CS:ba6dc2d9
+  codebase.php                                        5.5.0
+  classes/  (6 files changed)
+    class.community_display.php                       1.0.58    CS:6245bcfb
+    class.push_product.php                            1.0.1     CS:7ce2a7d9
+    class.record.php                                  1.0.105   CS:93a4002d
+    class.report_form.php                             1.0.69    CS:7124b33a
+    class.system.php                                  1.0.187   CS:ae4ec59a
+    class.system_export.php                           1.0.21    CS:c742681a
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
@@ -258,6 +276,10 @@ define(
     ."targetFieldID,targetID,targetReportID,targetValue,topbar_search,YYYY"
 );
 define("SYS_UPGRADE_URL", "http://www.ecclesiact.com/");
+
+// This is called whenever system tries to create a non existant class of the given name
+spl_autoload_register(function($className) { return portal_autoload($className); });
+
 define("DEV_STATUS", Portal::isDev());
 
 mem('in codebase-1');
@@ -270,12 +292,6 @@ include_once(SYS_SHARED."adodb-time.inc.php");
 $custom_file = (defined("AJAX_VERSION") ? "../" : "./")."custom.php";
 if (file_exists($custom_file)) {
     include_once($custom_file);
-}
-
-// This is called whenever system trys to create a non existant class of the given name
-function __autoload($className)
-{
-    return portal_autoload($className);
 }
 
 function portal_autoload($className)

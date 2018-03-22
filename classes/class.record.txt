@@ -1,3 +1,5 @@
+  1.0.104 (2017-11-10)
+    1) Added Record::is_enabled() - used with draw-nav
   1.0.103 (2017-08-26)
     1) Gave Record::copy() method fourth parameter 'data' to allow specic setting of data values prior to insert
   1.0.102 (2017-01-02)
