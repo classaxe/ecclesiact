@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.1");
+define("CODEBASE_VERSION", "5.5.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,36 +19,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.1.2524 (2018-03-25)
+5.5.2.2525 (2018-03-25)
 Summary:
-  1) Replaced obsolete PHP Excel with composer-maintained PhpOffice\PhpSpreadsheet\Spreadsheet
-  2) Excel export now moved into its own class and extensively refactored
+  1) Bug fix for header text rotation
+  2) Added composer.json and composer.lock to package for simplified installation
 
 Final Checksums:
-  Classes     CS:14f93374
+  Classes     CS:1153d028
   Database    CS:41de4e36
-  Libraries   CS:dc4687c4
+  Libraries   CS:9ce32401
   Reports     CS:22839f7c
 
 Code Changes:
-  codebase.php                                                                                   5.5.1     (2018-03-25)
+  codebase.php                                                                                   5.5.2     (2018-03-26)
     1) Updated version information
-  system.php                                                                                     1.0.42    (2018-03-25)
-    1) Call to export module is no longer static - was incorrect before and broke SQL exports
-  classes/class.export.php                                                                       1.0.29    (2018-03-24)
-    1) Excel code moved into new class called ExcelExport
+  classes/class.excel_export.php                                                                 1.0.1     (2018-03-25)
+    1) Bug fix for header text rotation
 
-2524.sql
+2525.sql
   1) Set version information
 
-Delete:
-    class.php_excel.php                               1.0.3
-
 Promote:
-  codebase.php                                        5.5.1
-  system.php                                          1.0.42
+  codebase.php                                        5.5.2
   classes/  (1 file changed)
-    class.export.php                                  1.0.29    CS:ca152539
+    class.excel_export.php                            1.0.1     CS:1d6a920
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,7 +1,12 @@
 <?php
+/*
+Version History:
+  1.0.1 (2018-03-25)
+    1) Bug fix for header text rotation
+*/
 
 class Excel_Export extends Record {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
 
     private $ObjPHPExcel;
     private $ObjReport;

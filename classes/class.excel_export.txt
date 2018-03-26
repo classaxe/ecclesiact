@@ -1,0 +1,2 @@
+  1.0.0 (2018-03-25)
+    Initial release - split from class.export.php and extensively refactored
