@@ -3,4 +3,5 @@
 .project
 .settings
 .idea
+vendor/
 button_templates/

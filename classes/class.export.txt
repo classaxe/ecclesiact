@@ -1,3 +1,5 @@
+  1.0.28 (2017-07-15)
+    1) Export::excel() url fixes for un-encoded ampersand in download path
   1.0.27 (2016-12-31)
     1) Export::excel() now calls Report::getReportRecords() to get data
     2) PSR-2 fixes

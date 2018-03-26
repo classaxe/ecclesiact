@@ -2,12 +2,12 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.41 (ECC)");
+define("SYSTEM_VERSION", "1.0.42 (ECC)");
 
 /*
 Version History:
-  1.0.41 (2017-11-08)
-    1) Added support in hvFF9mrhFbntrDgfGb9wc1gf() to allow codebase to halt if URL value isn't set for the site in the database
+  1.0.42 (2018-03-25)
+    1) Call to export module is no longer static - was incorrect before and broke SQL exports
 */
 
 if (get_magic_quotes_gpc()) {
@@ -178,7 +178,8 @@ function main($mode)
             die;
         break;
         case "export":
-            Export::draw();
+            $ObjExport = new Export;
+            $ObjExport->draw();
             break;
         case "fck":
             FCK::do_fck();

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.0");
+define("CODEBASE_VERSION", "5.5.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,50 +19,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.0.2523 (2018-03-22)
+5.5.1.2524 (2018-03-25)
 Summary:
-  1) Big changes to System Export code to support dumping of entire systems to a file
-  2) Bug fixes for warning with PHP 7.2 and later
-  3) A large number of reports (16) have a missing character in the SQL dropdown selectory query.
-     This error was masked in some versions of mysql (e.g. 5.5.57), but correctly results in an error
-     in later versions of mysql (e.g. 5.6.39). These errors are corrected here.
+  1) Replaced obsolete PHP Excel with composer-maintained PhpOffice\PhpSpreadsheet\Spreadsheet
+  2) Excel export now moved into its own class and extensively refactored
 
 Final Checksums:
-  Classes     CS:819ee178
+  Classes     CS:14f93374
   Database    CS:41de4e36
-  Libraries   CS:550ae4b8
+  Libraries   CS:dc4687c4
   Reports     CS:22839f7c
 
 Code Changes:
-  codebase.php                                                                                   5.5.0     (2018-03-22)
+  codebase.php                                                                                   5.5.1     (2018-03-25)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.58    (2018-03-20)
-    1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
-  classes/class.push_product.php                                                                 1.0.1     (2018-03-20)
-    1) Push_Product::get_selector_sql() now declared as static
-  classes/class.record.php                                                                       1.0.105   (2018-03-21)
-    1) Many changes throughout to allow systemID field to be changed -
-       used to allow these functions to work with system table that uses ID instead of systemID
-  classes/class.report_form.php                                                                  1.0.69    (2018-03-17)
-    1) Bug fix for displaying tabs with PHP 7.2
-  classes/class.system.php                                                                       1.0.187   (2018-03-21)
-    1) Added System::getSystemIdField() to override default field used for filtering on systemID
-  classes/class.system_export.php                                                                1.0.21    (2018-03-21)
-    1) Changes to support dumping of entire system or systems to a specified file
+  system.php                                                                                     1.0.42    (2018-03-25)
+    1) Call to export module is no longer static - was incorrect before and broke SQL exports
+  classes/class.export.php                                                                       1.0.29    (2018-03-24)
+    1) Excel code moved into new class called ExcelExport
 
-2523.sql
-  1) Bug fixes for various report columns where the SQL statement for Master Admin dropdowns was truncated
-  2) Set version information
+2524.sql
+  1) Set version information
+
+Delete:
+    class.php_excel.php                               1.0.3
 
 Promote:
-  codebase.php                                        5.5.0
-  classes/  (6 files changed)
-    class.community_display.php                       1.0.58    CS:6245bcfb
-    class.push_product.php                            1.0.1     CS:7ce2a7d9
-    class.record.php                                  1.0.105   CS:93a4002d
-    class.report_form.php                             1.0.69    CS:7124b33a
-    class.system.php                                  1.0.187   CS:ae4ec59a
-    class.system_export.php                           1.0.21    CS:c742681a
+  codebase.php                                        5.5.1
+  system.php                                          1.0.42
+  classes/  (1 file changed)
+    class.export.php                                  1.0.29    CS:ca152539
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
