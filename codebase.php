@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.2");
+define("CODEBASE_VERSION", "5.5.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,25 +19,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.2.2525 (2018-03-25)
+5.5.3.2526 (2018-05-08)
 Summary:
-  1) Bug fix for header text rotation
-  2) Added composer.json and composer.lock to package for simplified installation
+  1) Fix for loading correct member record where multiple sites live in same database having members with the same name
 
 Final Checksums:
-  Classes     CS:1153d028
+  Classes     CS:a49d0c84
   Database    CS:41de4e36
-  Libraries   CS:9ce32401
+  Libraries   CS:15af477d
   Reports     CS:22839f7c
 
 Code Changes:
-  codebase.php                                                                                   5.5.2     (2018-03-26)
+  codebase.php                                                                                   5.5.3     (2018-05-08)
     1) Updated version information
-  classes/class.excel_export.php                                                                 1.0.1     (2018-03-25)
-    1) Bug fix for header text rotation
+  classes/class.community_member.php                                                             1.0.124   (2018-05-08)
+    1) Community_Member::get_member_profile() now filters to limit to present site when matching member profile
 
-2525.sql
+2526.sql
   1) Set version information
+
+Promote:
+  codebase.php                                        5.5.3
+  classes/  (1 file changed)
+    class.community_member.php                        1.0.124   CS:e0fe0fdd
 
 Promote:
   codebase.php                                        5.5.2
