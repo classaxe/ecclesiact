@@ -1,3 +1,5 @@
+  1.0.33 (2017-10-01)
+    1) Removed non-working code to set tab-index values
   1.0.32 (2015-09-14)
     1) References to Page::push_content() now changed to Output::push()
   1.0.31 (2012-10-17)

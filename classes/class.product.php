@@ -1,15 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.85 (2016-12-31)
-    1) Renamed Product::get_records to Product::getFilteredSortedAndPagedRecords()
-    2) Product::get_records_matching() now uses newly named getFilteredSortedAndPagedRecords() method
-    3) Product::manage_actions() now uses renamed Record::manageActionsForNamedReport()
-    4) PSR-2 fixes
+  1.0.86 (2018-06-13)
+    1) Product::get_products_filtered() now includes Product Grouping description
+    2) Product::get_products_for_productID_list() now includes Product Grouping description
+    3) Product::getFilteredSortedAndPagedRecords() now includes Product Grouping description
 */
 class Product extends Displayable_Item
 {
-    const VERSION = '1.0.85';
+    const VERSION = '1.0.86';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, parentID, groupingID, seq, active_date_from, active_date_to, canBackorder, canPrintTaxReceipt, category, comments_allow, component_parameters, content, content_text, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, effective_date_from, effective_date_to, effective_period, effective_period_unit, enable, group_assign_csv, important, itemCode, keywords, media, meta_description, meta_keywords, module_creditsystem_creditPrice, module_creditsystem_creditValue, module_creditsystem_useCredits, price, price_non_refundable, quantity_available, quantity_maximum_order, quantity_unlimited, permPUBLIC, permSYSAPPROVER, permSYSLOGON, permSYSMEMBER, push_products, qb_ident, qb_name, ratings_allow, subtitle, tax_benefit_1_apply, tax_benefit_2_apply, tax_benefit_3_apply, tax_benefit_4_apply, tax_regimeID, themeID, thumbnail_small, thumbnail_medium, thumbnail_large, specialShippingInstructions, title, type, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public $type;
@@ -1042,6 +1041,7 @@ class Product extends Displayable_Item
              "SELECT\n"
             ."  `product`.*,\n"
             ."  `product_grouping`.`name` AS `product_grouping_name`,\n"
+            ."  `product_grouping`.`description` AS `product_grouping_description`,\n"
             ."  `system`.`textEnglish` AS `systemTitle`\n"
             ."FROM\n"
             ."  `product`\n"
@@ -1120,6 +1120,7 @@ class Product extends Displayable_Item
             ."  `product`.`title`,\n"
             ."  `product`.`type`,\n"
             ."  `product_grouping`.`name` AS `product_grouping_name`,\n"
+            ."  `product_grouping`.`description` AS `product_grouping_description`,\n"
             ."  `system`.`textEnglish` AS `systemTitle`\n"
             ."FROM\n"
             ."  `product`\n"
@@ -1175,6 +1176,7 @@ class Product extends Displayable_Item
              "SELECT\n"
             ."  `product`.*,\n"
             ."  `product_grouping`.`name` `product_grouping_name`,\n"
+            ."  `product_grouping`.`description` `product_grouping_description`,\n"
             ."  `system`.`textEnglish` `systemTitle`,\n"
             ."  `system`.`URL` `systemURL`\n"
             ."FROM\n"

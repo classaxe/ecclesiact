@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.3");
+define("CODEBASE_VERSION", "5.5.4");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,34 +19,42 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.3.2526 (2018-05-08)
+5.5.4.2527 (2018-06-13)
 Summary:
-  1) Fix for loading correct member record where multiple sites live in same database having members with the same name
+  1) Product Groupings now support an optional description and have anchors in their titles
 
 Final Checksums:
-  Classes     CS:a49d0c84
-  Database    CS:41de4e36
-  Libraries   CS:15af477d
-  Reports     CS:22839f7c
+  Classes     CS:f1e6940
+  Database    CS:43d5657c
+  Libraries   CS:1da8638b
+  Reports     CS:43da158e
 
 Code Changes:
-  codebase.php                                                                                   5.5.3     (2018-05-08)
+  codebase.php                                                                                   5.5.4     (2018-06-13)
     1) Updated version information
-  classes/class.community_member.php                                                             1.0.124   (2018-05-08)
-    1) Community_Member::get_member_profile() now filters to limit to present site when matching member profile
+  classes/class.credit_memo.php                                                                  1.0.12    (2018-06-13)
+    1) Credit_Memo::draw_items() now includes product grouping description
+  classes/class.order.php                                                                        1.0.72    (2018-06-13)
+    1) Order::draw_order_summary() now includes Product Grouping Description
+  classes/class.product.php                                                                      1.0.86    (2018-06-13)
+    1) Product::get_products_filtered() now includes Product Grouping description
+    2) Product::get_products_for_productID_list() now includes Product Grouping description
+    3) Product::getFilteredSortedAndPagedRecords() now includes Product Grouping description
+  classes/class.product_catalogue.php                                                            1.0.34    (2018-06-13)
+    1) Product_Catalogue::_draw_category_heading() now includes anchor based on name
+    2) Product_Catalogue::_draw_product_groupings_with_items now also includes description if present
 
-2526.sql
+2527.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.5.3
-  classes/  (1 file changed)
-    class.community_member.php                        1.0.124   CS:e0fe0fdd
+  codebase.php                                        5.5.4
+  classes/  (4 files changed)
+    class.credit_memo.php                             1.0.12    CS:c6a026ed
+    class.order.php                                   1.0.72    CS:aec1bbf9
+    class.product.php                                 1.0.86    CS:2f728098
+    class.product_catalogue.php                       1.0.34    CS:545d73bd
 
-Promote:
-  codebase.php                                        5.5.2
-  classes/  (1 file changed)
-    class.excel_export.php                            1.0.1     CS:1d6a920
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
