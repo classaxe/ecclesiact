@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.4");
+define("CODEBASE_VERSION", "5.5.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,42 +19,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.4.2527 (2018-06-13)
+5.5.5.2528 (2018-06-30)
 Summary:
-  1) Product Groupings now support an optional description and have anchors in their titles
+  1) Beanstream Payment Gateway now provides cvv field
 
 Final Checksums:
-  Classes     CS:f1e6940
+  Classes     CS:d57b8418
   Database    CS:43d5657c
-  Libraries   CS:1da8638b
+  Libraries   CS:56c1f727
   Reports     CS:43da158e
 
 Code Changes:
-  codebase.php                                                                                   5.5.4     (2018-06-13)
+  codebase.php                                                                                   5.5.5     (2018-06-30)
     1) Updated version information
-  classes/class.credit_memo.php                                                                  1.0.12    (2018-06-13)
-    1) Credit_Memo::draw_items() now includes product grouping description
-  classes/class.order.php                                                                        1.0.72    (2018-06-13)
-    1) Order::draw_order_summary() now includes Product Grouping Description
-  classes/class.product.php                                                                      1.0.86    (2018-06-13)
-    1) Product::get_products_filtered() now includes Product Grouping description
-    2) Product::get_products_for_productID_list() now includes Product Grouping description
-    3) Product::getFilteredSortedAndPagedRecords() now includes Product Grouping description
-  classes/class.product_catalogue.php                                                            1.0.34    (2018-06-13)
-    1) Product_Catalogue::_draw_category_heading() now includes anchor based on name
-    2) Product_Catalogue::_draw_product_groupings_with_items now also includes description if present
+  classes/class.beanstream_gateway.php                                                           1.0.6     (2018-06-27)
+    1) Changes to support cvv number:
+        Beanstream_Gateway::_build_request_add_card_details() now includes
+  classes/class.payment_method.php                                                               1.0.12    (2018-06-27)
+    1) draw_payment_options() now includes CVV field
+  js/functions.js                                                                                1.0.273   (2018-06-27)
+    1) Added support for cvv field to payment_method_change()
 
-2527.sql
+2528.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.5.4
-  classes/  (4 files changed)
-    class.credit_memo.php                             1.0.12    CS:c6a026ed
-    class.order.php                                   1.0.72    CS:aec1bbf9
-    class.product.php                                 1.0.86    CS:2f728098
-    class.product_catalogue.php                       1.0.34    CS:545d73bd
-
+  codebase.php                                        5.5.5
+  classes/  (2 files changed)
+    class.beanstream_gateway.php                      1.0.6     CS:904bcfa6
+    class.payment_method.php                          1.0.12    CS:f7064f6d
+  js/functions.js                                     1.1.273a1 CS:a7426dec
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,3 +1,5 @@
+  1.0.272 (2017-08-26)
+    1) Completely replaced copy_clip() with external library code in clipboard.min.js
   1.0.271 (2016-01-02)
     1) Made popup window for version() larger
   1.0.270 (2015-09-21)

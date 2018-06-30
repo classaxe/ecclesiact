@@ -1,9 +1,9 @@
-// 1.1.272
+// 1.1.273a1
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.272 (2017-08-26)
-    1) Completely replaced copy_clip() with external library code in clipboard.min.js
+  1.0.273 (2018-06-27)
+    1) Added support for cvv field to payment_method_change()
 */
 
 // ************************************
@@ -5260,7 +5260,9 @@ function two_dp(amount){
   return s;
 }
 
-function payment_method_change(disable_cc,id_method,id_card_name,id_card_number,id_card_exp_mm,id_card_exp_yy) {
+function payment_method_change(
+    disable_cc, id_method, id_card_name, id_card_number, id_card_exp_mm, id_card_exp_yy, id_card_cvv
+) {
   if (geid(id_card_name)){
     geid(id_card_name).disabled=disable_cc;
     geid(id_card_name).style.backgroundColor=(disable_cc ? '#e0e0e0' : '');
@@ -5276,6 +5278,10 @@ function payment_method_change(disable_cc,id_method,id_card_name,id_card_number,
   if (geid(id_card_exp_yy)){
     geid(id_card_exp_yy).disabled=disable_cc;
     geid(id_card_exp_yy).style.backgroundColor=(disable_cc ? '#e0e0e0' : '');
+  }
+  if (geid(id_card_cvv)){
+    geid(id_card_cvv).disabled=disable_cc;
+    geid(id_card_cvv).style.backgroundColor=(disable_cc ? '#e0e0e0' : '');
   }
 }
 

@@ -1,3 +1,5 @@
+  1.0.5 (2015-03-23)
+    1) Method get_version() renamed to getVersion() and made static
   1.0.4 (2014-01-06)
     1) Beanstream_Gateway::_setup_get_customer_name() now uses User class to
        load name of customer - contacts cannot place orders
