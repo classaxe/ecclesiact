@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.40 (2017-12-15)
-    1) Added support for setting of piwik_online
+  1.0.41 (2018-09-29)
+    1) Added support for setting of google_geocode_key now needed for location lookups
 */
 class System_Edit extends System
 {
-    const VERSION = '1.0.40';
+    const VERSION = '1.0.41';
 
     private $_colour_schemeID;
     private $_html;
@@ -159,6 +159,7 @@ class System_Edit extends System
             'defaultThemeID'=>              addslashes(get_var('defaultThemeID')),
             'favicon'=>                     addslashes(get_var('favicon')),
             'google_analytics_key'=>        addslashes(get_var('google_analytics_key')),
+            'google_geocode_key'=>          addslashes(get_var('google_geocode_key')),
             'google_maps_key'=>             addslashes(get_var('google_maps_key')),
             'notify_email'=>                addslashes(get_var('notify_email')),
             'notify_triggers'=>             addslashes(get_var('notify_triggers')),
@@ -1127,12 +1128,15 @@ class System_Edit extends System
                 "selector_timezone",
                 "608px"
             )
-            ."</div>\n"
+            . "</div>\n"
             ."    <div class='clr_b'></div>\n"
             ."  </div>\n"
+
+
             ."  <div class='settings_group'>\n"
-            ."    <div class='lbl' style='width:170px'><b>Akismet Key "
-            ."<a href='http://wordpress.com/signup/' rel='external'>Get WP Key</a></b></div>\n"
+            ."    <div class='lbl' style='width:170px'>"
+            ."<a href='http://wordpress.com/signup/' rel='external'><b>Akismet Key</b></a>"
+            ."</div>\n"
             ."    <div class='val' style='width:110px'>"
             .draw_form_field(
                 "akismet_api_key",
@@ -1140,31 +1144,49 @@ class System_Edit extends System
                 "text",
                 "100px"
             )
-            ."</div>\n"
+            . "</div>\n"
             ."    <div class='val' style='width:100px;'>&nbsp; &nbsp; <b>Status:</b> "
             .$this->getAkismetKeyStatus()."</div>\n"
-            ."    <div class='lbl' style='width:70px' title='Google Maps Key'>&nbsp;<b>GM Key</b> "
-            ."<a href='https://developers.google.com/maps/documentation/javascript/get-api-key' rel='external'>"
-            ."<b>?</b></a></div>\n"
-            ."    <div class='val'>"
-            .draw_form_field(
-                "google_maps_key",
-                $this->record['google_maps_key'],
-                "text",
-                "125px"
-            )
-            ."</div>\n"
-            ."    <div class='lbl' style='width:76px' title='Google Analytics Key'>&nbsp;<b>GA Key</b> "
-            ."<a href='http://www.google.com/analytics' rel='external'><b>?</b></a></div>\n"
-            ."    <div class='val'>"
-            .draw_form_field(
-                "google_analytics_key",
-                $this->record['google_analytics_key'],
-                "text",
-                "125px"
-            )
-            ."</div>\n"
-                ."    <div class='clr_b'></div>\n"
+            ."    <div class='clr_b'></div>\n"
+
+
+             ."    <div class='lbl' style='width:170px'>"
+             ."<a href='https://developers.google.com' rel='external'>"
+             ."<b>Google API Keys</b></a></div>\n"
+             ."    <div class='lbl' style='width:76px' title='Google Analytics Key'>"
+             ."<a href='http://www.google.com/analytics' rel='external'><b>Analytics</b></a></div>\n"
+             ."    <div class='val'>"
+             .draw_form_field(
+                 "google_analytics_key",
+                 $this->record['google_analytics_key'],
+                 "text",
+                 "125px"
+             )
+             ."</div>\n"
+             ."    <div class='lbl' style='width:76px' title='Google Geocode Key'>&nbsp; "
+             ."<a href='https://developers.google.com/maps/documentation/geocoding/start' rel='external'><b>Geocode</b></a></div>\n"
+             ."    <div class='val'>"
+             .draw_form_field(
+                 "google_geocode_key",
+                 $this->record['google_geocode_key'],
+                 "text",
+                 "125px"
+             )
+             ."</div>\n"
+
+             ."    <div class='lbl' style='width:70px' title='Google Maps Key'>&nbsp; "
+             ."<a href='https://developers.google.com/maps/documentation/javascript/get-api-key' rel='external'>"
+             ."<b>JS Maps</b></a></div>\n"
+             ."    <div class='val'>"
+             .draw_form_field(
+                 "google_maps_key",
+                 $this->record['google_maps_key'],
+                 "text",
+                 "125px"
+             )
+             ."</div>\n"
+             ."    <div class='clr_b'></div>\n"
+
             ."    <div class='lbl' style='width:170px'><b>Bug Tracker</b></div>"
             ."    <div class='val' style='width:200px;'>"
             .draw_form_field(

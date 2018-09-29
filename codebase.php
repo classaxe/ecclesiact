@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.5");
+define("CODEBASE_VERSION", "5.5.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,36 +19,34 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.5.2528 (2018-06-30)
+5.5.6.2529 (2018-09-29)
 Summary:
-  1) Beanstream Payment Gateway now provides cvv field
+  1) New field for system - google_geocode_key - since this is now required for geocode lookups
+  2) Google Maps no longer requires the 'sensor' parameter in calls - removed this to block the warning
 
 Final Checksums:
-  Classes     CS:d57b8418
-  Database    CS:43d5657c
-  Libraries   CS:56c1f727
-  Reports     CS:43da158e
+  Classes     CS:15343fd7
+  Database    CS:422e4761
+  Libraries   CS:af9366db
+  Reports     CS:d202a396
 
 Code Changes:
-  codebase.php                                                                                   5.5.5     (2018-06-30)
+  codebase.php                                                                                   5.5.6     (2018-09-29)
     1) Updated version information
-  classes/class.beanstream_gateway.php                                                           1.0.6     (2018-06-27)
-    1) Changes to support cvv number:
-        Beanstream_Gateway::_build_request_add_card_details() now includes
-  classes/class.payment_method.php                                                               1.0.12    (2018-06-27)
-    1) draw_payment_options() now includes CVV field
-  js/functions.js                                                                                1.0.273   (2018-06-27)
-    1) Added support for cvv field to payment_method_change()
+  classes/class.system_edit.php                                                                  1.0.41    (2018-09-29)
+    1) Added support for setting of google_geocode_key now needed for location lookups
+  classes/map/googlemap.php                                                                      1.0.5     (2018-09-29)
+    1) Now has key for Geocode lookup, also removed sensor parameter for Javascript Maps
 
-2528.sql
+2529.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.5.5
+  codebase.php                                        5.5.6
   classes/  (2 files changed)
-    class.beanstream_gateway.php                      1.0.6     CS:904bcfa6
-    class.payment_method.php                          1.0.12    CS:f7064f6d
-  js/functions.js                                     1.1.273a1 CS:a7426dec
+    class.system_edit.php                             1.0.41    CS:560bfbaa
+    map/googlemap.php                                 1.0.5     CS:6a989957
+
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

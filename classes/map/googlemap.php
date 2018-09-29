@@ -3,12 +3,12 @@ namespace Map;
 
 /*
 Version History:
-  1.0.4 (2017-12-12)
-    1) Implemented DEBUG_NO_INTERNET handling
+  1.0.5 (2018-09-29)
+    1) Now has key for Geocode lookup, also removed sensor parameter for Javascript Maps
 */
 class GoogleMap extends \Base
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     public $function_code;
     public $function_code_loader;
@@ -400,7 +400,7 @@ class GoogleMap extends \Base
 
     public static function findGeocode($address, $noCache = false)
     {
-        global $msg;
+        global $system_vars;
         if (trim($address)=='') {
             return array(
                 'ID' =>                     '',
@@ -479,8 +479,10 @@ class GoogleMap extends \Base
             }
         }
         $url =
-             "http://maps.googleapis.com/maps/api/geocode/json?address="
-            .str_replace(' ', '+', urlencode(trim($address)))."&sensor=false";
+             "https://maps.googleapis.com/maps/api/geocode/json?address="
+            .str_replace(' ', '+', urlencode(trim($address)))
+            .($system_vars['google_geocode_key'] ? "&key=".$system_vars['google_geocode_key'] : "")
+        ;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -500,7 +502,7 @@ class GoogleMap extends \Base
                 'query_date' =>             ''
             );
         }
-  //    y($response);
+//        do_log(3, __METHOD__, 'lookup', print_r($response, true));
         if ($response['status']!='OK') {
             return array(
                 'ID' =>                     '',
@@ -817,9 +819,9 @@ class GoogleMap extends \Base
         if (!GoogleMap::$js_lib_included) {
             \Output::push(
                 'javascript_top',
-                "<script type=\"text/javascript\" src=\"//maps.google.com/maps/api/js?"
-                .($system_vars['google_maps_key'] ? "key=".$system_vars['google_maps_key']."&" : "")
-                ."sensor=false\"></script>\n"
+                "<script type=\"text/javascript\" src=\"//maps.google.com/maps/api/js"
+                .($system_vars['google_maps_key'] ? "?key=".$system_vars['google_maps_key'] : "")
+                ."\"></script>\n"
             );
             GoogleMap::$js_lib_included = true;
         }
