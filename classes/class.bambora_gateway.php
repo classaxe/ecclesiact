@@ -1,15 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.6 (2018-06-27)
-    1) Changes to support cvv number:
-        Beanstream_Gateway::_build_request_add_card_details() now includes
-
+  1.0.7 (2018-11-15)
+    1) Renamed from Beanstream_Gateway to Bambora_Gateway
+    2) Now adds hashing capability to requests posted to payment provider
 */
 
-class Beanstream_Gateway extends Base
+class Bambora_Gateway extends Base
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
 
     private $_num;
     private $_card_number;
@@ -24,9 +23,10 @@ class Beanstream_Gateway extends Base
     {
         $this->_setup($order, false);
         $this->_build_request();
+//        print $this->_URL."?".$this->_request;die;
         $this->_send_request();
         if ($this->_response === false) {
-            do_log(3, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Cannot connect to Beanstream at ' . $this->_URL);
+            do_log(3, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Cannot connect to Bambora at ' . $this->_URL);
             $msg =
                 "<b>ERROR: Cannot connect to payment gateway</b>.<br />\n"
                 . "Your credit card has not been billed.<br />\n"
@@ -35,25 +35,31 @@ class Beanstream_Gateway extends Base
             $this->_Obj_Order->actions_process_product_pay_failure();
             return false;
         }
+
         $this->_Obj_Order->set_field('gateway_result', urldecode($this->_response['messageText']), true, false);
         $authCode = $this->_response['authCode'];
         if ($this->_response['trnApproved'] == "1") {
             switch ($authCode) {
                 case "TEST":
                     $this->_Obj_Order->mark_paid('TEST: ', false);
-                    do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Beanstream approved - TEST');
+                    do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Bambora approved - TEST');
                     return $authCode;
                     break;
+
                 default:
                     $this->_Obj_Order->mark_paid('', false);
-                    do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Beanstream approved');
+                    do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Bambora approved');
                     return $authCode;
                     break;
             }
         }
+
         $this->_Obj_Order->actions_process_product_pay_failure();
         return $authCode;
     }
+
+
+
 
     protected function _build_request()
     {
@@ -67,6 +73,7 @@ class Beanstream_Gateway extends Base
         $this->_build_request_add_taxes();
         $this->_build_request_add_method_surcharge();
         $this->_build_request_add_totals();
+        $this->_build_request_hash_request();
     }
 
     protected function _build_request_header()
@@ -87,9 +94,9 @@ class Beanstream_Gateway extends Base
             . "&ordAddress1=" . urlencode($this->_order_record['BAddress1'])
             . "&ordAddress2=" . urlencode($this->_order_record['BAddress2'])
             . "&ordCity=" . urlencode($this->_order_record['BCity'])
-            . "&ordProvince=" . urlencode($this->_get_beanstream_state($this->_order_record['BCountryID'], $this->_order_record['BSpID']))
+            . "&ordProvince=" . urlencode($this->_get_bambora_state($this->_order_record['BCountryID'], $this->_order_record['BSpID']))
             . "&ordPostalCode=" . urlencode($this->_order_record['BPostal'])
-            . "&ordCountry=" . urlencode($this->_get_beanstream_country($this->_order_record['BCountryID']));
+            . "&ordCountry=" . urlencode($this->_get_bambora_country($this->_order_record['BCountryID']));
     }
 
     protected function _build_request_add_address_shipping()
@@ -100,9 +107,9 @@ class Beanstream_Gateway extends Base
                 . "&shipAddress1=" . urlencode($this->_order_record['SAddress1'])
                 . "&shipAddress2=" . urlencode($this->_order_record['SAddress2'])
                 . "&shipCity=" . urlencode($this->_order_record['SCity'])
-                . "&shipProvince=" . urlencode($this->_get_beanstream_state($this->_order_record['SCountryID'], $this->_order_record['SSpID']))
+                . "&shipProvince=" . urlencode($this->_get_bambora_state($this->_order_record['SCountryID'], $this->_order_record['SSpID']))
                 . "&shipPostalCode=" . urlencode($this->_order_record['SPostal'])
-                . "&shipCountry=" . urlencode($this->_get_beanstream_country($this->_order_record['SCountryID']));
+                . "&shipCountry=" . urlencode($this->_get_bambora_country($this->_order_record['SCountryID']));
         }
     }
 
@@ -207,12 +214,19 @@ class Beanstream_Gateway extends Base
             . (isset($tax[1]) ? "&ordTax2Price=" . $tax[1] : "");
     }
 
-    protected function _get_beanstream_country($country)
+    protected function _build_request_hash_request(){
+        if (!$this->_gateway_record['settings']['xml:hash']) {
+            return;
+        }
+        $this->_request.= "&hashValue=". sha1($this->_request . $this->_gateway_record['settings']['xml:hash']);
+    }
+
+    protected function _get_bambora_country($country)
     {
         return Country::get_iso3166($country);
     }
 
-    protected function _get_beanstream_state($country, $state)
+    protected function _get_bambora_state($country, $state)
     {
         switch ($country) {
             case 'CAN':
@@ -227,7 +241,7 @@ class Beanstream_Gateway extends Base
 
     protected function _send_request()
     {
-        do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Connect to Beanstream at ' . $this->_URL . ' - sending request.');
+        do_log(1, __CLASS__ . '::' . __FUNCTION__ . '()', '(none)', 'Connect to Bambora at ' . $this->_URL . ' - sending request.');
         $Obj_CURL = new Curl(
             $this->_URL,
             $this->_request
@@ -237,14 +251,16 @@ class Beanstream_Gateway extends Base
 
     protected function _setup($order)
     {
-        $this->_Obj_Order = $order;
-        $this->_gateway_record = $order->_gateway_record;
-        $this->_order_record = $order->get_record();
-        $this->_order_items = $order->get_order_items();
-        $this->_URL = $this->_gateway_record['type']['URL'];
-        $this->_card_number = get_var('TCardNumber');
-        $this->_card_cvd = get_var('TCardCvv');
-        $this->_num = 1;
+        $this->_Obj_Order =             $order;
+        $Obj_System =                   new System(SYS_ID);
+        $Obj_System->xmlfields_decode($order->_gateway_record['settings']);
+        $this->_gateway_record =        $order->_gateway_record;
+        $this->_order_record =          $order->get_record();
+        $this->_order_items =           $order->get_order_items();
+        $this->_URL =                   $this->_gateway_record['type']['URL'];
+        $this->_card_number =           get_var('TCardNumber');
+        $this->_card_cvd =              get_var('TCardCvv');
+        $this->_num =                   1;
         $this->_setup_get_customer_name();
     }
 

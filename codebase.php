@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.5.6");
+define("CODEBASE_VERSION", "5.6.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,34 +19,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.5.6.2529 (2018-09-29)
-Summary:
-  1) New field for system - google_geocode_key - since this is now required for geocode lookups
-  2) Google Maps no longer requires the 'sensor' parameter in calls - removed this to block the warning
+5.6.0.2530 (2018-11-15)
+  1) Now supports hashing of request for Bambora (formerly 'Beanstream') transactions
 
 Final Checksums:
-  Classes     CS:15343fd7
+  Classes     CS:7b4a82a5
   Database    CS:422e4761
-  Libraries   CS:af9366db
-  Reports     CS:d202a396
+  Libraries   CS:b946b753
+  Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.5.6     (2018-09-29)
+  codebase.php                                                                                   5.6.0     (2018-11-15)
     1) Updated version information
-  classes/class.system_edit.php                                                                  1.0.41    (2018-09-29)
-    1) Added support for setting of google_geocode_key now needed for location lookups
-  classes/map/googlemap.php                                                                      1.0.5     (2018-09-29)
-    1) Now has key for Geocode lookup, also removed sensor parameter for Javascript Maps
+  classes/class.gateway_setting.php                                                              1.0.5     (2018-11-15)
+    1) Changed reference to Beanstream to Bambora
+  classes/class.order.php                                                                        1.0.73    (2018-11-15)
+    1) Changed references to Beanstream to Bambora
 
 2529.sql
-  1) Set version information
+  1) Update URL for Beanstream gateway
+  2) Renamed report gateway_settings_beanstream to gateway_settings_bambora
+  3) Set version information
 
+Delete:
+    class.beanstream_gateway.php                      1.0.6
 Promote:
-  codebase.php                                        5.5.6
+  codebase.php                                        5.6.0
   classes/  (2 files changed)
-    class.system_edit.php                             1.0.41    CS:560bfbaa
-    map/googlemap.php                                 1.0.5     CS:6a989957
-
+    class.gateway_setting.php                         1.0.5     CS:c02bd6b0
+    class.order.php                                   1.0.73    CS:905d92c9
+    class.bambora_gateway.php                         1.0.7
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date

@@ -1,18 +1,9 @@
 <?php
-define('VERSION_GATEWAY_SETTING','1.0.4');
+define('VERSION_GATEWAY_SETTING','1.0.5');
 /*
 Version History:
-  1.0.4 (2012-09-05)
-    1) Gateway_Setting::do_donation() wasn't recognising gateway types of
-       'Paypal (Live)' and 'Paypal (Test)' - it does now.
-  1.0.3 (2012-05-08)
-    1) Added handle_report_copy() method for cloning entries
-  1.0.2 (2011-10-04)
-    1) Added Gateway_Setting::get_selector_sql()
-  1.0.1 (2010-10-04)
-    1) Changes to setter and getter names for parent-based object properties
-  1.0.0 (2009-07-02)
-    Initial release
+  1.0.5 (2018-11-15)
+    1) Changed reference to Beanstream to Bambora
 */
 class Gateway_Setting extends Record{
 
@@ -29,8 +20,8 @@ class Gateway_Setting extends Record{
       return 'There is no gateway defined for this system.';
     }
     switch($gateway_record['type']['name']) {
-      case "Bean Stream":
-        return "The Donation button is not currently supported with Beanstream gateways";
+      case "Bambora":
+        return "The Donation button is not currently supported with Bambora gateways";
       break;
       case "Paypal (Live)":
       case "Paypal (Test)":

@@ -1,3 +1,5 @@
+  1.0.72 (2018-06-13)
+    1) Order::draw_order_summary() now includes Product Grouping Description
   1.0.71 (2016-01-19)
     1) Made the following methods static:
          Order::manage()

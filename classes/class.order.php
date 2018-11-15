@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.72 (2018-06-13)
-    1) Order::draw_order_summary() now includes Product Grouping Description
-
+  1.0.73 (2018-11-15)
+    1) Changed references to Beanstream to Bambora
 */
 class Order extends Record
 {
-    const VERSION = '1.0.72';
+    const VERSION = '1.0.73';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, personID, BAddress1, BAddress2, BCity, BCountryID, BEmail, BPostal, BSpID, BTelephone, category, cost_grand_total, cost_items_pre_tax, cost_shipping, cost_sub_total, credit_memo_for_orderID, credit_memo_notes_admin, credit_memo_notes_customer, credit_memo_refund_awarded, credit_memo_status, credit_memo_transaction_code, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, deliveryMethod, deliveryStatus, gateway_result, gateway_settingsID, instructions, notes, originating_page, paymentAmount, paymentApproved, paymentMethod, paymentMethodSurcharge, paymentStatus, payment_card_expiry, payment_card_name, payment_card_partial, processed, qb_ident, SAddress1, SAddress2, SCity, SCountryID, SMethod, SPostal, SSpID, tax1_cost, tax1_name, tax1_rate, tax2_cost, tax2_name, tax2_rate, tax3_cost, tax3_name, tax3_rate, tax4_cost, tax4_name, tax4_rate, tax5_cost, tax5_name, tax5_rate, tax6_cost, tax6_name, tax6_rate, tax7_cost, tax7_name, tax7_rate, tax8_cost, tax8_name, tax8_rate, tax9_cost, tax9_name, tax9_rate, tax10_cost, tax10_name, tax10_rate, tax11_cost, tax11_name, tax11_rate, tax12_cost, tax12_name, tax12_rate, tax13_cost, tax13_name, tax13_rate, tax14_cost, tax14_name, tax14_rate, tax15_cost, tax15_name, tax15_rate, tax16_cost, tax16_name, tax16_rate, tax17_cost, tax17_name, tax17_rate, tax18_cost, tax18_name, tax18_rate, tax19_cost, tax19_name, tax19_rate, tax20_cost, tax20_name, tax20_rate, taxes_shipping, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -998,7 +997,7 @@ class Order extends Record
             ."<a href='#delivery_status'><b>Delivery Status</b></a> | "
             ."<a href='#effective_period_units'><b>Effective Period Units</b></a> | "
             ."<a href='#gateway_types'><b>Gateway Types</b></a><br />\n"
-            ."<a href='#gateway_settings_beanstream'><b>Gateway Settings - Beanstream</b></a> | "
+            ."<a href='#gateway_settings_bambora'><b>Gateway Settings - Bambora</b></a> | "
             ."<a href='#gateway_settings_chasepaymentech'><b>Gateway Settings - Chase Paymentech</b></a> | "
             ."<a href='#gateway_settings_paypal'><b>Gateway Settings - Paypal</b></a><br />"
             ."<a href='#payment_methods'><b>Payment Methods</b></a> | "
@@ -1020,9 +1019,9 @@ class Order extends Record
             ."<h3 style='margin:1em 0 0.15em 0'><a name='gateway_types'></a>"
             ."Gateway Types <a style='font-size:75%' href='#top'>Top</a></h3>"
             .draw_auto_report('gateway_type', 1)
-            ."<h3 style='margin:1em 0 0.15em 0'><a name='gateway_settings_beanstream'></a>"
-            ."Gateway Settings - Beanstream<a style='font-size:75%' href='#top'>Top</a></h3>"
-            .draw_auto_report('gateway_settings_beanstream', 1)
+            ."<h3 style='margin:1em 0 0.15em 0'><a name='gateway_settings_bambora'></a>"
+            ."Gateway Settings - Bambora (formerly Beanstream)<a style='font-size:75%' href='#top'>Top</a></h3>"
+            .draw_auto_report('gateway_settings_bambora', 1)
             ."<h3 style='margin:1em 0 0.15em 0'><a name='gateway_settings_chasepaymentech'></a>"
             ."Gateway Settings - Chase Paymentech<a style='font-size:75%' href='#top'>Top</a></h3>"
             .draw_auto_report('gateway_settings_chasepaymentech', 1)
@@ -1165,9 +1164,9 @@ class Order extends Record
             return true;
         }
         switch($this->_gateway_record['type']['name']) {
-            case "Bean Stream":
-                $Obj_Beanstream_Gateway = new Beanstream_Gateway;
-                $Obj_Beanstream_Gateway->payment($this);
+            case "Bambora":
+                $Obj_Bambora_Gateway = new Bambora_Gateway;
+                $Obj_Bambora_Gateway->payment($this);
                 break;
             case "Chase Paymentech (Live)":
             case "Chase Paymentech (Test)":

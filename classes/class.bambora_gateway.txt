@@ -1,3 +1,6 @@
+  1.0.6 (2018-06-27)
+    1) Changes to support cvv number:
+        Beanstream_Gateway::_build_request_add_card_details() now includes cvv data
   1.0.5 (2015-03-23)
     1) Method get_version() renamed to getVersion() and made static
   1.0.4 (2014-01-06)
