@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.1");
+define("CODEBASE_VERSION", "5.6.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,29 +19,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.1.2531 (2018-12-22)
+5.6.2.2532 (2018-12-22)
 Summary:
-  1) Bug fix for community visitor stats when a member has been renamed
+  1) Fixed Paypal payment notifications - previously used HTTP/1.0 but now needs HTTP/1.1
 
 Final Checksums:
-  Classes     CS:c0c2abc7
+  Classes     CS:2e72c7bd
   Database    CS:422e4761
-  Libraries   CS:ee773807
+  Libraries   CS:1725a9fb
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.1     (2018-12-22)
+  codebase.php                                                                                   5.6.2     (2018-12-22)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.59    (2018-12-22)
-    1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
+  classes/class.paypal_gateway.php                                                               1.0.25    (2018-12-22)
+    1) Now verifies payment with Paypal servers using HTTP 1.1 protocol:
+       Ref: https://www.paypal.com/us/smarthelp/article/how-do-i-modify-my-ipn-php-listener-to-support-http1.1-ts1492
+    2) Reformatted code to PSR-2 standard
+    3) Now uses class constant for version
 
-2531.sql
+2532.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.1
+  codebase.php                                        5.6.2
   classes/  (1 file changed)
-    class.community_display.php                       1.0.59    CS:3bddb0a5
+    class.paypal_gateway.php                          1.0.25    CS:63f0038
 
 --------------------------------------------------------------------------------
 

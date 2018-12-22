@@ -1,3 +1,14 @@
+  1.0.24 (2013-03-08)
+    1) PayPal_Gateway::simplePaymentVerify() -
+       Extensive changes to have system show prominent 'print tickets' link
+       and also to prevent errors if page is accessed with TX token but person
+       isn't signed in anymore.
+  1.0.23 (2012-11-21)
+    1) PayPal_Gateway::payment() formerly sent productID as sku -
+       this is now corrected to send itemCode instead
+  1.0.22 (2012-11-16)
+    1) Paypal::IPNPaymentVerify() now uses gateway_settingsID saved in order to
+       authenticate to paypal and verify payment was made correctly
   1.0.21 (2012-07-31)
     1) Slight change to constructor to not instantiate a new system object if gateway
        info has been given.
