@@ -1,3 +1,5 @@
+  1.0.58 (2018-03-20)
+    1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
   1.0.57 (2017-12-15)
     1) Fixed Community_Display::drawStats() and Community_Display::setupListingsLoadPiwikStats() to correctly
        handle monthly stats for each member, including name aliases and previous links, and all from cached stats

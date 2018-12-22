@@ -6,13 +6,13 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.58 (2018-03-20)
-    1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
+  1.0.59 (2018-12-22)
+    1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.58';
+    const VERSION = '1.0.59';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2422,7 +2422,6 @@ class Community_Display extends Community
                 $r['links'][$type]['hits'] = 0;
                 $r['links'][$type]['visits'] = 0;
             }
-            $member_url_arr = array($this->record['URL'] . '/' . trim($r['name'], '/'));
             if (trim($r['name_aliases'])) {
                 $name_aliases = explode(',', trim($r['name_aliases']));
                 foreach ($name_aliases as $name_alias) {
@@ -2432,8 +2431,10 @@ class Community_Display extends Community
             foreach ($r['stats'] as $date => $data) {
                 if ($date >= $this->startDate && $date <= $this->endDate) {
                     foreach ($member_url_arr as $member_url) {
-                        $r['profile_hits'] += (int)$data['visits'][$member_url]['hits'];
-                        $r['profile_visits'] += (int)$data['visits'][$member_url]['visits'];
+                        if (isset($data['visits'][$member_url])) {
+                            $r['profile_hits'] += (int)$data['visits'][$member_url]['hits'];
+                            $r['profile_visits'] += (int)$data['visits'][$member_url]['visits'];
+                        }
                     }
                     foreach ($link_types as $type) {
                         if ($r['link_' . $type]) {

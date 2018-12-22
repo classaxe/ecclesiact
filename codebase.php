@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.0");
+define("CODEBASE_VERSION", "5.6.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,36 +19,31 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.0.2530 (2018-11-15)
-  1) Now supports hashing of request for Bambora (formerly 'Beanstream') transactions
+5.6.1.2531 (2018-12-22)
+Summary:
+  1) Bug fix for community visitor stats when a member has been renamed
 
 Final Checksums:
-  Classes     CS:7b4a82a5
+  Classes     CS:c0c2abc7
   Database    CS:422e4761
-  Libraries   CS:b946b753
+  Libraries   CS:ee773807
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.0     (2018-11-15)
+  codebase.php                                                                                   5.6.1     (2018-12-22)
     1) Updated version information
-  classes/class.gateway_setting.php                                                              1.0.5     (2018-11-15)
-    1) Changed reference to Beanstream to Bambora
-  classes/class.order.php                                                                        1.0.73    (2018-11-15)
-    1) Changed references to Beanstream to Bambora
+  classes/class.community_display.php                                                            1.0.59    (2018-12-22)
+    1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
 
-2529.sql
-  1) Update URL for Beanstream gateway
-  2) Renamed report gateway_settings_beanstream to gateway_settings_bambora
-  3) Set version information
+2531.sql
+  1) Set version information
 
-Delete:
-    class.beanstream_gateway.php                      1.0.6
 Promote:
-  codebase.php                                        5.6.0
-  classes/  (2 files changed)
-    class.gateway_setting.php                         1.0.5     CS:c02bd6b0
-    class.order.php                                   1.0.73    CS:905d92c9
-    class.bambora_gateway.php                         1.0.7
+  codebase.php                                        5.6.1
+  classes/  (1 file changed)
+    class.community_display.php                       1.0.59    CS:3bddb0a5
+
+--------------------------------------------------------------------------------
 
 Bug:
     where two postings (e.g. gallery album and article) have same name and date
