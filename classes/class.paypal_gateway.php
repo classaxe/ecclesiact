@@ -1,16 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.25 (2018-12-22)
-    1) Now verifies payment with Paypal servers using HTTP 1.1 protocol:
-       Ref: https://www.paypal.com/us/smarthelp/article/how-do-i-modify-my-ipn-php-listener-to-support-http1.1-ts1492
-    2) Reformatted code to PSR-2 standard
-    3) Now uses class constant for version
+  1.0.26 (2018-12-22)
+    1) Further fix for IPN verification - wasn't as fully implemented as for Simple Payment verification
 */
 
 class PayPal_Gateway extends Base
 {
-    const VERSION = '1.0.25';
+    const VERSION = '1.0.26';
 
     // holds all the properties of this object
     // unset properties (ie properties that do not exist) return a value of false if accessed
@@ -263,7 +260,8 @@ class PayPal_Gateway extends Base
             . "Content-Type: application/x-www-form-urlencoded\r\n"
             . "Host: " . $url_parts['host']."\r\n"
             . "Connection: close\r\n"
-            . "Content-Length: " . strlen($req) . "\r\n\r\n";
+            . "Content-Length: " . strlen($req)
+            . "\r\n\r\n";
         $fp = @fsockopen('ssl://' . $url_parts['host'], 443, $errno, $errstr, 30);
         if (!$fp) {
             return $this->error_VerifyPayment_HTTPError;
@@ -431,7 +429,10 @@ class PayPal_Gateway extends Base
         $header =
             "POST " . $url_parts['path'] . " HTTP/1.1\r\n"
             . "Content-Type: application/x-www-form-urlencoded\r\n"
-            . "Content-Length: " . strlen($req) . "\r\n\r\n";
+            . "Host: " . $url_parts['host']."\r\n"
+            . "Connection: close\r\n"
+            . "Content-Length: " . strlen($req)
+            . "\r\n\r\n";
         $fp = @fsockopen('ssl://' . $url_parts['host'], 443, $errno, $errstr, 30);
         if (!$fp) {
             $msg =
@@ -462,8 +463,7 @@ class PayPal_Gateway extends Base
             1,
             __CLASS__ . '::' . __FUNCTION__ . '()',
             'IPN verify response',
-            'Gateway_settingsID=' . $gateway_settingsID. ' Request:' . $header . $req
-            . "\r\nReponse:" . $res
+            'Gateway_settingsID=' . $gateway_settingsID. ' Request:' . $header . $req . "\r\nReponse:" . $res
         );
 
         // parse the data
@@ -474,8 +474,7 @@ class PayPal_Gateway extends Base
                 3,
                 __CLASS__ . '::' . __FUNCTION__ . '()',
                 'Bad IPN verify response',
-                'Gateway_settingsID=' . $gateway_settingsID. ' Request:' . $header . $req
-                . "\r\nReponse:" . $res
+                'Gateway_settingsID=' . $gateway_settingsID. ' Request:' . $header . $req . "\r\nReponse:" . $res
             );
             return;
         }

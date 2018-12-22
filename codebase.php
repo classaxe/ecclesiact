@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.2");
+define("CODEBASE_VERSION", "5.6.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,32 +19,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.2.2532 (2018-12-22)
+5.6.3.2533 (2018-12-22)
 Summary:
-  1) Fixed Paypal payment notifications - previously used HTTP/1.0 but now needs HTTP/1.1
+  1) Further tweak for partial fix for IPN verification
 
 Final Checksums:
-  Classes     CS:2e72c7bd
+  Classes     CS:7e05ac42
   Database    CS:422e4761
-  Libraries   CS:1725a9fb
+  Libraries   CS:401426af
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.2     (2018-12-22)
+  codebase.php                                                                                   5.6.3     (2018-12-22)
     1) Updated version information
-  classes/class.paypal_gateway.php                                                               1.0.25    (2018-12-22)
-    1) Now verifies payment with Paypal servers using HTTP 1.1 protocol:
-       Ref: https://www.paypal.com/us/smarthelp/article/how-do-i-modify-my-ipn-php-listener-to-support-http1.1-ts1492
-    2) Reformatted code to PSR-2 standard
-    3) Now uses class constant for version
+  classes/class.paypal_gateway.php                                                               1.0.26    (2018-12-22)
+    1) Further fix for IPN verification - wasn't as fully implemented as for Simple Payment verification
 
-2532.sql
+2533.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.2
+  codebase.php                                        5.6.3
   classes/  (1 file changed)
-    class.paypal_gateway.php                          1.0.25    CS:63f0038
+    class.paypal_gateway.php                          1.0.26    CS:5813a2dc
+
 
 --------------------------------------------------------------------------------
 
