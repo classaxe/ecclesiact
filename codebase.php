@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.4");
+define("CODEBASE_VERSION", "5.6.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,45 +19,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.4.2534 (2018-12-24)
+5.6.5.2535 (2018-12-26)
 Summary:
-  1) Accessibility fixes
+  1) Iframes now have title attributes for better accessibility
+  2) Removed CKEditor Samples folder
 
 Final Checksums:
   Classes     CS:62e07531
   Database    CS:422e4761
-  Libraries   CS:1df9ca1a
+  Libraries   CS:e760e6b8
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.4     (2018-12-23)
+  codebase.php                                                                                   5.6.5     (2018-12-26)
     1) Updated version information
-  classes/class.displayable_item.php                                                             1.0.164   (2018-12-24)
-    1) Displayable_Item::_draw_detail_setup() 'Main Content Starts Here' skip link now uses sr-only
-       class to provide an accessible link that actually works with screen readers.
-  classes/class.html.php                                                                         1.0.99    (2018-12-24)
-    Accessibility fixes:
-    1) HTML::_draw_toolbar_type_admin() now uses spans rather than labels for dropdown category display
-    2) HTML::_draw_toolbar_type_sites() now uses span rather than label for 'Archived Sites' navigation heading
-  classes/class.layout.php                                                                       1.0.44    (2018-12-24)
-    1) Layout::prepareXhtmlHead() now uses sr-only class to provide 'Skip to Main Content' nav link
-  classes/nav/drawnav.php                                                                        1.0.10    (2018-12-24)
-    1) Change to drawImageButton() to make accessible text appear correctly for screen readers
-  style/default.css                                                                              1.0.174   (2018-12-24)
-    1) Added sr-only class for adding accessible labels
-    2) Defined am .label to use span in place of orphanned label for accessibility improvement
+  js/functions.js                                                                                1.0.274   (2018-12-26)
+    1) When encountering an IFRAME anchor tag, externalLinks() now sets a title attribute
+       from the inner HTML of the anchor tag
+    2) video_setup() used with BL tag links now maintains title from lnk title attribute in iframe
 
-2534.sql
+2535.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.4
-  classes/  (4 files changed)
-    class.displayable_item.php                        1.0.164   CS:9083f98
-    class.html.php                                    1.0.99    CS:f37e3f7
-    class.layout.php                                  1.0.44    CS:1702cf54
-    nav/drawnav.php                                   1.0.10    CS:3bb986ff
-  style/default.css                                   1.0.174   CS:f3c92889
+  codebase.php                                        5.6.5
+  js/functions.js                                     1.1.274   CS:bfd79a28
+
 
 --------------------------------------------------------------------------------
 

@@ -1,3 +1,5 @@
+  1.0.273 (2018-06-27)
+    1) Added support for cvv field to payment_method_change()
   1.0.272 (2017-08-26)
     1) Completely replaced copy_clip() with external library code in clipboard.min.js
   1.0.271 (2016-01-02)

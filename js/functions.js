@@ -1,9 +1,11 @@
-// 1.1.273a1
+// 1.1.274
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.273 (2018-06-27)
-    1) Added support for cvv field to payment_method_change()
+  1.0.274 (2018-12-26)
+    1) When encountering an IFRAME anchor tag, externalLinks() now sets a title attribute
+       from the inner HTML of the anchor tag
+    2) video_setup() used with BL tag links now maintains title from lnk title attribute in iframe
 */
 
 // ************************************
@@ -2192,7 +2194,10 @@ function externalLinks() {
       }
       if (anchor.className==='iframe'){
         rel_arr = anchor.rel.split('|');
-        html = "<iframe src=\""+anchor.href+"\"";
+        html =
+            "<iframe" +
+            " src=\""+anchor.href+"\"" +
+            " title=\"" + anchor.innerHTML + "\"";
         for(i=0; i<rel_arr.length; i++){
           rel = rel_arr[i].split('=');
           html += " "+rel[0]+"=\""+rel[1]+"\"";
@@ -5325,15 +5330,17 @@ function version(ver) {
 }
 
 function video_setup(id,url){
-  var div, html, width, height;
+  var div, html, width, height, tit;e;
   html =        $('#'+id)[0].innerHTML;
   if (html.substr(0,6)==='<IFRAME '){
     // was mangled by IE8 and below, so recreate from scratch
     width =   html.split('width=')[1].split(' ')[0];
     height =  html.split('height=')[1].split(' ')[0];
+    title =   html.split('title=')[1].split(' ')[0];
     html =
       "<iframe class=\"youtube-player\""+
       " type=\"text/html\""+
+      " title=\""+title+"\""+
       " width=\""+width+"\""+
       " height=\""+height+"\""+
       " src=\""+url+"\""+
