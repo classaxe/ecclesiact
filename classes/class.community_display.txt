@@ -1,3 +1,5 @@
+  1.0.59 (2018-12-22)
+    1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
   1.0.58 (2018-03-20)
     1) Bug fix for Community_Display::drawMeetings() displayed in PHP 7.2
   1.0.57 (2017-12-15)

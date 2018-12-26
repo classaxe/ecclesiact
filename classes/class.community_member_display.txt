@@ -1,3 +1,6 @@
+  1.0.61 (2017-12-13)
+    1) Changed order in which stats are obtained in Community_Member_Display::setupLoadStats()
+       to have system, then community, then member load in that specific order
   1.0.60 (2017-11-28)
     1) Links now correctly handle multiple archived enties for each entry and select last one given as current link
     2) Community_Member_Display::drawStats() now works through all link types and includes archived link URLs in totals

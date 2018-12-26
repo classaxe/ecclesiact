@@ -5,25 +5,24 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.61 (2017-12-13)
-    1) Changed order in which stats are obtained in Community_Member_Display::setupLoadStats()
-       to have system, then community, then member load in that specific order
+  1.0.62 (2018-12-26)
+    1) Change to Community_Member_Display::drawStats() to correctly handle member name aliases
 
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.61';
+    const VERSION = '1.0.62';
 
-    protected $_events =                  array();
-    protected $_events_christmas =        array();
-    protected $_events_easter =           array();
-    protected $_events_special =          array();
-    protected $_nav_prev =                false;
-    protected $_nav_next =                false;
+    protected $_events =                        [];
+    protected $_events_christmas =              [];
+    protected $_events_easter =                 [];
+    protected $_events_special =                [];
+    protected $_nav_prev =                      false;
+    protected $_nav_next =                      false;
     protected $_Obj_Community;
-    protected $_sponsors_national_records =   array();
-    protected $_sponsors_local_records =      array();
-    protected $_sponsors_national_container = '';
+    protected $_sponsors_national_records =     [];
+    protected $_sponsors_local_records =        [];
+    protected $_sponsors_national_container =   '';
     protected $_stats;
 
     public function draw($cp, $member_extension)
@@ -1464,23 +1463,36 @@ class Community_Member_Display extends Community_Member
                 $member_url_arr[] = $community_url.'/'.trim($name_alias, '/');
             }
         }
-        $member_url =       $community_url.'/'.trim($r['name'], '/');
-        for ($i=count($this->_stats_dates)-1; $i>=0; $i--) {
+        for ($i = count($this->_stats_dates) -1; $i >= 0; $i--) {
             $YYYYMM = $this->_stats_dates[$i];
-            if (!isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
-                continue;    
+
+            if (!isset($this->_stats[$YYYYMM]['visits'])) {
+                continue;
             }
+            $site = [
+                'hits' =>       0,
+                'visits' =>     0,
+                'time_a' =>     0,
+                'time_t' =>     0
+            ];
+            $comm = [
+                'hits' =>       0,
+                'visits' =>     0,
+                'time_a' =>     0,
+                'time_t' =>     0
+            ];
+            $profile_stats = [
+                'hits' =>       0,
+                'visits' =>     0,
+                'time_a' =>     0,
+                'time_t' =>     0
+            ];
             if (isset($this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH])) {
                 $site =   $this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH];
-            } else {
-                $site = array('hits' => '?', 'visits' => '?', 'time_a' => 0, 'time_t' => 0);
             }
             if (isset($this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url])) {
                 $comm =   $this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url];
-            } else {
-                $comm = array('hits' => '?', 'visits' => '?', 'time_a' => 0, 'time_t' => 0);
             }
-            $profile_stats = array('hits' => 0, 'visits' => 0, 'time_a' => 0, 'time_t' => 0);
             foreach ($member_url_arr as $member_url) {
                 if (isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
                     $entry = $this->_stats[$YYYYMM]['visits'][$member_url];
@@ -1489,8 +1501,16 @@ class Community_Member_Display extends Community_Member
                     }
                 }
             }
-            $prof = ($profile_stats['visits']>0 ? $profile_stats : array('hits' => null, 'visits' => null, 'time_a' => null, 'time_t' => null));
-            $link =   $this->_stats[$YYYYMM]['links'];
+            $prof = ( $profile_stats['visits']>0 ?
+                $profile_stats
+             :
+                [
+                    'hits' =>   null,
+                    'visits' => null,
+                    'time_a' => null,
+                    'time_t' => null
+                ]
+            );
             $bord_b = ($i==0 ? " st_bord_b" : "");
             $this->_html.=
                  "    <tr>\n"
@@ -1542,7 +1562,6 @@ class Community_Member_Display extends Community_Member
                             $hits += $this->_stats[$YYYYMM]['links'][$la]['hits'];
                         }
                     }
-
                 }
                 $this->_html .=
                     "      <td class='st_link" . $bord_b . "'>"
@@ -1697,7 +1716,6 @@ class Community_Member_Display extends Community_Member
 
     protected function setupLoadSponsors()
     {
-        $Obj_GA = new Gallery_Album;
         $this->_sponsors_national_container = '//sponsors/national';
         $Obj_GA = new Gallery_Album;
         if (!$ID = $Obj_GA->get_ID_by_path($this->_sponsors_national_container)) {

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.5");
+define("CODEBASE_VERSION", "5.6.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,31 +19,36 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.5.2535 (2018-12-26)
+5.6.6.2536 (2018-12-26)
 Summary:
-  1) Iframes now have title attributes for better accessibility
-  2) Removed CKEditor Samples folder
+  1) More work on community member stats to correctrly handle member aliases when a member name changes after stats
+     have started being collected.
 
 Final Checksums:
-  Classes     CS:62e07531
+  Classes     CS:d1f172a
   Database    CS:422e4761
-  Libraries   CS:e760e6b8
+  Libraries   CS:a7c5457d
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.5     (2018-12-26)
+  codebase.php                                                                                   5.6.6     (2018-12-26)
     1) Updated version information
-  js/functions.js                                                                                1.0.274   (2018-12-26)
-    1) When encountering an IFRAME anchor tag, externalLinks() now sets a title attribute
-       from the inner HTML of the anchor tag
-    2) video_setup() used with BL tag links now maintains title from lnk title attribute in iframe
+  classes/class.community_display.php                                                            1.0.60    (2018-12-26)
+    1) Fix in setupListingsLoadPiwikStats() to include both aliases and member name in profile stats searches
+  classes/class.community_member.php                                                             1.0.125   (2018-12-26)
+    1) Community_Member::get_stats() - implemented lazy load feature for member record
+  classes/class.community_member_display.php                                                     1.0.62    (2018-12-26)
+    1) Change to Community_Member_Display::drawStats() to correctly handle member name aliases
 
-2535.sql
+2536.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.5
-  js/functions.js                                     1.1.274   CS:bfd79a28
+  codebase.php                                        5.6.6
+  classes/  (3 files changed)
+    class.community_display.php                       1.0.60    CS:d8d20a6e
+    class.community_member.php                        1.0.125   CS:980f87f7
+    class.community_member_display.php                1.0.62    CS:ad9dfe18
 
 
 --------------------------------------------------------------------------------

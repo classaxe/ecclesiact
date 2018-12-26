@@ -6,13 +6,13 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.59 (2018-12-22)
-    1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
+  1.0.60 (2018-12-26)
+    1) Fix in setupListingsLoadPiwikStats() to include both aliases and member name in profile stats searches
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.59';
+    const VERSION = '1.0.60';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2412,6 +2412,7 @@ class Community_Display extends Community
         }
         $link_types = explode(', ',Community_Member::LINK_TYPES);
         foreach ($this->_records as &$r) {
+            $member_url_arr = [];
             $Obj_CM = new Community_Member($r['ID']);
             $Obj_CM->_community_record = $this->load();
             $Obj_CM->load();
@@ -2422,6 +2423,7 @@ class Community_Display extends Community
                 $r['links'][$type]['hits'] = 0;
                 $r['links'][$type]['visits'] = 0;
             }
+            $member_url_arr[] = $this->record['URL'] . '/' . trim($r['name'], '/');
             if (trim($r['name_aliases'])) {
                 $name_aliases = explode(',', trim($r['name_aliases']));
                 foreach ($name_aliases as $name_alias) {
@@ -2429,23 +2431,24 @@ class Community_Display extends Community
                 }
             }
             foreach ($r['stats'] as $date => $data) {
-                if ($date >= $this->startDate && $date <= $this->endDate) {
-                    foreach ($member_url_arr as $member_url) {
-                        if (isset($data['visits'][$member_url])) {
-                            $r['profile_hits'] += (int)$data['visits'][$member_url]['hits'];
-                            $r['profile_visits'] += (int)$data['visits'][$member_url]['visits'];
-                        }
+                if ($date < $this->startDate || $date > $this->endDate) {
+                    continue;
+                }
+                foreach ($member_url_arr as $member_url) {
+                    if (isset($data['visits'][$member_url])) {
+                        $r['profile_hits'] += (int)$data['visits'][$member_url]['hits'];
+                        $r['profile_visits'] += (int)$data['visits'][$member_url]['visits'];
                     }
-                    foreach ($link_types as $type) {
-                        if ($r['link_' . $type]) {
-                            $link_arr = explode('|', $r['link_' . $type]);
-                            foreach ($link_arr as $la) {
-                                if (isset($data['links'][$la]['hits'])) {
-                                    $r['links'][$type]['hits'] += (int)$data['links'][$la]['hits'];
-                                }
-                                if (isset($data['links'][$la]['visits'])) {
-                                    $r['links'][$type]['visits'] += (int)$data['links'][$la]['visits'];
-                                }
+                }
+                foreach ($link_types as $type) {
+                    if ($r['link_' . $type]) {
+                        $link_arr = explode('|', $r['link_' . $type]);
+                        foreach ($link_arr as $la) {
+                            if (isset($data['links'][$la]['hits'])) {
+                                $r['links'][$type]['hits'] += (int)$data['links'][$la]['hits'];
+                            }
+                            if (isset($data['links'][$la]['visits'])) {
+                                $r['links'][$type]['visits'] += (int)$data['links'][$la]['visits'];
                             }
                         }
                     }
