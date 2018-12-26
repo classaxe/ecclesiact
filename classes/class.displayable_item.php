@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.163 (2017-01-14)
-    1) Displayable_Item::draw_listings() fixed bug with broken 'Add...' icon in listings panels
-       Bug was introduced in 4.9.5.2473 (November 27th 2016)
+  1.0.164 (2018-12-24)
+    1) Displayable_Item::_draw_detail_setup() 'Main Content Starts Here' skip link now uses sr-only
+       class to provide an accessible link that actually works with screen readers.
 */
 class Displayable_Item extends Block_Layout
 {
-    const VERSION = '1.0.163';
+    const VERSION = '1.0.164';
 
     protected $_type =                          '';
     protected $_ajax_mode =                     false;
@@ -444,7 +444,7 @@ class Displayable_Item extends Block_Layout
         $anchor_ID = System::get_item_version('system_family').'_main_content';
         $this->_html.=
              "<input type='hidden' name='ID' id='ID' value='".$this->_get_ID()."' />"
-            ."<a name=\"".$anchor_ID."\" id=\"".$anchor_ID."\" style=\"visibility:hidden\">Main content begins here</a>\n";
+            ."<a id=\"".$anchor_ID."\" class=\"sr-only\">Main content begins here</a>\n";
         return true;
     }
 

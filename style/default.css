@@ -1,9 +1,23 @@
-/* 1.0.173
+/* 1.0.174
 Version History:
-  1.0.173 (2016-07-04)
-    1) Changes to sdmenu to use BASE_PATH substitution
+  1.0.174 (2018-12-24)
+    1) Added sr-only class for adding accessible labels
+    2) Defined am .label to use span in place of orphanned label for accessibility improvement
 */
-
+.sr-only {
+  position: absolute;
+  margin: -1px 0 0 -1px;
+  padding: 0;
+  display: block;
+  width: 1px;
+  height: 1px;
+  font-size: 1px;
+  line-height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+  outline: 0;
+}
 .swatch {
    width: 45px; vertical-align: top; margin: 0; display: block; float: left; border: 1px solid #888;
    font-family: courier-new, monospace; font-size: 8pt; height: 14px; padding:0 1px; color: #444;
@@ -126,9 +140,9 @@ Version History:
 #am ul ul {
 	background: #E8E8FF; border: solid #A0A0A0;	border-width: 1px 0;
 }
-#am label {
+#am .label {
     margin: 0; padding: 0.25em 0.5em; line-height: 20px; display: inline;
-    font-size: 100%; font-weight: normal; color: #202040;
+    font-size: 100%; font-weight: normal; color: #202040; cursor: pointer;
 }
 #am a {
     float: left; display: block; width: 18em;

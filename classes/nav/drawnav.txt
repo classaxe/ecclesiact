@@ -1,3 +1,5 @@
+  1.0.9 (2017-11-09)
+    1) DrawNav::drawImageButton() now passes 'enabled' for CM enable / disable of navbuttons
   1.0.8 (2016-06-18)
     1) Simplified DrawNav::drawResponsiveMenu() by adding helper DrawNav::drawResponsiveMenuButton()
     2) DrawNav::drawResponsiveMenu() now only marks first navbar as having data-type navbar

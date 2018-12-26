@@ -1,3 +1,5 @@
+  1.0.173 (2016-07-04)
+    1) Changes to sdmenu to use BASE_PATH substitution
   1.0.172 (2016-03-12)
     1) popupTitleBar now sets line-height
   1.0.171 (2016-01-08)

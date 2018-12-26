@@ -3,12 +3,12 @@ namespace Nav;
 
 /*
 Version History:
-  1.0.9 (2017-11-09)
-    1) DrawNav::drawImageButton() now passes 'enabled' for CM enable / disable of navbuttons
+  1.0.10 (2018-12-24)
+    1) Change to drawImageButton() to make accessible text appear correctly for screen readers
 */
 class DrawNav extends \Base
 {
-    const VERSION = '1.0.9';
+    const VERSION = '1.0.10';
 
     protected $buttons;
     protected $buttonsCount = 0;
@@ -139,8 +139,8 @@ class DrawNav extends \Base
                 ""
              )
             ."background:".$b['src']." no-repeat ".$b['offset']."'"
-            ." alt=\"".$b['textSafe']."\"/>"
-            ."<span style='display:none'>".$b['textSafe']."</span>"
+            ." alt=\"\"/>"
+            ."<span class=\"sr-only\">".$b['textSafe']."</span>"
             ."</a>";
         if ($b['childID']) {
             $subnav = new DrawNav('submenu', $b['childID'], $this->depth);

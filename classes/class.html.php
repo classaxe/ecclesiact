@@ -1,12 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.98 (2017-10-25)
-    1) Fixes for 'Archived Sites' to properly float contents
+  1.0.99 (2018-12-24)
+    Accessibility fixes:
+    1) HTML::_draw_toolbar_type_admin() now uses spans rather than labels for dropdown category display
+    2) HTML::_draw_toolbar_type_sites() now uses span rather than label for 'Archived Sites' navigation heading
 */
 class HTML extends Record
 {
-    const VERSION = '1.0.98';
+    const VERSION = '1.0.99';
     
     protected $_args =                      array();
     protected $_current_user_rights =       array();
@@ -518,7 +520,7 @@ class HTML extends Record
                 array_shift($label_arr);
                 $label = implode('.', $label_arr);
                 $html.=
-                "  <li><label>".$label."</label>\n"
+                "  <li><span class='label'>".$label."</span>\n"
                 ."    <ul class='css3'>\n";
             }
             $html.=
@@ -554,7 +556,7 @@ class HTML extends Record
             $html.=
              "    </ul>\n"
             ."  </li>\n"
-            ."  <li><label>Personal</label>\n"
+            ."  <li><span class='label'>Personal</span>\n"
             ."    <ul class='css3'>\n"
             ."      <li><a href=\"".BASE_PATH."\">\n"
             ."        <span class='ami_w'>[ICON]15 15 950 See Home Page[/ICON]</span>\n"
@@ -1483,7 +1485,7 @@ class HTML extends Record
         $html =
              "<div id='am' class='zoom_text fl'>\n"
             ."<div class='admin_toolbartable fl'>\n"
-            ."<ul><li><label style='color:red;font-weight:bold'>Archived Sites</label><ul>\n";
+            ."<ul><li><span class='label' style='color:red;font-weight:bold'>Archived Sites</span><ul>\n";
         foreach ($sites as $site) {
             $html.=
                  "<li><a href=\"".$site['URL']."\">"

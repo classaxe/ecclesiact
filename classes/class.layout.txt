@@ -1,3 +1,5 @@
+  1.0.43 (2017-12-12)
+    1) Implemented handling of DEBUG_NO_INTERNET
   1.0.42 (2017-11-15)
     1) Removed remmed out code in Layout::render() that was supposed to give different caching header for dev machines
   1.0.41 (2017-08-27)

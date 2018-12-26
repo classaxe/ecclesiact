@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.43 (2017-12-12)
-    1) Implemented handling of DEBUG_NO_INTERNET
+  1.0.44 (2018-12-24)
+    1) Layout::prepareXhtmlHead() now uses sr-only class to provide 'Skip to Main Content' nav link
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.43';
+    const VERSION = '1.0.44';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -436,7 +436,7 @@ class Layout extends Record
             'body',
             "<form id='form' enctype='multipart/form-data' method='post' action='./' style='padding:0;margin:0;'>\r\n"
             ."<div id='top' class='margin_none padding_none'>\r\n"
-            ."<a href=\"#".$anchor_ID."\" title=\"Main content begins here\" class='fl' style=\"display:none\">"
+            ."<a href=\"#".$anchor_ID."\" title=\"Main content begins here\" class=\"sr-only\">"
             ."Skip to Main Content</a>\r\n"
             .draw_form_field('limit', $limit, 'hidden')."\r\n"
             .draw_form_field('offset', $offset, 'hidden')."\r\n"

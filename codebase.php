@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.3");
+define("CODEBASE_VERSION", "5.6.4");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,30 +19,45 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.3.2533 (2018-12-22)
+5.6.4.2534 (2018-12-24)
 Summary:
-  1) Further tweak for partial fix for IPN verification
+  1) Accessibility fixes
 
 Final Checksums:
-  Classes     CS:7e05ac42
+  Classes     CS:62e07531
   Database    CS:422e4761
-  Libraries   CS:401426af
+  Libraries   CS:1df9ca1a
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.3     (2018-12-22)
+  codebase.php                                                                                   5.6.4     (2018-12-23)
     1) Updated version information
-  classes/class.paypal_gateway.php                                                               1.0.26    (2018-12-22)
-    1) Further fix for IPN verification - wasn't as fully implemented as for Simple Payment verification
+  classes/class.displayable_item.php                                                             1.0.164   (2018-12-24)
+    1) Displayable_Item::_draw_detail_setup() 'Main Content Starts Here' skip link now uses sr-only
+       class to provide an accessible link that actually works with screen readers.
+  classes/class.html.php                                                                         1.0.99    (2018-12-24)
+    Accessibility fixes:
+    1) HTML::_draw_toolbar_type_admin() now uses spans rather than labels for dropdown category display
+    2) HTML::_draw_toolbar_type_sites() now uses span rather than label for 'Archived Sites' navigation heading
+  classes/class.layout.php                                                                       1.0.44    (2018-12-24)
+    1) Layout::prepareXhtmlHead() now uses sr-only class to provide 'Skip to Main Content' nav link
+  classes/nav/drawnav.php                                                                        1.0.10    (2018-12-24)
+    1) Change to drawImageButton() to make accessible text appear correctly for screen readers
+  style/default.css                                                                              1.0.174   (2018-12-24)
+    1) Added sr-only class for adding accessible labels
+    2) Defined am .label to use span in place of orphanned label for accessibility improvement
 
-2533.sql
+2534.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.3
-  classes/  (1 file changed)
-    class.paypal_gateway.php                          1.0.26    CS:5813a2dc
-
+  codebase.php                                        5.6.4
+  classes/  (4 files changed)
+    class.displayable_item.php                        1.0.164   CS:9083f98
+    class.html.php                                    1.0.99    CS:f37e3f7
+    class.layout.php                                  1.0.44    CS:1702cf54
+    nav/drawnav.php                                   1.0.10    CS:3bb986ff
+  style/default.css                                   1.0.174   CS:f3c92889
 
 --------------------------------------------------------------------------------
 
