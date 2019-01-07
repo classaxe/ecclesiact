@@ -1,3 +1,9 @@
+  1.0.6 (2019-01-06)
+    1) Added several new methods to get stats in bulk:
+         Piwik::getSiteVisitsForMonths()
+         Piwik::getVisitsForMonths()
+         Piwik::getOutlinksForMonths()
+    2) Older methods, now presumed to be unused will be removed later
   1.0.5 (2017-12-15)
     1) Piwik::isOnline() now uses new system field to check for online status
     2) Piwik::Fixes to getServerVersion()

@@ -1,16 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.6 (2019-01-06)
-    1) Added several new methods to get stats in bulk:
-           Piwik::getSiteVisitsForMonths()
-           Piwik::getVisitsForMonths()
-           Piwik::getOutlinksForMonths()
-    2) Older methods, now presumed to be unused will be removed later
+  1.0.7 (2019-01-06)
+    1) Better handling in Piwik::getOutlinksForMonths() for months not having a result
 */
 class Piwik extends System
 {
-    const VERSION = '1.0.6';
+    const VERSION = '1.0.7';
     private $_base_URL;
     private $_idSite;
     private $_token_auth;
@@ -268,8 +264,8 @@ class Piwik extends System
                 $out[$url] = [];
                 foreach ($dates_to_check as $idx => $YYYYMM) {
                     $out[$url][$YYYYMM] =  array(
-                        'hits' =>   (int)(string)$xml->result[$idx]->row->nb_hits,
-                        'visits' => (int)(string)$xml->result[$idx]->row->nb_visits
+                        'hits' =>   (isset($xml->result[$idx]->row->nb_hits) ?   (int)(string)$xml->result[$idx]->row->nb_hits : 0),
+                        'visits' => (isset($xml->result[$idx]->row->nb_visits) ? (int)(string)$xml->result[$idx]->row->nb_visits : 0)
                     );
                 }
             }

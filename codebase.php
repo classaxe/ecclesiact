@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.7");
+define("CODEBASE_VERSION", "5.6.8");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,53 +19,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.7.2537 (2019-01-06)
+5.6.8.2538 (2019-01-06)
 Summary:
-  1) More work on community member stats to use bulk methods for collecting stats from multiple months at once
-     greatly improving stats collation efficiency
+  1) Bug fix to avoid errors collating member links stats when there are none for a given month
 
 Final Checksums:
-  Classes     CS:9df7b21
+  Classes     CS:779b41bb
   Database    CS:422e4761
-  Libraries   CS:2e892601
+  Libraries   CS:b7cb0c91
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.7     (2019-01-06)
+  codebase.php                                                                                   5.6.8     (2019-01-06)
     1) Updated version information
-  classes/class.community.php                                                                    1.0.126   (2019-01-06)
-    1) Community::get_stats() now correctly handles merging of existing stats with newly obtained ones.
-  classes/class.community_display.php                                                            1.0.61    (2019-01-06)
-    1) Update to Community_Display::setupListingsLoadPiwikStats now that stats for all aliases are included in combined
-       format in stats cache records
-  classes/class.community_member.php                                                             1.0.126   (2019-01-06)
-    1) Community_Member::get_stats(): now correctly handles aggregation of stats from former and current member URLs
-       for when a member is renamed during their tenure with a community
-  classes/class.community_member_display.php                                                     1.0.63    (2019-01-06)
-    1) Changes to Community_Member_Display::drawStats() following iwik API method changes for increase efficiency
-  classes/class.piwik.php                                                                        1.0.6     (2019-01-06)
-    1) Added several new methods to get stats in bulk:
-           Piwik::getSiteVisitsForMonths()
-           Piwik::getVisitsForMonths()
-           Piwik::getOutlinksForMonths()
-    2) Older methods, now presumed to be unused will be removed later
-  classes/class.system.php                                                                       1.0.188   (2019-01-06)
-    1) System::get_stats() now properly merges in new stats with old when making a delta update
-    2) System::updateAllVisitorStats() increased timeout
+  classes/class.piwik.php                                                                        1.0.7     (2019-01-06)
+    1) Better handling in Piwik::getOutlinksForMonths() for months not having a result
 
-2537.sql
+2538.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.7
-  classes/  (6 files changed)
-    class.community.php                               1.0.126   CS:a650ee94
-    class.community_display.php                       1.0.61    CS:8cf98f7
-    class.community_member.php                        1.0.126   CS:49934c54
-    class.community_member_display.php                1.0.63    CS:8d4776a4
-    class.piwik.php                                   1.0.6     CS:dcf705a4
-    class.system.php                                  1.0.188   CS:9b5b9e84
-
+  codebase.php                                        5.6.8
+  classes/  (1 file changed)
+    class.piwik.php                                   1.0.7     CS:ba077817
 
 --------------------------------------------------------------------------------
 
