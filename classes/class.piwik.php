@@ -1,13 +1,16 @@
 <?php
 /*
 Version History:
-  1.0.5 (2017-12-15)
-    1) Piwik::isOnline() now uses new system field to check for online status
-    2) Piwik::Fixes to getServerVersion()
+  1.0.6 (2019-01-06)
+    1) Added several new methods to get stats in bulk:
+           Piwik::getSiteVisitsForMonths()
+           Piwik::getVisitsForMonths()
+           Piwik::getOutlinksForMonths()
+    2) Older methods, now presumed to be unused will be removed later
 */
 class Piwik extends System
 {
-    const VERSION = '1.0.5';
+    const VERSION = '1.0.6';
     private $_base_URL;
     private $_idSite;
     private $_token_auth;
@@ -55,7 +58,7 @@ class Piwik extends System
         return $out->result;
     }
 
-    private function do_xml_request($params)
+    private function do_xml_request($params, $debug = false)
     {
         $params[] =         "module=API";
         $params[] =         "format=xml";
@@ -69,6 +72,10 @@ class Piwik extends System
         }
         $out =              new SimpleXMLElement($xml_doc);
         //    print $this->_base_URL.'?'.$this->_request."<pre>".print_r($out,true)."</false>";
+        if ($debug) {
+            print $this->_base_URL.'?'.$this->_request;
+            print "<pre>".print_r($out,true)."</pre>";
+        }
         return $out;
     }
 
@@ -176,6 +183,97 @@ class Piwik extends System
             $this->_get_visits_for_subtable($node, $out);
         }
         ksort($out);
+        return $out;
+    }
+
+    public function getSiteVisitsForMonths($date_start='', $date_end='')
+    {
+        $out =      [];
+        $step =     '+1 month';
+        $format =   'Y-m';
+        $dates_to_check = get_dates_in_range($date_start, $date_end, $step, $format);
+        $this->setup($date_start, $date_end);
+        $params = [
+            'method=VisitsSummary.get',
+            'period=month',
+            'date='.$this->_date
+        ];
+        $xml =          $this->do_xml_request($params);
+        if ($xml === false) {
+            return $out;
+        }
+        $dates = array_values($dates_to_check);
+        foreach ($dates as $key => $date) {
+            $out[$date] = [
+                'visits' =>     (int)$xml->result[$key]->nb_visits,
+                'actions' =>    (int)$xml->result[$key]->nb_actions,
+                'time_a' =>     (int)$xml->result[$key]->avg_time_on_site,
+                'time_t' =>     (int)$xml->result[$key]->sum_visit_length,
+            ];
+        }
+        return $out;
+    }
+
+    public function getVisitsForMonths($date_start='', $date_end='', $urls='')
+    {
+        $out =      [];
+        $step =     '+1 month';
+        $format =   'Y-m';
+        $dates_to_check = get_dates_in_range($date_start, $date_end, $step, $format);
+
+        $this->setup($date_start, $date_end);
+        $find_arr = explode('|', $urls);
+        foreach($find_arr as $url) {
+            $params =       array();
+            $params[] =     "method=Actions.getPageUrl";
+            $params[] =     "pageUrl=".$url;
+            $params[] =     "period=month";
+            $params[] =     "date=".$this->_date;
+            $xml =          $this->do_xml_request($params);
+            if ($xml !== false) {
+                $dates = array_values($dates_to_check);
+                foreach ($dates as $idx => $date) {
+                    $out[$url][$date] = array(
+                        'hits' =>   (string)$xml->result[$idx]->row->nb_hits,
+                        'visits' => (string)$xml->result[$idx]->row->nb_visits,
+                        'time_a' => (string)$xml->result[$idx]->row->avg_time_on_page,
+                        'time_t' => (string)$xml->result[$idx]->row->sum_time_spent,
+                        'bounce' => (string)$xml->result[$idx]->row->bounce_rate
+                    );
+                }
+            }
+        }
+        return $out;
+    }
+
+    public function getOutlinksForMonths($date_start='', $date_end='', $urls='')
+    {
+        $out =      [];
+        $step =     '+1 month';
+        $format =   'Y-m';
+        $dates_to_check = get_dates_in_range($date_start, $date_end, $step, $format);
+
+        $this->setup($date_start, $date_end);
+        $url_arr =  explode('|',$urls);
+        $out =      [];
+        foreach($url_arr as $url) {
+            $params = [
+                'method=Actions.getOutlink',
+                'outlinkUrl='.$url,
+                'period=month',
+                'date='.$this->_date
+            ];
+            $xml =          $this->do_xml_request($params);
+            if ($xml !== false) {
+                $out[$url] = [];
+                foreach ($dates_to_check as $idx => $YYYYMM) {
+                    $out[$url][$YYYYMM] =  array(
+                        'hits' =>   (int)(string)$xml->result[$idx]->row->nb_hits,
+                        'visits' => (int)(string)$xml->result[$idx]->row->nb_visits
+                    );
+                }
+            }
+        }
         return $out;
     }
 

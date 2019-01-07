@@ -1,3 +1,5 @@
+  1.0.125 (2018-12-26)
+    1) Community_Member::get_stats() - implemented lazy load feature for member record
   1.0.124 (2018-05-08)
     1) Community_Member::get_member_profile() now filters to limit to present site when matching member profile
   1.0.123 (2017-12-18)

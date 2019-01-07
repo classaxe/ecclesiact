@@ -6,13 +6,14 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.60 (2018-12-26)
-    1) Fix in setupListingsLoadPiwikStats() to include both aliases and member name in profile stats searches
+  1.0.61 (2019-01-06)
+    1) Update to Community_Display::setupListingsLoadPiwikStats now that stats for all aliases are included in combined
+       format in stats cache records
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.60';
+    const VERSION = '1.0.61';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -2434,12 +2435,8 @@ class Community_Display extends Community
                 if ($date < $this->startDate || $date > $this->endDate) {
                     continue;
                 }
-                foreach ($member_url_arr as $member_url) {
-                    if (isset($data['visits'][$member_url])) {
-                        $r['profile_hits'] += (int)$data['visits'][$member_url]['hits'];
-                        $r['profile_visits'] += (int)$data['visits'][$member_url]['visits'];
-                    }
-                }
+                $r['profile_hits'] += (int)$data['visits']['hits'];
+                $r['profile_visits'] += (int)$data['visits']['visits'];
                 foreach ($link_types as $type) {
                     if ($r['link_' . $type]) {
                         $link_arr = explode('|', $r['link_' . $type]);

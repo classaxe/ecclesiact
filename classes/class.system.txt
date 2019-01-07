@@ -1,3 +1,5 @@
+  1.0.187 (2018-03-21)
+    1) Added System::getSystemIdField() to override default field used for filtering on systemID
   1.0.186 (2017-12-15)
     1) Added piwik_online to FIELDS list
   1.0.185 (2017-12-13)

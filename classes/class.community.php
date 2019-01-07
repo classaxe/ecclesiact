@@ -3,14 +3,13 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.125 (2017-12-13)
-    1) Community::get_stats() now returns with existing cached stats if Piwik API is unavailable
-    2) Removed optional start and end dates from Community::get_stats()
+  1.0.126 (2019-01-06)
+    1) Community::get_stats() now correctly handles merging of existing stats with newly obtained ones.
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.125';
+    const VERSION = '1.0.126';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, stats_cache, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -207,8 +206,8 @@ class Community extends Displayable_Item
 
         $dates_to_check =       get_dates_in_range($start, $end, $step, $format);
         $this->_stats_dates =   $dates_to_check;
-        $communityURL =         BASE_PATH.trim($r['URL'], '/');
-        $find = BASE_PATH.trim($r['URL'], '/');
+        $find =                 BASE_PATH.trim($r['URL'], '/');
+        $this->_stats =         [];
         if ($r['stats_cache']) {
             $this->_stats = unserialize($r['stats_cache']);
             if (isset($this->_stats['cache_date']) && $this->_stats['cache_date']==$end) {
@@ -222,12 +221,8 @@ class Community extends Displayable_Item
         if (!$Obj_Piwik->isOnline()) {
             return $this->_stats;
         }
-        $dates_to_check = get_dates_in_range($start, $end, $step, $format);
-        foreach ($dates_to_check as $YYYYMM) {
-            $this->_stats[$YYYYMM] = array(
-                'visits' => $Obj_Piwik->get_visit($YYYYMM, '', $find)
-            );
-        }
+        $visits = $Obj_Piwik->getVisitsForMonths($start, $end, $find);
+        $this->_stats = array_merge($this->_stats, $visits[$find]);
         $this->_stats['cache_date'] = $end;
         $this->set_field('stats_cache', Record::escape_string(serialize($this->_stats), true, false));
     }

@@ -1,3 +1,6 @@
+  1.0.5 (2017-12-15)
+    1) Piwik::isOnline() now uses new system field to check for online status
+    2) Piwik::Fixes to getServerVersion()
   1.0.4 (2017-12-13)
     1) Added methods getServerVersion() and isOnline()
     2) Moved connection auth setup into constructor

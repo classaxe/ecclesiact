@@ -5,13 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.62 (2018-12-26)
-    1) Change to Community_Member_Display::drawStats() to correctly handle member name aliases
-
+  1.0.63 (2019-01-06)
+    1) Changes to Community_Member_Display::drawStats() following iwik API method changes for increase efficiency
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.62';
+    const VERSION = '1.0.63';
 
     protected $_events =                        [];
     protected $_events_christmas =              [];
@@ -20,6 +19,7 @@ class Community_Member_Display extends Community_Member
     protected $_nav_prev =                      false;
     protected $_nav_next =                      false;
     protected $_Obj_Community;
+    protected $_Obj_System;
     protected $_sponsors_national_records =     [];
     protected $_sponsors_local_records =        [];
     protected $_sponsors_national_container =   '';
@@ -1420,7 +1420,7 @@ class Community_Member_Display extends Community_Member
             ."      <th colspan='8' class='st_prof st_bord_r st_bord_t txt_c'>".$r['title']." Profile</th>\n"
             ."    </tr>\n"
             ."    <tr>\n"
-            ."      <th rowspan='2' class='st_site st_bord_b'>Hits</th>\n"
+            ."      <th rowspan='2' class='st_site st_bord_b'>Actions</th>\n"
             ."      <th rowspan='2' class='st_site st_bord_b'>Visits</th>\n"
             ."      <th colspan='2' class='st_site st_line'>Visit Time</th>\n"
             ."      <th rowspan='2' class='st_comm st_bord_b'>Hits</th>\n"
@@ -1481,45 +1481,30 @@ class Community_Member_Display extends Community_Member
                 'time_a' =>     0,
                 'time_t' =>     0
             ];
-            $profile_stats = [
+            $prof = [
                 'hits' =>       0,
                 'visits' =>     0,
                 'time_a' =>     0,
                 'time_t' =>     0
             ];
-            if (isset($this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH])) {
-                $site =   $this->_Obj_System->_stats[$YYYYMM]['visits'][BASE_PATH];
+            if (isset($this->_Obj_System->_stats[$YYYYMM])) {
+                $site =   $this->_Obj_System->_stats[$YYYYMM];
             }
-            if (isset($this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url])) {
-                $comm =   $this->_Obj_Community->_stats[$YYYYMM]['visits'][$community_url];
+            if (isset($this->_Obj_Community->_stats[$YYYYMM])) {
+                $comm =   $this->_Obj_Community->_stats[$YYYYMM];
             }
-            foreach ($member_url_arr as $member_url) {
-                if (isset($this->_stats[$YYYYMM]['visits'][$member_url])) {
-                    $entry = $this->_stats[$YYYYMM]['visits'][$member_url];
-                    foreach (array_keys($profile_stats) as $key) {
-                        $profile_stats[$key] += (int)$entry[$key];
-                    }
-                }
+            if (isset($this->_stats[$YYYYMM]['visits'])) {
+                $prof = $this->_stats[$YYYYMM]['visits'];
             }
-            $prof = ( $profile_stats['visits']>0 ?
-                $profile_stats
-             :
-                [
-                    'hits' =>   null,
-                    'visits' => null,
-                    'time_a' => null,
-                    'time_t' => null
-                ]
-            );
             $bord_b = ($i==0 ? " st_bord_b" : "");
             $this->_html.=
                  "    <tr>\n"
                 ."      <td class='st_date st_bord_l st_line".$bord_b."'>".$YYYYMM."</td>\n"
                 ."      <td class='st_site".$bord_b."'>"
-                .$site['hits']
+                .(isset($site['actions']) && $site['actions'] ? $site['actions'] : '')
                 ."</td>\n"
                 ."      <td class='st_site".$bord_b."'>"
-                .$site['visits']
+                .($site['visits'] ? $site['visits'] : '&nbsp;')
                 ."</td>\n"
                 ."      <td class='st_site".$bord_b."'>"
                 .($site['time_a'] ? format_seconds($site['time_a']) : "&nbsp;")
@@ -1528,10 +1513,10 @@ class Community_Member_Display extends Community_Member
                 .($site['time_t'] ? format_seconds($site['time_t']) : "&nbsp;")
                 ."</td>\n"
                 ."      <td class='st_comm".$bord_b."'>"
-                .$comm['hits']
+                .($comm['hits'] ? $comm['hits'] : '&nbsp;')
                 ."</td>\n"
                 ."      <td class='st_comm".$bord_b."'>"
-                .$comm['visits']
+                .($comm['visits'] ? $comm['visits'] : '&nbsp;')
                 ."</td>\n"
                 ."      <td class='st_comm".$bord_b."'>"
                 .($comm['time_a'] ? format_seconds($comm['time_a']) : "&nbsp;")
@@ -1540,10 +1525,10 @@ class Community_Member_Display extends Community_Member
                 .($comm['time_t'] ? format_seconds($comm['time_t']) : "&nbsp;")
                 ."</td>\n"
                 ."      <td class='st_prof".$bord_b."'>"
-                .$prof['hits']
+                .($prof['hits'] ? $prof['hits'] : '&nbsp;')
                 ."</td>\n"
                 ."      <td class='st_prof".$bord_b."'>"
-                .$prof['visits']
+                .($prof['visits'] ? $prof['visits'] : '&nbsp;')
                 ."</td>\n"
                 ."      <td class='st_prof".$bord_b."'>"
                 .($prof['time_a'] ? format_seconds($prof['time_a']) : "&nbsp;")

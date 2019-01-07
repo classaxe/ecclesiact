@@ -5,13 +5,14 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.125 (2018-12-26)
-    1) Community_Member::get_stats() - implemented lazy load feature for member record
+  1.0.126 (2019-01-06)
+    1) Community_Member::get_stats(): now correctly handles aggregation of stats from former and current member URLs
+       for when a member is renamed during their tenure with a community
 */
 
 class Community_Member extends Displayable_Item
 {
-    const VERSION = '1.0.125';
+    const VERSION = '1.0.126';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, gallery_albumID, podcast_albumID, primary_communityID, primary_ministerialID, admin_notes, attention_required, contact_history, date_photo_taken, date_survey_returned, date_welcome_letter, date_went_live, languages, link_facebook, link_twitter, link_video, link_website, mailing_addr_line1, mailing_addr_line2, mailing_addr_city, mailing_addr_country, mailing_addr_postal, mailing_addr_sp, office_addr_line1, office_addr_line2, office_addr_city, office_addr_country, office_addr_postal, office_addr_sp, office_fax, office_map_desc, office_map_geocodeID, office_map_geocode_address, office_map_geocode_area, office_map_geocode_quality, office_map_geocode_type, office_map_loc, office_map_lat, office_map_lon, office_notes, office_phone1_lbl, office_phone1_num, office_phone2_lbl, office_phone2_num, office_times_sun, office_times_mon, office_times_tue, office_times_wed, office_times_thu, office_times_fri, office_times_sat, service_addr_line1, service_addr_line2, service_addr_city, service_addr_country, service_addr_postal, service_addr_sp, service_map_desc, service_map_geocodeID, service_map_geocode_address, service_map_geocode_area, service_map_geocode_quality, service_map_geocode_type, service_map_loc, service_map_lat, service_map_lon, service_notes, service_times_sun, service_times_mon, service_times_tue, service_times_wed, service_times_thu, service_times_fri, service_times_sat, stats_cache, name, name_aliases, title, category, contactID, contact_NFirst, contact_NGreeting, contact_NLast, contact_NMiddle, contact_NTitle, contact_PEmail, contact_Telephone, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_verified, dropbox_folder, dropbox_last_checked, dropbox_last_filelist, dropbox_last_status, featured_image, full_member, partner_csv, PEmail, shortform_name, signatories, summary, type, URL, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const LINK_TYPES = 'website, facebook, twitter, video';
     const DASHBOARD_HEIGHT = 500;
@@ -1184,7 +1185,6 @@ class Community_Member extends Displayable_Item
             // Got some stats, but not today. Try again starting from month we last parsed
             $start = substr($this->_stats['cache_date'], 0, 7).'-01';
         }
-
         $Obj_Piwik = new Piwik;
         if (!$Obj_Piwik->isOnline()) {
             return $this->_stats;
@@ -1210,12 +1210,35 @@ class Community_Member extends Displayable_Item
                 }
             }
         }
-        $links =    implode('|', $links);
         $dates_to_check = get_dates_in_range($start, $end, $step, $format);
+        $visits =       $Obj_Piwik->getVisitsForMonths($start, $end, $find);
+        $outlinks =     $Obj_Piwik->getOutlinksForMonths($start, $end, implode('|', $links));
         foreach ($dates_to_check as $YYYYMM) {
+            $_hits =    0;
+            $_visits =  0;
+            $_time_a =  0;
+            $_time_t =  0;
+            foreach ($find_arr as $url) {
+                $_hits      += (int)$visits[$url][$YYYYMM]['hits'];
+                $_visits    += (int)$visits[$url][$YYYYMM]['visits'];
+                $_time_a    += (int)$visits[$url][$YYYYMM]['time_a'];
+                $_time_t    += (int)$visits[$url][$YYYYMM]['time_t'];
+            }
+            $link_visits = [];
+            foreach ($links as $link) {
+                $link_visits[$link] = [
+                    'hits'      => (int)$outlinks[$link][$YYYYMM]['hits'],
+                    'visits'    => (int)$outlinks[$link][$YYYYMM]['visits']
+                ];
+            }
             $this->_stats[$YYYYMM] = [
-                'visits' => $Obj_Piwik->get_visit($YYYYMM, '', $find),
-                'links' =>  $Obj_Piwik->get_outlink($YYYYMM, '', $links)
+                'links' =>  $link_visits,
+                'visits' => [
+                    'hits'      => $_hits,
+                    'visits'    => $_visits,
+                    'time_a'    => $_time_a,
+                    'time_t'    => $_time_t,
+                ]
             ];
         }
         $this->_stats['cache_date'] = $end;

@@ -1,3 +1,5 @@
+  1.0.60 (2018-12-26)
+    1) Fix in Community_Display::setupListingsLoadPiwikStats() to include both aliases and member name in profile stats searches
   1.0.59 (2018-12-22)
     1) Fix to prevent errors in stats when a member has been renamed and has no stars for some months yet
   1.0.58 (2018-03-20)
