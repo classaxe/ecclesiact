@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.8");
+define("CODEBASE_VERSION", "5.6.9");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,28 +19,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.8.2538 (2019-01-06)
+5.6.9.2539 (2020-02-08)
 Summary:
-  1) Bug fix to avoid errors collating member links stats when there are none for a given month
+  1) Security patching for PHP Excel - upgraded to 1.8 from 1.2
+  2) Updated operational office address
+  3) Fix for Piwik Stats when month has no result
 
 Final Checksums:
-  Classes     CS:779b41bb
+  Classes     CS:c7bdb49b
   Database    CS:422e4761
-  Libraries   CS:b7cb0c91
+  Libraries   CS:3e876fed
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.8     (2019-01-06)
+  codebase.php                                                                                   5.6.9     (2020-02-08)
     1) Updated version information
+  classes/class.community_member_summary.php                                                     1.0.22    (2020-02-08)
+    1) Updated address for CIYT Office
   classes/class.piwik.php                                                                        1.0.7     (2019-01-06)
     1) Better handling in Piwik::getOutlinksForMonths() for months not having a result
 
-2538.sql
+2537.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.8
-  classes/  (1 file changed)
+  codebase.php                                        5.6.9
+  classes/  (2 files changed)
+    class.community_member_summary.php                1.0.22    CS:678b35f5
     class.piwik.php                                   1.0.7     CS:ba077817
 
 --------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 <?php
-define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.21');
+define('COMMUNITY_MEMBER_SUMMARY_VERSION', '1.0.22');
 /*
 Version History:
-  1.0.21 (2015-09-13)
-    1) References to Page::push_content() now changed to Output::push()
+  1.0.22 (2020-02-08)
+    1) Updated address for CIYT Office
 
 */
 
@@ -355,14 +355,13 @@ class Community_Member_Summary extends Community_Member
             ."</div>\n"
             ."<address><b>ChurchesInYourTown.ca</b><br />\n"
             ."c/o ClassAxe Multimedia Inc.<br />\n"
-            ."264 Conestoga Avenue<br />\n"
-            ."Richmond Hill, ON, L4C 2H2\n"
+            ."71 Nisbet Drive<br />\n"
+            ."Aurora, ON, L4G 2K6\n"
             ."<a style=\"display:block; color:#00f;font-style:normal;margin:0.25em 0\""
             ." href=\"mailto:info@ChurchesInYourTown.ca?subject="
             .str_replace(' ', '%20', $c_arr[1].' - '.$this->_record['title']." - Member Checklist")
             ."\">info@ChurchesInYourTown.ca</a>\n"
             ."<b>Phone:</b> (289) 819 0603<br />\n"
-            ."<b>Fax:</b> (289) 348 0476\n"
             ."<span style='display:block;height:0.5em'>&nbsp;</span>\n<span style='font-style:normal'>"
             .format_date(get_timestamp(), 'l j\<\s\u\p\>S\</\s\u\p\> M Y')
             ."</span></address>\n"
