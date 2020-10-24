@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.9");
+define("CODEBASE_VERSION", "5.6.10");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,35 +19,38 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.9.2539 (2020-02-08)
+5.6.10.2540 (2020-10-24)
 Summary:
-  1) Security patching for PHP Excel - upgraded to 1.8 from 1.2
-  2) Updated operational office address
-  3) Fix for Piwik Stats when month has no result
+  Now allows Full Screen for embedded Youtube Videos
 
 Final Checksums:
-  Classes     CS:c7bdb49b
+  Classes     CS:6ebda1f5
   Database    CS:422e4761
-  Libraries   CS:3e876fed
+  Libraries   CS:8ce3da48
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.6.9     (2020-02-08)
+  codebase.php                                                                                   5.6.10    (2020-10-24)
     1) Updated version information
   classes/class.community_member_summary.php                                                     1.0.22    (2020-02-08)
     1) Updated address for CIYT Office
+  classes/class.media_youtube.php                                                                1.0.9     (2020-10-24)
+    1) Now supports fullscreen mode
   classes/class.piwik.php                                                                        1.0.7     (2019-01-06)
     1) Better handling in Piwik::getOutlinksForMonths() for months not having a result
+  js/functions.js                                                                                1.0.275   (2020-10-24)
+    1) Added support for fullscreen in video_setup()
 
-2537.sql
+2540.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.9
-  classes/  (2 files changed)
+  codebase.php                                        5.6.10
+  classes/  (3 files changed)
     class.community_member_summary.php                1.0.22    CS:678b35f5
+    class.media_youtube.php                           1.0.9     CS:5b7b3d1d
     class.piwik.php                                   1.0.7     CS:ba077817
-
+  js/functions.js                                     1.1.275   CS:e1f10992
 --------------------------------------------------------------------------------
 
 Bug:

@@ -1,11 +1,9 @@
-// 1.1.274
+// 1.1.275
 // nav_mouse(), img_state() and img_state_v() may be unused?
 /*
 Version History:
-  1.0.274 (2018-12-26)
-    1) When encountering an IFRAME anchor tag, externalLinks() now sets a title attribute
-       from the inner HTML of the anchor tag
-    2) video_setup() used with BL tag links now maintains title from lnk title attribute in iframe
+  1.0.275 (2020-10-24)
+    1) Added support for fullscreen in video_setup()
 */
 
 // ************************************
@@ -5339,6 +5337,8 @@ function video_setup(id,url){
     title =   html.split('title=')[1].split(' ')[0];
     html =
       "<iframe class=\"youtube-player\""+
+      " allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"" +
+      " allowfullscreen" +
       " type=\"text/html\""+
       " title=\""+title+"\""+
       " width=\""+width+"\""+

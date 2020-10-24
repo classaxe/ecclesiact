@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.8 (2017-12-18)
-    1) Now handles 'Dubug No Internet' condition
+  1.0.9 (2020-10-24)
+    1) Now supports fullscreen mode
 */
 class Media_Youtube extends Base
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     protected $url;
     protected $width;
@@ -39,7 +39,7 @@ class Media_Youtube extends Base
         return
              "<a class=\"iframe\""
             ." href=\"".$this->url."?wmode=transparent&amp;rel=0".($this->start ? "&amp;start=".$this->start : "")."\""
-            ." rel=\"frameborder=0|height=".$this->height."|scrolling=no|width=".$this->width."\""
+            ." rel=\"height=".$this->height."|width=".$this->width."|scrolling=no|frameborder=0|allow=accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture|allowfullscreen=allowfullscreen\""
             .">Embedded Content</a>";
     }
 }

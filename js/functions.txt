@@ -1,3 +1,7 @@
+  1.0.274 (2018-12-26)
+    1) When encountering an IFRAME anchor tag, externalLinks() now sets a title attribute
+       from the inner HTML of the anchor tag
+    2) video_setup() used with BL tag links now maintains title from lnk title attribute in iframe
   1.0.273 (2018-06-27)
     1) Added support for cvv field to payment_method_change()
   1.0.272 (2017-08-26)
