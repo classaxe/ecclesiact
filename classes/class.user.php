@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.8 (2017-10-07)
-    1) Implements PII scrubbing offered by parent class
-    2) Now uses class conmstant for version and mainly PSR-2 compliant
+  1.0.9 (2021-03-04)
+    1) Fixes for PHP 8.0
 */
 class User extends Person
 {
-    const VERSION = '1.0.8';
+    const VERSION = '1.0.9';
 
     public function __construct($ID = "", $systemID = SYS_ID)
     {
@@ -60,7 +59,8 @@ class User extends Person
         $password =         sanitize('html', trim(get_var('password')));
         $password_enc =     ($password ? encrypt(strToLower($password)) : "");
         $result =           $this->get_person_for_signin($username, $password_enc);
-        $url =              Page::get_URL($page_vars);
+        $ObjPage =          new Page();
+        $url =              $ObjPage->get_URL($page_vars);
         switch ($result['status']['code']) {
             case 100:
                 header(

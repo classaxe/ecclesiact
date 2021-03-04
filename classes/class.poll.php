@@ -1,12 +1,11 @@
 <?php
 /*
 Version History:
-  1.0.11 (2017-08-26)
-    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
-    2) Now uses VERSION constant for version numbering
+  1.0.12 (2021-03-04)
+    1) Fixes for PHP 8.0
 */
 class Poll extends Displayable_Item {
-    const VERSION = '1.0.11';
+    const VERSION = '1.0.12';
     const fields = 'ID, archive, archiveID, deleted, systemID, active, category, choices_in_random_order, date, date_end, max_votes_per_ballot, question, responses, show_descriptions, show_scores, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
   public function __construct($ID=""){
@@ -333,7 +332,7 @@ class Poll extends Displayable_Item {
   }
 
   static function poll_sort($a,$b){
-    return (int)$a['votes'] == (int)$b['votes'] ? 0 : ((int)$a['votes'] > (int)$b['votes']) ? -1 : +1;
+    return (int)$a['votes'] == (int)$b['votes'] ? 0 : ((int)$a['votes'] > (int)$b['votes'] ? -1 : +1);
   }
 
 }

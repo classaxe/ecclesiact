@@ -1,3 +1,6 @@
+  1.0.11 (2017-08-26)
+    1) Gave Poll::copy() method fourth parameter 'data' to look like recently modified Record::copy()
+    2) Now uses VERSION constant for version numbering
   1.0.10 (2014-02-17)
     1) Refreshed fields list - now declared as a class constant
   1.0.9 (2012-12-03)

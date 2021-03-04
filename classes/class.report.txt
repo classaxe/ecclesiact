@@ -1,3 +1,5 @@
+  1.0.95 (2017-10-07)
+    1) Added 'selected_set_as_disabled' and 'selected_set_as_enabled' to Report::REPORT_FEATURES list
   1.0.94 (2017-10-07)
     1) Added 'selected_scrub_pii_data' to Report::REPORT_FEATURES list
   1.0.93 (2017-08-26)

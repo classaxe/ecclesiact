@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.6.10");
+define("CODEBASE_VERSION", "5.7.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,38 +19,51 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.6.10.2540 (2020-10-24)
+5.7.0.2541 (2021-03-04)
 Summary:
-  Now allows Full Screen for embedded Youtube Videos
+  Changes to work correctly with PHP 8.0
 
 Final Checksums:
-  Classes     CS:6ebda1f5
+  Classes     CS:673060ee
   Database    CS:422e4761
-  Libraries   CS:8ce3da48
-  Reports     CS:b6232c7
+  Libraries   CS:4ce73558
+  Reports     CS:8cac5b20
 
 Code Changes:
-  codebase.php                                                                                   5.6.10    (2020-10-24)
+  codebase.php                                                                                   5.7.0     (2021-03-04)
     1) Updated version information
-  classes/class.community_member_summary.php                                                     1.0.22    (2020-02-08)
-    1) Updated address for CIYT Office
-  classes/class.media_youtube.php                                                                1.0.9     (2020-10-24)
-    1) Now supports fullscreen mode
-  classes/class.piwik.php                                                                        1.0.7     (2019-01-06)
-    1) Better handling in Piwik::getOutlinksForMonths() for months not having a result
-  js/functions.js                                                                                1.0.275   (2020-10-24)
-    1) Added support for fullscreen in video_setup()
+  classes/class.cpdf.php                                                                         1.0.2     (2021-03-04)
+    1) Fixes for PHP 8.0
+  classes/class.person.php                                                                       1.0.133   (2021-03-04)
+    1) Fixes for PHP 8.0
+  classes/class.poll.php                                                                         1.0.12    (2021-03-04)
+    1) Fixes for PHP 8.0
+  classes/class.report.php                                                                       1.0.96    (2021-03-04)
+    1) Fixes for PHP 8.0
+  classes/class.services_json.php                                                                1.0.3     (2021-03-01)
+    1) Fixes for PHP 8.0 - curly brackets for array index e.g. $arr{2} are no longer supported
+  classes/class.user.php                                                                         1.0.9     (2021-03-04)
+    1) Fixes for PHP 8.0
+  classes/component/base.php                                                                     1.0.8     (2021-03-04)
+    1) Fixes for PHP 8.0
+  db_connect.php                                                                                 1.0.4     (2021-03-04)
+    1) Preparation to work with Mysql 8
 
-2540.sql
+2541.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.6.10
-  classes/  (3 files changed)
-    class.community_member_summary.php                1.0.22    CS:678b35f5
-    class.media_youtube.php                           1.0.9     CS:5b7b3d1d
-    class.piwik.php                                   1.0.7     CS:ba077817
-  js/functions.js                                     1.1.275   CS:e1f10992
+  codebase.php                                        5.7.0
+  classes/  (7 files changed)
+    class.cpdf.php                                    1.0.2     CS:6fd379d3
+    class.person.php                                  1.0.133   CS:3d9ae7f9
+    class.poll.php                                    1.0.12    CS:6ac261dc
+    class.report.php                                  1.0.96    CS:833fdd8f
+    class.services_json.php                           1.0.3     CS:c544bc8c
+    class.user.php                                    1.0.9     CS:a1de280b
+    component/base.php                                1.0.8     CS:a24f31b1
+  db_connect.php                                      1.0.4     CS:9d573197
+
 --------------------------------------------------------------------------------
 
 Bug:

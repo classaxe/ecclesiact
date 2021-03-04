@@ -1,11 +1,9 @@
 <?php
-define('VERSION_CPDF','1.0.1');
+define('VERSION_CPDF','1.0.2');
 /*
 Version History:
-  1.0.1 (2016-12-26)
-    1) Constructor renamed to __construct for PHP 7.0
-  1.0.0 (2009-07-11)
-    Initial release
+  1.0.2 (2021-03-04)
+    1) Fixes for PHP 8.0
 */
 
 /**
@@ -1240,7 +1238,7 @@ function output($debug=0){
   $this->checkAllHere();
 
   $xref=array();
-  $content="%PDF-1.3\n%âãÏÓ\n";
+  $content="%PDF-1.3\n%ï¿½ï¿½ï¿½ï¿½\n";
 //  $content="%PDF-1.3\n";
   $pos=strlen($content);
   foreach($this->objects as $k=>$v){
@@ -2937,7 +2935,7 @@ function addImage(&$img,$x,$y,$w=0,$h=0,$quality=75){
 *
 * @access private
 */
-function addJpegImage_common(&$data,$x,$y,$w=0,$h=0,$imageWidth,$imageHeight,$channels=3){
+function addJpegImage_common(&$data,$x,$y,$w=0,$h=0,$imageWidth=0,$imageHeight=0,$channels=3){
   // note that this function is not to be called externally
   // it is just the common code between the GD and the file options
   $this->numImages++;

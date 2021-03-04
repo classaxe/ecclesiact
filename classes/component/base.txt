@@ -1,3 +1,5 @@
+  1.0.7 (2016-02-13)
+    1) New method setComponentParameters()
   1.0.6 (2016-01-16)
     1) Component\Base::help() is now staticaly defined
   1.0.5 (2015-10-21)

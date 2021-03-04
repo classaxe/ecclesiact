@@ -2,14 +2,14 @@
 namespace Component;
 /*
 Version History:
-  1.0.7 (2016-02-13)
-    1) New method setComponentParameters()
+  1.0.8 (2021-03-04)
+    1) Fixes for PHP 8.0
 */
 
 
 class Base extends \Record
 {
-    const VERSION = '1.0.7';
+    const VERSION = '1.0.8';
 
     public static $help_div_id = 0;
     protected $_args;
@@ -446,7 +446,7 @@ class Base extends \Record
         $isMASTERADMIN =    \Person::get_permission("MASTERADMIN");
         $isSYSADMIN =       \Person::get_permission("SYSADMIN");
         $isSYSAPPROVER =    \Person::get_permission("SYSAPPROVER");
-        $isSYSEDITOR =      \Person::get_permission("SYSEDITOR", $this->record['group_assign_csv']);
+        $isSYSEDITOR =      \Person::get_permission("SYSEDITOR", $this->record ? $this->record['group_assign_csv'] : '');
         $isSYSMEMBER =      \Person::get_permission("SYSMEMBER");
         $isUSERADMIN =      \Person::get_permission("USERADMIN");
         $this->_current_user_rights['canRate'] =

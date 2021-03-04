@@ -2,17 +2,14 @@
 // Ecclesiact Version
 define("SYSTEM_FAMILY", "Ecclesiact");
 define("SYSTEM_FAMILY_URL", "http://www.ecclesiact.com");
-define("SYSTEM_VERSION", "1.0.42 (ECC)");
+define("SYSTEM_VERSION", "1.0.43 (ECC)");
 
 /*
 Version History:
-  1.0.42 (2018-03-25)
-    1) Call to export module is no longer static - was incorrect before and broke SQL exports
+  1.0.43 (2021-03-01)
+    1) Check for magic quotes removed since it is deprecated in PHP 7.4
 */
 
-if (get_magic_quotes_gpc()) {
-    hvFF9mrhFbntrDgfGb9wc1gf("magic_quotes");
-}
 if (!(
     extension_loaded('curl') &&
     extension_loaded('gd') &&

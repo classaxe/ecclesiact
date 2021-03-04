@@ -1,3 +1,5 @@
+  1.0.3 (2016-01-01)
+    1) Replaced mysql calls with mysqli calls
   1.0.2 (2014-12-30)
     1) Now conforms to PSR-2
   1.0.1 (2013-05-27)

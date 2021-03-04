@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.95 (2017-10-07)
-    1) Added 'selected_set_as_disabled' and 'selected_set_as_enabled' to Report::REPORT_FEATURES list
+  1.0.96 (2021-03-04)
+    1) Fixes for PHP 8.0
 */
 
 class Report extends Displayable_Item
 {
-    const VERSION = '1.0.95';
+    const VERSION = '1.0.96';
     const COLUMN_FULL_ACCESS =    1;
     const COLUMN_DEFAULT_VALUE =  -1;
     const COLUMN_NO_ACCESS =      0;
@@ -906,21 +906,21 @@ class Report extends Displayable_Item
 
     private function getColumnsSort()
     {
-        usort($this->_report_columns, array($this,'getColumnsSort_function'));
+        usort($this->_report_columns, [ $this, 'getColumnsSort_function' ]);
     }
 
     public function getColumnsSort_function($a, $b)
     {
         $sort_tabs = strcmp(strtolower($a['tab']), strtolower($b['tab']));
-        if ($sort_tabs != 0) {
+        if ($sort_tabs !== 0) {
             return $sort_tabs;
         }
-        $sort_seq = ($a['seq'] > $b['seq']);
-        if ($sort_seq != 0) {
+        $sort_seq = ($a['seq'] > $b['seq']) ? 1 : -1;
+        if ($sort_seq !== 0) {
             return $sort_seq;
         }
         $sort_sys = ($a['systemID']==1 ? 1 : 0) - ($b['systemID']==1 ? 1 : 0);
-        if ($sort_sys != 0) {
+        if ($sort_sys !== 0) {
             return $sort_sys;
         }
         return 0;

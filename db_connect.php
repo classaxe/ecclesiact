@@ -1,9 +1,9 @@
 <?php
-define("DB_CONNECT", "1.0.3");
+define("DB_CONNECT", "1.0.4");
 /*
 Version History:
-  1.0.3 (2016-01-01)
-    1) Replaced mysql calls with mysqli calls
+  1.0.4 (2021-03-04)
+    1) Preparation to work with Mysql 8
 */
 
 function db_connect()
@@ -17,5 +17,6 @@ function db_connect()
     }
     $li =  mysqli_connect($b['host'], $b['user'], $b['pass']);
     mysqli_select_db($li, $db);
+//    $Obj_MySQLi->query("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
 }
 db_connect();
