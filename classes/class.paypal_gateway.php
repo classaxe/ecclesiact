@@ -1,13 +1,14 @@
 <?php
 /*
 Version History:
-  1.0.26 (2018-12-22)
-    1) Further fix for IPN verification - wasn't as fully implemented as for Simple Payment verification
+  1.0.27 (2022-07-28)
+    1) Fix for transaction check with Paypal in PayPal_Gateway::simplePaymentVerify() and PayPal_Gateway::IPNPaymentVerify()
+       Result of 'SUCCESS' is now second line of response as opposed to the first as seen previously
 */
 
 class PayPal_Gateway extends Base
 {
-    const VERSION = '1.0.26';
+    const VERSION = '1.0.27';
 
     // holds all the properties of this object
     // unset properties (ie properties that do not exist) return a value of false if accessed
@@ -283,7 +284,7 @@ class PayPal_Gateway extends Base
         // parse the data
         $lines = explode("\n", $res);
         $keyarray = array();
-        if (strcmp($lines[0], "SUCCESS") == 0) {
+        if (strcmp($lines[1], "SUCCESS") == 0) {
             foreach ($lines as $line) {
                 $bits = explode("=", $line);
                 if (count($bits) > 0) {
@@ -469,7 +470,7 @@ class PayPal_Gateway extends Base
         // parse the data
         $lines = explode("\n", $res);
 
-        if ($lines[0] != "SUCCESS") {
+        if ($lines[1] !== "SUCCESS") {
             do_log(
                 3,
                 __CLASS__ . '::' . __FUNCTION__ . '()',
