@@ -3,13 +3,13 @@
 custom_1 = denomination (must be as used in other SQL-based controls)
 
 Version History:
-  1.0.126 (2019-01-06)
-    1) Community::get_stats() now correctly handles merging of existing stats with newly obtained ones.
+  1.0.127 (2022-08-14)
+    1) Code to prevent unset variable warnings
 */
 
 class Community extends Displayable_Item
 {
-    const VERSION = '1.0.126';
+    const VERSION = '1.0.127';
     const FIELDS = 'ID, archive, archiveID, deleted, date_launched, dropbox_email, dropbox_password, dropbox_app_key, dropbox_app_secret, dropbox_access_token_key, dropbox_access_token_secret, dropbox_delta_cursor, dropbox_folder, dropbox_last_checked, email_domain, enabled, gallery_album_rootID, map_lat_max, map_lat_min, map_lon_max, map_lon_min, name, podcast_album_rootID, sponsorship, sponsorship_gallery_albumID, stats_cache, systemID, title, URL, URL_external, welcome, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     protected $_community_record =        array();
@@ -222,9 +222,11 @@ class Community extends Displayable_Item
             return $this->_stats;
         }
         $visits = $Obj_Piwik->getVisitsForMonths($start, $end, $find);
-        $this->_stats = array_merge($this->_stats, $visits[$find]);
-        $this->_stats['cache_date'] = $end;
-        $this->set_field('stats_cache', Record::escape_string(serialize($this->_stats), true, false));
+        if (isset($visits[$find])) {
+            $this->_stats = array_merge($this->_stats, $visits[$find]);
+            $this->_stats['cache_date'] = $end;
+            $this->set_field('stats_cache', Record::escape_string(serialize($this->_stats), true, false));
+        }
     }
 
     public function export_sql($targetID, $show_fields)

@@ -1,8 +1,8 @@
-/* 1.0.6
+/* 1.0.7
 
 Version History:
-  1.0.6 (2017-11-19)
-    1) Moved code for Easter and Christmas services into here
+  1.0.7 (2022-08-14)
+    1) Added support for Community Contact page
 */
 /* [ Community and Community Member CSS code ] */
 /* [ Community Display ] */
@@ -139,7 +139,7 @@ Version History:
 .community_frame #section_about li a{
   color:#0000ff;
 }
-.community_frame .community_stats { border-collapse collapse; }
+.community_frame .community_stats { border-collapse: collapse; }
 .community_frame .community_stats thead th { width: 3em; }
 .community_frame .community_stats tbody th a { text-decoration:none; color:#000; }
 .community_frame .community_stats tbody th a:hover { text-decoration:underline; color:#00f; }
@@ -201,10 +201,18 @@ Version History:
   margin: 1px 1px 1px 1px;
 }
 .community_frame .member_gallery_entry_photo_area .member_gallery_entry_icons a:hover img{
-  margin: 0 0 0 0px;
+  margin: 0;
   border: 1px solid #448;
 }
-
+.community_frame .contact_group {
+  border-collapse: collapse;
+}
+.community_frame .contact_group th,
+.community_frame .contact_group td {
+  border: 1px solid #000;
+  padding: 0.25em;
+  font-size: 70%;
+}
 /* [ Member Display ] */
 .profile_nav_outer{
   margin: 0 1px;

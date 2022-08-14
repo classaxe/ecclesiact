@@ -6,14 +6,13 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.61 (2019-01-06)
-    1) Update to Community_Display::setupListingsLoadPiwikStats now that stats for all aliases are included in combined
-       format in stats cache records
+  1.0.62 (2022-08-14)
+    1) Added new Community Contacts View for admins and event planners
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.61';
+    const VERSION = '1.0.62';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -33,587 +32,610 @@ class Community_Display extends Community
     {
         global $page_vars;
         parent::__construct();
-        $this->_cp_vars = array(
-            'community_name' =>                   array(
+        $this->_cp_vars = [
+            'community_name' => [
                 'default' =>    '',
                 'hint' =>       'Name (not title!) of community to view'
-            ),
-            'community_title' =>                  array(
+            ],
+            'community_title' => [
                 'default' =>    '',
                 'hint' =>       'Title of community as shown in remote JS panels'
-            ),
-            'community_URL' =>                    array(
+            ],
+            'community_URL' => [
                 'default' =>    '',
                 'hint' =>       'URL of community as shown in remote JS panels'
-            ),
-            'category_events_special' =>          array(
+            ],
+            'category_events_special' => [
                 'default' =>    'easter',
                 'hint' =>       'CSV list of categories to use when displaying special events'
-            ),
-            'detail_audioplayer_width' =>         array(
+            ],
+            'detail_audioplayer_width' => [
                 'default' =>    400,
                 'hint' =>       '0..x'
-            ),
-            'detail_content_char_limit' =>        array(
+            ],
+            'detail_content_char_limit' => [
                 'default' =>    500,
                 'hint' =>       '0..x'
-            ),
-            'detail_content_plaintext' =>         array(
+            ],
+            'detail_content_plaintext' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'detail_results_limit' =>             array(
+            ],
+            'detail_results_limit' => [
                 'default' =>    10,
                 'hint' =>       '1..x'
-            ),
-            'detail_results_paging' =>            array(
+            ],
+            'detail_results_paging' => [
                 'default' =>    2,
                 'hint' =>       '0|1|2'
-            ),
-            'detail_show_author' =>               array(
+            ],
+            'detail_show_author' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'detail_show_category' =>             array(
+            ],
+            'detail_show_category' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'detail_show_content' =>              array(
+            ],
+            'detail_show_content' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'detail_show_thumbnails' =>           array(
+            ],
+            'detail_show_thumbnails' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'detail_thumbnail_height' =>          array(
+            ],
+            'detail_thumbnail_height' => [
                 'default' =>    150,
                 'hint' =>       '1..x'
-            ),
-            'detail_thumbnail_width' =>           array(
+            ],
+            'detail_thumbnail_width' => [
                 'default' =>    200,
                 'hint' =>       '1..x'
-            ),
-            'dropbox_check_frequency' =>          array(
+            ],
+            'dropbox_check_frequency' => [
                 'match' =>      'range:0,n',
                 'default' =>    60,
                 'hint' =>       'Check dropbox for new content every (n) seconds'
-            ),
-            'dropbox_notify_emails' =>            array(
+            ],
+            'dropbox_notify_emails' => [
                 'default' =>    '',
                 'hint' =>       'CSV list of email addresses to notify whenever new Dropbox content is added'
-            ),
-            'enforce_sharing' =>                  array(
+            ],
+            'enforce_sharing' => [
                 'default' =>    0,
-                'hint' =>       '0|1'),
-            'footer_about' =>                     array(
+                'hint' =>       '0|1'
+            ],
+            'footer_about' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_articles' =>                  array(
+            ],
+            'footer_articles' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_calendar' =>                  array(
+            ],
+            'footer_calendar' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_events' =>                    array(
+            ],
+            'footer_contacts' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_events_christmas' =>          array(
+            ],
+            'footer_events' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_events_easter' =>             array(
+            ],
+            'footer_events_christmas' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_events_special' =>            array(
+            ],
+            'footer_events_easter' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_gallery' =>                   array(
+            ],
+            'footer_events_special' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_map' =>                       array(
+            ],
+            'footer_gallery' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_meetings' =>                  array(
+            ],
+            'footer_map' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_members' =>                   array(
+            ],
+            'footer_meetings' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_news' =>                      array(
+            ],
+            'footer_members' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_podcasts' =>                  array(
+            ],
+            'footer_news' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_sponsors' =>                  array(
+            ],
+            'footer_podcasts' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_stats' =>                     array(
+            ],
+            'footer_sponsors' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'footer_welcome' =>                   array(
+            ],
+            'footer_stats' => [
                 'default' =>    '',
                 'hint' =>       'Footer to place at bottom of section'
-            ),
-            'header_about' =>                     array(
+            ],
+            'footer_welcome' => [
+                'default' =>    '',
+                'hint' =>       'Footer to place at bottom of section'
+            ],
+            'header_about' => [
                 'default' =>    '',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_articles' =>                  array(
+            ],
+            'header_articles' => [
                 'default' =>    'Featured articles from all members.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_calendar' =>                  array(
+            ],
+            'header_calendar' => [
                 'default' =>    'Monthly Calendar for all members.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_events' =>                    array(
+            ],
+            'header_contacts' => [
+                'default' =>
+                    'Contact Details for all members. '
+                    .'Only visible to site administrators',
+                'hint' =>       'Header to place at top of section'
+            ],
+            'header_events' => [
                 'default' =>
                      'Featured events from all members. '
                     .'See <a href="#calendar">Calendar</a> for monthly calendar view. ',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_events_christmas' =>          array(
+            ],
+            'header_events_christmas' => [
                  'default' =>
                      'Upcoming Christmas Services from all members. '
                     .'See <a href="#calendar">Calendar</a> for monthly calendar view.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_events_easter' =>             array(
+            ],
+            'header_events_easter' => [
                 'default' =>
                      'Upcoming Easter Services from all members. '
                     .'See <a href="#calendar">Calendar</a> for monthly calendar view.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_events_special' =>            array(
+            ],
+            'header_events_special' => [
                 'default' =>
                      'Upcoming Special Events from all members. '
                     .'See <a href="#calendar">Calendar</a> for monthly calendar view.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_gallery' =>                   array(
+            ],
+            'header_gallery' => [
                 'default' =>    'View photos associated with this community.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_map' =>                       array(
+            ],
+            'header_map' => [
                 'default' =>    'Click on any name to find on map.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_meetings' =>                  array(
+            ],
+            'header_meetings' => [
                 'default' =>
                     'Showing regular public meetings. See <a href=\'#events\'>Events</a> for other events.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_members' =>                   array(
+            ],
+            'header_members' => [
                 'default' =>    'Click on any photo for details.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_news' =>                      array(
+            ],
+            'header_news' => [
                 'default' =>    'Featured news from all members.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_podcasts' =>                  array(
+            ],
+            'header_podcasts' => [
                 'default' =>
                      'Latest Sermon from each member - <a href=\''.BASE_PATH.trim($page_vars['path'], '/')
                     .'/sermons\'><b>click here</b></a> to access all sermons for this community.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_stats' =>                     array(
+            ],
+            'header_stats' => [
                 'default' =>    '',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_sponsors_local' =>            array(
+            ],
+            'header_sponsors_local' => [
                 'default' =>    '',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_sponsors_national' =>         array(
+            ],
+            'header_sponsors_national' => [
                 'default' =>
                      'We gratefully acknowledge our National Partners for their faithful support - '
                     .'without their help this website would not even have been possible.<br />'
                     .'Please <b>click their logos</b> to learn more about each of them, '
                     .'and do mention us whenever you respond to them.',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'header_welcome' =>                   array(
+            ],
+            'header_welcome' => [
                 'default' =>    '',
                 'hint' =>       'Header to place at top of section'
-            ),
-            'label_about' =>                      array(
+            ],
+            'label_about' => [
                 'default' =>    'About This Website',
                 'hint' =>       'Text for Label'
-            ),
-            'label_articles' =>                   array(
+            ],
+            'label_articles' => [
                 'default' =>    'Featured Articles',
                 'hint' =>       'Text for Label'
-            ),
-            'label_calendar' =>                   array(
+            ],
+            'label_calendar' => [
                 'default' =>    'Monthly Calendar',
                 'hint' =>       'Text for Label'
-            ),
-            'label_events' =>                     array(
+            ],
+            'label_contacts' => [
+                'default' =>    'Contact Details',
+                'hint' =>       'Text for Label'
+            ],
+            'label_events' => [
                 'default' =>    'Featured Events',
                 'hint' =>       'Text for Label'
-            ),
-            'label_events_christmas' =>           array(
+            ],
+            'label_events_christmas' => [
                 'default' =>    'Christmas Services',
                 'hint' =>       'Text for Label'
-            ),
-            'label_events_easter' =>              array(
+            ],
+            'label_events_easter' => [
                 'default' =>    'Easter Services',
                 'hint' =>       'Text for Label'
-            ),
-            'label_events_special' =>             array(
+            ],
+            'label_events_special' => [
                 'default' =>    'Special Services',
                 'hint' =>       'Text for Label'
-            ),
-            'label_gallery' =>                    array(
+            ],
+            'label_gallery' => [
                 'default' =>    'Gallery',
                 'hint' =>       'Text for Label'
-            ),
-            'label_members' =>                    array(
+            ],
+            'label_members' => [
                 'default' =>    'Members',
                 'hint' =>       'Text for Label'
-            ),
-            'label_map' =>                        array(
+            ],
+            'label_map' => [
                 'default' =>    'Members Map',
                 'hint' =>       'Text for Label'
-            ),
-            'label_meetings' =>                   array(
+            ],
+            'label_meetings' => [
                 'default' =>    'Regular Meeting Times',
                 'hint' =>       'Text for Label'
-            ),
-            'label_news' =>                       array(
+            ],
+            'label_news' => [
                 'default' =>    'Featured News',
                 'hint' =>       'Text for Label'
-            ),
-            'label_podcasts' =>                   array(
+            ],
+            'label_podcasts' => [
                 'default' =>    'Latest Audio',
                 'hint' =>       'Text for Label'
-            ),
-            'label_sponsors_local' =>             array(
+            ],
+            'label_sponsors_local' => [
                 'default' =>    'Local Community Partners',
                 'hint' =>       'Text for Label'
-            ),
-            'label_sponsors_national' =>          array(
+            ],
+            'label_sponsors_national' => [
                 'default' =>    'National Site Partners',
                 'hint' =>       'Text for Label'
-            ),
-            'label_stats' =>                      array(
+            ],
+            'label_stats' => [
                 'default' =>    'Visitor Statistics',
                 'hint' =>       'Text for Label'
-            ),
-            'label_welcome' =>                    array(
+            ],
+            'label_welcome' => [
                 'default' =>    'About this Community',
                 'hint' =>       'Text for Label'
-            ),
-            'listing_audioplayer_width' =>        array(
+            ],
+            'listing_audioplayer_width' => [
                 'default' =>    400,
                 'hint' =>       '0..x'
-            ),
-            'listing_content_char_limit' =>       array(
+            ],
+            'listing_content_char_limit' => [
                 'default' =>    500,
                 'hint' =>       '0..x'
-            ),
-            'listing_content_plaintext' =>        array(
+            ],
+            'listing_content_plaintext' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'listing_results_limit' =>            array(
+            ],
+            'listing_results_limit' => [
                 'default' =>    10,
                 'hint' =>       '1..x'
-            ),
-            'listing_results_paging' =>           array(
+            ],
+            'listing_results_paging' => [
                 'default' =>    2,
                 'hint' =>       '0|1|2'
-            ),
-            'listing_show_author' =>              array(
+            ],
+            'listing_show_author' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'listing_show_category' =>            array(
+            ],
+            'listing_show_category' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'listing_show_content' =>             array(
+            ],
+            'listing_show_content' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'listing_show_thumbnails' =>          array(
+            ],
+            'listing_show_thumbnails' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'listing_thumbnail_height' =>         array(
+            ],
+            'listing_thumbnail_height' => [
                 'default' =>    150,
                 'hint' =>       '1..x'
-            ),
-            'listing_thumbnail_width' =>          array(
+            ],
+            'listing_thumbnail_width' => [
                 'default' =>    225,
                 'hint' =>       '1..x'
-            ),
-            'members_spacing' =>                  array(
+            ],
+            'members_spacing' => [
                 'default' =>    4,
                 'hint' =>       '1..x'
-            ),
-            'members_padding' =>                  array(
+            ],
+            'members_padding' => [
                 'default' =>    3,
                 'hint' =>       '1..x'
-            ),
-            'members_header_height' =>            array(
+            ],
+            'members_header_height' => [
                 'default' =>    65,
                 'hint' =>       '1..x'
-            ),
-            'members_height' =>                   array(
+            ],
+            'members_height' => [
                 'default' =>    210,
                 'hint' =>       '1..x'
-            ),
-            'members_width' =>                    array(
+            ],
+            'members_width' => [
                 'default' =>    190,
                 'hint' =>       '1..x'
-            ),
-            'members_photo_lock_aspect' =>        array(
+            ],
+            'members_photo_lock_aspect' => [
                 'default' =>    0,
                 'hint' =>       '0|1'
-            ),
-            'members_photo_height' =>             array(
+            ],
+            'members_photo_height' => [
                 'default' =>    135,
                 'hint' =>       '1..x'
-            ),
-            'members_photo_width' =>              array(
+            ],
+            'members_photo_width' => [
                 'default' =>    180,
                 'hint' =>       '1..x'
-            ),
-            'members_show_address' =>             array(
+            ],
+            'members_show_address' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_show_map' =>                 array(
+            ],
+            'members_show_map' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_show_name' =>                array(
+            ],
+            'members_show_name' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_show_phone' =>               array(
+            ],
+            'members_show_phone' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_show_photo' =>               array(
+            ],
+            'members_show_photo' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_show_website' =>             array(
+            ],
+            'members_show_website' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_text_address_size' =>        array(
+            ],
+            'members_text_address_size' => [
                 'default' =>    8,
                 'hint' =>       '1..x'
-            ),
-            'members_text_name_bold' =>           array(
+            ],
+            'members_text_name_bold' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'members_text_name_size' =>           array(
+            ],
+            'members_text_name_size' => [
                 'default' =>    8,
                 'hint' =>       '1..x'
-            ),
-            'members_text_phone_size' =>          array(
+            ],
+            'members_text_phone_size' => [
                 'default' =>    8,
                 'hint' =>       '1..x'
-            ),
-            'map_height' =>                       array(
+            ],
+            'map_height' => [
                 'default' =>    600,
                 'hint' =>       '1..x'
-            ),
-            'map_photo_width' =>                  array(
+            ],
+            'map_photo_width' => [
                 'default' =>    80,
                 'hint' =>       '1..x'
-            ),
-            'profile_photo_height' =>             array(
+            ],
+            'profile_photo_height' => [
                 'default' =>    282,
                 'hint' =>       '1..x'
-            ),
-            'profile_photo_width' =>              array(
+            ],
+            'profile_photo_width' => [
                 'default' =>    425,
                 'hint' =>       '1..x'
-            ),
-            'profile_map_height' =>               array(
+            ],
+            'profile_map_height' => [
                 'default' =>    500,
                 'hint' =>       '1..x'
-            ),
-            'profile_map_photo_width' =>          array(
+            ],
+            'profile_map_photo_width' => [
                 'default' =>    80,
                 'hint' =>       '1..x'
-            ),
-            'profile_map_zoom' =>                 array(
+            ],
+            'profile_map_zoom' => [
                 'default' =>    14,
                 'hint' =>       '1..19'
-            ),
-            'profile_page_layout' =>              array(
+            ],
+            'profile_page_layout' => [
                 'default' =>    '',
                 'hint' =>       'Name of layout to use when rendering member profiles'
-            ),
-            'show_about' =>                       array(
+            ],
+            'show_about' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_articles' =>                    array(
+            ],
+            'show_articles' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_calendar' =>                    array(
+            ],
+            'show_calendar' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_contact' =>                     array(
+            ],
+            'show_contact' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_events' =>                      array(
+            ],
+            'show_contacts' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_events_special' =>              array(
+            ],
+            'show_events' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_gallery' =>                     array(
+            ],
+            'show_events_special' => [
+                'default' =>    1,
+                'hint' =>       '0|1'
+            ],
+            'show_gallery' => [
                 'default' =>    0,
                 'hint' =>       '0|1'
-            ),
-            'show_members' =>                     array(
+            ],
+            'show_members' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_map' =>                         array(
+            ],
+            'show_map' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_meetings' =>                    array(
+            ],
+            'show_meetings' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_news' =>                        array(
+            ],
+            'show_news' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_podcasts' =>                    array(
+            ],
+            'show_podcasts' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_sponsors' =>                    array(
+            ],
+            'show_sponsors' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_stats' =>                       array(
+            ],
+            'show_stats' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'show_welcome' =>                     array(
+            ],
+            'show_welcome' => [
                 'default' =>    1,
                 'hint' =>       '0|1'
-            ),
-            'tab_about' =>                        array(
+            ],
+            'tab_about' => [
                 'default' =>    'About...',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_articles' =>                     array(
+            ],
+            'tab_articles' => [
                 'default' =>    'Articles',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_audio' =>                        array(
+            ],
+            'tab_audio' => [
                 'default' =>    'Audio',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_calendar' =>                     array(
+            ],
+            'tab_calendar' => [
                 'default' =>    'Calendar',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_contact' =>                      array(
+            ],
+            'tab_contact' => [
                 'default' =>    'Contact',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_events' =>                       array(
+            ],
+            'tab_contacts' => [
+                'default' =>    'Contacts',
+                'hint' =>       'Text for Label'
+            ],
+            'tab_events' => [
                 'default' =>    'Events',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_events_christmas' =>             array(
+            ],
+            'tab_events_christmas' => [
                 'default' =>    'Christmas',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_events_easter' =>                array(
+            ],
+            'tab_events_easter' => [
                 'default' =>    'Easter',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_events_special' =>               array(
+            ],
+            'tab_events_special' => [
                 'default' =>    'Special Events',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_gallery' =>                      array(
+            ],
+            'tab_gallery' => [
                 'default' =>    'Gallery',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_map' =>                          array(
+            ],
+            'tab_map' => [
                 'default' =>    'Map',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_meetings' =>                     array(
+            ],
+            'tab_meetings' => [
                 'default' =>    'Meetings',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_members' =>                      array(
+            ],
+            'tab_members' => [
                 'default' =>    'Members',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_news' =>                         array(
+            ],
+            'tab_news' => [
                 'default' =>    'News',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_profile' =>                      array(
+            ],
+            'tab_profile' => [
                 'default' =>    'Profile',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_podcasts' =>                     array(
+            ],
+            'tab_podcasts' => [
                 'default' =>    'Sermons',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_stats' =>                        array(
+            ],
+            'tab_stats' => [
                 'default' =>    'Stats',
                 'hint' =>       'Text for Label'
-            ),
-            'tab_welcome' =>                      array(
+            ],
+            'tab_welcome' => [
                 'default' =>    'Welcome',
                 'hint' =>       'Text for Label'
-            ),
-            'template_community_page' =>          array(
+            ],
+            'template_community_page' => [
                 'default' =>    '//template-about-community/',
                 'hint' =>       'Web page to use as a template for the \'about\' section for the community'
-            ),
-            'template_member_page' =>             array(
+            ],
+            'template_member_page' => [
                 'default' =>    '//template-about-member/',
                 'hint' =>       'Web page to use as a template for the \'about\' section for members'
-            ),
-            'width' =>                            array(
+            ],
+            'width' => [
                 'default' =>    1005,
                 'hint' =>       'Overall width from which tab sizes are calculated'
-            )
-        );
+            ]
+        ];
     }
 
     protected function checkDropbox()
@@ -894,6 +916,7 @@ class Community_Display extends Community
             $this->drawSectionContainerOpen();
             $this->drawWelcome();
             $this->drawMembers();
+            $this->drawContacts();
             $this->drawMap();
             $this->drawMeetings();
             $this->drawArticles();
@@ -1075,6 +1098,94 @@ class Community_Display extends Community
             ."</div>\n";
     }
 
+    protected function drawContact($r, &$number = false, $showService)
+    {
+        $this->_html.=
+            "<tr><th>" . $number++ . "</th>"
+            . "<th><a href=\"".$r['member_URL']."\">" . htmlentities($r['title']) . "</a></th>"
+            . ($showService ?
+                "<td>" . $r['service_addr_line1'] . "</td>"
+                . "<td>" . $r['service_addr_line2'] . "</td>"
+                . "<td>" . $r['service_addr_city'] . "</td>"
+                . "<td>" . $r['service_addr_sp'] . "</td>"
+                . "<td>" . $r['service_addr_postal'] . "</td>"
+              : ''
+            )
+
+            . "<td>" . $r['office_addr_line1'] . "</td>"
+            . "<td>" . $r['office_addr_line2'] . "</td>"
+            . "<td>" . $r['office_addr_city'] . "</td>"
+            . "<td>" . $r['office_addr_sp'] . "</td>"
+            . "<td>" . $r['office_addr_postal'] . "</td>"
+
+            . "<td>" . $r['office_phone1_num'] . "</td>"
+            . "</tr>";
+    }
+
+    protected function drawContactGroup($records, $showService = false)
+    {
+        $this->_html .=
+            "<table class='contact_group noref'>"
+            . "<thead><tr>"
+            . "<th rowspan='2' colspan='2'>Name</th>"
+            . ($showService ? "<th colspan='5'>Service Address</th>" : '')
+            . "<th colspan='6'>Office Address</th>"
+            . "</tr>"
+            . "<tr>"
+            . ($showService ?
+                "<th>Addr</th>"
+                . "<th>Addr2</th>"
+                . "<th>City</th>"
+                . "<th>S/P</th>"
+                . "<th>Postal</th>"
+              : ''
+            )
+            . "<th>Addr</th>"
+            . "<th>Addr2</th>"
+            . "<th>City</th>"
+            . "<th>S/P</th>"
+            . "<th>Postal</th>"
+            . "<th>Phone</th>"
+            . "</tr>"
+            . "</thead>"
+            . "<tbody>";
+        $i = 1;
+        foreach ($records as $record) {
+            $this->drawContact($record, $i, $showService);
+        }
+        $this->_html .=
+            "</tbody>"
+            . "</table>";
+    }
+
+    protected function drawContacts()
+    {
+        $this->_html.=
+            HTML::drawSectionTabDiv('contacts', $this->_selected_section)
+            ."<h2>".$this->_cp['label_contacts']."</h2>"
+            ."<div class='section_header'>".$this->_cp['header_contacts']."</div>";
+
+        if (count($this->_member_types) == 1) {
+            $this->drawContactGroup($this->_records, true);
+        } else {
+            if (isset($this->_member_types['church'])) {
+                $this->_html .= "<h2>Church" . (count($this->_member_types['church']) > 1 ? "" : "es") . "</h2>";
+                $this->drawContactGroup($this->_member_types['church'], true);
+            }
+            if (isset($this->_member_types['organisation'])) {
+                $this->_html .= "<h2>Organisation" . (count($this->_member_types['organisation']) > 1 ? "s" : "") . "</h2>";
+                $this->drawContactGroup($this->_member_types['organisation'], false);
+            }
+            if (isset($this->_member_types['ministerium'])) {
+                $this->_html .= "<h2>Ministerial Association" . (count($this->_member_types['ministerium']) > 1 ? "s" : "") . "</h2>";
+                $this->drawContactGroup($this->_member_types['ministerium'], false);
+            }
+        }
+        $this->_html .=
+             "<div class='section_footer'>".$this->_cp['footer_contacts']."</div>"
+            ."</div>\n";
+
+    }
     protected function drawContextMenuMember($record)
     {
         if (!$this->_current_user_rights['canEdit']) {
@@ -2498,6 +2609,12 @@ class Community_Display extends Community
         }
         if ($this->_cp['show_members']==1) {
             $this->_section_tabs_arr[] =   array('ID'=>'members','label'=>$this->_cp['tab_members']);
+        }
+        if ($this->_cp['show_contacts']==1 &&
+            $this->_current_user_rights['canViewStats'] &&
+            (!DEV_STATUS || PIWIK_DEV)
+        ) {
+            $this->_section_tabs_arr[] =   array('ID'=>'contacts','label'=>$this->_cp['tab_contacts']);
         }
         if ($this->_cp['show_events_special']==1 && $this->_events_christmas) {
             $this->_section_tabs_arr[] =   array('ID'=>'christmas','label'=>$this->_cp['tab_events_christmas']);

@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.7.1");
+define("CODEBASE_VERSION", "5.8.0");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,30 +19,39 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.7.1.2542 (2022-07-28)
+5.8.0.2543 (2022-08-14)
 Summary:
-  Bug fix for Paypal Transaction return page and IPN - was failing to detect 'SUCCESS' result from Paypal on transaction
+  Added Community Contact View for admins and event organisers
 
 Final Checksums:
-  Classes     CS:ff9b5dcd
+  Classes     CS:1882f681
   Database    CS:422e4761
-  Libraries   CS:15dd442c
+  Libraries   CS:c5055fb1
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.7.1     (2022-07-28)
+  codebase.php                                                                                   5.8.0     (2022-08-14)
     1) Updated version information
-  classes/class.paypal_gateway.php                                                               1.0.27    (2022-07-28)
-    1) Fix for transaction check with Paypal in PayPal_Gateway::simplePaymentVerify() and PayPal_Gateway::IPNPaymentVerify()
-       Result of 'SUCCESS' is now second line of response as opposed to the first as seen previously
+  classes/class.community.php                                                                    1.0.127   (2022-08-14)
+    1) Code to prevent unset variable warnings
+  classes/class.community_display.php                                                            1.0.62    (2022-08-14)
+    1) Added new Community Contacts View for admins and event planners
+  classes/class.community_member.php                                                             1.0.127   (2022-08-14)
+    1) Community_Member::get_stats() tweak to prevent errors for unset variables
+  style/community.css                                                                            1.0.7     (2022-08-14)
+    1) Added support for Community Contact page
 
-2542.sql
+2543.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.7.1
-  classes/  (1 file changed)
-    class.paypal_gateway.php                          1.0.27    CS:8c5069aa
+  codebase.php                                        5.8.0
+  classes/  (3 files changed)
+    class.community.php                               1.0.127   CS:91e8856b
+    class.community_display.php                       1.0.62    CS:758da5fd
+    class.community_member.php                        1.0.127   CS:4cf2c0aa
+  style/community.css                                 1.0.7     CS:cafe49d5
+
 --------------------------------------------------------------------------------
 
 Bug:
