@@ -1,8 +1,8 @@
-/* 1.0.7
+/* 1.0.8
 
 Version History:
-  1.0.7 (2022-08-14)
-    1) Added support for Community Contact page
+  1.0.8 (2022-08-15)
+    1) Tweaks for Community Frame contact page - only available to admins
 */
 /* [ Community and Community Member CSS code ] */
 /* [ Community Display ] */
@@ -206,12 +206,35 @@ Version History:
 }
 .community_frame .contact_group {
   border-collapse: collapse;
+  background-color: #fff;
+}
+.community_frame .contact_group table{
+  border-collapse: collapse;
+  border-style: hidden;
+  padding: 0.25em;
+  width: 100%;
 }
 .community_frame .contact_group th,
 .community_frame .contact_group td {
-  border: 1px solid #000;
+  border: 1px solid #ccc;
   padding: 0.25em;
-  font-size: 70%;
+  font-size: 8pt;
+}
+.community_frame .contact_group tbody tr.line td {
+  border-top: 3px solid #000;
+}
+.community_frame .contact_group tr td.right,
+.community_frame .contact_group tr th.right {
+  border-right: 1px solid #000;
+}
+.community_frame .contact_group tr td.left,
+.community_frame .contact_group tr th.left {
+  border-left: 1px solid #000;
+}
+.community_frame .contact_group table th,
+.community_frame .contact_group table td {
+  vertical-align: top;
+  border-top: 1px solid #000 !important;
 }
 /* [ Member Display ] */
 .profile_nav_outer{

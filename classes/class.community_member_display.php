@@ -5,12 +5,12 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.63 (2019-01-06)
-    1) Changes to Community_Member_Display::drawStats() following iwik API method changes for increase efficiency
+  1.0.64 (2022-08-15)
+    1) Changes to Community_Member_Display functions for parameters to use in other places
 */
 class Community_Member_Display extends Community_Member
 {
-    const VERSION = '1.0.63';
+    const VERSION = '1.0.64';
 
     protected $_events =                        [];
     protected $_events_christmas =              [];
@@ -61,18 +61,6 @@ class Community_Member_Display extends Community_Member
         $this->drawSectionContainerClose();
         $this->drawFrameClose();
         return $this->_html;
-    }
-
-    protected function drawTwoColumEntry($label, $content, $test)
-    {
-        if ($test=='') {
-            return;
-        }
-        return
-         "  <tr>\n"
-        ."    <th>".$label."</th>\n"
-        ."    <td>".$content."</td>\n"
-        ."  </tr>\n";
     }
 
     protected function drawCss()
@@ -252,9 +240,9 @@ class Community_Member_Display extends Community_Member
         $this->drawContactFormSetup();
         $office =   $this->drawAddress('office_addr_');
         $mailing =  $this->drawAddress('mailing_addr_');
-        $phone =    $this->drawOfficePhone();
-        $notes =    $this->drawOfficeNotes();
-        $hours =    $this->drawOfficeHours();
+        $phone =    $this->drawOfficePhone($this->_record);
+        $notes =    $this->drawOfficeNotes($this->_record);
+        $hours =    $this->drawOfficeHours($this->_record);
         $this->_html.=
              HTML::drawSectionTabDiv('contact', $this->_selected_section)
             ."<div class='inner'>"
@@ -625,55 +613,6 @@ class Community_Member_Display extends Community_Member
     }
 
 
-    protected function drawOfficeHours()
-    {
-        $days =         explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
-        $r =            $this->_record;
-        $has_hours =    false;
-        foreach ($days as $d) {
-            if ($r['xml:Church_Office_'.substr($d, 0, 3)]) {
-                $has_hours = true;
-                break;
-            }
-        }
-        if (!$has_hours) {
-            return;
-        }
-        $out =
-            "<table class='table_details' cellpadding='0' cellspacing='0' border='0'>";
-        foreach ($days as $d) {
-            $hours = $r['xml:Church_Office_'.substr($d, 0, 3)];
-            if ($hours) {
-                $out.= $this->drawTwoColumEntry($d, $hours, $hours);
-            }
-        }
-        $out.=
-            "</table>\n";
-        return $out;
-    }
-
-    protected function drawOfficeNotes()
-    {
-        $r = $this->_record;
-        if (!$r['office_notes']) {
-            return;
-        }
-        return
-            "<p style='margin:0 0 2em 1em;'>\n".$r['office_notes']."</p>";
-    }
-
-    protected function drawOfficePhone()
-    {
-        $r = $this->_record;
-        if (!$r['office_phone1_lbl'] && !$r['office_phone2_lbl']) {
-            return;
-        }
-        return
-             "<table class='table_details' cellpadding='0' cellspacing='0' border='0'>"
-            .$this->drawTwoColumEntry($r['office_phone1_lbl'], $r['office_phone1_num'], $r['office_phone1_lbl'])
-            .$this->drawTwoColumEntry($r['office_phone2_lbl'], $r['office_phone2_num'], $r['office_phone2_lbl'])
-            ."</table>\n";
-    }
     protected function drawMap()
     {
         if (!$this->_cp['show_map']) {
@@ -1011,7 +950,7 @@ class Community_Member_Display extends Community_Member
     {
         global $page_vars;
         $r =            $this->_record;
-        $servicetimes = $this->drawServiceTimes();
+        $servicetimes = $this->drawServiceTimes($r);
         $service_addr = $this->drawAddress('service_addr_');
         $verified =     ($r['date_survey_returned']!='0000-00-00' ? $r['date_survey_returned'] : false);
         $ministerial =  ($r['ministerial_title']!='' ? $r['ministerial_title'] : false);
@@ -1234,63 +1173,6 @@ class Community_Member_Display extends Community_Member
             "  show_section_tab('spans_".$this->_safe_ID."','".$this->_selected_section."');\n"
         );
         $this->_html.= "<div id='".$this->_safe_ID."_container' style='position:relative;'>\n";
-    }
-
-    protected function drawServiceTimes()
-    {
-        $days = explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
-        $dd =   '';
-        $out =  '';
-        $servicetimes_known = false;
-        foreach ($days as $day) {
-            if (isset($this->_record['service_times_'.strToLower(substr($day, 0, 3))]) &&
-                trim($this->_record['service_times_'.strToLower(substr($day, 0, 3))])
-            ) {
-                $entries = explode("\n", $this->_record['service_times_'.strToLower(substr($day, 0, 3))]);
-                $rowspan = 0;
-                for ($i=0; $i<count($entries); $i++) {
-                    $servicetimes_known = true;
-                    $entry = $entries[$i];
-                    if (trim($entry)!='') {
-                        $rowspan++;
-                    }
-                }
-                for ($i=0; $i<count($entries); $i++) {
-                    $entry = $entries[$i];
-                    if (trim($entry)!='') {
-                        $bits = explode(' ', $entry);
-                        $out.=
-                             "  <tr>\n"
-                            .($i==0 ?
-                                "    <th class='s_day'".($rowspan>1 ? " rowspan='".$rowspan."'" : "").">".$day."</th>\n"
-                            :
-                                ''
-                            )
-                            ."    <td class='s_time'>".array_shift($bits)."</td>\n"
-                            ."    <td class='s_detail'>".implode('/<br />', explode('/', implode(' ', $bits)))."</td>\n"
-                            ."  </tr>\n";
-                        $dd= $day;
-                    }
-                }
-            }
-        }
-        if (!$out) {
-            return;
-        }
-        return
-             "<table class='service_details' cellpadding='2' cellspacing='0' border='1'"
-            ." summary='Table showing meeting times'>"
-            ."  <thead>\n"
-            ."    <tr>\n"
-            ."      <th>Day</th>\n"
-            ."      <th>Time</th>\n"
-            ."      <th>Details</th>\n"
-            ."    </tr>\n"
-            ."  </thead>\n"
-            ."  <tbody>\n"
-            .$out
-            ."  </tbody>\n"
-            ."</table>";
     }
 
     protected function drawSponsorsNational()

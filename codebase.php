@@ -19,9 +19,41 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.0.2543 (2022-08-14)
+5.8.1.2544 (2022-08-15)
 Summary:
-  Added Community Contact View for admins and event organisers
+  Improvements to Community Contacts View for admins
+
+Final Checksums:
+  Classes     CS:4a02f26d
+  Database    CS:422e4761
+  Libraries   CS:101a9f28
+  Reports     CS:b6232c7
+
+Code Changes:
+  codebase.php                                                                                   5.8.0     (2022-08-15)
+    1) Updated version information
+  classes/class.community_display.php                                                            1.0.63    (2022-08-15)
+    Community_Display::drawContact() updates
+  classes/class.community_member.php                                                             1.0.128   (2022-08-15)
+    1) Changes to support admins-only community contact detail listings
+  classes/class.community_member_display.php                                                     1.0.64    (2022-08-15)
+    1) Changes to Community_Member_Display functions for parameters to use in other places
+  classes/class.portal.php                                                                       1.0.43    (2022-08-15)
+    Portal::isDev() now extends to *.local sites
+  style/community.css                                                                            1.0.8     (2022-08-15)
+    1) Tweaks for Community Frame contact page - only available to admins
+
+2543.sql
+  1) Set version information
+
+Promote:
+  codebase.php                                        5.8.0
+  classes/  (4 files changed)
+    class.community_display.php                       1.0.63    CS:9d125589
+    class.community_member.php                        1.0.128   CS:febf2890
+    class.community_member_display.php                1.0.64    CS:603e9012
+    class.portal.php                                  1.0.43    CS:e5ea2aed
+  style/community.css                                 1.0.8     CS:29c13747
 
 Final Checksums:
   Classes     CS:1882f681

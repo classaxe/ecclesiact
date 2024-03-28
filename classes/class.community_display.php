@@ -6,13 +6,13 @@ Add each site to be checked to CRON table like this:
   http://www.ChurchesInWherever.ca/?dropbox
 
 Version History:
-  1.0.62 (2022-08-14)
-    1) Added new Community Contacts View for admins and event planners
+  1.0.63 (2022-08-15)
+    Community_Display::drawContact() updates
 */
 
 class Community_Display extends Community
 {
-    const VERSION = '1.0.62';
+    const VERSION = '1.0.63';
 
     protected $_dropbox_additions =             array();
     protected $_dropbox_modifications =         array();
@@ -1100,26 +1100,95 @@ class Community_Display extends Community
 
     protected function drawContact($r, &$number = false, $showService)
     {
+        $Obj_LA = new Language_Assign;
+        $Obj_CM = new Community_Member;
+        $Obj_CM->xmlfields_decode($r);
+        $languages = $Obj_LA->get_text_csv_for_assignment($Obj_CM->_get_assign_type(), $r['ID']);
+        $phones = [];
+        for($i=1; $i<=2; $i++) {
+            if ($r['office_phone' . $i . '_lbl'] || $r['office_phone' . $i . '_num']) {
+                $phones[] = "<tr><td>" . $r['office_phone' . $i . '_lbl'] . "</td><td>" . $r['office_phone' . $i . '_num'] . "</td></tr>";
+            }
+        }
+        $emails = [];
+        for($i=1; $i<=8; $i++) {
+            if (isset($r['xml:contact:name_' . $i]) && $r['xml:contact:name_' . $i]) {
+                $emails[] = "<tr><td>" . $r['xml:contact:name_' . $i] . "</td><td>" . $r['xml:contact:email_' . $i] . "</td></tr>";
+            }
+        }
+
+        $link_types = explode(', ',Community_Member::LINK_TYPES);
+        $links = [];
+        foreach ($link_types as $type) {
+            $attr = $r['link_' . $type];
+            if ($attr) {
+                $links[] = "<tr><td title='" . ucfirst($type) . "'>" . strtoupper(substr($type, 0, 1)) . "</td><td>" . $attr . "</td></tr>";
+            }
+        }
+
+        $verified =     ($r['date_survey_returned']!='0000-00-00' ? $r['date_survey_returned'] : false);
         $this->_html.=
-            "<tr><th>" . $number++ . "</th>"
-            . "<th><a href=\"".$r['member_URL']."\">" . htmlentities($r['title']) . "</a></th>"
+            "<tr class='line' ". $this->drawContextMenuMember($r) . ">"
+            . "<td style='vertical-align: top'>" . $number++ . "</td>"
+            . "<td style='vertical-align: top' class='right'>"
+            . "<a href=\"".$r['member_URL']."\"><b>" . htmlentities($r['title']) . "</b></a><br>"
+            . $r['custom_1'] . "<br>(" . $languages .")"
+            . ($verified ? "<br>V: " .$verified : '')
+            . "</td>"
+
+            . "<td style='vertical-align: top; padding: 0;' class='left right'>"
+            . $Obj_CM->drawServiceTimes($r)
+            . ($r['service_notes'] ? "<p>Notes: ". $r['service_notes'] . "</p>": '')
+            . "</td>"
+
+            . "<td style='vertical-align: top; padding: 0;' class='left right'>"
+            . "<table cellspacing='0'>"
+            . ($links ? implode("\n", $links) : '')
+            . "</table>"
+            . "</td>"
+
+            . "<td style='vertical-align: top; padding: 0;' class='left right'>"
+            . "<table cellspacing='0'>"
             . ($showService ?
-                "<td>" . $r['service_addr_line1'] . "</td>"
-                . "<td>" . $r['service_addr_line2'] . "</td>"
+                "<tr>"
+                . "<td>Service</td>"
+                . "<td>" . $r['service_addr_line1'] . ($r['service_addr_line2'] ? ', ' . $r['service_addr_line2'] : '') . "</td>"
                 . "<td>" . $r['service_addr_city'] . "</td>"
                 . "<td>" . $r['service_addr_sp'] . "</td>"
-                . "<td>" . $r['service_addr_postal'] . "</td>"
-              : ''
+                . "<td class='nowrap'>" . $r['service_addr_postal'] . "</td>"
+                . "</tr>"
+                : ""
             )
-
-            . "<td>" . $r['office_addr_line1'] . "</td>"
-            . "<td>" . $r['office_addr_line2'] . "</td>"
+            . "<tr>\n"
+            . "<td>Office</td>"
+            . "<td>" . $r['office_addr_line1'] . ($r['office_addr_line2'] ? ', ' . $r['office_addr_line2'] : '') . "</td>"
             . "<td>" . $r['office_addr_city'] . "</td>"
             . "<td>" . $r['office_addr_sp'] . "</td>"
-            . "<td>" . $r['office_addr_postal'] . "</td>"
+            . "<td class='nowrap'>" . $r['office_addr_postal'] . "</td>"
+            . "</tr>"
+            . "<tr>\n"
+            . "<td>Mailing</td>"
+            . "<td>" . $r['mailing_addr_line1'] . ($r['mailing_addr_line2'] ? ', ' . $r['mailing_addr_line2'] : '') . "</td>"
+            . "<td>" . $r['mailing_addr_city'] . "</td>"
+            . "<td>" . $r['mailing_addr_sp'] . "</td>"
+            . "<td class='nowrap'>" . $r['mailing_addr_postal'] . "</td>"
+            . "</tr>"
+            . "</table>"
+            . "</td>"
 
-            . "<td>" . $r['office_phone1_num'] . "</td>"
-            . "</tr>";
+            . "<td style='vertical-align: top; padding: 0;'>"
+            . "<table cellspacing='0'>"
+            . ($phones ? implode("\n", $phones) : '')
+            . ($emails ? implode("\n", $emails) : '')
+            . "</table>"
+            . "</td>"
+
+            . "<td style='vertical-align: top; padding: 0;' class='left right'>"
+            . $Obj_CM->drawOfficeHours($r)
+            . "</td>"
+
+            . "</tr>"
+        ;
     }
 
     protected function drawContactGroup($records, $showService = false)
@@ -1127,25 +1196,12 @@ class Community_Display extends Community
         $this->_html .=
             "<table class='contact_group noref'>"
             . "<thead><tr>"
-            . "<th rowspan='2' colspan='2'>Name</th>"
-            . ($showService ? "<th colspan='5'>Service Address</th>" : '')
-            . "<th colspan='6'>Office Address</th>"
-            . "</tr>"
-            . "<tr>"
-            . ($showService ?
-                "<th>Addr</th>"
-                . "<th>Addr2</th>"
-                . "<th>City</th>"
-                . "<th>S/P</th>"
-                . "<th>Postal</th>"
-              : ''
-            )
-            . "<th>Addr</th>"
-            . "<th>Addr2</th>"
-            . "<th>City</th>"
-            . "<th>S/P</th>"
-            . "<th>Postal</th>"
-            . "<th>Phone</th>"
+            . "<th colspan='2' class='right'>Name<br>Denomination<br>Languages</th>"
+            . "<th class='right'>Services</th>"
+            . "<th class='right'>Links</th>"
+            . "<th class='right'>Locations</th>"
+            . "<th class='left'>Contact Details</th>"
+            . "<th class='right'>Office Hours</th>"
             . "</tr>"
             . "</thead>"
             . "<tbody>";

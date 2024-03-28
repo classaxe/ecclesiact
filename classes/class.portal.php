@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.42 (2017-11-16)
-    1) Portal::isDev() now extends to *.dev sites
+  1.0.43 (2022-08-15)
+    Portal::isDev() now extends to *.local sites
 */
 class Portal extends Base
 {
-    const VERSION = '1.0.42';
+    const VERSION = '1.0.43';
 
     private static $_path_date_prefixed_types = array(
       'Article', 'Event', 'Job_Posting', 'News_Item', 'Podcast', 'Survey'
@@ -135,6 +135,7 @@ class Portal extends Base
                 substr($serverhost, -15) === '.ecclesiact.com'
             ) ||
             substr($serverhost, -4) ===   '.dev' ||
+            substr($serverhost, -6) ===   '.local' ||
             substr($serverhost, 0, 7) === 'backup.' ||
             substr($serverhost, 0, 8) === 'desktop.' ||
             substr($serverhost, 0, 4) === 'dev.' ||

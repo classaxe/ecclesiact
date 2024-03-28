@@ -5,13 +5,13 @@ custom_1 = denomination (must be as used in other SQL-based controls)
 */
 /*
 Version History:
-  1.0.127 (2022-08-14)
-    1) Community_Member::get_stats() tweak to prevent errors for unset variables
+  1.0.128 (2022-08-15)
+    1) Changes to support admins-only community contact detail listings
 */
 
 class Community_Member extends Displayable_Item
 {
-    const VERSION = '1.0.127';
+    const VERSION = '1.0.128';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, gallery_albumID, podcast_albumID, primary_communityID, primary_ministerialID, admin_notes, attention_required, contact_history, date_photo_taken, date_survey_returned, date_welcome_letter, date_went_live, languages, link_facebook, link_twitter, link_video, link_website, mailing_addr_line1, mailing_addr_line2, mailing_addr_city, mailing_addr_country, mailing_addr_postal, mailing_addr_sp, office_addr_line1, office_addr_line2, office_addr_city, office_addr_country, office_addr_postal, office_addr_sp, office_fax, office_map_desc, office_map_geocodeID, office_map_geocode_address, office_map_geocode_area, office_map_geocode_quality, office_map_geocode_type, office_map_loc, office_map_lat, office_map_lon, office_notes, office_phone1_lbl, office_phone1_num, office_phone2_lbl, office_phone2_num, office_times_sun, office_times_mon, office_times_tue, office_times_wed, office_times_thu, office_times_fri, office_times_sat, service_addr_line1, service_addr_line2, service_addr_city, service_addr_country, service_addr_postal, service_addr_sp, service_map_desc, service_map_geocodeID, service_map_geocode_address, service_map_geocode_area, service_map_geocode_quality, service_map_geocode_type, service_map_loc, service_map_lat, service_map_lon, service_notes, service_times_sun, service_times_mon, service_times_tue, service_times_wed, service_times_thu, service_times_fri, service_times_sat, stats_cache, name, name_aliases, title, category, contactID, contact_NFirst, contact_NGreeting, contact_NLast, contact_NMiddle, contact_NTitle, contact_PEmail, contact_Telephone, custom_1, custom_2, custom_3, custom_4, custom_5, custom_6, custom_7, custom_8, custom_9, custom_10, date_verified, dropbox_folder, dropbox_last_checked, dropbox_last_filelist, dropbox_last_status, featured_image, full_member, partner_csv, PEmail, shortform_name, signatories, summary, type, URL, XML_data, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const LINK_TYPES = 'website, facebook, twitter, video';
     const DASHBOARD_HEIGHT = 500;
@@ -741,6 +741,122 @@ class Community_Member extends Displayable_Item
             ." onclick=\"this.disabled=true;save_community_settings()\" />\n"
             ."</div>\n";
         return $out;
+    }
+
+    public function drawOfficeHours($r)
+    {
+        $days =         explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
+        $has_hours =    false;
+        foreach ($days as $d) {
+            if ($r['xml:Church_Office_'.substr($d, 0, 3)]) {
+                $has_hours = true;
+                break;
+            }
+        }
+        if (!$has_hours) {
+            return;
+        }
+        $out =
+            "<table class='table_details' cellpadding='0' cellspacing='0' border='0'>";
+        foreach ($days as $d) {
+            $hours = $r['xml:Church_Office_'.substr($d, 0, 3)];
+            if ($hours) {
+                $out.= $this->drawTwoColumnEntry(substr($d, 0, 3), $hours, $hours);
+            }
+        }
+        $out.=
+            "</table>\n";
+        return $out;
+    }
+
+    public function drawOfficeNotes($r)
+    {
+        if (!$r['office_notes']) {
+            return;
+        }
+        return
+            "<p style='margin:0 0 2em 1em;'>\n".$r['office_notes']."</p>";
+    }
+
+    public function drawOfficePhone($r)
+    {
+        if (!$r['office_phone1_lbl'] && !$r['office_phone2_lbl']) {
+            return;
+        }
+        return
+            "<table class='table_details' cellpadding='0' cellspacing='0' border='0'>"
+            .$this->drawTwoColumnEntry($r['office_phone1_lbl'], $r['office_phone1_num'], $r['office_phone1_lbl'])
+            .$this->drawTwoColumnEntry($r['office_phone2_lbl'], $r['office_phone2_num'], $r['office_phone2_lbl'])
+            ."</table>\n";
+    }
+
+    public function drawServiceTimes($r)
+    {
+        $days = explode(',', 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday');
+        $dd =   '';
+        $out =  '';
+        $servicetimes_known = false;
+        foreach ($days as $day) {
+            if (isset($r['service_times_'.strToLower(substr($day, 0, 3))]) &&
+                trim($r['service_times_'.strToLower(substr($day, 0, 3))])
+            ) {
+                $entries = explode("\n", $r['service_times_'.strToLower(substr($day, 0, 3))]);
+                $rowspan = 0;
+                for ($i=0; $i<count($entries); $i++) {
+                    $servicetimes_known = true;
+                    $entry = $entries[$i];
+                    if (trim($entry)!='') {
+                        $rowspan++;
+                    }
+                }
+                for ($i=0; $i<count($entries); $i++) {
+                    $entry = $entries[$i];
+                    if (trim($entry)!='') {
+                        $bits = explode(' ', $entry);
+                        $out.=
+                            "  <tr>\n"
+                            .($i==0 ?
+                                "    <th class='s_day'".($rowspan>1 ? " rowspan='".$rowspan."'" : "").">".substr($day, 0, 3)."</th>\n"
+                                :
+                                ''
+                            )
+                            ."    <td class='s_time'>".array_shift($bits)."</td>\n"
+                            ."    <td class='s_detail'>".implode('/<br />', explode('/', implode(' ', $bits)))."</td>\n"
+                            ."  </tr>\n";
+                        $dd= $day;
+                    }
+                }
+            }
+        }
+        if (!$out) {
+            return;
+        }
+        return
+            "<table class='service_details' cellpadding='2' cellspacing='0' border='1'"
+            ." summary='Table showing meeting times'>"
+            ."  <thead>\n"
+            ."    <tr>\n"
+            ."      <th>Day</th>\n"
+            ."      <th>Time</th>\n"
+            ."      <th>Details</th>\n"
+            ."    </tr>\n"
+            ."  </thead>\n"
+            ."  <tbody>\n"
+            .$out
+            ."  </tbody>\n"
+            ."</table>";
+    }
+
+    protected function drawTwoColumnEntry($label, $content, $test)
+    {
+        if ($test=='') {
+            return;
+        }
+        return
+            "  <tr>\n"
+            ."    <th>".$label."</th>\n"
+            ."    <td style='white-space: nowrap'>".$content."</td>\n"
+            ."  </tr>\n";
     }
 
     public function export_sql($targetID, $show_fields)
