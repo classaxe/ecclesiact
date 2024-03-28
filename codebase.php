@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.1");
+define("CODEBASE_VERSION", "5.8.2");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,71 +19,35 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.1.2544 (2022-08-15)
+5.8.2.2545 (2024-03-28)
 Summary:
-  Improvements to Community Contacts View for admins
+  DB Checksums now normalise newer database engines to consistent results
 
 Final Checksums:
-  Classes     CS:4a02f26d
+  Classes     CS:868cd3f0
   Database    CS:422e4761
-  Libraries   CS:101a9f28
+  Libraries   CS:a26e7dc0
   Reports     CS:b6232c7
 
 Code Changes:
-  codebase.php                                                                                   5.8.0     (2022-08-15)
+  codebase.php                                                                                   5.8.2     (2024-03-28)
     1) Updated version information
-  classes/class.community_display.php                                                            1.0.63    (2022-08-15)
-    Community_Display::drawContact() updates
-  classes/class.community_member.php                                                             1.0.128   (2022-08-15)
-    1) Changes to support admins-only community contact detail listings
-  classes/class.community_member_display.php                                                     1.0.64    (2022-08-15)
-    1) Changes to Community_Member_Display functions for parameters to use in other places
-  classes/class.portal.php                                                                       1.0.43    (2022-08-15)
-    Portal::isDev() now extends to *.local sites
-  style/community.css                                                                            1.0.8     (2022-08-15)
-    1) Tweaks for Community Frame contact page - only available to admins
+  classes/class.backup.php                                                                       1.1.11    (2024-03-29)
+    Backup::db_export_sql_structure() no longer normalises database create tables when exporting backup
+  classes/class.system.php                                                                       1.0.189   (Date not given!)
 
-2543.sql
+  classes/class.table.php                                                                        1.0.6     (2024-03-28)
+    1) Updates to Table::get_table_create_sql() to normalise for newer database engines
+
+2545.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.0
-  classes/  (4 files changed)
-    class.community_display.php                       1.0.63    CS:9d125589
-    class.community_member.php                        1.0.128   CS:febf2890
-    class.community_member_display.php                1.0.64    CS:603e9012
-    class.portal.php                                  1.0.43    CS:e5ea2aed
-  style/community.css                                 1.0.8     CS:29c13747
-
-Final Checksums:
-  Classes     CS:1882f681
-  Database    CS:422e4761
-  Libraries   CS:c5055fb1
-  Reports     CS:b6232c7
-
-Code Changes:
-  codebase.php                                                                                   5.8.0     (2022-08-14)
-    1) Updated version information
-  classes/class.community.php                                                                    1.0.127   (2022-08-14)
-    1) Code to prevent unset variable warnings
-  classes/class.community_display.php                                                            1.0.62    (2022-08-14)
-    1) Added new Community Contacts View for admins and event planners
-  classes/class.community_member.php                                                             1.0.127   (2022-08-14)
-    1) Community_Member::get_stats() tweak to prevent errors for unset variables
-  style/community.css                                                                            1.0.7     (2022-08-14)
-    1) Added support for Community Contact page
-
-2543.sql
-  1) Set version information
-
-Promote:
-  codebase.php                                        5.8.0
+  codebase.php                                        5.8.2
   classes/  (3 files changed)
-    class.community.php                               1.0.127   CS:91e8856b
-    class.community_display.php                       1.0.62    CS:758da5fd
-    class.community_member.php                        1.0.127   CS:4cf2c0aa
-  style/community.css                                 1.0.7     CS:cafe49d5
-
+    class.backup.php                                  1.1.11    CS:cb917da8
+    class.system.php                                  1.0.189   CS:c502c08f
+    class.table.php                                   1.0.6     CS:ce871f7
 --------------------------------------------------------------------------------
 
 Bug:

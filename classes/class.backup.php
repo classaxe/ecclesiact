@@ -1,10 +1,9 @@
 <?php
-define("VERSION_BACKUP","1.1.10");
+define("VERSION_BACKUP","1.1.11");
 /*
 Version History:
-  1.1.10 (2015-03-23)
-    1) Method get_version() renamed to getVersion() and made static
-
+  1.1.11 (2024-03-29)
+    Backup::db_export_sql_structure() no longer normalises database create tables when exporting backup
 */
 
 class Backup extends Record{
@@ -179,7 +178,7 @@ class Backup extends Record{
     $Obj = new Table();
     $tables = $Obj->get_tables_names();
     for ($i=0; $i<count($tables); $i++) {
-      $tables[$i]['Data'] = $Obj->get_table_create_sql($tables[$i]['Name']);
+      $tables[$i]['Data'] = $Obj->get_table_create_sql($tables[$i]['Name'], false, false);
     }
     $out =
        "# ************************************\n"

@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.188 (2019-01-06)
-    1) System::get_stats() now properly merges in new stats with old when making a delta update
-    2) System::updateAllVisitorStats() increased timeout
+  1.0.189 (2024-03-28)
+    1) System::do_commands() for get_table_structure now provide notice that the structure is normalised for debug purposes
 */
 class System extends Record
 {
-    const VERSION = '1.0.188';
+    const VERSION = '1.0.189';
     const FIELDS = 'ID, archive, textEnglish, debug, debug_no_internet, classes_cs_target, classes_detail, db_cs_target, db_detail, libraries_cs_target, libraries_detail, reports_cs_target, reports_detail, db_custom_tables, db_upgrade_flag, db_version, adminEmail, archiveID, deleted, adminName, akismet_api_key, bounce_email, bugs_password, bugs_username, bugs_url, cal_border, cal_current, cal_current_we, cal_days, cal_event, cal_head, cal_then, cal_then_we, cal_today, colour1, colour2, colour3, colour4, component_parameters, cron_job_heartbeat_last_run, custom_1, custom_2, defaultBgColor, defaultCurrencySuffix, defaultCurrencySymbol, defaultDateFormat, defaultLanguage, defaultLayoutID, defaultTaxZoneID, defaultThemeID, defaultTimeFormat, favicon, features, gatewayID, google_analytics_key, google_maps_key, installed_modules, languages, last_user_access, membership_expiry_type, membership_rules, notes, notify_email, notify_triggers, piwik_id, piwik_online, piwik_md5_password, piwik_token, piwik_user, posting_prefix, provider_list, qbwc_AssetAccountRef, qbwc_COGSAccountRef, qbwc_IncomeAccountRef, qbwc_export_orders, qbwc_export_orders_billing_addr, qbwc_export_orders_product_desc, qbwc_export_orders_taxcodes, qbwc_export_people, qbwc_export_products, qbwc_invoice_type, qbwc_user, qbwc_pass, smtp_authenticate, smtp_host, smtp_password, smtp_port, smtp_username, stats_cache, style, system_cancellation_days, system_signup, table_border, table_data, table_header, tax_benefit_1_name, tax_benefit_2_name, tax_benefit_3_name, tax_benefit_4_name, text_heading, timezone, URL, URL_aliases, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const TABLES = 'action, activity, address_substitution, block_layout, case_tasks, cases, category_assign, colour_scheme, comment, community, community_member, community_membership, component, content_block, custom_form, ecl_tags, field_templates, gateway_settings, gateway_type, geocode_cache, group_assign, group_members, groups, keyword_assign, keywords, language_assign, layout, listdata, listtype, mailidentity, mailqueue, mailqueue_item, mailtemplate, membership_rule, module_credits, navbuttons, navstyle, navsuite, order_items, orders, pages, payment_method, person, poll, poll_choice, postings, product, product_grouping, product_relationship, push_product_assign, qb_config, qb_connection, qb_ident, qb_import, qb_log, qb_notify, qb_queue, qb_recur, qb_ticket, qb_user, registerevent, report, report_columns, report_defaults, report_filter, report_filter_criteria, report_settings, scheduled_task, system, tax_code, tax_regime, tax_rule, tax_zone, theme, widget';
 
@@ -291,8 +290,10 @@ class System extends Record
                     global $db;
                     if (isset($_REQUEST['targetValue'])) {
                         $Obj = new Table;
-                        print "<h1>".$_SERVER["HTTP_HOST"]." : ".$db." : ".$_REQUEST['targetValue']."</h1>";
-                        print "<pre>".$Obj->get_table_create_sql($_REQUEST['targetValue'], false)."</pre>";
+                        print
+                            "<h1>".$_SERVER["HTTP_HOST"]." : ".$db." : ".$_REQUEST['targetValue']."</h1>"
+                            . "<p>This code is normalised for all supported database versions to avoid false errors when comparing sites.</p>"
+                            . "<pre>".$Obj->get_table_create_sql($_REQUEST['targetValue'], true, true)."</pre>";
                         die;
                     }
                     break;
