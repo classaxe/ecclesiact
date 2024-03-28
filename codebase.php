@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.0");
+define("CODEBASE_VERSION", "5.8.1");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
