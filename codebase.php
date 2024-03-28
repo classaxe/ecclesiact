@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.2");
+define("CODEBASE_VERSION", "5.8.3");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,35 +19,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.2.2545 (2024-03-28)
+5.8.3.2546 (2024-03-28)
 Summary:
-  DB Checksums now normalise newer database engines to consistent results
+  Report column checksums now consistent across all database engine versions
 
 Final Checksums:
-  Classes     CS:868cd3f0
+  Classes     CS:ae68ecf8
   Database    CS:422e4761
-  Libraries   CS:a26e7dc0
-  Reports     CS:b6232c7
+  Libraries   CS:fb540cb4
+  Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.2     (2024-03-28)
+  codebase.php                                                                                   5.8.3     (2024-03-28)
     1) Updated version information
-  classes/class.backup.php                                                                       1.1.11    (2024-03-29)
-    Backup::db_export_sql_structure() no longer normalises database create tables when exporting backup
-  classes/class.system.php                                                                       1.0.189   (Date not given!)
+  classes/class.report_config.php                                                                1.0.8     (2024-03-28)
+    1) Report_Config::get_overview_global() now sets group_concat max length to consistently return same checksums
 
-  classes/class.table.php                                                                        1.0.6     (2024-03-28)
-    1) Updates to Table::get_table_create_sql() to normalise for newer database engines
-
-2545.sql
+2546.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.2
-  classes/  (3 files changed)
-    class.backup.php                                  1.1.11    CS:cb917da8
-    class.system.php                                  1.0.189   CS:c502c08f
-    class.table.php                                   1.0.6     CS:ce871f7
+  codebase.php                                        5.8.3
+  classes/  (1 file changed)
+    class.report_config.php                           1.0.8     CS:ce513aca
+
 --------------------------------------------------------------------------------
 
 Bug:

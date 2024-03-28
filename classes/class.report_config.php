@@ -1,19 +1,10 @@
 <?php
-define ("VERSION_REPORT_CONFIG","1.0.7");
+define ("VERSION_REPORT_CONFIG","1.0.8");
 
 /*
 Version History:
-  1.0.7 (2012-12-03)
-    1) Removed ini_set() that forces display_errors on
-  1.0.6 (2012-02-15)
-    1) Changes to Report_Config::_draw_config_for_type() now that `adminLinkPosition`
-       is renamed to `seq` and `tab` has been added
-    2) Changes to Report_Config::get_config_all() now that `adminLinkPosition`
-       is renamed to `seq` and `tab` has been added
-    3) Changes to Report_Config::get_overview_global now that `adminLinkPosition`
-       is renamed to `seq` and `tab` has been added
-
-  (Older version history in class.report_config.txt)
+  1.0.8 (2024-03-28)
+    1) Report_Config::get_overview_global() now sets group_concat max length to consistently return same checksums
 */
 
 class Report_Config extends Report {
@@ -312,6 +303,7 @@ class Report_Config extends Report {
   }
 
   function get_overview_global(){
+    $this->set_group_concat_max_len(1000000);
     $sql =
        "SELECT\n"
       ."  `ID`,\n"
