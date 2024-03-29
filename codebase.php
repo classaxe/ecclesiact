@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.3");
+define("CODEBASE_VERSION", "5.8.4");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,29 +19,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.3.2546 (2024-03-28)
+5.8.4.2547 (2024-03-29)
 Summary:
-  Report column checksums now consistent across all database engine versions
+  Server Remote Config now uses curl functions for more reliable redirect handling
 
 Final Checksums:
-  Classes     CS:ae68ecf8
+  Classes     CS:aea8df6c
   Database    CS:422e4761
-  Libraries   CS:fb540cb4
+  Libraries   CS:af825cb9
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.3     (2024-03-28)
+  codebase.php                                                                                   5.8.4     (2024-03-29)
     1) Updated version information
-  classes/class.report_config.php                                                                1.0.8     (2024-03-28)
-    1) Report_Config::get_overview_global() now sets group_concat max length to consistently return same checksums
+  classes/class.record.php                                                                       1.0.106   (2024-03-29)
+    1) Record::get_remote_xml_file() now uses curl instead of gwsocket for better redirect handling
+  classes/class.system.php                                                                       1.0.190   (2024-03-29)
+    System::get_item_version() for 'bugtracker_status' now returns 'Fail' if the connection attempt failed
 
-2546.sql
+2547.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.3
-  classes/  (1 file changed)
-    class.report_config.php                           1.0.8     CS:ce513aca
+  codebase.php                                        5.8.4
+  classes/  (2 files changed)
+    class.record.php                                  1.0.106   CS:e4a99c9b
+    class.system.php                                  1.0.190   CS:b2745f45
+  composer.json
 
 --------------------------------------------------------------------------------
 

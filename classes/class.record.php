@@ -1,13 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.105 (2018-03-21)
-    1) Many changes throughout to allow systemID field to be changed -
-       used to allow these functions to work with system table that uses ID instead of systemID
+  1.0.106 (2024-03-29)
+    1) Record::get_remote_xml_file() now uses curl instead of gwsocket for better redirect handling
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.105';
+    const VERSION = '1.0.106';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1245,36 +1244,50 @@ class Record extends Portal
         return static::getRecordsForSql($sql);
     }
 
+    function curl_get_file_contents($URL)
+    {
+        $c = curl_init();
+        $headers = [];
+        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($c, CURLOPT_HEADER, 1);
+        curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)');
+        curl_setopt($c, CURLOPT_URL, $URL);
+        curl_setopt($c, CURLOPT_HEADERFUNCTION,
+            function($curl, $header) use (&$headers) {
+                $len = strlen($header);
+                $header = explode(':', $header, 2);
+                if (count($header) < 2) {
+                    return $len; // ignore invalid headers
+                }
+                $headers[strtolower(trim($header[0]))] = trim($header[1]);
+                return $len;
+            }
+        );
+
+        $response = curl_exec($c);
+        $header_size = curl_getinfo($c, CURLINFO_HEADER_SIZE);
+        $body = substr($response, $header_size);
+
+        curl_close($c);
+        return [
+            'headers' => $headers,
+            'body' => $body ?: false
+        ];
+    }
+
+
     public function get_remote_xml_file($url)
     {
         if ($url=="") {
             return "";
         }
-  //    die($url);
-        $s = new gwSocket;
-        if ($s->getUrl($url)) {
-            if (is_array($s->headers)) {
-                $h = array_change_key_case($s->headers, CASE_LOWER);
-                if ($s->error) {
-    // failed to connect with host
-                    $buffer = $this->get_remote_xml_file_error($s->error);
-                } elseif (preg_match("/404/", (isset($h['status']) ? $h['status'] : "404"))) { // page not found
-                    $buffer = $this->get_remote_xml_file_error("Page Not Found");
-                } elseif (preg_match("/xml/i", $h['content-type'])) { // got XML back
-                    $buffer = $s->page;
-                } else {
-    // got a page, but wrong content type
-                    $buffer = $this->get_remote_xml_file_error(
-                        "The server did not return XML. The content type returned was ".$h['content-type']
-                    );
-                }
-            } else {
-                $buffer=$this->get_remote_xml_file_error("An unknown error occurred.");
+        if ($response = $this->curl_get_file_contents($url)) {
+            $h = $response['headers'];
+            if (preg_match("/xml/i", $h['content-type'])) {
+                return $response['body'];
             }
-        } else {
-            $buffer=$this->get_remote_xml_file_error("An unknown error occurred.");
+            return $this->get_remote_xml_file_error('Wrong content type: ' . $h['content-type']);
         }
-        return $buffer;
     }
 
     public function get_remote_xml_file_error($error)
