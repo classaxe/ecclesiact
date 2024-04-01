@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.4");
+define("CODEBASE_VERSION", "5.8.5");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,34 +19,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.4.2547 (2024-03-29)
+5.8.5.2548 (2024-04-01)
 Summary:
-  Server Remote Config now uses curl functions for more reliable redirect handling
+  Server Remote Config now has better error handling
 
 Final Checksums:
-  Classes     CS:aea8df6c
+  Classes     CS:3f58c175
   Database    CS:422e4761
-  Libraries   CS:af825cb9
+  Libraries   CS:f6b82dcd
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.4     (2024-03-29)
+  codebase.php                                                                                   5.8.5     (2024-04-01)
     1) Updated version information
-  classes/class.record.php                                                                       1.0.106   (2024-03-29)
-    1) Record::get_remote_xml_file() now uses curl instead of gwsocket for better redirect handling
-  classes/class.system.php                                                                       1.0.190   (2024-03-29)
-    System::get_item_version() for 'bugtracker_status' now returns 'Fail' if the connection attempt failed
+  classes/class.record.php                                                                       1.0.l07   (2024-04-01)
+    1) Record::get_remote_xml_file() now better handles error conditions
 
-2547.sql
+2548.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.4
-  classes/  (2 files changed)
-    class.record.php                                  1.0.106   CS:e4a99c9b
-    class.system.php                                  1.0.190   CS:b2745f45
-  composer.json
-
+  codebase.php                                        5.8.5
+  classes/  (1 file changed)
+    class.record.php                                  1.0.107   CS:4a0afd46
 --------------------------------------------------------------------------------
 
 Bug:

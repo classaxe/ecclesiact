@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.106 (2024-03-29)
-    1) Record::get_remote_xml_file() now uses curl instead of gwsocket for better redirect handling
+  1.0.l07 (2024-04-01)
+    1) Record::get_remote_xml_file() now better handles error conditions
 */
 class Record extends Portal
 {
-    const VERSION = '1.0.106';
+    const VERSION = '1.0.107';
 
     public static $cache_ID_by_name_array =      array();
     public static $cache_record_array =          array();
@@ -1283,6 +1283,9 @@ class Record extends Portal
         }
         if ($response = $this->curl_get_file_contents($url)) {
             $h = $response['headers'];
+            if (!isset($h['content-type'])) {
+                return $this->get_remote_xml_file_error('Error: ' . $response['body']);
+            }
             if (preg_match("/xml/i", $h['content-type'])) {
                 return $response['body'];
             }
