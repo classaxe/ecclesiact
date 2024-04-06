@@ -2,12 +2,12 @@
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|search|sysjs)');
 /*
 Version History:
-  1.0.50 (2017-08-27)
-    1) Replaced the copy to clipboard system with a newer version that works in modern browsers
+  1.0.51 (2024-04-06)
+    1) System_Health::drawButtonSQLBuildInfo() now includes unsetting of safe mode and adds default sql comments
 */
 class System_Health extends System
 {
-    const VERSION = '1.0.50';
+    const VERSION = '1.0.51';
 
     public function draw($config_arr, $ID)
     {
@@ -337,8 +337,14 @@ class System_Health extends System
         }
 
         $value =
-             "UPDATE `system` SET `system`.`db_version` =  '".$db_version."';\n"
-            ."UPDATE `system` SET `system`.`db_cs_target` = '".$db_checksum."';\n"
+             "# " . $db_version . ".sql\n"
+            ."#  1) Set version information\n"
+            ."\n"
+            ."SET SQL_SAFE_UPDATES=0;\n"
+            ."\n"
+            ."#  1) Set version information\n"
+            ."UPDATE `system` SET `system`.`db_version` =  '" . $db_version . "';\n"
+            ."UPDATE `system` SET `system`.`db_cs_target` = '" . $db_checksum . "';\n"
 
             .(count($class_detail_arr) ?
              "UPDATE `system` SET `system`.`db_detail` =\n  CONCAT(\n"

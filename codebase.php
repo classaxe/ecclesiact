@@ -19,29 +19,32 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.5.2548 (2024-04-01)
+5.8.6.2549 (2024-04-06)
 Summary:
-  Server Remote Config now has better error handling
+  Database now provides index for systemID in module_credits table for save export / imports
+  Note that DB checksum doesn't change because table is for modules
 
 Final Checksums:
-  Classes     CS:3f58c175
+  Classes     CS:fd9ec8ed
   Database    CS:422e4761
   Libraries   CS:f6b82dcd
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.5     (2024-04-01)
+  codebase.php                                                                                   5.8.5     (2024-04-06)
     1) Updated version information
-  classes/class.record.php                                                                       1.0.l07   (2024-04-01)
-    1) Record::get_remote_xml_file() now better handles error conditions
+  classes/class.system_health.php                                                                1.0.51    (2024-04-06)
+    1) System_Health::drawButtonSQLBuildInfo() now includes unsetting of safe mode and adds default sql comments
 
-2548.sql
-  1) Set version information
+2549.sql
+  1) New index for SystemID on module_credits table
+  2) Set version information
 
 Promote:
   codebase.php                                        5.8.5
   classes/  (1 file changed)
-    class.record.php                                  1.0.107   CS:4a0afd46
+    class.system_health.php                           1.0.51    CS:470a8994
+
 --------------------------------------------------------------------------------
 
 Bug:
