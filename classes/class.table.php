@@ -1,9 +1,9 @@
 <?php
-define('VERSION_TABLE','1.0.6');
+define('VERSION_TABLE','1.0.7');
 /*
 Version History:
-  1.0.6 (2024-03-28)
-    1) Updates to Table::get_table_create_sql() to normalise for newer database engines
+  1.0.7 (2024-04-09)
+    1) Updates to Table::get_table_create_sql() to normalise for MySQL 8 database engine
 */
 class Table extends Record{
     static $cache_create_table_array =  array();
@@ -27,7 +27,7 @@ class Table extends Record{
         if (isset(Table::$cache_create_table_array[$name])) {
             return Table::$cache_create_table_array[$name];
         }
-        $sql =      "SHOW CREATE TABLE ".$name."";
+        $sql =      "SHOW CREATE TABLE `".implode('`.`', explode('.', $name))."`";
         $record =   $this->get_record_for_sql($sql);
         $out =      $record['Create Table'];
 
@@ -35,15 +35,13 @@ class Table extends Record{
             $out = str_replace('default', 'DEFAULT', $out);
             $out = str_replace('PRIMARY KEY  ', 'PRIMARY KEY ', $out);
             $out = str_replace('auto_increment', 'AUTO_INCREMENT', $out);
-            $out = str_replace(' DEFAULT 0,', ' DEFAULT \'0\',', $out);
-            $out = str_replace(' DEFAULT 0.25,', ' DEFAULT \'0.25\',', $out);
-            $out = str_replace(' DEFAULT 1,', ' DEFAULT \'1\',', $out);
-            $out = str_replace(' DEFAULT 3,', ' DEFAULT \'3\',', $out);
-            $out = str_replace(' DEFAULT 25,', ' DEFAULT \'25\',', $out);
-            $out = str_replace(' DEFAULT 110,', ' DEFAULT \'110\',', $out);
-            $out = str_replace(' DEFAULT 0.00', ' DEFAULT \'0.00\'', $out);
+            $out = preg_replace('/tinyint\([^\)]+\)/', 'tinyint', $out);
+            $out = preg_replace('/bigint\([^\)]+\)/', 'bigint', $out);
+            $out = preg_replace('/int\([^\)]+\)/', 'int', $out);
+            $out = preg_replace('/ DEFAULT ([0-9.]+),/', ' DEFAULT \'$1\',', $out);
             $out = str_replace(' text DEFAULT NULL,', ' text,', $out);
-            $out = str_replace(' CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci', ' CHARSET=utf8', $out);
+            $out = str_replace(' CHARSET=utf8mb3', ' CHARSET=utf8', $out);
+            $out = str_replace(' COLLATE=utf8mb3_general_ci', '', $out);
         }
         if ($remove_autonum) {
           $out =      preg_replace('/ AUTO_INCREMENT=([0-9])*' . '/', '', $out);

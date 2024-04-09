@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.6");
+define("CODEBASE_VERSION", "5.8.7");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,29 +19,29 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.6.2550 (2024-04-09)
+5.8.7.2551 (2024-04-09)
 Summary:
-  Remote System Draw now shows number of sites in each group
+  Database Table Checksum validator now normalises MySQL 8 databases
 
 Final Checksums:
-  Classes     CS:3803c436
-  Database    CS:422e4761
-  Libraries   CS:1df6be51
+  Classes     CS:557eebb6
+  Database    CS:ad95509b
+  Libraries   CS:44cccf25
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.6     (2024-04-09)
+  codebase.php                                                                                   5.8.7     (2024-04-09)
     1) Updated version information
-  classes/class.system.php                                                                       1.0.199   (2024-04-09)
-    System::draw_remote_config() now shows number of sites for each group in selector
+  classes/class.table.php                                                                        1.0.7     (2024-04-09)
+    1) Updates to Table::get_table_create_sql() to normalise for MySQL 8 database engine
 
-2550.sql
+2551.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.6
+  codebase.php                                        5.8.7
   classes/  (1 file changed)
-    class.system.php                                  1.0.199   CS:c339146a
+    class.table.php                                   1.0.7     CS:26d4476d
 
 
 --------------------------------------------------------------------------------
