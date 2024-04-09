@@ -1,9 +1,0 @@
-  1.0.2 (2012-11-23)
-    1) Changes to Community_Sponsorship_Plan::set_container_path() to allow
-       container album to be changed to something other than the one given in
-       the community record and to remap the path based on such a change
-  1.0.1 (2012-11-19)
-    1) More work to implement automatic assignment of file folders for each
-       community sponsorship plan
-  1.0.0 (2012-11-19)
-    1) Initial release - incomplete as yet

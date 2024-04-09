@@ -1,6 +1,0 @@
-  1.0.1 (2016-03-03)
-    1) Formerly Extended_Community - now CommunityListing
-    2) CommunityListing::draw_listing() renamed to drawListing() and now takes single parameter for show_map
-       rather than requiring complete CP list to be set for it by parent
-  1.0.0 (2015-03-17)
-    1) Moved into its own file - was originally part of class.component_communities_display.php

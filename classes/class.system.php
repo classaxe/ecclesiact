@@ -1,12 +1,12 @@
 <?php
 /*
 Version History:
-  1.0.190 (2024-03-29)
-    System::get_item_version() for 'bugtracker_status' now returns 'Fail' if the connection attempt failed
+  1.0.199 (2024-04-09)
+    System::draw_remote_config() now shows number of sites for each group in selector
 */
 class System extends Record
 {
-    const VERSION = '1.0.190';
+    const VERSION = '1.0.199';
     const FIELDS = 'ID, archive, textEnglish, debug, debug_no_internet, classes_cs_target, classes_detail, db_cs_target, db_detail, libraries_cs_target, libraries_detail, reports_cs_target, reports_detail, db_custom_tables, db_upgrade_flag, db_version, adminEmail, archiveID, deleted, adminName, akismet_api_key, bounce_email, bugs_password, bugs_username, bugs_url, cal_border, cal_current, cal_current_we, cal_days, cal_event, cal_head, cal_then, cal_then_we, cal_today, colour1, colour2, colour3, colour4, component_parameters, cron_job_heartbeat_last_run, custom_1, custom_2, defaultBgColor, defaultCurrencySuffix, defaultCurrencySymbol, defaultDateFormat, defaultLanguage, defaultLayoutID, defaultTaxZoneID, defaultThemeID, defaultTimeFormat, favicon, features, gatewayID, google_analytics_key, google_maps_key, installed_modules, languages, last_user_access, membership_expiry_type, membership_rules, notes, notify_email, notify_triggers, piwik_id, piwik_online, piwik_md5_password, piwik_token, piwik_user, posting_prefix, provider_list, qbwc_AssetAccountRef, qbwc_COGSAccountRef, qbwc_IncomeAccountRef, qbwc_export_orders, qbwc_export_orders_billing_addr, qbwc_export_orders_product_desc, qbwc_export_orders_taxcodes, qbwc_export_people, qbwc_export_products, qbwc_invoice_type, qbwc_user, qbwc_pass, smtp_authenticate, smtp_host, smtp_password, smtp_port, smtp_username, stats_cache, style, system_cancellation_days, system_signup, table_border, table_data, table_header, tax_benefit_1_name, tax_benefit_2_name, tax_benefit_3_name, tax_benefit_4_name, text_heading, timezone, URL, URL_aliases, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
     const TABLES = 'action, activity, address_substitution, block_layout, case_tasks, cases, category_assign, colour_scheme, comment, community, community_member, community_membership, component, content_block, custom_form, ecl_tags, field_templates, gateway_settings, gateway_type, geocode_cache, group_assign, group_members, groups, keyword_assign, keywords, language_assign, layout, listdata, listtype, mailidentity, mailqueue, mailqueue_item, mailtemplate, membership_rule, module_credits, navbuttons, navstyle, navsuite, order_items, orders, pages, payment_method, person, poll, poll_choice, postings, product, product_grouping, product_relationship, push_product_assign, qb_config, qb_connection, qb_ident, qb_import, qb_log, qb_notify, qb_queue, qb_recur, qb_ticket, qb_user, registerevent, report, report_columns, report_defaults, report_filter, report_filter_criteria, report_settings, scheduled_task, system, tax_code, tax_regime, tax_rule, tax_zone, theme, widget';
 
@@ -509,29 +509,34 @@ class System extends Record
         $servers = get_var('servers');
         if ($servers=='') {
             $out = "<h3>Systems Overview</h3>";
-            $urls = array();
+            $urls = [];
         } else {
             $out =  "<h3>".$systems[$servers]['title']." health check</h3>";
             $urls = $systems[$servers]['urls'];
         }
         $out.=
-              "<a class='admin_toolbartable'"
-             ." href=\"#\" onclick=\"details('component',".$componentID.",'455','800');return false;\">"
-             ."<img class=\"toolbar_icon fl\" src=\"./img/spacer\" alt=\"\" title=\"Edit embedded component\""
-             ." style=\"height:16px;width:17px;background-position: -1373px 0px;\" /></a>"
-             ."<p>\n"
-             ."<select class='formField' id='servers' name='servers'"
-             ." onchange=\"geid('btn_reload').disabled=1;geid('form').submit();\">\n"
-             ."  <option value=''".($servers==''? " selected='selected'":'').">"
-             ."Please select group to monitor"
-             ."</option>\n";
+            "<a class='admin_toolbartable'"
+             . " href=\"#\" onclick=\"details('component',".$componentID.",'455','800');return false;\">"
+             . "<img class=\"toolbar_icon fl\" src=\"./img/spacer\" alt=\"\" title=\"Edit embedded component\""
+             . " style=\"height:16px;width:17px;background-position: -1373px 0px;\" /></a>"
+             . "<p>\n"
+             . "<select class='formField' id='servers' name='servers'"
+             . " onchange=\"geid('btn_reload').disabled=1;geid('form').submit();\">\n"
+             . "  <option value=''".($servers==''? " selected='selected'":'').">"
+             . "Please select group to monitor"
+             . "</option>\n";
         foreach ($systems as $key => $value) {
-            $out.= "  <option".($key==$servers ? " selected='selected'" : "").">".$key."</option>\n";
+            $out.=
+                "  <option value='" . $key . "' " . ($key==$servers ? " selected='selected'" : "")
+                . ">" . $key
+                . " [" . count($value['urls']) . " site" . (count($value['urls']) ===1 ? "" : "s") . "]"
+                . "</option>\n";
         }
         $out.=
-             "</select> "
-            ."<input type='submit' value='Reload' class='formButton' id='btn_reload'"
-            ." onclick=\"this.disabled=1;geid('form').submit();\" disabled='disabled' /></p><br />";
+            "</select> "
+            . "<input type='submit' value='Reload' class='formButton' id='btn_reload'"
+            . " onclick=\"this.disabled=1;geid('form').submit();\" disabled='disabled' /></p><br />"
+        ;
         $Obj_Ajax = new Ajax;
         for ($i=0; $i<count($urls); $i+=4) {
             $sys_arr = array();

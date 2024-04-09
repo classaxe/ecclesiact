@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.5");
+define("CODEBASE_VERSION", "5.8.6");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,31 +19,30 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.6.2549 (2024-04-06)
+5.8.6.2550 (2024-04-09)
 Summary:
-  Database now provides index for systemID in module_credits table for save export / imports
-  Note that DB checksum doesn't change because table is for modules
+  Remote System Draw now shows number of sites in each group
 
 Final Checksums:
-  Classes     CS:fd9ec8ed
+  Classes     CS:3803c436
   Database    CS:422e4761
-  Libraries   CS:f6b82dcd
+  Libraries   CS:1df6be51
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.5     (2024-04-06)
+  codebase.php                                                                                   5.8.6     (2024-04-09)
     1) Updated version information
-  classes/class.system_health.php                                                                1.0.51    (2024-04-06)
-    1) System_Health::drawButtonSQLBuildInfo() now includes unsetting of safe mode and adds default sql comments
+  classes/class.system.php                                                                       1.0.199   (2024-04-09)
+    System::draw_remote_config() now shows number of sites for each group in selector
 
-2549.sql
-  1) New index for SystemID on module_credits table
-  2) Set version information
+2550.sql
+  1) Set version information
 
 Promote:
-  codebase.php                                        5.8.5
+  codebase.php                                        5.8.6
   classes/  (1 file changed)
-    class.system_health.php                           1.0.51    CS:470a8994
+    class.system.php                                  1.0.199   CS:c339146a
+
 
 --------------------------------------------------------------------------------
 

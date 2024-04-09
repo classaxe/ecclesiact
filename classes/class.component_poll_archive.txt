@@ -1,7 +1,0 @@
-  1.0.1 (2012-11-03)
-    1) Big changes to allow for use of standard methods for setup and control panel
-       and refactoring to reduce stament nesting
-    2) Changes to deal with fields being renamed in poll_choice table in preparation
-       for moving to postings table
-  1.0.0 (2011-12-31)
-    1) Initial release - moved from Component class

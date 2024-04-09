@@ -1,9 +1,0 @@
-  2.0.1 (2016-01-02)
-    1) New release based on PHPMailer 5.2.14
-    2) phpmailerException moved to its own class file
-  2.0.0 (2010-06-09)
-    1) New release using PHPMailer 5.1
-    2) Changes to PHPMailer::CreateHeader() to save MessageID for tracking
-    3) Changes to various functions to NOT echo errors but just throw exceptions
-  1.0.0 (2009-07-11)
-    1) Initial release using PHPMailer 1.72
