@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.44 (2018-12-24)
-    1) Layout::prepareXhtmlHead() now uses sr-only class to provide 'Skip to Main Content' nav link
+  1.0.45 (2024-04-11)
+    1) Layout::prepareXhtmlHead() no longer tries to use image streamer for favicon if set
 */
 
 class Layout extends Record
 {
-    const VERSION = '1.0.44';
+    const VERSION = '1.0.45';
     const FIELDS = 'ID, archive, archiveID, deleted, systemID, name, colour1, colour2, colour3, colour4, component_parameters, content, include_body_bottom, include_head_top, language, languageOptionParentID, navsuite1ID, navsuite2ID, navsuite3ID, responsive, style, history_created_by, history_created_date, history_created_IP, history_modified_by, history_modified_date, history_modified_IP';
 
     public function __construct($ID = "")
@@ -266,9 +266,9 @@ class Layout extends Record
         );
         Output::push(
             'head_top',
-            ($favicon ? "<link rel=\"shortcut icon\" href=\"".BASE_PATH."img/sysimg/".$favicon."\"/>\n" : "")
+            ($favicon ? "<link rel=\"shortcut icon\" href=\"" . BASE_PATH . $favicon."\"/>\n" : "")
             ."<link rel=\"search\" type=\"application/opensearchdescription+xml\""
-            ." title=\"".$system_vars['textEnglish']." Search\" href=\"".BASE_PATH."osd/\" />\n"
+            ." title=\"".$system_vars['textEnglish']." Search\" href=\"" . BASE_PATH . "osd/\" />\n"
             .(System::has_feature('Articles') ?
                  "<link rel=\"alternate\" type=\"application/rss+xml\""
                 ." title=\"".$system_vars['textEnglish']." RSS Articles Feed\""

@@ -1,13 +1,13 @@
 <?php
 /*
 Version History:
-  1.0.38 (2017-12-13)
-    1) Added display of current systemID on sites report and system time for scheduled tasks
+  1.0.39 (2024-04-11)
+    1) Report_Report::draw_toolbar_filter() no longer shows Save button for members of the public
 */
 
 class Report_Report extends Report
 {
-    const VERSION = '1.0.38';
+    const VERSION = '1.0.39';
 
     public function do_commands()
     {
@@ -1475,11 +1475,12 @@ class Report_Report extends Report
         .($ajax_mode ?
              ""
          :
-             "    <td class='va_t'><input type='button' id='btn_save_".$reportID."' value='Save...'"
+             (get_person_permission("PUBLIC") ? "" :
+                 "    <td class='va_t'><input type='button' id='btn_save_".$reportID."' value='Save...'"
             ." class='formButton' style='width: 50px; height: 20px'"
             ." onclick=\"filterbar_save_onclick('".$reportID."','".$report_name."','".$toolbar."');\" "
             ."/>"
-            ."</td>\n"
+            ."</td>\n")
         )
         ."  </tr>\n"
         ."</table>";

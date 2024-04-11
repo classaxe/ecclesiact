@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.7");
+define("CODEBASE_VERSION", "5.8.9");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,29 +19,33 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.7.2551 (2024-04-09)
+5.8.9.2552 (2024-04-11)
 Summary:
-  Database Table Checksum validator now normalises MySQL 8 databases
+  Favicon code changed to work properly
+  Report Filter Toolbar now only includes Save if person is logged in
 
 Final Checksums:
-  Classes     CS:557eebb6
+  Classes     CS:954568ec
   Database    CS:ad95509b
-  Libraries   CS:44cccf25
+  Libraries   CS:ed606f3f
   Reports     CS:3d669e11
 
 Code Changes:
-  codebase.php                                                                                   5.8.7     (2024-04-09)
+  codebase.php                                                                                   5.8.9     (2024-04-11)
     1) Updated version information
-  classes/class.table.php                                                                        1.0.7     (2024-04-09)
-    1) Updates to Table::get_table_create_sql() to normalise for MySQL 8 database engine
+  classes/class.layout.php                                                                       1.0.45    (2024-04-11)
+    1) Layout::prepareXhtmlHead() no longer tries to use image streamer for favicon if set
+  classes/class.report_report.php                                                                1.0.39    (2024-04-11)
+    1) Report_Report::draw_toolbar_filter() no longer shows Save button for members of the public
 
-2551.sql
+2552.sql
   1) Set version information
 
 Promote:
-  codebase.php                                        5.8.7
-  classes/  (1 file changed)
-    class.table.php                                   1.0.7     CS:26d4476d
+  codebase.php                                        5.8.9
+  classes/  (2 files changed)
+    class.layout.php                                  1.0.45    CS:fd98a0c9
+    class.report_report.php                           1.0.39    CS:1f1d2d90
 
 
 --------------------------------------------------------------------------------
