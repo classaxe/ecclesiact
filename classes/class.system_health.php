@@ -2,12 +2,12 @@
 define('HTACCESS_STACK', '(ajax|cron|css|facebook|img|java|lib|osd|qbwc|resource|search|sysjs)');
 /*
 Version History:
-  1.0.51 (2024-04-06)
-    1) System_Health::drawButtonSQLBuildInfo() now includes unsetting of safe mode and adds default sql comments
+  1.0.52 (2024-04-15)
+    1) System_Health::drawReportsTable() uses higher index for final checksum now that results contain more types
 */
 class System_Health extends System
 {
-    const VERSION = '1.0.51';
+    const VERSION = '1.0.52';
 
     public function draw($config_arr, $ID)
     {
@@ -746,7 +746,7 @@ class System_Health extends System
                 $content_arr =  explode('|', $config['content']);
                 $report =       $config['title'];
                 $ID =           $content_arr[0];
-                $final =        $content_arr[5];
+                $final =        $content_arr[7];
                 $expected_arr = (isset($cs_arr[$ID]) ?
                     $cs_arr[$ID]
                  :
@@ -1245,8 +1245,14 @@ class System_Health extends System
                 'category' => 'reports',
                 'title' =>    $report['name'],
                 'content' =>
-                 $report['ID'].'|'.$report['report'].'|'.$report['actions'].'|'
-                .$report['columns'].'|'.$report['filters'].'|'.$report['crc32']
+                    $report['ID']
+                    . '|' . $report['report']
+                    . '|' . $report['actions']
+                    . '|' . $report['columns']
+                    . '|' . $report['filters']
+                    . '|' . $report['criteria']
+                    . '|' . $report['settings']
+                    . '|' . $report['crc32']
             );
             if (substr($report['name'], 0, 4)!='cus_' &&
                 substr($report['name'], 0, 7)!='module.' &&
@@ -1265,18 +1271,20 @@ class System_Health extends System
     private function getConfigReportsExpected($csv)
     {
         $_cs_all =  explode(', ', $csv);
-        $cs_arr =   array();
+        $cs_arr =   [];
         foreach ($_cs_all as $_cs_entry) {
             $_cs_entry_arr =      explode('|', $_cs_entry);
-            $cs_arr[$_cs_entry_arr[1]] =
-            array(
+            $cs_arr[$_cs_entry_arr[1]] = [
                 'expected_name' =>      $_cs_entry_arr[0],
+                'expected_ID' =>        $_cs_entry_arr[1],
                 'expected_report' =>    $_cs_entry_arr[2],
                 'expected_actions' =>   $_cs_entry_arr[3],
                 'expected_columns' =>   $_cs_entry_arr[4],
-                'expected_filters' =>   $_cs_entry_arr[5],
-                'expected_final' =>     $_cs_entry_arr[6]
-            );
+                'expected_settings' =>  $_cs_entry_arr[5],
+                'expected_filters' =>   $_cs_entry_arr[6],
+                'expected_criteria' =>  $_cs_entry_arr[7],
+                'expected_final' =>     $_cs_entry_arr[8]
+            ];
         }
         return $cs_arr;
     }

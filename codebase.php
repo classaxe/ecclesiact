@@ -1,5 +1,5 @@
 <?php
-define("CODEBASE_VERSION", "5.8.9");
+define("CODEBASE_VERSION", "5.8.10");
 define('ECC_PHP_7_STRICT', 1);
 define("DEBUG_FORM", 0);
 define("DEBUG_REPORT", 0);
@@ -19,33 +19,37 @@ define(
 //define("DOCTYPE", '<!DOCTYPE html SYSTEM "%HOST%/xhtml1-strict-with-iframe.dtd">');
 /*
 --------------------------------------------------------------------------------
-5.8.9.2552 (2024-04-11)
+5.8.10.2553 (2024-04-15)
 Summary:
-  Favicon code changed to work properly
-  Report Filter Toolbar now only includes Save if person is logged in
+  Report checksums now include filter_criteria and filter_settings - previously undetected
 
 Final Checksums:
-  Classes     CS:954568ec
+  Classes     CS:fe21285a
   Database    CS:ad95509b
-  Libraries   CS:ed606f3f
-  Reports     CS:3d669e11
+  Libraries   CS:be056f2d
+  Reports     CS:ff3f0823
 
 Code Changes:
-  codebase.php                                                                                   5.8.9     (2024-04-11)
+  codebase.php                                                                                   5.8.10    (2024-04-15)
     1) Updated version information
-  classes/class.layout.php                                                                       1.0.45    (2024-04-11)
-    1) Layout::prepareXhtmlHead() no longer tries to use image streamer for favicon if set
-  classes/class.report_report.php                                                                1.0.39    (2024-04-11)
-    1) Report_Report::draw_toolbar_filter() no longer shows Save button for members of the public
+  classes/class.report_config.php                                                                1.0.9     (2024-04-15)
+    1) Report_Config::get_overview_global() now includes report filter criteria and report_settings
+  classes/class.system_health.php                                                                1.0.52    (2024-04-15)
+    1) System_Health::drawReportsTable() uses higher index for final checksum now that results contain more types
 
-2552.sql
-  1) Set version information
+2553.sql
+  1) Added report filters for 'report_columns_for_report'
+  2) Added columns for Created and Modified and report filters for 'actions_for_custom_form'
+  3) Added columns for Created and Modified and report filters for 'actions_for_product'
+  4) Added columns for Created and Modified and report filters for 'membership_rules_for_system'
+  5) Renamed two filters for 'reports' to use isons
+  6) Set version information
 
 Promote:
-  codebase.php                                        5.8.9
+  codebase.php                                        5.8.10
   classes/  (2 files changed)
-    class.layout.php                                  1.0.45    CS:fd98a0c9
-    class.report_report.php                           1.0.39    CS:1f1d2d90
+    class.report_config.php                           1.0.9     CS:811b76c
+    class.system_health.php                           1.0.52    CS:9b67a1d
 
 
 --------------------------------------------------------------------------------
